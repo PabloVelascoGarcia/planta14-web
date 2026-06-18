@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
-import { getArticles } from "@/lib/cms";
-import { authors, territories, topics } from "@/lib/mock-data";
+import { getArticles, getAuthors } from "@/lib/cms";
+import { territories, topics } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
 const baseUrl = "https://planta14.local";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getArticles();
+  const authors = await getAuthors();
   const staticRoutes = ["", "/opinion", "/agenda", "/publicidad", "/contacto"].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date()

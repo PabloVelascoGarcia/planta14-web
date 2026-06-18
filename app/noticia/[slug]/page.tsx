@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: article.title,
-    description: article.excerpt,
+    title: article.seoTitle ?? article.title,
+    description: article.seoDescription ?? article.excerpt,
     openGraph: {
-      title: article.title,
-      description: article.excerpt,
-      images: [article.image]
+      title: article.seoTitle ?? article.title,
+      description: article.seoDescription ?? article.excerpt,
+      images: [article.seoImage ?? article.image]
     }
   };
 }

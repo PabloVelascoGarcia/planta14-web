@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { AdminNewsForm } from "@/components/admin-news-form";
-import { getArticles } from "@/lib/cms";
+import { getAllArticles, getAuthors } from "@/lib/cms";
+import { getSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
-  const articles = await getArticles();
+  const user = await getSession();
+
+  if (!user) {
+    redirect("/admin/login");
+  }
+
+  const articles = await getAllArticles();
+  const authors = await getAuthors();
 
   return (
     <div className="container-p14 py-8">
@@ -21,7 +30,7 @@ export default async function AdminPage() {
           Crea noticias y publícalas automáticamente en portada, comarca, concejo, temática y autor.
         </p>
       </header>
-      <AdminNewsForm articles={articles} />
+      <AdminNewsForm articles={articles} authors={authors} user={user} />
     </div>
   );
 }

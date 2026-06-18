@@ -1,5 +1,6 @@
 .next
 node_modules
-data/articles.json
+data/*.json
+public/uploads
 .env*.local
 *.log

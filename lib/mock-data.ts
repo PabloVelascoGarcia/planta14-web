@@ -1,19 +1,36 @@
 export type Comarca = "Caudal" | "Nalón";
 
 export type Article = {
+  id?: string;
   title: string;
   excerpt: string;
   body: string[];
   image: string;
   date: string;
   author: string;
+  authorSlug?: string;
   comarca: Comarca;
   concejo: string;
   topic: string;
   slug: string;
+  status?: "draft" | "published" | "scheduled" | "unpublished";
+  publishedAt?: string;
+  scheduledAt?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: string;
   featured?: boolean;
   main?: boolean;
   opinion?: boolean;
+};
+
+export type Author = {
+  name: string;
+  slug: string;
+  role: string;
+  bio: string;
+  email?: string;
+  avatar?: string;
 };
 
 export type AgendaEvent = {
@@ -42,7 +59,7 @@ export const topics = [
   "Agenda"
 ];
 
-export const authors = [
+export const authors: Author[] = [
   {
     name: "Clara Valdés",
     slug: "clara-valdes",
