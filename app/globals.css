@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f8f6f1;
+  color: #1c1917;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: #a4522d;
+  color: #fffaf0;
+}
+
+.container-p14 {
+  margin-inline: auto;
+  width: min(100% - 32px, 1180px);
+}
+
+.rule-top {
+  border-top: 1px solid rgba(28, 25, 23, 0.16);
+}
+
+.rule-bottom {
+  border-bottom: 1px solid rgba(28, 25, 23, 0.16);
+}
+
+.admin-input {
+  min-height: 2.75rem;
+  width: 100%;
+  border: 1px solid rgba(28, 25, 23, 0.22);
+  background: #fff;
+  padding: 0.6rem 0.75rem;
+  font-weight: 400;
+  color: #1c1917;
+  outline: none;
+}
+
+.admin-input:focus {
+  border-color: #a4522d;
+}
