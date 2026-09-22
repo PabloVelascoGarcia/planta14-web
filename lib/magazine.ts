@@ -1,8 +1,12 @@
+export type MagazinePhoto = { image: string; imageAlt: string; credit: string; source: string };
 export type MagazineStory = {
   slug: string; category: string; title: string; subtitle: string; image: string;
   imageAlt: string; credit: string; source: string; notice: string;
   introduction: string; chapters: { title: string; text: string }[];
+  cover?: MagazinePhoto; gallery?: MagazinePhoto[];
 };
+const agendaPublica = "https://agendapublica.es/noticia/20032/adrian-barbon-entrevista-asturias";
+const agendaPublicaImg = (file: string) => `https://agendapublica.sobrevia.net/gestiobeta/arxius/agendapublica/imatges/202507/1200_${file}.jpg`;
 export const magazineStories: MagazineStory[] = [
   {
     slug: "adrian-barbon", category: "Protagonistas", title: "Adrián Barbón", subtitle: "Las Cuencas que vienen",
@@ -10,6 +14,20 @@ export const magazineStories: MagazineStory[] = [
     imageAlt: "Adrián Barbón en una fotografía de archivo publicada por La Voz de Asturias",
     credit: "Fotografía de archivo publicada por La Voz de Asturias · 2023",
     source: "https://www.lavozdeasturias.es/noticia/asturias/2023/05/24/etv-bruto-barbon/00031684950491104138982.htm",
+    cover: {
+      image: agendaPublicaImg("1752835714009_B44O1605"),
+      imageAlt: "Adrián Barbón, sentado, durante una entrevista con Agenda Pública en julio de 2025",
+      credit: "Fotografía: Marcos Vega / Agenda Pública · Entrevista de julio de 2025 · Imagen de referencia",
+      source: agendaPublica
+    },
+    gallery: [
+      {
+        image: agendaPublicaImg("1752835682071_B44O1401"),
+        imageAlt: "Adrián Barbón conversa sentado en un sillón durante una entrevista con Agenda Pública",
+        credit: "Fotografía: Marcos Vega / Agenda Pública · Julio de 2025 · Referencia del tono de conversación previsto",
+        source: agendaPublica
+      }
+    ],
     notice: "Propuesta de entrevista · Demostración. La conversación no se ha realizado ni está confirmada.",
     introduction: "Una conversación por preparar sobre el lugar de las Cuencas en la Asturias del futuro. Empleo, vivienda y oportunidades para quienes quieren quedarse: estos son los asuntos que proponemos llevar a la mesa, con preguntas concretas y espacio para escuchar.",
     chapters: [
@@ -45,3 +63,14 @@ export const magazineStories: MagazineStory[] = [
     ]
   }
 ];
+
+export const season = {
+  title: "Primera temporada",
+  standfirst: "Una conversación cada semana. Empezamos por quienes gobiernan cada concejo de las Cuencas y seguimos por quienes lo mueven.",
+  phases: [
+    { label: "Temporada 1", title: "Los alcaldes y alcaldesas", text: "Una entrevista semanal con la persona al frente de cada uno de los once concejos de Caudal y Nalón. Mismas preguntas de fondo para todos, sin excepciones y con espacio para la oposición." },
+    { label: "Temporada 2", title: "Quienes mueven el territorio", text: "Sindicatos, empresariado, cultura, deporte y personas que emprenden o recuperan oficios." },
+    { label: "Cada semana", title: "Reportajes", text: "Un negocio que abre, una empresa que crece, una iniciativa que funciona. Historias contadas sobre el terreno." }
+  ],
+  note: "Calendario propuesto. Ninguna entrevista está concertada todavía."
+};
