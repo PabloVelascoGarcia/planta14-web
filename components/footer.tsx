@@ -22,7 +22,7 @@ export function Footer() {
         <div className="text-sm leading-6 text-paper/70">
           <p className="font-bold uppercase tracking-[0.18em] text-paper/55">Redacción</p>
           <p className="mt-3">Caudal y Nalón, Asturias.</p>
-          <p>redaccion@planta14.local</p>
+          <p className="mt-3">Edición de demostración. Noticias y autores de ejemplo; fotografías de archivo.</p>
         </div>
       </div>
     </footer>

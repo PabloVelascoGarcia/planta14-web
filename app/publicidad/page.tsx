@@ -24,7 +24,7 @@ export default function AdvertisingPage() {
       <section className="mt-10 max-w-3xl space-y-4 text-coal-800">
         <h2 className="font-serif text-3xl font-black text-coal-950">Formatos disponibles</h2>
         <p>Campañas por territorio, patrocinios de agenda, módulos en portada y presencia en boletín.</p>
-        <p>Contacto comercial: publicidad@planta14.local</p>
+        <p>Propuesta comercial en preparación. Los formatos mostrados son ejemplos de integración.</p>
       </section>
     </div>
   );

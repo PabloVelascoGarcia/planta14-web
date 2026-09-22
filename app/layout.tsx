@@ -29,8 +29,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="min-h-screen antialiased">
+        <a href="#contenido" className="skip-link">Saltar al contenido</a>
         <Header />
-        <main>{children}</main>
+        <main id="contenido">{children}</main>
         <Footer />
       </body>
     </html>
