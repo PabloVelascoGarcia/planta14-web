@@ -9,9 +9,9 @@ export const voiceArticles: Article[] = [
       "La Voz de Asturias recoge el informe favorable de la comisión ambiental al proyecto de Fuentes de Invierno, en Aller. La propuesta contempla aumentar las pistas y mejorar servicios, con obligaciones de conservación y seguimiento ambiental.",
       "La planificación también incluye usos fuera del invierno, entre ellos senderismo y ciclismo. El informe permite avanzar en la tramitación; no equivale a que las obras estén ejecutadas."
     ],
-    "image": "https://img.lavdg.com/sc/piEoRdOAUC9g4rkFjE1Q9vfNABY=/768x/2019/01/27/00121548613030371426136/Foto/f.jpg",
-    "imageCredit": "Fuentes de Invierno · vía La Voz de Asturias",
-    "imageAlt": "Estación de esquí Fuentes de Invierno",
+    "image": "https://img.lavdg.com/sc/mldQzG8H5lPPwFgYvo5O_oqk4Kk=/1280x/2019/04/13/00121555167493857951383/Foto/fuents1.jpg",
+    "imageCredit": "Fuentes de Invierno · archivo de La Voz de Asturias (2019)",
+    "imageAlt": "Grupo de esquiadores ante las pistas y montañas de Fuentes de Invierno",
     "date": "2026-08-28",
     "comarca": "Caudal",
     "concejo": "Aller",

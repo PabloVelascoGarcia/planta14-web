@@ -1,0 +1,11 @@
+# Base de presentación aprobada — 22 de septiembre de 2026
+
+La portada `/` es la base elegida por Pablo. Conservar fondo cálido, cabecera Planta 14 negra, jerarquía periodística y tratamiento de enlaces existente.
+
+Textos: «Una voz para las Cuencas» bajo la cabecera; «Donde otros no llegan» en la nota lateral; «La vida aquí» sustituye «Historias que nos mueven». El bloque cultural se llama «Para salir» y el menú mantiene «Agenda». El pie expresa «Orgullosos de nuestra historia. Con la mirada en el futuro».
+
+Se retira el selector de comparación de la cabecera para presentar limpiamente la base. `/edicion` queda conservada como ensayo descartado; no es la nueva dirección solicitada.
+
+La nueva foto de Fuentes de Invierno se verificó a 1280 × 720 píxeles (anterior: 768 × 432). Foto de archivo de 2019, publicada también en https://www.lavozdeasturias.es/noticia/asturias/2024/01/09/fuentes-invierno-abre-nueve-pistas-miercoles/00031704800896847459219.htm. No representa el estado actual de las pistas ni obras ejecutadas. Crédito visible en portada y artículo.
+
+Pendiente de elección: alternativa completamente independiente, con identidad de montaña, niebla y carbón, sin iconografía minera literal. Direcciones propuestas: «Entre la niebla» (inmersiva y cinematográfica), «Estratos» (revista gráfica y experimental), «Cuaderno de las Cuencas» (revista fotográfica cálida). No construir aún una de ellas sin la elección de Pablo.

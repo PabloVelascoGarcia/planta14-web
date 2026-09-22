@@ -7,7 +7,7 @@ export function Footer() {
         <div>
           <p className="font-serif text-4xl font-black">Planta 14</p>
           <p className="mt-3 max-w-xl text-sm leading-6 text-paper/75">
-            Periodismo local para leer las cuencas desde sus concejos, sus barrios y sus pueblos.
+            Orgullosos de nuestra historia. Con la mirada en el futuro.
           </p>
         </div>
         <div className="text-sm">

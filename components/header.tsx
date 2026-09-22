@@ -5,18 +5,17 @@ import { slugify } from "@/lib/utils";
 export function Header() {
   return (
     <header className="bg-paper">
-      <div className="design-comparison"><div className="container-p14"><span>Comparar portadas</span><nav aria-label="Versiones de portada"><Link href="/">Actual</Link><Link href="/edicion">Nueva propuesta ↗</Link></nav></div></div>
       <div className="container-p14">
         <div className="masthead-topline">
           <span>Asturias · Caudal y Nalón</span>
           <span>Edición de demostración</span>
         </div>
         <div className="masthead">
-          <p className="masthead-note">Historias de aquí.<br />Mirada de futuro.</p>
+          <p className="masthead-note">Donde otros<br />no llegan.</p>
           <Link href="/" className="brand" aria-label="Planta 14 — Portada">Planta <span>14</span></Link>
           <Link href="/buscar" className="search-link"><span aria-hidden="true">⌕</span> Buscar</Link>
         </div>
-        <p className="masthead-tagline">Las cuencas tienen mucho que contar</p>
+        <p className="masthead-tagline">Una voz para las Cuencas</p>
         <nav aria-label="Territorio" className="territory-nav">
           {Object.entries(territories).map(([comarca, concejos]) => (
             <div key={comarca} className="territory-group">

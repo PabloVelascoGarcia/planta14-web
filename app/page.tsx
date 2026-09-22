@@ -43,7 +43,7 @@ export default async function Home() {
 
       <section className="container-p14 mt-10 grid gap-8 lg:grid-cols-[1fr_300px]">
         <div>
-          <SectionHeading eyebrow="Portada" title="Historias que nos mueven" />
+          <SectionHeading eyebrow="Portada" title="La vida aquí" />
           <div className="grid gap-6 md:grid-cols-3">
             {featured.map((article) => (
               <ArticleCard key={article.slug} article={article} />
@@ -98,7 +98,7 @@ export default async function Home() {
           ))}
         </div>
         <div>
-          <SectionHeading title="Agenda" href="/agenda" />
+          <SectionHeading title="Para salir" href="/agenda" />
           <AgendaList />
         </div>
       </section>
