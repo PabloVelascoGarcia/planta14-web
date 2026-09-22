@@ -7,7 +7,7 @@ export function Footer() {
         <div>
           <p className="font-serif text-4xl font-black">Planta 14</p>
           <p className="mt-3 max-w-xl text-sm leading-6 text-paper/75">
-            Orgullosos de nuestra historia. Con la mirada en el futuro.
+            Orgullo de historia. Mirada al futuro
           </p>
         </div>
         <div className="text-sm">

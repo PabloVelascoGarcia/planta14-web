@@ -98,3 +98,28 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
  .n-footer small { margin-top:10px; }
 }
 @media(prefers-reduced-motion:reduce) { .n-mist { animation:none; } .niebla a { transition:none; } }
+/* Shared typographic identity with the newspaper; magazine-specific scale. */
+.n-brand,.n-footer-brand { font-family:var(--font-serif); font-weight:900; letter-spacing:-.065em; }
+.n-demo-note { font-size:11px!important; line-height:1.65!important; border-left:2px solid currentColor; padding-left:14px; margin-top:22px; opacity:.85; }
+.n-format-copy { font-size:16px; line-height:1.8; }
+.n-format-copy ul { list-style:disc; padding-left:20px; margin-block:22px; font-size:14px; }
+.n-article { background:#eae6dd; color:#171b16; }
+.n-article-nav { padding:25px 5vw; border-bottom:1px solid #171b1625; }
+.n-article-nav .n-brand { padding-left:0; }
+.n-article-nav > div > a:last-child { border-color:#171b1640; }
+.n-article-heading { max-width:1000px; margin:auto; padding:75px 24px 40px; }
+.n-article h1 { font-family:var(--font-serif); font-size:clamp(44px,7vw,94px); letter-spacing:-.055em; line-height:1.05; margin:25px 0; }
+.n-article-subtitle { font-family:var(--font-serif); font-size:clamp(25px,3vw,40px); line-height:1.2; font-style:italic; }
+.n-article-photo { max-width:1000px; padding:0 24px; margin:auto; }
+.n-article-photo img { width:100%; height:auto; max-height:620px; object-fit:cover; }
+.n-article-photo figcaption { font-size:10px; color:#62675d; margin-top:12px; line-height:1.6; }
+.n-article-body { max-width:750px; padding:45px 24px 70px; margin:auto; }
+.n-article-body p { line-height:1.85; font-size:16px; }
+.n-article-body .n-standfirst { font-family:var(--font-serif); font-size:24px; line-height:1.6; }
+.n-article-body section { margin-top:50px; }
+.n-article-body h2 { font-family:var(--font-serif); font-size:32px; line-height:1.15; margin:12px 0 20px; }
+.n-article-disclosure { padding:25px; border:1px solid #171b1630; margin-top:45px; }
+.n-article-disclosure h2 { font-size:22px; }
+.n-article-disclosure p { font-size:13px; }
+.n-article .n-footer { background:#111310; color:#eae6dd; }
+@media(max-width:767px) { .n-article-heading {padding-top:40px;} .n-article-nav > div {max-width:160px;} }

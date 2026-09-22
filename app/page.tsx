@@ -103,6 +103,13 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="container-p14 mt-12 border-y border-coal-900/20 py-8" aria-label="El semanal de Planta 14">
+        <p className="editorial-kicker">Magazine · Concepto de presentación</p>
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-5"><div><h2 className="font-serif text-4xl font-black">El semanal de Planta 14</h2><p className="mt-3 text-sm text-steel">Protagonistas y reportajes. Historias para leer con tiempo.</p></div><Link href="/niebla" className="text-sm font-bold">Explorar el magazine ↗</Link></div>
+        <nav className="mt-5 flex flex-wrap gap-5 text-sm" aria-label="Propuestas del semanal"><Link href="/niebla/adrian-barbon">Protagonistas: Adrián Barbón ↗</Link><Link href="/niebla/volver-a-la-tierra">Reportaje: Volver a la tierra ↗</Link><Link href="/niebla/la-fiesta-antes-de-la-fiesta">Reportaje: La fiesta antes de la fiesta ↗</Link></nav>
+        <p className="mt-4 text-xs text-steel">Propuestas editoriales de demostración; entrevistas y reportajes pendientes de realización.</p>
+      </section>
+
       <section className="container-p14 mt-12 grid gap-8 lg:grid-cols-[1fr_300px]">
         <Newsletter />
         <AdSlot />
