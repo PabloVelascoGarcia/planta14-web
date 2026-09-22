@@ -123,3 +123,10 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
 .n-article-disclosure p { font-size:13px; }
 .n-article .n-footer { background:#111310; color:#eae6dd; }
 @media(max-width:767px) { .n-article-heading {padding-top:40px;} .n-article-nav > div {max-width:160px;} }
+
+/* One masthead signature across the weekly magazine. */
+.n-brand { text-align:center; }
+.n-brand span { text-align:center; text-transform:uppercase; font-size:7px; font-weight:400; letter-spacing:.14em; line-height:1.5; }
+.n-footer-brand { display:inline-block; justify-self:start; text-align:center; color:#000; background:var(--n-paper); padding:15px 20px; line-height:1; }
+.n-footer-brand span { display:block; font-family:var(--font-sans); font-size:9px; font-weight:400; letter-spacing:.2em; text-transform:uppercase; line-height:1.5; margin-top:12px; }
+@media(max-width:767px) { .n-brand span { font-size:6px; letter-spacing:.1em; } }

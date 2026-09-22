@@ -15,7 +15,7 @@ export default async function Niebla() {
     <section className="n-hero" aria-label="Una voz para las Cuencas">
       <img className="n-landscape" src="https://greentrekker.pt/site/assets/files/161680/img_e1263.jpg" alt="Paisaje de montaña con nubes bajas en el Parque Natural de Redes" fetchPriority="high" />
       <div className="n-shade" /><div className="n-mist" aria-hidden="true" />
-      <nav className="n-nav" aria-label="Navegación de la revista"><Link href="/niebla" className="n-brand">Planta 14<span>Donde otros no llegan.</span></Link><div><a href="#historias">Historias</a><a href="#reportajes">Reportajes</a><Link href="/">Ver portada diaria ↗</Link></div></nav>
+      <nav className="n-nav" aria-label="Navegación de la revista"><Link href="/niebla" className="n-brand">Planta 14<span>Una voz para las Cuencas</span></Link><div><a href="#historias">Historias</a><a href="#reportajes">Reportajes</a><Link href="/">Ver portada diaria ↗</Link></div></nav>
       <div className="n-hero-copy"><p className="n-label">El semanal · Caudal y Nalón</p><h1>Una voz<br />para las<br /><em>Cuencas.</em></h1><div className="n-hero-bottom"><p>Orgullo de historia.<br />Mirada al futuro</p><a href="#historias" className="n-enter">Entrar en las historias <span aria-hidden="true">↓</span></a></div></div>
       <div className="n-bottom"><span>Un territorio. Muchas formas de vivirlo.</span><span>Número cero · Propuestas editoriales</span></div>
     </section>
