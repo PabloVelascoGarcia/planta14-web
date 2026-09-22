@@ -1,3 +1,5 @@
+import { voiceDemoEnabled } from "@/lib/site-config";
+import { voiceArticles, voiceAuthors } from "@/lib/voice-demo";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -46,7 +48,7 @@ export async function getArticles(): Promise<Article[]> {
 }
 
 export async function getAllArticles(): Promise<Article[]> {
-  const articles = await readJson<Article[]>(articlesFile, seedArticles.map(normalizeArticle));
+  const articles = voiceDemoEnabled ? voiceArticles : await readJson<Article[]>(articlesFile, seedArticles.map(normalizeArticle));
   return articles.map(normalizeArticle).sort(sortByDateDesc);
 }
 
@@ -148,7 +150,7 @@ export async function getArticlesByAuthor(author: string) {
 }
 
 export async function getAuthors(): Promise<Author[]> {
-  const authors = await readJson<Author[]>(authorsFile, seedAuthors);
+  const authors = voiceDemoEnabled ? [...voiceAuthors] : await readJson<Author[]>(authorsFile, seedAuthors);
   return authors.sort((a, b) => a.name.localeCompare(b.name, "es"));
 }
 
@@ -236,6 +238,7 @@ async function readJson<T>(file: string, fallback: T): Promise<T> {
 }
 
 async function writeJson(file: string, value: unknown) {
+  if (voiceDemoEnabled || process.env.NODE_ENV === "production") throw new Error("La demo es de solo lectura. Conecta un almacenamiento persistente para publicar.");
   await fs.mkdir(dataDir, { recursive: true });
   await fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }

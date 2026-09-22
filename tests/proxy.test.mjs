@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import Module from 'node:module';
+import ts from 'typescript';
+import { NextRequest } from 'next/server.js';
+function loadTS(file, dependencies = {}) {
+  const filename = path.resolve(file);
+  const mod = new Module(filename);
+  mod.filename = filename;
+  mod.paths = Module._nodeModulePaths(path.dirname(filename));
+  const originalRequire = mod.require.bind(mod);
+  mod.require = name => dependencies[name] || originalRequire(name);
+  mod._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, filename);
+  return mod.exports;
+}
+const codec = loadTS('lib/session-codec.ts');
+const { proxy } = loadTS('proxy.ts', { '@/lib/session-codec': codec });
+process.env.NODE_ENV = 'production';
+process.env.DEMO_CONTENT = 'lavoz';
+delete process.env.DEMO_ACCESS_PASSWORD;
+const request = (route, headers = {}, method = 'GET') => new NextRequest('https://demo.example.com' + route, { headers, method });
+assert.equal(proxy(request('/')).status, 503);
+process.env.DEMO_ACCESS_PASSWORD = 'only-a-test-password-123456';
+assert.equal(proxy(request('/noticia/example')).status, 401);
+assert.equal(proxy(request('/?rsc=1')).status, 401);
+const headers = { authorization: 'Basic ' + Buffer.from('demo:' + process.env.DEMO_ACCESS_PASSWORD).toString('base64') };
+const response = proxy(request('/', headers));
+assert.equal(response.status, 200);
+assert.equal(response.headers.get('cache-control'), 'private, no-store');
+assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow');
+assert.equal(proxy(request('/api/articles', headers)).status, 401);
+process.env.CMS_AUTH_SECRET = 'test-only-secret-for-cms-with-32-characters';
+const token = codec.encodeSession({ email: 'editor@example.com', name: 'Editor', role: 'admin' }, process.env.CMS_AUTH_SECRET);
+assert.equal(proxy(request('/api/articles', { ...headers, cookie: 'planta14_session=' + token }, 'POST')).status, 503);
+console.log('PASS: private demo fails closed, requires password, disallows caching, validates CMS session and blocks hosted writes');

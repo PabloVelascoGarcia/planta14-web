@@ -27,7 +27,7 @@ Recorrido de presentación: portada → comarca → concejo → noticia → bús
 
 Compilación y TypeScript correctos. ESLint sin errores, con cuatro avisos sobre optimización de imágenes. Corregida la configuración de ESLint que analizaba artefactos generados en .next.
 
-La demo publicada original se inspeccionó en navegador. El navegador remoto no accede a localhost; la revisión visual de esta nueva rama queda pendiente de una vista previa accesible. No dar por aprobada aún la versión móvil ni la nueva maquetación.
+La demo publicada original se inspeccionó en navegador. El navegador remoto no accede a localhost; la primera vista previa se revisó después en Netlify, incluida la búsqueda combinada. La versión móvil y la edición privada con contenido de La Voz aún requieren revisión.
 
 Antes de enseñar: revisar portada y artículo en escritorio y móvil; sustituir fotografías de archivo genéricas por imágenes territoriales con derechos y créditos; revisar las historias de muestra. Las noticias, autores y fechas de ejemplo no equivalen a información verificada. El boletín y el contacto no capturan datos.
 
@@ -36,3 +36,5 @@ Antes del lanzamiento: almacenamiento persistente para noticias e imágenes; rev
 ## Criterio editorial para la siguiente iteración
 
 Mostrar un medio territorial reconocible: fotografía local, jerarquía clara, lectura cómoda, proyectos y personas. Evitar efectos que compitan con la noticia. Conservar todas las secciones; priorizar visualmente empresas, economía, sociedad, cultura y patrimonio. No afirmar una alianza con La Voz mientras siga en negociación.
+
+Revisión técnica ampliada y activación de contenido real: ver `REVISION-ARQUITECTURA.md`.

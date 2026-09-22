@@ -29,8 +29,9 @@ export default async function Home() {
           <h1><Link href={`/noticia/${mainArticle.slug}`}>{mainArticle.title}</Link></h1>
           <p className="lead-excerpt">{mainArticle.excerpt}</p>
           <Link href={`/noticia/${mainArticle.slug}`} className="lead-image" aria-label={`Leer: ${mainArticle.title}`}>
-            <img src={mainArticle.image} alt="" fetchPriority="high" width={1400} height={788} />
+            <img src={mainArticle.image} alt={mainArticle.imageAlt ?? ""} fetchPriority="high" width={1400} height={788} />
           </Link>
+          {mainArticle.imageCredit ? <p className="mt-2 text-[10px] text-steel">Fotografía: {mainArticle.imageCredit}</p> : null}
           <div className="lead-byline"><span>{mainArticle.author}</span><Link href={`/noticia/${mainArticle.slug}`}>Leer la historia <span aria-hidden="true">↗</span></Link></div>
         </article>
         <aside className="opening-sidebar">
@@ -91,8 +92,8 @@ export default async function Home() {
 
       <section className="container-p14 mt-12 grid gap-8 lg:grid-cols-[1fr_0.85fr]">
         <div>
-          <SectionHeading title="Opinión" />
-          {opinion.map((article) => (
+          <SectionHeading title={opinion.length ? "Opinión" : "Más historias"} />
+          {(opinion.length ? opinion : articles.slice(-2)).map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
         </div>

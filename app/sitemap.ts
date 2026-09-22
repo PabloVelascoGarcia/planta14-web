@@ -1,11 +1,13 @@
+import { siteUrl, indexable } from "@/lib/site-config";
 import type { MetadataRoute } from "next";
 import { getArticles, getAuthors } from "@/lib/cms";
 import { territories, topics } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
-const baseUrl = "https://planta14.local";
+const baseUrl = siteUrl;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  if (!indexable) return [];
   const articles = await getArticles();
   const authors = await getAuthors();
   const staticRoutes = ["", "/opinion", "/agenda", "/publicidad", "/contacto"].map((route) => ({

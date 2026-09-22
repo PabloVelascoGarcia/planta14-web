@@ -1,3 +1,4 @@
+import { siteUrl, indexable } from "@/lib/site-config";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -5,7 +6,8 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://planta14.local"),
+  robots: { index: indexable, follow: indexable },
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Planta 14 | Periódico digital de las cuencas mineras asturianas",
     template: "%s | Planta 14"
