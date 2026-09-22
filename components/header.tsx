@@ -5,6 +5,7 @@ import { slugify } from "@/lib/utils";
 export function Header() {
   return (
     <header className="bg-paper">
+      <div className="design-comparison"><div className="container-p14"><span>Comparar portadas</span><nav aria-label="Versiones de portada"><Link href="/">Actual</Link><Link href="/edicion">Nueva propuesta ↗</Link></nav></div></div>
       <div className="container-p14">
         <div className="masthead-topline">
           <span>Asturias · Caudal y Nalón</span>
