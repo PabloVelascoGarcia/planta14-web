@@ -82,7 +82,7 @@ img {
 .masthead-topline { display: flex; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid #1c191725; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .masthead { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 22px 0 5px; }
 .brand { font-family: var(--font-serif); font-size: clamp(56px, 7.4vw, 98px); line-height: 1; font-weight: 900; letter-spacing: -.065em; }
-.brand span { color: #a4522d; }
+.brand, .brand span { color: #000; }
 .masthead-note { font-family: var(--font-serif); font-style: italic; font-size: 16px; line-height: 1.4; color: #6c625b; }
 .search-link { justify-self: end; display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 700; }
 .search-link span { font-size: 29px; }

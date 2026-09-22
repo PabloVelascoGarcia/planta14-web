@@ -1,3 +1,7 @@
+# Actualización de la presentación
+
+Por instrucción expresa del promotor, que confirma autorización para usar el contenido, la edición con siete noticias e imágenes de La Voz queda activada por defecto y sin contraseña. Se conserva la atribución. La cabecera completa «Planta 14» pasa a negro puro. La protección de administración y API permanece; el acceso de lectores es público. `DEMO_CONTENT=example` permite recuperar la muestra anterior. Las instrucciones de acceso privado del informe histórico siguiente quedan sustituidas por esta decisión.
+
 # Planta 14 — revisión técnica y decisión de arquitectura
 
 Fecha: 22 de septiembre de 2026. Alcance: revisión del repositorio, compilación, dependencias y recorrido público de la primera vista previa. No es una auditoría de penetración ni una prueba de carga.
