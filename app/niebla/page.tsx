@@ -6,8 +6,12 @@ import { slugify } from "@/lib/utils";
 
 import "./niebla.css";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Entre la niebla · Una voz para las Cuencas" };
+export const revalidate = 300;
+export const metadata = {
+  title: "Una voz para las Cuencas · El semanal",
+  description: "El semanal de Planta 14: protagonistas y reportajes de Caudal y Nalón.",
+  openGraph: { title: "Una voz para las Cuencas · El semanal de Planta 14", description: "Protagonistas y reportajes de Caudal y Nalón.", siteName: "Planta 14", locale: "es_ES", type: "website" }
+};
 
 export default async function Niebla() {
   const [lead, ...reports] = magazineStories;
