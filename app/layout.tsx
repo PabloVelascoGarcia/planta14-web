@@ -1,6 +1,11 @@
 import { siteUrl, indexable } from "@/lib/site-config";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+// Gelasio sits behind Georgia so devices without Georgia (Android) show the same letterforms.
+import "@fontsource/gelasio/400.css";
+import "@fontsource/gelasio/400-italic.css";
+import "@fontsource/gelasio/700.css";
+import "@fontsource/gelasio/700-italic.css";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";

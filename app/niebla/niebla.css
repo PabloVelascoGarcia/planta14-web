@@ -12,7 +12,7 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
 .n-mist { opacity:.2; background:radial-gradient(ellipse at 75% 45%,#fff9,transparent 60%); animation:n-fog 18s ease-in-out infinite alternate; }
 @keyframes n-fog { from {transform:translateX(-7%);opacity:.14} to {transform:translateX(6%);opacity:.28} }
 .n-nav { display:flex; align-items:center; justify-content:space-between; gap:24px; }
-.n-brand { display:block; background:var(--n-paper); color:#000; padding:12px 19px; font-family:Georgia,serif; font-size:34px; font-weight:700; letter-spacing:-2px; line-height:1; }
+.n-brand { display:block; background:var(--n-paper); color:#000; padding:12px 19px; font-family:Georgia,Gelasio,serif; font-size:34px; font-weight:700; letter-spacing:-2px; line-height:1; }
 .n-brand span { display:block; font-family:var(--font-sans); font-weight:500; font-size:8px; letter-spacing:.04em; margin-top:8px; }
 .n-nav > div { display:flex; align-items:center; gap:32px; font-size:11px; }
 .n-nav > div > a:last-child { border:1px solid #eae6dd66; padding:13px 18px; border-radius:30px; }
@@ -21,26 +21,26 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
 .n-hero h1 { font-family:Impact,'Arial Narrow',sans-serif; text-transform:uppercase; font-size:clamp(78px,10.9vw,158px); line-height:.91; letter-spacing:-.025em; font-weight:900; margin:26px 0 32px; }
 .n-hero h1 em { font-style:normal; }
 .n-hero-bottom { display:flex; align-items:end; justify-content:space-between; max-width:1050px; gap:30px; }
-.n-hero-bottom p { font-family:Georgia,serif; font-size:21px; line-height:1.5; }
+.n-hero-bottom p { font-family:Georgia,Gelasio,serif; font-size:21px; line-height:1.5; }
 .n-enter { display:flex; align-items:center; gap:40px; font-size:12px; border-bottom:1px solid #eae6dd80; padding-bottom:14px; }
 .n-enter span { font-size:28px; }
 .n-bottom { display:flex; justify-content:space-between; gap:20px; font-size:9px; letter-spacing:.12em; text-transform:uppercase; border-top:1px solid #eae6dd40; padding-top:20px; }
 .n-photo-credit { padding:12px 5vw; color:#aaa; font-size:9px; text-align:right; }
 .n-chapter { padding:100px max(5vw,calc((100vw - 1300px)/2)); scroll-margin-top:24px; }
 .n-chapter-heading { display:grid; grid-template-columns:.65fr 2fr 1fr; gap:30px; align-items:start; margin-bottom:70px; }
-.n-chapter h2 { font-family:Georgia,serif; font-size:clamp(44px,5.6vw,80px); letter-spacing:-.055em; line-height:1.05; font-weight:400; }
+.n-chapter h2 { font-family:Georgia,Gelasio,serif; font-size:clamp(44px,5.6vw,80px); letter-spacing:-.055em; line-height:1.05; font-weight:400; }
 .n-chapter-heading > p { color:#acafa8; font-size:12px; line-height:1.8; padding-top:8px; }
 .n-feature { display:grid; grid-template-columns:1.2fr 1fr; align-items:center; gap:7vw; }
 .n-feature-image { display:block; position:relative; }
 .n-feature-image img { width:100%; height:auto; aspect-ratio:1.35; object-fit:cover; }
 .n-feature-image > span { position:absolute; bottom:18px; left:18px; background:var(--n-paper); color:#111; padding:9px 12px; font-size:9px; text-transform:uppercase; letter-spacing:.1em; }
-.n-feature h3 { font-family:Georgia,serif; font-size:clamp(29px,3.5vw,49px); letter-spacing:-.04em; line-height:1.12; margin:22px 0; }
+.n-feature h3 { font-family:Georgia,Gelasio,serif; font-size:clamp(29px,3.5vw,49px); letter-spacing:-.04em; line-height:1.12; margin:22px 0; }
 .n-feature-text > p:not(.n-label) { font-size:14px; line-height:1.8; color:#b8bcb4; }
 .n-story-link { display:flex; justify-content:space-between; align-items:center; gap:20px; border-bottom:1px solid #8887; padding:20px 0 12px; margin-top:15px; font-size:11px; }
 .n-story-link span { font-size:23px; }
 .n-feature small,.n-life small { display:block; font-size:9px; color:#969b91; margin-top:20px; line-height:1.6; }
 .n-industry { margin-top:65px; padding:35px 0; border-block:1px solid #eae6dd30; display:grid; grid-template-columns:.65fr 2.5fr auto; align-items:center; gap:30px; }
-.n-industry h3 { font-family:Georgia,serif; font-size:clamp(26px,3vw,40px); line-height:1.15; letter-spacing:-.03em; }
+.n-industry h3 { font-family:Georgia,Gelasio,serif; font-size:clamp(26px,3vw,40px); line-height:1.15; letter-spacing:-.03em; }
 .n-round-link { border:1px solid #eae6dd55; border-radius:50%; width:58px; height:58px; display:grid; place-items:center; font-size:28px; }
 .n-life { background:var(--n-paper); color:#171b16; }
 .n-life .n-chapter-heading > p { color:#62665e; }
@@ -49,15 +49,15 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
 .n-life-story:nth-child(even) { padding-top:110px; }
 .n-life-image { display:block; position:relative; }
 .n-life-image img { width:100%; height:auto; aspect-ratio:1.5; object-fit:cover; }
-.n-life-image > span { position:absolute; left:12px; bottom:8px; color:#fff; font-family:Georgia,serif; font-size:48px; text-shadow:0 1px 12px #000; }
+.n-life-image > span { position:absolute; left:12px; bottom:8px; color:#fff; font-family:Georgia,Gelasio,serif; font-size:48px; text-shadow:0 1px 12px #000; }
 .n-life-story .n-label { margin-top:25px; }
-.n-life h3 { font-family:Georgia,serif; font-size:clamp(27px,3vw,40px); line-height:1.12; letter-spacing:-.04em; margin:14px 0; }
+.n-life h3 { font-family:Georgia,Gelasio,serif; font-size:clamp(27px,3vw,40px); line-height:1.12; letter-spacing:-.04em; margin:14px 0; }
 .n-life-story > p:not(.n-label) { font-size:13px; line-height:1.8; color:#5e6259; }
 .n-life small { color:#666b62; }
 .n-territory { background:#252923; }
 .n-territory h2 { margin:35px 0 65px; font-size:clamp(60px,8vw,110px); }
 .n-valleys { display:grid; grid-template-columns:1fr 1fr; gap:8vw; }
-.n-valley-title { display:flex; justify-content:space-between; font-family:Georgia,serif; font-size:45px; border-bottom:1px solid #eae6dd66; padding-bottom:22px; }
+.n-valley-title { display:flex; justify-content:space-between; font-family:Georgia,Gelasio,serif; font-size:45px; border-bottom:1px solid #eae6dd66; padding-bottom:22px; }
 .n-valley-title span { font-size:28px; }
 .n-valleys > div > div { display:flex; gap:18px 25px; flex-wrap:wrap; margin-top:26px; font-size:13px; }
 .n-out { background:var(--n-paper); color:#171b16; display:grid; grid-template-columns:1fr 1.3fr; gap:10vw; }
@@ -65,7 +65,7 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
 .n-out .text-copper { color:#555d50; }
 .n-out > div:last-child { align-self:center; }
 .n-footer { padding:70px 5vw 25px; display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:35px; align-items:start; }
-.n-footer-brand { font-size:58px; font-family:Georgia,serif; letter-spacing:-.065em; font-weight:700; }
+.n-footer-brand { font-size:58px; font-family:Georgia,Gelasio,serif; letter-spacing:-.065em; font-weight:700; }
 .n-footer p { font-size:13px; color:#b2b7aa; line-height:1.8; }
 .n-footer > div { display:flex; flex-direction:column; gap:18px; align-items:flex-end; font-size:12px; }
 .n-footer small { grid-column:1/-1; border-top:1px solid #eae6dd25; padding-top:20px; margin-top:35px; font-size:9px; color:#9da394; }
@@ -132,10 +132,10 @@ body:has(.niebla) > header, body:has(.niebla) > footer { display:none; }
 @media(max-width:767px) { .n-brand span { font-size:6px; letter-spacing:.1em; } }
 /* Season calendar under the lead interview, and photos inside an article. */
 .n-season { margin-top:70px; padding-top:45px; border-top:1px solid #eae6dd30; display:grid; grid-template-columns:.9fr 2fr; gap:6vw; align-items:start; }
-.n-season h3 { font-family:Georgia,serif; font-size:clamp(30px,3.4vw,46px); letter-spacing:-.045em; line-height:1.08; margin:18px 0; }
+.n-season h3 { font-family:Georgia,Gelasio,serif; font-size:clamp(30px,3.4vw,46px); letter-spacing:-.045em; line-height:1.08; margin:18px 0; }
 .n-season-intro > p { font-size:14px; line-height:1.8; color:#b8bcb4; }
 .n-season-list { display:grid; grid-template-columns:repeat(3,1fr); gap:34px; }
-.n-season-list h4 { font-family:Georgia,serif; font-size:21px; line-height:1.2; letter-spacing:-.025em; margin:10px 0; }
+.n-season-list h4 { font-family:Georgia,Gelasio,serif; font-size:21px; line-height:1.2; letter-spacing:-.025em; margin:10px 0; }
 .n-season-list p { font-size:13px; line-height:1.75; color:#acafa8; }
 .n-season .n-demo-note { color:#b8bcb4; margin-top:34px; }
 .n-inline-photo { margin:45px 0; }
