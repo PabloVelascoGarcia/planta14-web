@@ -8,7 +8,7 @@ import { getArticles } from "@/lib/cms";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function Home() {
   const articles = await getArticles();

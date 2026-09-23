@@ -20,7 +20,8 @@ export const metadata: Metadata = {
     locale: "es_ES",
     siteName: "Planta 14",
     type: "website"
-  }
+  },
+  twitter: { card: "summary_large_image" }
 };
 
 export default function RootLayout({
