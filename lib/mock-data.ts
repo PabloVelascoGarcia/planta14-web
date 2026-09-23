@@ -6,6 +6,11 @@ export type Article = {
   excerpt: string;
   body: string[];
   image: string;
+  imageAlt?: string;
+  imageCredit?: string;
+  sourceName?: string;
+  sourceUrl?: string;
+  sourceAuthor?: string;
   date: string;
   author: string;
   authorSlug?: string;
@@ -34,6 +39,7 @@ export type Author = {
 };
 
 export type AgendaEvent = {
+  sourceUrl?: string;
   title: string;
   date: string;
   place: string;

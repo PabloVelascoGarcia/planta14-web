@@ -22,8 +22,8 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
   if (variant === "horizontal") {
     return (
       <article className="grid gap-4 border-t border-coal-900/15 py-5 sm:grid-cols-[180px_1fr]">
-        <Link href={`/noticia/${article.slug}`} className="block overflow-hidden bg-coal-100">
-          <img src={article.image} alt="" className="h-36 w-full object-cover transition duration-300 hover:scale-105" />
+        <Link href={`/noticia/${article.slug}`} aria-label={`Leer: ${article.title}`} className="block overflow-hidden bg-coal-100">
+          <img src={article.image} alt={article.imageAlt ?? ""} loading="lazy" decoding="async" width={800} height={500} className="h-36 w-full object-cover transition duration-300 hover:scale-105" />
         </Link>
         <div>
           <Meta article={article} />
@@ -31,6 +31,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
             {article.title}
           </Link>
           <p className="mt-2 text-sm leading-6 text-coal-800">{article.excerpt}</p>
+        {article.sourceName ? <p className="mt-3 text-[10px] text-steel">Fuente: {article.sourceName}</p> : null}
         </div>
       </article>
     );
@@ -38,8 +39,8 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
 
   return (
     <article className="group">
-      <Link href={`/noticia/${article.slug}`} className="block overflow-hidden bg-coal-100">
-        <img src={article.image} alt="" className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-105" />
+      <Link href={`/noticia/${article.slug}`} aria-label={`Leer: ${article.title}`} className="block overflow-hidden bg-coal-100">
+        <img src={article.image} alt={article.imageAlt ?? ""} loading="lazy" decoding="async" width={800} height={500} className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-105" />
       </Link>
       <div className="mt-3">
         <Meta article={article} />
@@ -47,6 +48,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
           {article.title}
         </Link>
         <p className="mt-2 text-sm leading-6 text-coal-800">{article.excerpt}</p>
+        {article.sourceName ? <p className="mt-3 text-[10px] text-steel">Fuente: {article.sourceName}</p> : null}
       </div>
     </article>
   );

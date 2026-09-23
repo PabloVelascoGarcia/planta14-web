@@ -7,7 +7,7 @@ export function Footer() {
         <div>
           <p className="font-serif text-4xl font-black">Planta 14</p>
           <p className="mt-3 max-w-xl text-sm leading-6 text-paper/75">
-            Periodismo local para leer las cuencas desde sus concejos, sus barrios y sus pueblos.
+            Orgullo de historia. Mirada al futuro
           </p>
         </div>
         <div className="text-sm">
@@ -22,7 +22,7 @@ export function Footer() {
         <div className="text-sm leading-6 text-paper/70">
           <p className="font-bold uppercase tracking-[0.18em] text-paper/55">Redacción</p>
           <p className="mt-3">Caudal y Nalón, Asturias.</p>
-          <p>redaccion@planta14.local</p>
+          <p className="mt-3">Edición de demostración. Las piezas con fuente identificada son resúmenes enlazados; los demás contenidos son ejemplos.</p>
         </div>
       </div>
     </footer>

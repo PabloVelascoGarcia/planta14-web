@@ -6,7 +6,7 @@ import { formatDate, slugify } from "@/lib/utils";
 import { AdSlot } from "@/components/ad-slot";
 import { ArticleCard } from "@/components/article-card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -59,7 +59,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <span>/</span>
             <Link href={`/tema/${slugify(article.topic)}`}>{article.topic}</Link>
           </div>
-          <h1 className="mt-3 font-serif text-5xl font-black leading-[0.98] text-coal-950 sm:text-6xl">
+          <h1 className="mt-3 font-serif text-4xl font-black leading-[1.08] text-coal-950 sm:text-6xl">
             {article.title}
           </h1>
           <p className="mt-5 text-xl leading-8 text-coal-800">{article.excerpt}</p>
@@ -67,10 +67,13 @@ export default async function ArticlePage({ params }: PageProps) {
             <Link href={`/autor/${slugify(article.author)}`} className="font-bold hover:text-copper">
               {article.author}
             </Link>
-            <span>{formatDate(article.date)}</span>
+            <time dateTime={article.date}>{formatDate(article.date)}</time>
+            <span>· {Math.max(1, Math.ceil(article.body.join(" ").split(/\s+/).length / 220))} min de lectura</span>
           </div>
-          <img src={article.image} alt="" className="mt-6 aspect-[16/10] w-full object-cover" />
-          <div className="mt-8 space-y-6 font-serif text-xl leading-9 text-coal-900">
+          <img src={article.image} alt={article.imageAlt ?? ""} className="mt-6 aspect-[16/10] w-full object-cover" />
+          {article.imageCredit ? <p className="mt-2 text-xs text-steel">Fotografía: {article.imageCredit}</p> : null}
+          {article.sourceUrl ? <aside className="mt-5 border-l-2 border-copper bg-white/60 p-4 text-sm leading-6">Resumen de demostración basado en una información de {article.sourceName}. Firma original: {article.sourceAuthor}. <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-bold text-copper underline">Leer la noticia original ↗</a></aside> : null}
+          <div className="mx-auto mt-8 max-w-[640px] space-y-6 font-serif text-xl leading-9 text-coal-900">
             {article.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}

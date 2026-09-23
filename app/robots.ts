@@ -1,11 +1,5 @@
 import type { MetadataRoute } from "next";
-
+import { siteUrl, indexable } from "@/lib/site-config";
 export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/"
-    },
-    sitemap: "https://planta14.local/sitemap.xml"
-  };
+ return indexable ? { rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/api", "/buscar"] }, sitemap: `${siteUrl}/sitemap.xml` } : { rules: { userAgent: "*", disallow: "/" } };
 }
