@@ -4,6 +4,7 @@ import { ArticleListPage } from "@/components/article-list-page";
 import { getArticlesByComarca } from "@/lib/cms";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
+import { territoryRecords } from "@/lib/demo/territories";
 
 export const dynamic = "force-dynamic";
 
@@ -17,13 +18,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const name = Object.keys(territories).find((comarca) => slugify(comarca) === slug);
+  const name = territoryRecords.find(t => t.type === "comarca" && t.slug === slug)?.name;
   return { title: name ? `${name}` : "Comarca" };
 }
 
 export default async function ComarcaPage({ params }: PageProps) {
   const { slug } = await params;
-  const name = Object.keys(territories).find((comarca) => slugify(comarca) === slug);
+  const name = territoryRecords.find(t => t.type === "comarca" && t.slug === slug)?.name;
 
   if (!name) {
     notFound();

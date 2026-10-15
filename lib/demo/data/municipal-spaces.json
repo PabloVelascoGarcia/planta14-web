@@ -1,0 +1,189 @@
+[
+  {
+    "id": "mieres",
+    "territory": "mieres",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Mieres",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana · Mieres del Camín",
+      "hours": "Lunes a viernes · 9:00–14:00",
+      "note": "Ejemplo de contacto. Los datos oficiales se incorporarán al activar el espacio."
+    }
+  },
+  {
+    "id": "lena",
+    "territory": "lena",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Lena",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana · Pola de Lena",
+      "hours": "Lunes a viernes · 9:00–14:00",
+      "note": "Ejemplo de contacto. Los datos oficiales se incorporarán al activar el espacio."
+    }
+  },
+  {
+    "id": "aller",
+    "territory": "aller",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Aller",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana · Cabañaquinta",
+      "hours": "Lunes a viernes · 9:00–14:00",
+      "note": "Ejemplo de contacto. Los datos oficiales se incorporarán al activar el espacio."
+    }
+  },
+  {
+    "id": "morcin",
+    "territory": "morcin",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Morcín",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana · Santa Eulalia",
+      "hours": "Lunes a viernes · 9:00–14:00",
+      "note": "Ejemplo de contacto. Los datos oficiales se incorporarán al activar el espacio."
+    }
+  },
+  {
+    "id": "riosa",
+    "territory": "riosa",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Riosa",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana · La Vega",
+      "hours": "Lunes a viernes · 9:00–14:00",
+      "note": "Ejemplo de contacto. Los datos oficiales se incorporarán al activar el espacio."
+    }
+  },
+  {
+    "id": "ribera-de-arriba",
+    "territory": "ribera-de-arriba",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Ribera de Arriba",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana · Soto de Ribera",
+      "hours": "Lunes a viernes · 9:00–14:00",
+      "note": "Ejemplo de contacto. Los datos oficiales se incorporarán al activar el espacio."
+    }
+  },
+  {
+    "id": "langreo",
+    "territory": "langreo",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Langreo",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana",
+      "hours": "Pendiente de configuración",
+      "note": "Espacio aún no activado."
+    }
+  },
+  {
+    "id": "san-martin-del-rey-aurelio",
+    "territory": "san-martin-del-rey-aurelio",
+    "medium": "planta14",
+    "name": "Ayuntamiento de San Martín del Rey Aurelio",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana",
+      "hours": "Pendiente de configuración",
+      "note": "Espacio aún no activado."
+    }
+  },
+  {
+    "id": "laviana",
+    "territory": "laviana",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Laviana",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana",
+      "hours": "Pendiente de configuración",
+      "note": "Espacio aún no activado."
+    }
+  },
+  {
+    "id": "caso",
+    "territory": "caso",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Caso",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana",
+      "hours": "Pendiente de configuración",
+      "note": "Espacio aún no activado."
+    }
+  },
+  {
+    "id": "sobrescobio",
+    "territory": "sobrescobio",
+    "medium": "planta14",
+    "name": "Ayuntamiento de Sobrescobio",
+    "crest": null,
+    "subscription": {
+      "status": "demo",
+      "startsAt": null,
+      "endsAt": null
+    },
+    "contact": {
+      "place": "Atención ciudadana",
+      "hours": "Pendiente de configuración",
+      "note": "Espacio aún no activado."
+    }
+  }
+]

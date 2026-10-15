@@ -1,5 +1,6 @@
 import type { Comarca } from "@/lib/mock-data";
-import { authors, territories, topics } from "@/lib/mock-data";
+import { authors, topics } from "@/lib/mock-data";
+import { territoryRecords } from "@/lib/demo/territories";
 
 export function slugify(value: string) {
   return value
@@ -23,13 +24,12 @@ export function getAuthor(slug: string) {
 }
 
 export function getComarcaFromConcejo(concejo: string): Comarca | undefined {
-  return (Object.keys(territories) as Comarca[]).find((comarca) =>
-    territories[comarca].some((item) => slugify(item) === concejo)
-  );
+  const town = territoryRecords.find(t => t.type === "concejo" && t.slug === concejo);
+  return territoryRecords.find(t => t.id === town?.parent)?.name as Comarca | undefined;
 }
 
 export function allConcejos() {
-  return Object.values(territories).flat();
+  return territoryRecords.filter(t => t.type === "concejo").map(t => t.name);
 }
 
 export function sortedTopics() {

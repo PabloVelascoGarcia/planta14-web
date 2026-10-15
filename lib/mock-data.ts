@@ -6,6 +6,11 @@ export type Article = {
   excerpt: string;
   body: string[];
   image: string;
+  imageAlt?: string;
+  imageCredit?: string;
+  sourceName?: string;
+  sourceUrl?: string;
+  sourceAuthor?: string;
   date: string;
   author: string;
   authorSlug?: string;
@@ -34,6 +39,7 @@ export type Author = {
 };
 
 export type AgendaEvent = {
+  sourceUrl?: string;
   title: string;
   date: string;
   place: string;
@@ -41,10 +47,7 @@ export type AgendaEvent = {
   description: string;
 };
 
-export const territories = {
-  Caudal: ["Mieres", "Lena", "Aller", "Morcín", "Riosa", "Ribera de Arriba"],
-  Nalón: ["Langreo", "San Martín del Rey Aurelio", "Laviana", "Caso", "Sobrescobio"]
-} satisfies Record<Comarca, string[]>;
+export { navigationTerritories as territories } from "./demo/territories";
 
 export const topics = [
   "Sucesos",

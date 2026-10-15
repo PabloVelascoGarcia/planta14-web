@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { getMunicipalSpace } from "@/lib/demo/municipal";
 import { ArticleListPage } from "@/components/article-list-page";
 import { getArticlesByConcejo } from "@/lib/cms";
 import { allConcejos, getComarcaFromConcejo, slugify } from "@/lib/utils";
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ConcejoPage({ params }: PageProps) {
   const { slug } = await params;
+  if (getMunicipalSpace(slug)) redirect(`/${slug}`);
   const name = allConcejos().find((concejo) => slugify(concejo) === slug);
   const comarca = getComarcaFromConcejo(slug);
 

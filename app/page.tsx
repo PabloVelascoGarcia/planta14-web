@@ -8,45 +8,42 @@ import { getArticles } from "@/lib/cms";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function Home() {
   const articles = await getArticles();
   const mainArticle = articles.find((article) => article.main) ?? articles[0];
-  const featured = articles.filter((article) => article.featured && article.slug !== mainArticle.slug);
-  const latest = articles.filter((article) => article.slug !== mainArticle.slug).slice(0, 5);
+  if (!mainArticle) return <div className="container-p14 py-20"><h1 className="font-serif text-5xl">Las cuencas tienen mucho que contar.</h1><p className="mt-5">Pronto encontrarás aquí nuestras primeras historias.</p></div>;
+  const secondary = articles.filter((article) => article.slug !== mainArticle.slug).sort((a,b) => Number(b.comarca === "Caudal") - Number(a.comarca === "Caudal"));
+  const featured = secondary.slice(0, 3);
+  const latest = secondary.slice(0, 5);
   const caudal = articles.filter((article) => article.comarca === "Caudal").slice(0, 3);
-  const nalon = articles.filter((article) => article.comarca === "Nalón").slice(0, 3);
+
   const opinion = articles.filter((article) => article.opinion);
 
   return (
     <div className="pb-10">
-      <section className="container-p14 grid gap-8 border-y border-coal-900/15 py-8 lg:grid-cols-[1.4fr_0.8fr]">
-        <article className="grid gap-5 md:grid-cols-[1fr_0.85fr] lg:grid-cols-1 xl:grid-cols-[1.1fr_0.9fr]">
-          <Link href={`/noticia/${mainArticle.slug}`} className="overflow-hidden bg-coal-100">
-            <img src={mainArticle.image} alt="" className="aspect-[16/10] h-full w-full object-cover" />
+      <section className="container-p14 front-opening">
+        <article className="lead-story">
+          <div className="flex items-center gap-3 editorial-kicker"><Link href={`/concejo/${slugify(mainArticle.concejo)}`}>{mainArticle.concejo}</Link><span aria-hidden="true">/</span><span>{mainArticle.topic}</span></div>
+          <h1><Link href={`/noticia/${mainArticle.slug}`}>{mainArticle.title}</Link></h1>
+          <p className="lead-excerpt">{mainArticle.excerpt}</p>
+          <Link href={`/noticia/${mainArticle.slug}`} className="lead-image" aria-label={`Leer: ${mainArticle.title}`}>
+            <img src={mainArticle.image} alt={mainArticle.imageAlt ?? ""} fetchPriority="high" width={1400} height={788} />
           </Link>
-          <div className="flex flex-col justify-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-copper">Noticia principal</p>
-            <h1 className="mt-2 font-serif text-4xl font-black leading-[0.95] text-coal-950 sm:text-6xl">
-              <Link href={`/noticia/${mainArticle.slug}`} className="hover:text-copper">{mainArticle.title}</Link>
-            </h1>
-            <p className="mt-4 text-lg leading-7 text-coal-800">{mainArticle.excerpt}</p>
-          </div>
+          {mainArticle.imageCredit ? <p className="mt-2 text-[10px] text-steel">Fotografía: {mainArticle.imageCredit}</p> : null}
+          <div className="lead-byline"><span>{mainArticle.author}</span><Link href={`/noticia/${mainArticle.slug}`}>Leer la historia <span aria-hidden="true">↗</span></Link></div>
         </article>
-        <aside>
-          <SectionHeading title="Últimas" />
-          <div>
-            {latest.map((article) => (
-              <ArticleCard key={article.slug} article={article} variant="compact" />
-            ))}
-          </div>
+        <aside className="opening-sidebar">
+          <SectionHeading eyebrow="El pulso del territorio" title="En portada" />
+          {latest.slice(0, 4).map((article, index) => <div key={article.slug} className="numbered-story"><span className="story-number">0{index + 1}</span><ArticleCard article={article} variant="compact" /></div>)}
+          <Link className="editorial-link" href="/agenda">La agenda de las cuencas <span aria-hidden="true">↗</span></Link>
         </aside>
       </section>
 
       <section className="container-p14 mt-10 grid gap-8 lg:grid-cols-[1fr_300px]">
         <div>
-          <SectionHeading eyebrow="Portada" title="Destacadas" />
+          <SectionHeading eyebrow="Portada" title="La vida aquí" />
           <div className="grid gap-6 md:grid-cols-3">
             {featured.map((article) => (
               <ArticleCard key={article.slug} article={article} />
@@ -58,21 +55,21 @@ export default async function Home() {
 
       <section className="container-p14 mt-12 grid gap-10 lg:grid-cols-2">
         <div>
-          <SectionHeading eyebrow="Territorio" title="Caudal" />
+          <SectionHeading eyebrow="Territorio" title="Caudal" href="/comarca/caudal" />
           {caudal.map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
         </div>
         <div>
-          <SectionHeading eyebrow="Territorio" title="Nalón" />
-          {nalon.map((article) => (
-            <ArticleCard key={article.slug} article={article} variant="horizontal" />
-          ))}
+          <SectionHeading eyebrow="Cerca de ti" title="Tu ayuntamiento, aquí" />
+          <p className="mt-4 text-lg leading-7 text-steel">Avisos, agenda y oportunidades. Un espacio propio para cada concejo, conectado con la vida del Caudal.</p>
+          <Link href="/aller" className="municipal-cta mt-6">Descubre el espacio de Aller <span>↗</span></Link>
+          <Link href="/aller/panel" className="editorial-link mt-4">Prueba cómo se publica un aviso ↗</Link>
         </div>
       </section>
 
       <section className="container-p14 mt-12">
-        <SectionHeading eyebrow="Mapa informativo" title="Por concejos" />
+        <SectionHeading eyebrow="Mapa informativo" title="Los seis concejos del Caudal" />
         <div className="grid gap-4 md:grid-cols-2">
           {Object.entries(territories).map(([comarca, concejos]) => (
             <div key={comarca} className="border-t-4 border-coal-950 bg-white/50 p-5">
@@ -81,7 +78,7 @@ export default async function Home() {
                 {concejos.map((concejo) => (
                   <Link
                     key={concejo}
-                    href={`/concejo/${slugify(concejo)}`}
+                    href={`/${slugify(concejo)}`}
                     className="border-b border-coal-900/15 py-2 text-sm font-bold hover:text-copper"
                   >
                     {concejo}
@@ -95,15 +92,22 @@ export default async function Home() {
 
       <section className="container-p14 mt-12 grid gap-8 lg:grid-cols-[1fr_0.85fr]">
         <div>
-          <SectionHeading title="Opinión" />
-          {opinion.map((article) => (
+          <SectionHeading title={opinion.length ? "Opinión" : "Más historias"} />
+          {(opinion.length ? opinion : articles.slice(-2)).map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
         </div>
         <div>
-          <SectionHeading title="Agenda" />
+          <SectionHeading title="Para salir" href="/agenda" />
           <AgendaList />
         </div>
+      </section>
+
+      <section className="container-p14 mt-12 border-y border-coal-900/20 py-8" aria-label="El semanal de Planta 14">
+        <p className="editorial-kicker">Magazine · Concepto de presentación</p>
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-5"><div><h2 className="font-serif text-4xl font-black">El semanal de Planta 14</h2><p className="mt-3 text-sm text-steel">Protagonistas y reportajes. Historias para leer con tiempo.</p></div><Link href="/niebla" className="text-sm font-bold">Explorar el magazine ↗</Link></div>
+        <nav className="mt-5 flex flex-wrap gap-5 text-sm" aria-label="Propuestas del semanal"><Link href="/niebla/adrian-barbon">Protagonistas: Adrián Barbón ↗</Link><Link href="/niebla/volver-a-la-tierra">Reportaje: Volver a la tierra ↗</Link><Link href="/niebla/la-fiesta-antes-de-la-fiesta">Reportaje: La fiesta antes de la fiesta ↗</Link></nav>
+        <p className="mt-4 text-xs text-steel">Propuestas editoriales de demostración; entrevistas y reportajes pendientes de realización.</p>
       </section>
 
       <section className="container-p14 mt-12 grid gap-8 lg:grid-cols-[1fr_300px]">

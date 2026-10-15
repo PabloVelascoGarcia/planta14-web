@@ -1,6 +1,8 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import type { CmsUser } from "@/lib/auth-types";
+
+import { encodeSession, decodeSession } from "@/lib/session-codec";
 
 const cookieName = "planta14_session";
 
@@ -12,7 +14,8 @@ export async function getSession(): Promise<CmsUser | null> {
     return null;
   }
 
-  return verifySession(value);
+  const secret = authSecret();
+  return secret ? decodeSession(value, secret) : null;
 }
 
 export async function requireSession() {
@@ -27,7 +30,9 @@ export async function requireSession() {
 
 export async function setSession(user: CmsUser) {
   const cookieStore = await cookies();
-  cookieStore.set(cookieName, signSession(user), {
+  const secret = authSecret();
+  if (!secret) throw new Error("Configura CMS_AUTH_SECRET antes de iniciar sesión");
+  cookieStore.set(cookieName, encodeSession(user, secret), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -42,8 +47,9 @@ export async function clearSession() {
 }
 
 export function validateCredentials(email: string, password: string): CmsUser | null {
-  const users = configuredUsers();
-  return users.find((user) => user.email === email && user.password === password) ?? null;
+  if (!authSecret()) return null;
+  const match = configuredUsers().find(user => user.email === email && safeEqual(user.password, password));
+  return match ? { email: match.email, name: match.name, role: match.role } : null;
 }
 
 export function canManageAuthors(user: CmsUser) {
@@ -59,55 +65,29 @@ export function canPublishArticles(user: CmsUser) {
 }
 
 function configuredUsers() {
+  const development = process.env.NODE_ENV !== "production";
   return [
     {
-      email: process.env.CMS_ADMIN_EMAIL ?? "admin@planta14.local",
-      password: process.env.CMS_ADMIN_PASSWORD ?? "admin1234",
+      email: process.env.CMS_ADMIN_EMAIL ?? (development ? "admin@planta14.local" : ""),
+      password: process.env.CMS_ADMIN_PASSWORD ?? (development ? "admin1234" : ""),
       name: "Administración",
       role: "admin" as const
     },
     {
-      email: process.env.CMS_REDACTOR_EMAIL ?? "redactor@planta14.local",
-      password: process.env.CMS_REDACTOR_PASSWORD ?? "redactor1234",
+      email: process.env.CMS_REDACTOR_EMAIL ?? (development ? "redactor@planta14.local" : ""),
+      password: process.env.CMS_REDACTOR_PASSWORD ?? (development ? "redactor1234" : ""),
       name: "Redacción",
       role: "redactor" as const
     }
-  ];
+  ].filter(user => user.email && user.password);
 }
 
-function signSession(user: CmsUser) {
-  const payload = Buffer.from(JSON.stringify(user)).toString("base64url");
-  const signature = sign(payload);
-  return `${payload}.${signature}`;
-}
-
-function verifySession(value: string): CmsUser | null {
-  const [payload, signature] = value.split(".");
-
-  if (!payload || !signature || !safeEqual(signature, sign(payload))) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as CmsUser;
-  } catch {
-    return null;
-  }
-}
-
-function sign(payload: string) {
-  return createHmac("sha256", process.env.CMS_AUTH_SECRET ?? "planta14-dev-secret")
-    .update(payload)
-    .digest("base64url");
+function authSecret() {
+  const value = process.env.CMS_AUTH_SECRET;
+  if (value && value.length >= 32) return value;
+  return process.env.NODE_ENV !== "production" ? "planta14-local-development-only-secret" : null;
 }
 
 function safeEqual(a: string, b: string) {
-  const left = Buffer.from(a);
-  const right = Buffer.from(b);
-
-  if (left.length !== right.length) {
-    return false;
-  }
-
-  return timingSafeEqual(left, right);
+  return timingSafeEqual(createHash("sha256").update(a).digest(), createHash("sha256").update(b).digest());
 }

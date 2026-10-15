@@ -13,7 +13,7 @@ export default function AdvertisingPage() {
         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-copper">Comercial</p>
         <h1 className="mt-2 font-serif text-5xl font-black leading-none">Publicidad</h1>
         <p className="mt-4 text-lg leading-7 text-coal-800">
-          Planta 14 ofrece espacios para comercios, empresas e instituciones que quieren comunicarse con lectores de Caudal y Nalón.
+          Planta 14 ofrece espacios para comercios, empresas e instituciones que quieren comunicarse con lectores del Caudal.
         </p>
       </header>
       <div className="mt-8 grid gap-6 md:grid-cols-3">
@@ -24,7 +24,7 @@ export default function AdvertisingPage() {
       <section className="mt-10 max-w-3xl space-y-4 text-coal-800">
         <h2 className="font-serif text-3xl font-black text-coal-950">Formatos disponibles</h2>
         <p>Campañas por territorio, patrocinios de agenda, módulos en portada y presencia en boletín.</p>
-        <p>Contacto comercial: publicidad@planta14.local</p>
+        <p>Propuesta comercial en preparación. Los formatos mostrados son ejemplos de integración.</p>
       </section>
     </div>
   );

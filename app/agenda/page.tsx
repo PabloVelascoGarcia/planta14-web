@@ -4,7 +4,7 @@ import { AdSlot } from "@/components/ad-slot";
 
 export const metadata: Metadata = {
   title: "Agenda",
-  description: "Actividades culturales, sociales y vecinales en Caudal y Nalón."
+  description: "Actividades culturales, sociales y vecinales en el Caudal."
 };
 
 export default function AgendaPage() {

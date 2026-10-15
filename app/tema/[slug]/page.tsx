@@ -31,7 +31,7 @@ export default async function TopicPage({ params }: PageProps) {
   return (
     <ArticleListPage
       title={name}
-      description={`Noticias de ${name.toLowerCase()} en Caudal y Nalón, sin perder la referencia territorial.`}
+      description={`Noticias de ${name.toLowerCase()} en el Caudal, sin perder la referencia territorial.`}
       articles={await getArticlesByTopic(slug)}
     />
   );

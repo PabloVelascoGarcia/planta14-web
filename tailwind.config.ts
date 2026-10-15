@@ -23,7 +23,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Arial", "sans-serif"],
-        serif: ["var(--font-serif)", "Georgia", "serif"]
+        serif: ["var(--font-serif)", "Georgia", "Gelasio", "serif"]
       },
       boxShadow: {
         line: "inset 0 -1px 0 rgba(28, 25, 23, 0.12)"
