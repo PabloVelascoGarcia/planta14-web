@@ -17,6 +17,7 @@ try {
    const response=await page.goto(`${base}/${town}`,{waitUntil:'networkidle'});
    assert.equal(response.status(),200,town);assert.match(response.headers()['x-robots-tag'],/noindex/);
    assert(await page.locator('.aller-hero').isVisible(),`${town}: hero`);
+   assert(await page.locator('.aller-hero').evaluate(hero=>{const bounds=hero.getBoundingClientRect();const copy=hero.querySelector('.aller-hero-copy');const first=copy.firstElementChild.getBoundingClientRect();const last=copy.lastElementChild.getBoundingClientRect();return first.top>=bounds.top && last.bottom<=bounds.bottom;}),`${town}: clipped hero text`);
    assert(await page.locator('.aller-crest').isVisible(),`${town}: crest`);
    assert.equal(await page.locator('.aller-discover a').count(),3);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${town}: overflow`);

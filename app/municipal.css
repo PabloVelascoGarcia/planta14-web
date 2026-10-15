@@ -191,3 +191,5 @@
 .aller-theme .aller-discover a:nth-child(3){background:#efe8da;border-color:#a67b49}
 .aller-theme .aller-discover a:hover{filter:brightness(.96)}
 .aller-theme .aller-hero-shade{background:linear-gradient(90deg,color-mix(in srgb,var(--local-dark) 90%,transparent),color-mix(in srgb,var(--local-dark) 20%,transparent))}
+.municipal-identity>div:last-child{min-width:0}
+@media(max-width:680px){.aller-hero{height:300px}.aller-hero-copy h2{font-size:clamp(34px,11vw,43px)}}
