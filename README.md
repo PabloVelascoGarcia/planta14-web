@@ -1,5 +1,7 @@
 # Planta 14
 
+> Etapa actual: **demo comercial del Caudal en Netlify**, sin producción ni CMS nuevo. Recorrido, datos y verificaciones en [docs/DEMO-CAUDAL.md](docs/DEMO-CAUDAL.md). El plan de producción está aplazado en [docs/PLAN-PRODUCCION-APLAZADO.md](docs/PLAN-PRODUCCION-APLAZADO.md). Los apartados de CMS y Vercel siguientes describen el prototipo original; no son el despliegue actual.
+
 Web editorial para un periódico digital local centrado en las cuencas mineras asturianas. La navegación principal prioriza el territorio: Caudal, Nalón y sus concejos.
 
 ## Stack

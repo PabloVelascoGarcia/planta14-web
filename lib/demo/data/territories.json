@@ -77,7 +77,7 @@
     "name": "Langreo",
     "type": "concejo",
     "parent": "nalon",
-    "visible": false
+    "visible": true
   },
   {
     "id": "san-martin-del-rey-aurelio",
@@ -85,7 +85,7 @@
     "name": "San Martín del Rey Aurelio",
     "type": "concejo",
     "parent": "nalon",
-    "visible": false
+    "visible": true
   },
   {
     "id": "laviana",
@@ -93,7 +93,7 @@
     "name": "Laviana",
     "type": "concejo",
     "parent": "nalon",
-    "visible": false
+    "visible": true
   },
   {
     "id": "caso",
@@ -101,7 +101,7 @@
     "name": "Caso",
     "type": "concejo",
     "parent": "nalon",
-    "visible": false
+    "visible": true
   },
   {
     "id": "sobrescobio",
@@ -109,6 +109,6 @@
     "name": "Sobrescobio",
     "type": "concejo",
     "parent": "nalon",
-    "visible": false
+    "visible": true
   }
 ]
