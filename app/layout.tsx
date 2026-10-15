@@ -7,6 +7,7 @@ import "@fontsource/gelasio/400-italic.css";
 import "@fontsource/gelasio/700.css";
 import "@fontsource/gelasio/700-italic.css";
 import "./globals.css";
+import "./municipal.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | Planta 14"
   },
   description:
-    "Información local de Caudal y Nalón: Mieres, Lena, Aller, Langreo, Laviana y el resto de las cuencas mineras asturianas.",
+    "Historias y vida local del Caudal: Mieres, Lena, Aller, Morcín, Riosa y Ribera de Arriba.",
   openGraph: {
     title: "Planta 14",
     description: "Periódico digital local de las cuencas mineras asturianas.",

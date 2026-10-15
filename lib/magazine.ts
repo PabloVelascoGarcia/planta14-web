@@ -11,9 +11,9 @@ export const magazineStories: MagazineStory[] = [
   {
     slug: "adrian-barbon", category: "Protagonistas", title: "Adrián Barbón", subtitle: "Las Cuencas que vienen",
     image: "https://img.lavdg.com/sc/jK-_VBhBipFAfEfkSLQAspkelho=/1280x/2023/05/24/00121684950454427549120/Foto/abok.jpg",
-    imageAlt: "Adrián Barbón en una fotografía de archivo publicada por La Voz de Asturias",
-    credit: "Fotografía de archivo publicada por La Voz de Asturias · 2023",
-    source: "https://www.lavozdeasturias.es/noticia/asturias/2023/05/24/etv-bruto-barbon/00031684950491104138982.htm",
+    imageAlt: "Adrián Barbón en una fotografía de archivo",
+    credit: "Fotografía de archivo · 2023",
+    source: "",
     cover: {
       image: agendaPublicaImg("1752835714009_B44O1605"),
       imageAlt: "Adrián Barbón, sentado, durante una entrevista con Agenda Pública en julio de 2025",
@@ -51,9 +51,9 @@ export const magazineStories: MagazineStory[] = [
   {
     slug: "la-fiesta-antes-de-la-fiesta", category: "Reportajes", title: "La fiesta antes de la fiesta", subtitle: "Las manos detrás del Descenso del Nalón",
     image: "https://img.lavdg.com/sc/_b89YebWmAhyh6OuzZaeLrphVVs%3D/480x/2026/08/11/00121786441391383301670/Foto/3.jpg",
-    imageAlt: "Imagen de archivo del Descenso Folklórico del Nalón publicada por La Voz de Asturias",
-    credit: "Archivo de La Voz de Asturias · Autor no indicado en la pieza de referencia",
-    source: "https://www.lavozdeasturias.es/noticia/asturias/2026/08/18/regodon-2026-presenta-cartel-decena-artistas-cuatro-dias-fiesta-pola-laviana/00031787054225738913659.htm",
+    imageAlt: "Imagen de archivo del Descenso Folklórico del Nalón",
+    credit: "Fotografía de archivo",
+    source: "",
     notice: "Propuesta de reportaje · Demostración. Trabajo de campo y entrevistas pendientes.",
     introduction: "Antes de que una fiesta ocupe la calle, alguien tiene que imaginarla, prepararla y sostenerla. Proponemos mirar el Descenso del Nalón desde ese otro lado: el de las personas que convierten los preparativos en una forma de encontrarse.",
     chapters: [
@@ -68,7 +68,7 @@ export const season = {
   title: "Primera temporada",
   standfirst: "Una conversación cada semana. Empezamos por quienes gobiernan cada concejo de las Cuencas y seguimos por quienes lo mueven.",
   phases: [
-    { label: "Temporada 1", title: "Los alcaldes y alcaldesas", text: "Una entrevista semanal con la persona al frente de cada uno de los once concejos de Caudal y Nalón. Mismas preguntas de fondo para todos, sin excepciones y con espacio para la oposición." },
+    { label: "Temporada 1", title: "Los alcaldes y alcaldesas", text: "Una entrevista semanal con la persona al frente de cada uno de los seis concejos del Caudal. Mismas preguntas de fondo para todos, sin excepciones y con espacio para la oposición." },
     { label: "Temporada 2", title: "Quienes mueven el territorio", text: "Sindicatos, empresariado, cultura, deporte y personas que emprenden o recuperan oficios." },
     { label: "Cada semana", title: "Reportajes", text: "Un negocio que abre, una empresa que crece, una iniciativa que funciona. Historias contadas sobre el terreno." }
   ],

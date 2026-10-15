@@ -14,11 +14,11 @@ export default async function Home() {
   const articles = await getArticles();
   const mainArticle = articles.find((article) => article.main) ?? articles[0];
   if (!mainArticle) return <div className="container-p14 py-20"><h1 className="font-serif text-5xl">Las cuencas tienen mucho que contar.</h1><p className="mt-5">Pronto encontrarás aquí nuestras primeras historias.</p></div>;
-  const secondary = articles.filter((article) => article.slug !== mainArticle.slug);
-  const featured = [...secondary.filter(article => article.featured), ...secondary.filter(article => !article.featured)].slice(0, 3);
-  const latest = articles.filter((article) => article.slug !== mainArticle.slug).slice(0, 5);
+  const secondary = articles.filter((article) => article.slug !== mainArticle.slug).sort((a,b) => Number(b.comarca === "Caudal") - Number(a.comarca === "Caudal"));
+  const featured = secondary.slice(0, 3);
+  const latest = secondary.slice(0, 5);
   const caudal = articles.filter((article) => article.comarca === "Caudal").slice(0, 3);
-  const nalon = articles.filter((article) => article.comarca === "Nalón").slice(0, 3);
+
   const opinion = articles.filter((article) => article.opinion);
 
   return (
@@ -61,15 +61,15 @@ export default async function Home() {
           ))}
         </div>
         <div>
-          <SectionHeading eyebrow="Territorio" title="Nalón" href="/comarca/nalon" />
-          {nalon.map((article) => (
-            <ArticleCard key={article.slug} article={article} variant="horizontal" />
-          ))}
+          <SectionHeading eyebrow="Cerca de ti" title="Tu ayuntamiento, aquí" />
+          <p className="mt-4 text-lg leading-7 text-steel">Avisos, agenda y oportunidades. Un espacio propio para cada concejo, conectado con la vida del Caudal.</p>
+          <Link href="/lena" className="municipal-cta mt-6">Descubre el espacio de Lena <span>↗</span></Link>
+          <Link href="/lena/panel" className="editorial-link mt-4">Prueba cómo se publica un aviso ↗</Link>
         </div>
       </section>
 
       <section className="container-p14 mt-12">
-        <SectionHeading eyebrow="Mapa informativo" title="Por concejos" />
+        <SectionHeading eyebrow="Mapa informativo" title="Los seis concejos del Caudal" />
         <div className="grid gap-4 md:grid-cols-2">
           {Object.entries(territories).map(([comarca, concejos]) => (
             <div key={comarca} className="border-t-4 border-coal-950 bg-white/50 p-5">
@@ -78,7 +78,7 @@ export default async function Home() {
                 {concejos.map((concejo) => (
                   <Link
                     key={concejo}
-                    href={`/concejo/${slugify(concejo)}`}
+                    href={`/${slugify(concejo)}`}
                     className="border-b border-coal-900/15 py-2 text-sm font-bold hover:text-copper"
                   >
                     {concejo}

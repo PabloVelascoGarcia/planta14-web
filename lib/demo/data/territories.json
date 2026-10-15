@@ -1,0 +1,114 @@
+[
+  {
+    "id": "asturias",
+    "slug": "asturias",
+    "name": "Asturias",
+    "type": "region",
+    "parent": null,
+    "visible": false
+  },
+  {
+    "id": "caudal",
+    "slug": "caudal",
+    "name": "Caudal",
+    "type": "comarca",
+    "parent": "asturias",
+    "visible": true
+  },
+  {
+    "id": "nalon",
+    "slug": "nalon",
+    "name": "Nalón",
+    "type": "comarca",
+    "parent": "asturias",
+    "visible": false
+  },
+  {
+    "id": "mieres",
+    "slug": "mieres",
+    "name": "Mieres",
+    "type": "concejo",
+    "parent": "caudal",
+    "visible": true
+  },
+  {
+    "id": "lena",
+    "slug": "lena",
+    "name": "Lena",
+    "type": "concejo",
+    "parent": "caudal",
+    "visible": true
+  },
+  {
+    "id": "aller",
+    "slug": "aller",
+    "name": "Aller",
+    "type": "concejo",
+    "parent": "caudal",
+    "visible": true
+  },
+  {
+    "id": "morcin",
+    "slug": "morcin",
+    "name": "Morcín",
+    "type": "concejo",
+    "parent": "caudal",
+    "visible": true
+  },
+  {
+    "id": "riosa",
+    "slug": "riosa",
+    "name": "Riosa",
+    "type": "concejo",
+    "parent": "caudal",
+    "visible": true
+  },
+  {
+    "id": "ribera-de-arriba",
+    "slug": "ribera-de-arriba",
+    "name": "Ribera de Arriba",
+    "type": "concejo",
+    "parent": "caudal",
+    "visible": true
+  },
+  {
+    "id": "langreo",
+    "slug": "langreo",
+    "name": "Langreo",
+    "type": "concejo",
+    "parent": "nalon",
+    "visible": false
+  },
+  {
+    "id": "san-martin-del-rey-aurelio",
+    "slug": "san-martin-del-rey-aurelio",
+    "name": "San Martín del Rey Aurelio",
+    "type": "concejo",
+    "parent": "nalon",
+    "visible": false
+  },
+  {
+    "id": "laviana",
+    "slug": "laviana",
+    "name": "Laviana",
+    "type": "concejo",
+    "parent": "nalon",
+    "visible": false
+  },
+  {
+    "id": "caso",
+    "slug": "caso",
+    "name": "Caso",
+    "type": "concejo",
+    "parent": "nalon",
+    "visible": false
+  },
+  {
+    "id": "sobrescobio",
+    "slug": "sobrescobio",
+    "name": "Sobrescobio",
+    "type": "concejo",
+    "parent": "nalon",
+    "visible": false
+  }
+]

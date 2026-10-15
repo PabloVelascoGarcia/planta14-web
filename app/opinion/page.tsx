@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Opinión",
-  description: "Firmas y análisis sobre la actualidad de Caudal y Nalón."
+  description: "Firmas y análisis sobre la actualidad del Caudal."
 };
 
 export default async function OpinionPage() {

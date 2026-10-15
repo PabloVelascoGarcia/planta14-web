@@ -38,7 +38,7 @@ export default async function EditorialEdition() {
       </section>}
       <section className="edition-stories" aria-label="Vida en las Cuencas"><div className="edition-section-heading"><h2>La vida, aquí.</h2><span>Cultura, encuentros y protagonistas</span></div><div className="edition-story-grid">{remaining.map(a => <article key={a.slug}><Link href={`/noticia/${a.slug}`} aria-label={`Leer: ${a.title}`}><img src={a.image} alt={a.imageAlt ?? ""} width={480} height={320} loading="lazy" /></Link><p className="edition-kicker">{a.concejo} / {a.topic}</p><h3><Link href={`/noticia/${a.slug}`}>{a.title}</Link></h3><p>{a.excerpt}</p><p className="edition-credit">{a.imageCredit}</p></article>)}</div></section>
       <section className="edition-local"><div><div className="edition-section-heading"><h2>Tu concejo.</h2></div><p className="edition-local-description">La información empieza cerca.</p>{Object.entries(territories).map(([comarca, towns]) => <div className="edition-valley" key={comarca}><Link href={`/comarca/${slugify(comarca)}`}>{comarca} ↗</Link><div>{towns.map(town => <Link key={town} href={`/concejo/${slugify(town)}`}>{town}</Link>)}</div></div>)}</div><div><div className="edition-section-heading"><h2>Para salir.</h2><Link href="/agenda">Agenda ↗</Link></div><AgendaList /></div></section>
-      <p className="edition-source-note">Edición de demostración · Selección de noticias de La Voz de Asturias. Cada pieza enlaza a su fuente original.</p>
+      <p className="edition-source-note">Edición de demostración · Redacción Planta 14.</p>
     </div>
   </div>;
 }

@@ -16,13 +16,13 @@ export function Footer() {
             <Link href="/publicidad" className="hover:text-white">Publicidad</Link>
             <Link href="/contacto" className="hover:text-white">Contacto</Link>
             <Link href="/agenda" className="hover:text-white">Agenda</Link>
-            <Link href="/admin" className="hover:text-white">Administración</Link>
+            <Link href="/lena/panel" className="hover:text-white">Demo municipal</Link>
           </div>
         </div>
         <div className="text-sm leading-6 text-paper/70">
           <p className="font-bold uppercase tracking-[0.18em] text-paper/55">Redacción</p>
-          <p className="mt-3">Caudal y Nalón, Asturias.</p>
-          <p className="mt-3">Edición de demostración. Las piezas con fuente identificada son resúmenes enlazados; los demás contenidos son ejemplos.</p>
+          <p className="mt-3">El Caudal, Asturias.</p>
+          <p className="mt-3">Textos e imágenes utilizados únicamente con fines de demostración. No se publican.</p>
         </div>
       </div>
     </footer>

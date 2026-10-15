@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
   const response = NextResponse.next();
-  if (process.env.SITE_INDEXABLE !== "true" || process.env.DEMO_CONTENT !== "example") response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;
 }
 export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
