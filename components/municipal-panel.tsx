@@ -1,16 +1,18 @@
 "use client";
 import Link from "next/link";
+import { getMunicipalIdentity, identityStyle } from "@/lib/demo/identities";
 import { useState, type FormEvent } from "react";
 import { MunicipalMasthead } from "./municipal-masthead";
 import { readBrowserContent, storageKey, type MunicipalSpace, type MunicipalContent } from "@/lib/demo/municipal";
 
 export function MunicipalPanel({ space }: { space: MunicipalSpace }) {
+  const identity = getMunicipalIdentity(space.id);
   const [type, setType] = useState<"notice" | "event">("notice");
-  const [title, setTitle] = useState(space.id === "aller" ? "La cultura nos reúne en Aller" : "La biblioteca amplía su horario esta semana");
-  const [body, setBody] = useState(space.id === "aller" ? "Ejemplo de publicación: una tarde de lectura y actividades para familias en la biblioteca de Moreda. Aquí podrías contar los horarios, el lugar y cómo participar. Esta actividad es ficticia y no admite inscripciones." : "De lunes a viernes, la biblioteca abrirá también por la tarde, de 16:00 a 20:00. Un espacio para estudiar, descubrir nuevas lecturas y compartir el tiempo.");
+  const [title, setTitle] = useState(`La cultura nos reúne en ${space.name.replace("Ayuntamiento de ", "")}`);
+  const [body, setBody] = useState(`Ejemplo de publicación: una tarde de lectura y actividades para familias en ${space.name.replace("Ayuntamiento de ", "")}. Aquí podrías contar los horarios, el lugar y cómo participar. Esta actividad es ficticia y no admite inscripciones.`);
   const [date, setDate] = useState("2026-11-30");
   const [time, setTime] = useState("18:00");
-  const [place, setPlace] = useState(space.id === "aller" ? "Biblioteca de Moreda · Ejemplo" : "Biblioteca municipal");
+  const [place, setPlace] = useState("Biblioteca municipal · Ejemplo");
   const [message, setMessage] = useState("");
   const [published, setPublished] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -34,7 +36,7 @@ export function MunicipalPanel({ space }: { space: MunicipalSpace }) {
     try { localStorage.removeItem(storageKey(space.id)); setMessage("Pruebas borradas. El espacio vuelve a su contenido inicial."); setPublished(false); }
     catch { setMessage("No se han podido borrar las pruebas en este navegador."); }
   }
-  return <div className={`municipal-shell ${space.id === "aller" ? "aller-theme" : ""}`}>
+  return <div className={`municipal-shell ${identity ? "aller-theme" : ""}`} style={identityStyle(identity)}>
     <MunicipalMasthead space={space} panel />
     <div className="container-p14 municipal-panel-body">
       <div className="municipal-demo-banner"><span className="municipal-example">Demostración</span><p>Prueba libremente. No envía información al ayuntamiento ni publica en internet. Solo se guarda en este navegador.</p><Link href={`/${space.id}`}>Ver el espacio ↗</Link></div>

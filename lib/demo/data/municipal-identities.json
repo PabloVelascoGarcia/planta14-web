@@ -1,0 +1,94 @@
+{
+  "lena": {
+    "name": "Lena",
+    "accent": "#456477",
+    "dark": "#263e4d",
+    "soft": "#e7eef1",
+    "border": "#c9d7df",
+    "crest": "/lena/escudo.svg",
+    "crestSource": "https://commons.wikimedia.org/wiki/File:Escudo_de_Lena.svg",
+    "crestCredit": "Manuelfb55 · CC BY-SA 4.0",
+    "crestLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "image": "/lena/panorama.webp",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena.jpg",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "imageCredit": "Santa Cristina de Lena · Jose Luis Martinez Alvarez · CC BY-SA 2.0 · Archivo",
+    "imageAlt": "Iglesia de Santa Cristina de Lena entre prados y árboles",
+    "title": "Lena, un lugar para quedarse.",
+    "subtitle": "Patrimonio que emociona. Montañas que abren caminos.",
+    "official": "https://www.aytolena.es/",
+    "tourism": "https://www.aytolena.es/web-turismo",
+    "stories": [
+      {
+        "id": "0",
+        "number": "01",
+        "label": "Patrimonio",
+        "title": "Santa Cristina de Lena",
+        "text": "Una joya del prerrománico que conecta el paisaje con la historia.",
+        "href": "https://www.aytolena.es/santa-cristina"
+      },
+      {
+        "id": "1",
+        "number": "02",
+        "label": "Nieve y montaña",
+        "title": "Valgrande-Pajares",
+        "text": "La montaña lenense invita a disfrutar del concejo en distintas estaciones.",
+        "href": "https://www.valgrande-pajares.com/turismo/"
+      },
+      {
+        "id": "2",
+        "number": "03",
+        "label": "Pueblos y caminos",
+        "title": "Descubrir Lena a otro ritmo",
+        "text": "Pueblos, valles y caminos para acercarse a la vida del concejo.",
+        "href": "https://www.turismoasturias.es/descubre/donde-ir/municipios/lena"
+      }
+    ]
+  },
+  "mieres": {
+    "name": "Mieres",
+    "accent": "#7e4b3e",
+    "dark": "#49332e",
+    "soft": "#f1e8e2",
+    "border": "#dfccc3",
+    "crest": "/mieres/escudo.svg",
+    "crestSource": "https://commons.wikimedia.org/wiki/File:Escudo_de_Mieres.svg",
+    "crestCredit": "SanchoPanzaXXI · CC BY-SA 4.0",
+    "crestLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "image": "/mieres/panorama.webp",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Mieres_(1422888016).jpg",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "imageCredit": "El Caudal a su paso por Mieres · José Antonio Gil Martínez from Vigo, Spain · CC BY 2.0 · Archivo",
+    "imageAlt": "Río Caudal y entorno urbano de Mieres",
+    "title": "Mieres, historia que se mueve.",
+    "subtitle": "Vida en las plazas. Memoria en los valles. Mirada al futuro.",
+    "official": "https://www.mieres.es/",
+    "tourism": "https://www.mieres.es/turismo/",
+    "stories": [
+      {
+        "id": "0",
+        "number": "01",
+        "label": "Memoria industrial",
+        "title": "El legado de Bustiello",
+        "text": "Un conjunto que ayuda a entender la vida y el patrimonio minero.",
+        "href": "https://www.mieres.es/turismo/nuestros-pueblos/bustiello/"
+      },
+      {
+        "id": "1",
+        "number": "02",
+        "label": "Valles con historia",
+        "title": "Turón, paisaje y memoria",
+        "text": "La huella industrial y la naturaleza se encuentran en el valle.",
+        "href": "https://www.mieres.es/turismo/nuestros-pueblos/turon/"
+      },
+      {
+        "id": "2",
+        "number": "03",
+        "label": "La vida aquí",
+        "title": "Un paseo por Mieres",
+        "text": "Pueblos, espacios culturales y lugares de encuentro para descubrir el concejo.",
+        "href": "https://www.mieres.es/turismo/recorrido-conceyu-de-mieres/"
+      }
+    ]
+  }
+}

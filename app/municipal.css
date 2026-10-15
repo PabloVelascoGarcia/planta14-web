@@ -177,3 +177,17 @@
 .aller-asset-credit{font-size:9px;line-height:1.7;color:#857b6c;border-top:1px solid #e8e0d2;padding:12px 0 20px;margin:0}
 .aller-asset-credit a{text-decoration:underline;text-underline-offset:2px}
 @media(max-width:680px){.aller-crest{width:39px;min-width:39px;height:68px}.aller-theme .municipal-masthead{padding-block:20px}.aller-hero{height:245px}.aller-hero-copy h2{font-size:43px}.aller-hero-copy .municipal-kicker{font-size:8px}.aller-hero-copy>p:not(.municipal-kicker){font-size:12px;max-width:270px}.aller-hero-copy>a{font-size:9px}.aller-hero figcaption{font-size:6px;bottom:8px;right:16px}.aller-hero-shade{background:linear-gradient(90deg,#112419db,#11241966)}.aller-discover>div{grid-template-columns:1fr}.aller-discover a{display:grid;grid-template-columns:40px 1fr;column-gap:12px;padding:18px}.aller-story-number{grid-column:1;grid-row:1/4;margin:0;font-size:29px}.aller-discover small,.aller-discover h3,.aller-discover p,.aller-discover .municipal-read-link{grid-column:2}.aller-discover h3{min-height:0;font-size:25px}.aller-discover p{margin-bottom:12px}.aller-discover small{font-size:8px}}
+
+/* Palette is content configuration, not a separate layout for each municipality. */
+.aller-theme .municipal-topbar,.aller-theme .municipal-notice-strip,.aller-theme .municipal-notices,.aller-theme .municipal-type-picker label.is-selected{background:var(--local-soft);border-color:var(--local-border)}
+.aller-theme .municipal-section-nav{border-top-color:var(--local-dark)}
+.aller-theme .municipal-cta{background:var(--municipal-copper)}
+.aller-theme .municipal-cta:hover,.aller-theme .municipal-panel-invite{background:var(--local-dark)}
+.aller-theme .municipal-notice-icon,.aller-theme .municipal-notice-strip>span:last-child,.aller-theme .municipal-read-link,.aller-theme .municipal-text-button,.aller-theme .municipal-bottom-note a{color:var(--municipal-copper)}
+.aller-theme .municipal-type-picker label.is-selected{box-shadow:inset 0 0 0 1px var(--municipal-copper)}
+.aller-theme .municipal-type-picker input{accent-color:var(--municipal-copper)}
+.aller-theme .aller-discover a{background:var(--local-soft);border-top-color:var(--municipal-copper)}
+.aller-theme .aller-discover a:nth-child(2){background:var(--local-dark);border-color:var(--local-border)}
+.aller-theme .aller-discover a:nth-child(3){background:#efe8da;border-color:#a67b49}
+.aller-theme .aller-discover a:hover{filter:brightness(.96)}
+.aller-theme .aller-hero-shade{background:linear-gradient(90deg,color-mix(in srgb,var(--local-dark) 90%,transparent),color-mix(in srgb,var(--local-dark) 20%,transparent))}
