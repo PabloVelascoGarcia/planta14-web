@@ -8,6 +8,7 @@ export type MunicipalContent = {
   origin: "municipality"; status: "published"; publishedAt: string;
   expiresAt: string | null; eventAt: string | null; place: string | null; deadline: string | null;
   attachments: { url: string; title: string }[]; demo: boolean;
+  sourceUrl?: string;
 };
 export type MunicipalSpace = typeof spaceRecords[number];
 export const municipalContents = contentRecords as MunicipalContent[];
@@ -41,6 +42,6 @@ export function readBrowserContent(raw: string | null, space: string): Municipal
       (item.eventAt === null || (typeof item.eventAt === "string" && !Number.isNaN(Date.parse(item.eventAt)))) &&
       (item.expiresAt === null || (typeof item.expiresAt === "string" && !Number.isNaN(Date.parse(item.expiresAt)))) &&
       (item.place === null || typeof item.place === "string") && item.origin === "municipality" &&
-      item.status === "published" && item.demo === true).slice(0, 20).map(item => ({ ...item, attachments: [] }));
+      item.status === "published" && item.demo === true).slice(0, 20).map(item => ({ ...item, attachments: [], sourceUrl: undefined }));
   } catch { return []; }
 }

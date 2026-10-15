@@ -135,3 +135,45 @@
 @media(max-width:680px){.municipal-masthead{padding-block:24px;flex-wrap:wrap;gap:20px}.municipal-brand{font-size:23px;order:-1;border-bottom:1px solid #dfd4c4;width:100%;padding-bottom:13px;display:flex;align-items:center;justify-content:space-between;letter-spacing:-.055em}.municipal-brand span{font-size:7px;margin-top:0}.municipal-crest{width:47px;min-width:47px;height:63px;border-radius:0 0 23px 23px}.municipal-crest>span{font-size:18px}.municipal-crest small{font-size:5px}.municipal-masthead h1{font-size:29px}.municipal-identity{gap:14px}.municipal-kicker{font-size:8px;letter-spacing:.13em}.municipal-subline{font-size:11px;margin-top:9px;line-height:1.5}.municipal-section-nav{border-top-width:3px}.municipal-section-nav>.container-p14{gap:24px}.municipal-section-nav button{min-height:54px;font-size:12px}.municipal-page-body{padding-top:18px}.municipal-introline{font-size:9px;gap:8px}.municipal-example{font-size:7px;padding:5px}.municipal-status-dot{width:5px;height:5px}.municipal-notice-strip{gap:12px;padding:14px;margin-bottom:25px}.municipal-notice-strip strong{font-size:11px;line-height:1.5;display:block}.municipal-notice-strip>span:last-child{font-size:0}.municipal-notice-strip>span:last-child:after{content:'↗';font-size:18px}.municipal-notice-icon{width:24px;height:24px}.municipal-columns{grid-template-columns:1fr;gap:32px}.municipal-section-heading h2{font-size:29px}.municipal-content-card h3{font-size:25px}.municipal-content-card{padding-block:23px}.municipal-card-meta{font-size:8px}.municipal-content-card>p{font-size:12px}.municipal-sidebar{border:0;border-top:2px solid #28241f;padding:24px 0 0;display:grid;grid-template-columns:1fr;gap:20px}.municipal-sidebar-heading{border:0;margin-bottom:22px}.municipal-event time{width:53px}.municipal-event>span strong{font-size:14px}.municipal-event small{font-size:11px}.municipal-notices{margin:0}.municipal-notices h3{font-size:16px}.municipal-notices .municipal-content-card>p{font-size:12px}.municipal-panel-invite{padding:28px}.municipal-panel-invite h2 br{display:none}.municipal-editorial-card{grid-template-columns:96px 1fr;gap:15px}.municipal-editorial-card h3{font-size:21px}.municipal-editorial-card p:not(.municipal-card-meta){font-size:11px}.municipal-editorial-image img{height:110px}.municipal-bottom-note{flex-direction:column;gap:12px;margin-top:30px}.municipal-demo-banner{flex-wrap:wrap;gap:10px}.municipal-demo-banner p{flex-basis:75%;font-size:10px}.municipal-demo-banner a{margin-left:auto;font-size:10px}.municipal-panel-heading{padding-top:28px;align-items:start;gap:15px}.municipal-panel-heading h2{font-size:36px}.municipal-panel-heading>p{display:none}.municipal-panel-grid{display:flex;flex-direction:column;gap:30px}.municipal-form{width:100%}.municipal-live-preview{display:none;position:static;width:100%}.municipal-live-preview.show-preview{display:block;order:-1}.municipal-preview-toggle{display:block;border:1px solid #c9b89f;background:transparent;padding:14px;font-size:12px;width:100%;color:#8d4b29;margin-top:22px;font-weight:700;cursor:pointer}.municipal-form input:not([type=radio]),.municipal-form textarea{font-size:16px}.municipal-preview-paper{padding:25px}.municipal-preview-paper h3{font-size:28px}.municipal-step{margin-bottom:18px}.municipal-type-picker label{padding:15px}.municipal-type-picker input{right:12px;top:16px}.municipal-panel-tip{padding:18px}.municipal-preview-caption{margin-bottom:18px}}
 @media(prefers-reduced-motion:reduce){.municipal-content-card summary>span{transition:none}}
 @media(max-width:680px){.municipal-section-nav>.container-p14{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;overflow:visible}.municipal-section-nav button{white-space:normal;min-height:48px;font-size:10px;line-height:1.4;padding:10px 6px;border-bottom:1px solid #eee7db}.municipal-section-nav button[aria-current]:after{height:3px}}
+
+/* Aller keeps Planta 14's paper and editorial type, with its own landscape palette. */
+.aller-theme{--municipal-copper:#315c49;scroll-margin-top:20px}
+.aller-crest{width:55px;min-width:55px;height:96px;object-fit:contain}
+.aller-theme .municipal-topbar{background:#e1e7df;color:#45604b}
+.aller-theme .municipal-masthead{padding-block:28px}
+.aller-theme .municipal-section-nav{border-top-color:#284838}
+.aller-theme .municipal-cta{background:#315c49}
+.aller-theme .municipal-cta:hover{background:#244234}
+.aller-theme .municipal-notice-strip,.aller-theme .municipal-notices{background:#edf0e6;border-color:#d3ddc9}
+.aller-theme .municipal-notice-icon{color:#315c49;border-color:#7f997b}
+.aller-theme .municipal-notice-strip>span:last-child,.aller-theme .municipal-read-link,.aller-theme .municipal-text-button,.aller-theme .municipal-bottom-note a{color:#315c49}
+.aller-theme .municipal-panel-invite{background:#243d32}
+.aller-theme .municipal-panel-invite .municipal-kicker{color:#c5c99f}
+.aller-theme .municipal-type-picker label.is-selected{border-color:#315c49;background:#edf0e6;box-shadow:inset 0 0 0 1px #315c49}
+.aller-theme .municipal-type-picker input{accent-color:#315c49}
+.aller-hero{height:300px;position:relative;overflow:hidden;background:#304334;margin:0;color:#fffdf5}
+.aller-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 53%}
+.aller-hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(17,36,25,.85),rgba(17,36,25,.3) 60%,rgba(17,36,25,.12))}
+.aller-hero-copy{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.aller-hero-copy .municipal-kicker{color:#dce5c3;font-size:10px;letter-spacing:.22em}
+.aller-hero-copy h2{font-family:var(--font-serif);font-size:64px;letter-spacing:-.045em;line-height:1.05;font-weight:700;margin:5px 0 15px}
+.aller-hero-copy>p:not(.municipal-kicker){font-size:14px;color:#f0f0df;max-width:420px;line-height:1.7}
+.aller-hero-copy>a{font-size:10px;border-bottom:1px solid #ffffff60;padding:10px 0 7px;margin-top:10px;letter-spacing:.04em}
+.aller-hero-copy>a span{margin-left:23px}
+.aller-hero figcaption{position:absolute;bottom:12px;right:max(16px,calc((100% - 1180px)/2));font-size:8px;color:#fffce8;background:#1d3027a8;padding:5px 8px;max-width:85%;text-align:right}
+.aller-discover{margin:32px 0}
+.aller-discover>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.aller-discover a{display:flex;flex-direction:column;align-items:start;position:relative;padding:18px;background:#e9ede3;border-top:3px solid #315c49;min-width:0;transition:background .2s}
+.aller-discover a:nth-child(2){background:#273e38;color:#fffaf1;border-color:#b8b88f}
+.aller-discover a:nth-child(3){background:#efe8da;border-color:#a67b49}
+.aller-discover a:hover{background:#dce4d3}
+.aller-discover a:nth-child(2):hover{background:#345147}
+.aller-story-number{font-family:var(--font-serif);font-size:32px;color:#8b9e87;line-height:1;margin-bottom:16px}
+.aller-discover small{font-size:7px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:9px;opacity:.7}
+.aller-discover h3{font-family:var(--font-serif);font-size:22px;font-weight:700;line-height:1.15;letter-spacing:-.03em;min-height:52px}
+.aller-discover p{font-size:11px;line-height:1.75;opacity:.8;margin:12px 0 20px}
+.aller-discover .municipal-read-link{margin-top:auto}
+.aller-discover a:nth-child(2) .municipal-read-link{color:#d4ddc0}
+.aller-asset-credit{font-size:9px;line-height:1.7;color:#857b6c;border-top:1px solid #e8e0d2;padding:12px 0 20px;margin:0}
+.aller-asset-credit a{text-decoration:underline;text-underline-offset:2px}
+@media(max-width:680px){.aller-crest{width:39px;min-width:39px;height:68px}.aller-theme .municipal-masthead{padding-block:20px}.aller-hero{height:245px}.aller-hero-copy h2{font-size:43px}.aller-hero-copy .municipal-kicker{font-size:8px}.aller-hero-copy>p:not(.municipal-kicker){font-size:12px;max-width:270px}.aller-hero-copy>a{font-size:9px}.aller-hero figcaption{font-size:6px;bottom:8px;right:16px}.aller-hero-shade{background:linear-gradient(90deg,#112419db,#11241966)}.aller-discover>div{grid-template-columns:1fr}.aller-discover a{display:grid;grid-template-columns:40px 1fr;column-gap:12px;padding:18px}.aller-story-number{grid-column:1;grid-row:1/4;margin:0;font-size:29px}.aller-discover small,.aller-discover h3,.aller-discover p,.aller-discover .municipal-read-link{grid-column:2}.aller-discover h3{min-height:0;font-size:25px}.aller-discover p{margin-bottom:12px}.aller-discover small{font-size:8px}}

@@ -16,7 +16,7 @@ export function Footer() {
             <Link href="/publicidad" className="hover:text-white">Publicidad</Link>
             <Link href="/contacto" className="hover:text-white">Contacto</Link>
             <Link href="/agenda" className="hover:text-white">Agenda</Link>
-            <Link href="/lena/panel" className="hover:text-white">Demo municipal</Link>
+            <Link href="/aller/panel" className="hover:text-white">Demo municipal</Link>
           </div>
         </div>
         <div className="text-sm leading-6 text-paper/70">

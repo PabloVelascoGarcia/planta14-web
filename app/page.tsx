@@ -63,8 +63,8 @@ export default async function Home() {
         <div>
           <SectionHeading eyebrow="Cerca de ti" title="Tu ayuntamiento, aquí" />
           <p className="mt-4 text-lg leading-7 text-steel">Avisos, agenda y oportunidades. Un espacio propio para cada concejo, conectado con la vida del Caudal.</p>
-          <Link href="/lena" className="municipal-cta mt-6">Descubre el espacio de Lena <span>↗</span></Link>
-          <Link href="/lena/panel" className="editorial-link mt-4">Prueba cómo se publica un aviso ↗</Link>
+          <Link href="/aller" className="municipal-cta mt-6">Descubre el espacio de Aller <span>↗</span></Link>
+          <Link href="/aller/panel" className="editorial-link mt-4">Prueba cómo se publica un aviso ↗</Link>
         </div>
       </section>
 

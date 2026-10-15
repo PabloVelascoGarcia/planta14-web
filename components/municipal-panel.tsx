@@ -6,11 +6,11 @@ import { readBrowserContent, storageKey, type MunicipalSpace, type MunicipalCont
 
 export function MunicipalPanel({ space }: { space: MunicipalSpace }) {
   const [type, setType] = useState<"notice" | "event">("notice");
-  const [title, setTitle] = useState("La biblioteca amplía su horario esta semana");
-  const [body, setBody] = useState("De lunes a viernes, la biblioteca abrirá también por la tarde, de 16:00 a 20:00. Un espacio para estudiar, descubrir nuevas lecturas y compartir el tiempo.");
+  const [title, setTitle] = useState(space.id === "aller" ? "La cultura nos reúne en Aller" : "La biblioteca amplía su horario esta semana");
+  const [body, setBody] = useState(space.id === "aller" ? "Ejemplo de publicación: una tarde de lectura y actividades para familias en la biblioteca de Moreda. Aquí podrías contar los horarios, el lugar y cómo participar. Esta actividad es ficticia y no admite inscripciones." : "De lunes a viernes, la biblioteca abrirá también por la tarde, de 16:00 a 20:00. Un espacio para estudiar, descubrir nuevas lecturas y compartir el tiempo.");
   const [date, setDate] = useState("2026-11-30");
   const [time, setTime] = useState("18:00");
-  const [place, setPlace] = useState("Biblioteca municipal");
+  const [place, setPlace] = useState(space.id === "aller" ? "Biblioteca de Moreda · Ejemplo" : "Biblioteca municipal");
   const [message, setMessage] = useState("");
   const [published, setPublished] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -34,7 +34,7 @@ export function MunicipalPanel({ space }: { space: MunicipalSpace }) {
     try { localStorage.removeItem(storageKey(space.id)); setMessage("Pruebas borradas. El espacio vuelve a su contenido inicial."); setPublished(false); }
     catch { setMessage("No se han podido borrar las pruebas en este navegador."); }
   }
-  return <div className="municipal-shell">
+  return <div className={`municipal-shell ${space.id === "aller" ? "aller-theme" : ""}`}>
     <MunicipalMasthead space={space} panel />
     <div className="container-p14 municipal-panel-body">
       <div className="municipal-demo-banner"><span className="municipal-example">Demostración</span><p>Prueba libremente. No envía información al ayuntamiento ni publica en internet. Solo se guarda en este navegador.</p><Link href={`/${space.id}`}>Ver el espacio ↗</Link></div>
