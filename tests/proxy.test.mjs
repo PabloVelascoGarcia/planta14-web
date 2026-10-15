@@ -17,7 +17,7 @@ function loadTS(file, dependencies = {}) {
 const codec = loadTS('lib/session-codec.ts');
 const { proxy } = loadTS('proxy.ts', { '@/lib/session-codec': codec });
 process.env.NODE_ENV = 'production';
-process.env.DEMO_CONTENT = 'lavoz';
+process.env.DEMO_CONTENT = 'presentation';
 const request = (route, headers = {}, method = 'GET') => new NextRequest('https://demo.example.com' + route, { headers, method });
 const headers = {};
 assert.equal(proxy(request('/')).status, 200);
