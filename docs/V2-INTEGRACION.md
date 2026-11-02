@@ -1,5 +1,7 @@
 # Planta 14 v2: integración
 
+Revisión posterior de `2bb8270`: [V2-INTEGRACION-REVISION.md](V2-INTEGRACION-REVISION.md). Añade bloqueo PostgreSQL por imagen y prueba concurrente, retirada desde el formulario `/cms` y construcción del Dockerfile real. Incluye límites pendientes del registro, inventario y purga CDN; las comprobaciones originales de este documento son históricas.
+
 Rama `desarrollo/planta14-v2`: `origin/desarrollo/planta14-v2-bloque3` (`c7c25da`) con `origin/desarrollo/planta14-v2-infra` (`ab159a9`) fusionada sin conflictos. Las ramas bloque2, bloque3 e infra quedan congeladas como histórico. No se han tocado `main`, `mejora/presentacion-la-voz` ni las ramas de respaldo. Sin PR, sin despliegues, sin contrataciones y sin secretos. Fecha: 2 de noviembre de 2026.
 
 Leídos antes: [V2-BLOQUE3-REVISION.md](V2-BLOQUE3-REVISION.md) y [INFRA-CORRECCIONES-2026-11-02.md](INFRA-CORRECCIONES-2026-11-02.md).

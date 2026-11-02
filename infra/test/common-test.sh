@@ -39,3 +39,8 @@ if (verify_checksum "$work/a.dump") 2>/dev/null; then die 'checksum of another f
 ln -s "$work/a.dump" "$work/link.dump"
 if (safe_input_file "$work/link.dump") 2>/dev/null; then die 'symlink accepted as backup file'; fi
 echo 'PASS: mandatory checksum (explicit override only), exact file name, symlinks rejected'
+
+[[ $(PG_CONTAINER=''; COMPOSE_PROJECT_NAME=review; resolve_pg_container; printf '%s' "$PG_CONTAINER") == review-postgres-1 ]] || die 'empty PG_CONTAINER did not resolve to the project'
+[[ $(PG_CONTAINER=none; resolve_pg_container; printf '%s' "$PG_CONTAINER") == '' ]] || die 'none did not select host tools'
+[[ $(PG_CONTAINER=custom; resolve_pg_container; printf '%s' "$PG_CONTAINER") == custom ]] || die 'explicit container changed'
+echo 'PASS: PG_CONTAINER empty, none and explicit container'

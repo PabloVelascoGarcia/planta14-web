@@ -8,6 +8,7 @@ import { randomUUID } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
+import { withdrawThroughCMS } from '../../scripts/cms-browser-withdrawal.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
@@ -29,7 +30,7 @@ function png(width, height, rgb) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(Buffer.concat(Array.from({ length: height }, () => row)))), chunk('IEND', Buffer.alloc(0))]);
 }
 
-const browser = await chromium.launch({ headless: true, args: ['--no-proxy-server'] });
+const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || undefined, args: ['--no-proxy-server'] });
 const errors = [];
 const newContext = async (credentials = basic) => {
   const context = await browser.newContext({ ignoreHTTPSErrors: true, httpCredentials: credentials || undefined, viewport: { width: 390, height: 900 } });
@@ -136,10 +137,9 @@ try {
   await pub.screenshot({ path: path.join(out, '04-lena-con-aviso.png'), fullPage: true });
   pass(`the notice appears at once on /lena with its image from /media (200 with password, 401 without)`);
 
-  // 7. Withdrawal with reason by the editor (REST from the editor's signed-in browser session).
+  // 7. Withdrawal through the actual /cms form (including Save Draft's live-withdrawal behavior).
   const reason = 'Contiene un dato personal; retirado en la prueba de staging';
-  const withdrawal = await api(editorCtx, 'PATCH', `municipal-content/${notice.id}`, { withdrawal: { withdrawn: true, reason } });
-  assert.equal(withdrawal.status, 200, JSON.stringify(withdrawal.json));
+  await withdrawThroughCMS(editor, origin, notice.id, reason);
   await pub.reload();
   assert(!(await pub.locator('body').innerText()).includes(title), 'withdrawn notice no longer public');
   assert.equal((await visitor.request.get(src)).status(), 404, 'withdrawn image no longer served');
