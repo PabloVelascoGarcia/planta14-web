@@ -7,10 +7,12 @@ import type { Article } from "@/lib/mock-data";
 import { formatDate } from "@/lib/utils";
 import { getMunicipalIdentity, identityStyle } from "@/lib/demo/identities";
 
+// Content published by a municipal account (not demo, no external reference) is labelled as such.
+function originLabel(item: MunicipalContent) { return item.sourceUrl ? "Referencia" : item.demo ? "Ejemplo" : "Publicado por el ayuntamiento"; }
 function ContentCard({ item, space, compact = false }: { item: MunicipalContent; space: MunicipalSpace; compact?: boolean }) {
   const kind = sections.find(s => s.id === item.type)?.label;
   return <article className={`municipal-content-card ${compact ? "is-compact" : ""}`}>
-    <div className="municipal-card-meta"><span>{space.name}</span><span>{kind} · {item.sourceUrl ? "Referencia" : "Ejemplo"}</span></div>
+    <div className="municipal-card-meta"><span>{space.name}</span><span>{kind} · {originLabel(item)}</span></div>
     <details><summary><h3>{item.title}</h3><span aria-hidden="true">↗</span></summary>
       <p className="municipal-detail-text">{item.body}</p>
       {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Consultar la referencia oficial ↗</a> : null}
@@ -60,7 +62,7 @@ export function MunicipalPage({ space, active, contents, articles }: { space: Mu
           </> : null}
         </div>
         <aside className="municipal-sidebar">
-          {active ? <><section><div className="municipal-sidebar-heading"><h2>Agenda</h2><button onClick={() => setSection("event")} aria-label="Ver toda la agenda">↗</button></div>{events.slice(0,3).map(event => <button className="municipal-event" key={event.id} onClick={() => setSection("event")}><time dateTime={event.eventAt ?? undefined}><strong>{event.eventAt?.slice(8,10)}</strong><span>{new Intl.DateTimeFormat("es-ES",{month:"short"}).format(new Date(event.eventAt ?? event.publishedAt)).replace(".","")}</span></time><span><strong>{event.title}</strong><small>{event.place}</small><small>{event.eventAt?.slice(11,16)} h · {event.sourceUrl ? "Referencia" : "Ejemplo"}</small></span></button>)}</section>
+          {active ? <><section><div className="municipal-sidebar-heading"><h2>Agenda</h2><button onClick={() => setSection("event")} aria-label="Ver toda la agenda">↗</button></div>{events.slice(0,3).map(event => <button className="municipal-event" key={event.id} onClick={() => setSection("event")}><time dateTime={event.eventAt ?? undefined}><strong>{event.eventAt?.slice(8,10)}</strong><span>{new Intl.DateTimeFormat("es-ES",{month:"short"}).format(new Date(event.eventAt ?? event.publishedAt)).replace(".","")}</span></time><span><strong>{event.title}</strong><small>{event.place}</small><small>{event.eventAt?.slice(11,16)} h · {originLabel(event)}</small></span></button>)}</section>
           <section className="municipal-notices"><h2>Avisos</h2>{notices.map(item => <ContentCard key={item.id} item={item} space={space} compact />)}</section>
           <section className="municipal-panel-invite"><p className="municipal-kicker">Así de sencillo</p><h2>Tu ayuntamiento<br />tiene la palabra.</h2><p>Escribe un aviso, comprueba cómo queda y publícalo. Sin complicaciones.</p><Link href={`/${space.id}/panel`} className="municipal-cta">Probar el panel <span>↗</span></Link><small>Demostración · Sin registro</small></section></> : <Link href="/comarca/caudal" className="municipal-cta">Historias del Caudal ↗</Link>}
         </aside>

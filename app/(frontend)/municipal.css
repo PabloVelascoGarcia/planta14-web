@@ -98,6 +98,7 @@
 .municipal-form>label,.municipal-field-row>label{display:flex;flex-direction:column;gap:9px;font-size:12px;font-weight:700;margin-top:23px}
 .municipal-form input:not([type=radio]),.municipal-form textarea{border:1px solid #d4c8b7;background:#fff;padding:13px 14px;min-height:48px;width:100%;font-size:14px;font-weight:400;line-height:1.65;border-radius:2px;color:#3c352d;min-width:0}
 .municipal-form textarea{resize:vertical}
+.municipal-form select{border:1px solid #d4c8b7;background:#fff;padding:13px 14px;min-height:48px;width:100%;font-size:14px;border-radius:2px;color:#3c352d}
 .municipal-form input:focus,.municipal-form textarea:focus{outline:2px solid #a4522d;outline-offset:2px}
 .municipal-form label>small{font-size:10px;color:#9b8a76;font-weight:400;text-align:right}
 .municipal-type-picker{display:grid;grid-template-columns:1fr 1fr;gap:14px;border:0;margin:0;padding:0}
