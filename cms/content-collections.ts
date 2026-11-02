@@ -1,6 +1,6 @@
 import { APIError, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field } from 'payload';
 import { adminOnly, editorialContentRead, editorialUser, editorialVersions, municipalContentCreate, municipalContentRead, municipalContentUpdate,
-  municipalContentVersions, municipalSpaceOf, notMunicipal, publishedOnly, relationID } from './access';
+  municipalContentVersions, municipalSpaceOf, municipalSpaceRead, notMunicipal, relationID } from './access';
 import { auditAfterChange, auditAfterDelete, rememberMainState } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
 
@@ -24,7 +24,18 @@ const published = {
 type Withdrawal = { withdrawn?: boolean | null; reason?: string | null; withdrawnAt?: string | null; withdrawnBy?: unknown };
 
 /** A withdrawal by Planta 14 always applies to the live document, even from a "save draft" action. */
-const withdrawalAppliesToLiveDocument: CollectionBeforeOperationHook = ({ args, operation, req }) => {
+const withdrawalAppliesToLiveDocument: CollectionBeforeOperationHook = async ({ args, operation, req }) => {
+  if (operation === 'restoreVersion') {
+    const versionID = (args as { id?: number | string }).id;
+    const result = await req.payload.db.findVersions({ collection: 'municipal-content', req, limit: 1, pagination: false, where: { id: { equals: versionID } } });
+    const version = result.docs[0];
+    const own = municipalSpaceOf(req);
+    if (!editorialUser({ req }) && (!version || own === null || relationID(version.version.space) !== own)) throw new APIError('No puedes restaurar esta versión', 403);
+    if (version) {
+      const live = await req.payload.db.findOne<{ id: number; withdrawal?: Withdrawal }>({ collection: 'municipal-content', req, where: { id: { equals: relationID(version.parent) } } });
+      if (live?.withdrawal?.withdrawn) throw new APIError('Restablece expresamente el contenido retirado antes de restaurar una versión', 403);
+    }
+  }
   const withdrawal = ((args as { data?: { withdrawal?: Withdrawal } }).data)?.withdrawal;
   if (operation === 'update' && editorialUser({ req }) && typeof withdrawal?.withdrawn === 'boolean') (args as { draft?: boolean }).draft = false;
   return args;
@@ -35,7 +46,8 @@ const withdrawalAppliesToLiveDocument: CollectionBeforeOperationHook = ({ args, 
  * Runs before field validation, so the values set here are the ones validated and stored.
  */
 const municipalRules: CollectionBeforeChangeHook = async ({ data, originalDoc, operation, req }) => {
-  const previous = (originalDoc?.withdrawal || {}) as Withdrawal;
+  const live = originalDoc?.id ? await req.payload.db.findOne<{ id: number; withdrawal?: Withdrawal }>({ collection: 'municipal-content', req, where: { id: { equals: originalDoc.id } } }) : null;
+  const previous = (live?.withdrawal || originalDoc?.withdrawal || {}) as Withdrawal;
   if (req.user?.collection === 'users' && req.user.role === 'municipal') {
     const own = municipalSpaceOf(req);
     if (own === null) throw new APIError('Cuenta municipal sin espacio asignado', 403);
@@ -107,7 +119,7 @@ export const Articles: CollectionConfig = {
 export const MunicipalSpaces: CollectionConfig = {
   slug: 'municipal-spaces', admin: { useAsTitle: 'name' },
   versions: { drafts: true },
-  access: { read: publishedOnly, create: adminOnly, update: adminOnly, delete: adminOnly },
+  access: { read: municipalSpaceRead, readVersions: editorialVersions, create: adminOnly, update: adminOnly, delete: adminOnly },
   fields: [key, text('name', true), { name: 'town', type: 'relationship', relationTo: 'towns', required: true, unique: true },
     text('medium', true),
     { name: 'subscription', type: 'group', fields: [

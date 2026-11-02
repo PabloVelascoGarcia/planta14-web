@@ -19,17 +19,27 @@ export function municipalSpaceOf(req: PayloadRequest): number | null {
 export const notMunicipal: Access = ({ req }) => !(req.user?.collection === 'users' && req.user.role === 'municipal');
 
 export const publishedFilter: Where = { _status: { equals: 'published' } };
+export const municipalPublishedFilter: Where = { and: [publishedFilter, { 'withdrawal.withdrawn': { not_equals: true } }] };
 export const publishedOnly: Access = (args) => editorialUser(args) || publishedFilter;
 /** Planta 14 editorial content: municipal accounts have no access at all. */
 export const editorialContentRead: Access = (args) => editorialUser(args) || (notMunicipal(args) ? publishedFilter : false);
 export const editorialVersions: Access = (args) => editorialUser(args);
 export const ownUserOrAdmin: Access = (args) => adminOnly(args) || (args.req.user ? { id: { equals: args.req.user.id } } : false);
 
-/** Municipal content: editors see everything; a municipality sees its own space (drafts included) and published content. */
+/** Municipal API sessions are tenant-scoped, including published content. Anonymous web access is separate. */
 export const municipalContentRead: Access = (args) => {
   if (editorialUser(args)) return true;
   const space = municipalSpaceOf(args.req);
-  return space === null ? publishedFilter : { or: [{ space: { equals: space } }, publishedFilter] };
+  if (!notMunicipal(args)) return space === null ? false : { space: { equals: space } };
+  return municipalPublishedFilter;
+};
+export const municipalSpaceRead: Access = (args) => {
+  if (editorialUser(args)) return true;
+  if (!notMunicipal(args)) {
+    const space = municipalSpaceOf(args.req);
+    return space === null ? false : { id: { equals: space } };
+  }
+  return publishedFilter;
 };
 export const municipalContentVersions: Access = (args) => {
   if (editorialUser(args)) return true;

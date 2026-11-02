@@ -1,5 +1,5 @@
 import { APIError, type Access, type CollectionAfterChangeHook, type CollectionAfterDeleteHook, type PayloadRequest, type Where } from 'payload';
-import { editorialUser, municipalSpaceOf, relationID } from './access';
+import { editorialUser, municipalSpaceOf, notMunicipal, relationID } from './access';
 import { syncPublicMedia } from './public-media';
 
 /** Anonymous visitors only see metadata of images in published content (indexed field kept by hooks). */
@@ -8,7 +8,7 @@ export const publicMediaFilter: Where = { and: [{ publishedUses: { greater_than:
 export const readMedia: Access = (args) => {
   if (editorialUser(args)) return true;
   const space = municipalSpaceOf(args.req);
-  if (space !== null) return { or: [{ uploadedBySpace: { equals: space } }, publicMediaFilter] };
+  if (!notMunicipal(args)) return space === null ? false : { uploadedBySpace: { equals: space } };
   // Signed downloads through /api/cms/media/file are reserved for authenticated panels.
   // The public site uses the public copy (PUBLIC_MEDIA_BASE_URL).
   if ((args as { isReadingStaticFile?: boolean }).isReadingStaticFile) return false;

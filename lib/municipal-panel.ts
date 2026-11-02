@@ -30,11 +30,12 @@ export async function municipalPanelState(slug: string): Promise<PanelState> {
   const query = { collection: 'municipal-content' as const, user, overrideAccess: false, depth: 0, pagination: false as const, sort: '-updatedAt', where: { space: { equals: space.id } } };
   const [latest, live] = await Promise.all([payload.find({ ...query, draft: true }), payload.find(query)]);
   const liveStatus = new Map(live.docs.map(doc => [doc.id, doc._status]));
+  const liveWithdrawal = new Map(live.docs.filter(doc => doc.withdrawal?.withdrawn).map(doc => [doc.id, doc.withdrawal]));
   const items = latest.docs.map((doc): PanelItem => ({
     id: doc.id, type: doc.type, title: doc.title, excerpt: doc.excerpt, body: doc.body, publishedAt: doc.publishedAt,
     expiresAt: doc.expiresAt || null, eventAt: doc.eventAt || null, place: doc.place || null, deadline: doc.deadline || null,
     live: liveStatus.get(doc.id) === 'published' ? 'published' : 'draft', hasDraft: doc._status === 'draft' && liveStatus.get(doc.id) === 'published',
-    withdrawn: Boolean(doc.withdrawal?.withdrawn), withdrawalReason: doc.withdrawal?.reason || null, withdrawnAt: doc.withdrawal?.withdrawnAt || null,
+    withdrawn: Boolean((liveWithdrawal.get(doc.id) || doc.withdrawal)?.withdrawn), withdrawalReason: (liveWithdrawal.get(doc.id) || doc.withdrawal)?.reason || null, withdrawnAt: (liveWithdrawal.get(doc.id) || doc.withdrawal)?.withdrawnAt || null,
     image: relationID(doc.image), updatedAt: doc.updatedAt,
   }));
   return { kind: 'editor', email: user.email, name: user.name, spaceID: space.id, items };

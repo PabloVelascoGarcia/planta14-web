@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { DeleteObjectsCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectsCommand, GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Payload, PayloadRequest } from 'payload';
 
 /**
@@ -60,17 +60,38 @@ function s3() {
 
 async function copyToPublic(doc: MediaFile, publicKey: string) {
   const settings = publicMediaSettings();
-  for (const file of mediaFiles(doc)) {
-    const source = await s3().send(new GetObjectCommand({ Bucket: settings.privateBucket, Key: path.posix.join(doc.prefix || '', file.filename) }));
-    const body = await source.Body!.transformToByteArray();
-    await s3().send(new PutObjectCommand({ Bucket: settings.bucket, Key: `${publicKey}/${file.filename}`, Body: body,
-      ContentType: source.ContentType || file.mimeType, CacheControl: settings.cacheControl }));
+  try {
+    for (const file of mediaFiles(doc)) {
+      const source = await s3().send(new GetObjectCommand({ Bucket: settings.privateBucket, Key: path.posix.join(doc.prefix || '', file.filename) }));
+      const body = await source.Body!.transformToByteArray();
+      await s3().send(new PutObjectCommand({ Bucket: settings.bucket, Key: `${publicKey}/${file.filename}`, Body: body,
+        ContentType: source.ContentType || file.mimeType, CacheControl: settings.cacheControl }));
+    }
+  } catch (error) {
+    // Do not silently leave the successful part of a failed multipart set public.
+    try { await deletePublic(doc, publicKey); }
+    catch (cleanupError) { throw new AggregateError([error, cleanupError], 'Falló la copia pública y su limpieza; requiere revisión del bucket'); }
+    throw error;
   }
 }
 
 async function deletePublic(doc: MediaFile, publicKey: string) {
   const objects = mediaFiles(doc).map(file => ({ Key: `${publicKey}/${file.filename}` }));
-  if (objects.length) await s3().send(new DeleteObjectsCommand({ Bucket: publicMediaSettings().bucket, Delete: { Objects: objects, Quiet: true } }));
+  if (objects.length) {
+    const result = await s3().send(new DeleteObjectsCommand({ Bucket: publicMediaSettings().bucket, Delete: { Objects: objects, Quiet: true } }));
+    if (result.Errors?.length) throw new Error(`S3 no pudo borrar ${result.Errors.length} objetos públicos; conserva el registro para reintentar`);
+  }
+}
+
+async function publicCopyComplete(doc: MediaFile, key: string) {
+  for (const file of mediaFiles(doc)) {
+    try { await s3().send(new HeadObjectCommand({ Bucket: publicMediaSettings().bucket, Key: `${key}/${file.filename}` })); }
+    catch (error) {
+      if ((error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode === 404) return false;
+      throw error;
+    }
+  }
+  return true;
 }
 
 /** Published documents that reference the image. Indexed relationship columns, no full scan of content. */
@@ -78,7 +99,7 @@ export async function countPublishedUses(payload: Payload, id: number, req?: Pay
   const published = { _status: { equals: 'published' } } as const;
   const [articles, municipal] = await Promise.all([
     payload.count({ collection: 'articles', overrideAccess: true, req, where: { and: [published, { or: [{ image: { equals: id } }, { seoImage: { equals: id } }] }] } }),
-    payload.count({ collection: 'municipal-content', overrideAccess: true, req, where: { and: [published, { image: { equals: id } }] } }),
+    payload.count({ collection: 'municipal-content', overrideAccess: true, req, where: { and: [published, { 'withdrawal.withdrawn': { not_equals: true } }, { image: { equals: id } }] } }),
   ]);
   return articles.totalDocs + municipal.totalDocs;
 }
@@ -87,14 +108,15 @@ export async function countPublishedUses(payload: Payload, id: number, req?: Pay
  * Recalcula `publishedUses` (campo indexado que usa la lectura anónima) y crea o borra la copia pública.
  * Se llama desde los hooks de noticias, contenidos municipales y la propia biblioteca.
  */
-export async function syncPublicMedia(payload: Payload, id: number, req?: PayloadRequest, options: { refresh?: boolean; previous?: MediaFile } = {}) {
+export async function syncPublicMedia(payload: Payload, id: number, req?: PayloadRequest, options: { refresh?: boolean; previous?: MediaFile; verify?: boolean } = {}) {
   const doc = await payload.db.findOne<MediaFile & { id: number; rightsScope?: string | null; rightsHolder?: string | null; rightsType?: string | null; publishedUses?: number | null }>({ collection: 'media', where: { id: { equals: id } }, req });
   if (!doc) return;
   const uses = await countPublishedUses(payload, id, req);
   const settings = publicMediaSettings();
   const shouldBePublic = settings.enabled && uses > 0 && doc.rightsScope === 'publicable' && Boolean(doc.rightsHolder && doc.rightsType);
   let publicKey = doc.publicKey || null;
-  if (publicKey && (!shouldBePublic || options.refresh)) {
+  const incomplete = publicKey && shouldBePublic && options.verify ? !await publicCopyComplete(doc, publicKey) : false;
+  if (publicKey && (!shouldBePublic || options.refresh || incomplete)) {
     await deletePublic(options.previous || doc, publicKey);
     publicKey = null;
   }
@@ -111,6 +133,6 @@ export async function syncPublicMedia(payload: Payload, id: number, req?: Payloa
 /** Reconciliación completa (tras restaurar copias o cambiar de bucket público). */
 export async function syncAllPublicMedia(payload: Payload) {
   const all = await payload.find({ collection: 'media', overrideAccess: true, depth: 0, pagination: false, select: {} });
-  for (const doc of all.docs) await syncPublicMedia(payload, doc.id);
+  for (const doc of all.docs) await syncPublicMedia(payload, doc.id, undefined, { verify: true });
   return all.docs.length;
 }

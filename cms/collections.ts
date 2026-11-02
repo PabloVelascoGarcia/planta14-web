@@ -2,7 +2,7 @@ import { APIError, type CollectionConfig } from 'payload';
 import { adminOnly, editorialUser, municipalSpaceOf, ownUserOrAdmin, relationID } from './access';
 import { auditAfterChange, auditAfterDelete } from './activity';
 import { readMedia } from './media-rights';
-import { publicURL, syncPublicMedia } from './public-media';
+import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -43,6 +43,12 @@ export const Media: CollectionConfig = {
     delete: ({ req }) => editorialUser({ req }) || (municipalSpaceOf(req) !== null ? { uploadedBySpace: { equals: municipalSpaceOf(req) } } : false),
   },
   hooks: {
+    beforeOperation: [({ operation, args, req }) => {
+      // Never let a municipal upload choose a storage namespace (e.g. a public prefix).
+      const data = (args as { data?: { prefix?: unknown } }).data;
+      if (operation === 'create' && municipalSpaceOf(req) !== null && data?.prefix) throw new APIError('El destino de almacenamiento lo fija el servidor', 403);
+      return args;
+    }],
     beforeChange: [async ({ data, originalDoc, req }) => {
       const space = municipalSpaceOf(req);
       if (space !== null) {
@@ -57,13 +63,14 @@ export const Media: CollectionConfig = {
       return data;
     }],
     afterChange: [async ({ doc, previousDoc, operation, req }) => {
-      const fileChanged = operation === 'update' && previousDoc?.filename && previousDoc.filename !== doc.filename;
+      const fileChanged = operation === 'update' && previousDoc?.filename && (Boolean(req.file) || previousDoc.filename !== doc.filename);
       if (operation === 'update') await syncPublicMedia(req.payload, doc.id, req, fileChanged ? { refresh: true, previous: previousDoc } : {});
       return doc;
     }, auditAfterChange],
     beforeDelete: [async ({ id, req }) => {
-      const current = await req.payload.db.findOne<{ id: number; publishedUses?: number | null }>({ collection: 'media', where: { id: { equals: id } }, req });
-      if ((current?.publishedUses ?? 0) > 0) throw new APIError('Despublica el contenido antes de borrar su imagen', 400);
+      if (await countPublishedUses(req.payload, Number(id), req) > 0) throw new APIError('Despublica el contenido antes de borrar su imagen', 400);
+      // Remove a known residual copy before deleting the only record that can identify it.
+      await syncPublicMedia(req.payload, Number(id), req);
     }],
     afterDelete: [auditAfterDelete],
   },

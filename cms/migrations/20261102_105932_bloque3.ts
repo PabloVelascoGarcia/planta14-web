@@ -92,7 +92,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
   UPDATE "media" m SET "published_uses" =
     (SELECT count(*) FROM "articles" a WHERE a."_status"::text = 'published' AND (a."image_id" = m."id" OR a."seo_image_id" = m."id")) +
-    (SELECT count(*) FROM "municipal_content" c WHERE c."_status"::text = 'published' AND c."image_id" = m."id");`)
+    (SELECT count(*) FROM "municipal_content" c WHERE c."_status"::text = 'published' AND NOT COALESCE(c."withdrawal_withdrawn", false) AND c."image_id" = m."id");`)
 }
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
