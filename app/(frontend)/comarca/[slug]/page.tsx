@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const name = territoryRecords.find(t => t.type === "comarca" && t.slug === slug)?.name;
-  return { title: name ? `${name}` : "Comarca" };
+  return { title: name ? `${name}` : "Comarca", alternates: { canonical: `/comarca/${slug}` } };
 }
 
 export default async function ComarcaPage({ params }: PageProps) {

@@ -1,13 +1,15 @@
-import { siteUrl, indexable } from "@/lib/site-config";
+import { siteUrl, isIndexable } from "@/lib/site-config";
 import type { MetadataRoute } from "next";
 import { getArticles, getAuthors } from "@/lib/cms";
 import { territories, topics } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
 const baseUrl = siteUrl;
+// Per request: only published content, and nothing unless SITE_INDEXABLE=true.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  if (!indexable) return [];
+  if (!isIndexable()) return [];
   const articles = await getArticles();
   const authors = await getAuthors();
   const staticRoutes = ["", "/opinion", "/agenda", "/publicidad", "/contacto"].map((route) => ({

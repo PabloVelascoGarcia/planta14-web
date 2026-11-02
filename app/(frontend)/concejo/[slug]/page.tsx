@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const name = allConcejos().find((concejo) => slugify(concejo) === slug);
-  return { title: name ? `${name}` : "Concejo" };
+  return { title: name ? `${name}` : "Concejo", alternates: { canonical: `/concejo/${slug}` } };
 }
 
 export default async function ConcejoPage({ params }: PageProps) {
