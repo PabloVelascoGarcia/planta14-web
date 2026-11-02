@@ -98,3 +98,5 @@ No comprobado: SSH del PC de Pablo al VPS, servicios/systemd/swap/cortafuegos y 
 - **Punto 3** — correo IONOS: cerrado en configuración y pruebas sintéticas. Payload y alertas usan avisos@planta14.com por smtp.ionos.es:465 SSL/TLS, con una contraseña privada compartida. Entrega real, recuperación y límites del buzón se comprobarán antes de abrir.
 
 - **Punto 4** — almacenamiento IONOS: guía cerrada con tres buckets, otra región UE para copias, identidades separadas y comprobaciones positivas/negativas de permisos. Buckets, claves, IDs y políticas efectivas no se han creado ni certificado en la cuenta real.
+
+- **Punto 5** — operación desde Windows: guía cerrada para generar Ed25519, entregar solo la pública, comprobar huella y segunda sesión, y desplegar por SSH desde Windows ejecutando todo en Ubuntu. No se ha conectado al VPS ni transferido una clave real.
