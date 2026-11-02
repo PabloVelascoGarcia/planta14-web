@@ -12,6 +12,10 @@ assert.equal(site.isIndexable({ SITE_INDEXABLE: '1' }), false, 'only the exact v
 assert.equal(site.isIndexable({ SITE_INDEXABLE: 'true' }), false, 'demo content is never indexable');
 assert.equal(site.isIndexable({ SITE_INDEXABLE: 'true', CONTENT_SOURCE: 'payload' }), true);
 const live = { SITE_INDEXABLE: 'true', CONTENT_SOURCE: 'payload' };
+assert.equal(site.configuredSiteUrl({ SITE_URL: 'https://planta14.example/' }), 'https://planta14.example');
+for (const value of ['javascript:alert(1)', 'https://user:secret@example.test', 'https://example.test/path', 'https://example.test/?a=1']) {
+  assert.throws(() => site.configuredSiteUrl({ SITE_URL: value }));
+}
 for (const path of ['/', '/noticia/x', '/lena', '/aviso-legal', '/sitemap.xml', '/_next/static/chunk.js']) assert.equal(site.robotsHeader(path, {}), 'noindex, nofollow', path);
 for (const path of ['/', '/noticia/x', '/lena', '/aviso-legal']) assert.equal(site.robotsHeader(path, live), null, path);
 for (const path of ['/cms', '/cms/login', '/api/health', '/api/cms/users', '/admin', '/buscar', '/lena/panel', '/niebla/x']) assert.equal(site.robotsHeader(path, live), 'noindex, nofollow', path);
@@ -43,7 +47,22 @@ assert.equal(consent.readConsent('a=1; planta14_consent=1%3Aaccepted'), 'accepte
 assert.equal(consent.readConsent('planta14_consent=1:rejected; b=2'), 'rejected');
 assert.equal(consent.readConsent('planta14_consent=0:accepted'), null, 'old versions ask again');
 assert.equal(consent.readConsent('planta14_consent=1:maybe'), null);
+assert.equal(consent.readConsent('planta14_consent=%E0%A4%A'), null, 'malformed cookie fails closed');
+assert.equal(consent.readConsent('planta14_consent=1:accepted:extra'), null);
 assert.match(consent.consentCookie('rejected', true), /^planta14_consent=1%3Arejected; Max-Age=15552000; Path=\/; SameSite=Lax; Secure$/);
 for (const name of ['_ga', '_ga_ABC123', '_gid', '_gat', '_gat_UA']) assert(consent.isAnalyticsCookie(name), name);
 for (const name of ['planta14_consent', 'payload-token', '_gax']) assert(!consent.isAnalyticsCookie(name), name);
 console.log('PASS: GA4 id validation, consent cookie format/versioning and analytics cookie detection');
+
+const { createHealthProbe } = await load('lib/health-probe.ts');
+let calls = 0, clock = 1, finish;
+const probe = createHealthProbe(() => { calls++; return new Promise(resolve => { finish = resolve; }); }, { ttlMs: 20, timeoutMs: 5, now: () => clock });
+assert.deepEqual(await Promise.all(Array.from({ length: 100 }, () => probe())), Array(100).fill(false));
+assert.equal(calls, 1, 'concurrent health requests share one underlying query');
+clock += 25; assert.equal(await probe(), false);
+assert.equal(calls, 1, 'a timeout must not spawn more queries while the old query is pending');
+finish(); await new Promise(resolve => setTimeout(resolve, 0));
+clock += 25; const recovered = probe(); await new Promise(resolve => setTimeout(resolve, 0)); finish();
+assert.equal(await recovered, true); assert.equal(calls, 2);
+await probe(); assert.equal(calls, 2, 'successful result cached for the TTL');
+console.log('PASS: health single-flight, bounded refresh, timeout without query buildup and recovery');

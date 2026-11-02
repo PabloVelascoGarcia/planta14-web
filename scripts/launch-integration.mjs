@@ -69,9 +69,15 @@ try {
     author: author.id, town: town.id, section: section.id, date: now.slice(0, 10), publishedAt: now };
   await payload.create({ collection: 'articles', overrideAccess: true, data: { ...base, slug: 'noticia-publicada-lanzamiento', title: 'Noticia publicada para el lanzamiento', image: image.id, _status: 'published' } });
   await payload.create({ collection: 'articles', overrideAccess: true, draft: true, data: { ...base, slug: 'borrador-oculto-lanzamiento', title: 'Borrador que no debe aparecer', _status: 'draft' } });
+  const unpublished = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...base, slug: 'noticia-despublicada', title: 'Noticia despublicada', _status: 'published' } });
+  await payload.update({ collection: 'articles', overrideAccess: true, id: unpublished.id, data: { _status: 'draft' } });
   const lenaImage = await payload.create({ collection: 'media', overrideAccess: true, file: { data: png, mimetype: 'image/png', name: 'aviso-lena.png', size: png.length },
     data: { alt: 'Imagen del aviso de Lena', credit: 'Ayuntamiento de Lena (prueba)', rightsHolder: 'Ayuntamiento de Lena', rightsType: 'institucional', rightsScope: 'publicable', uploadedBySpace: lenaSpace.id } });
   await payload.create({ collection: 'municipal-content', overrideAccess: true, data: { space: lenaSpace.id, type: 'notice', title: 'Aviso municipal con imagen', excerpt: 'Aviso sintético.', body: 'Texto.', origin: 'municipality', publishedAt: now.slice(0, 10), expiresAt: '2099-12-31', image: lenaImage.id, demo: false, _status: 'published' } });
+  const removed = await payload.create({ collection: 'municipal-content', overrideAccess: true, data: { space: lenaSpace.id, type: 'notice', title: 'Aviso retirado que no debe aparecer', excerpt: 'Privado tras retirada.', body: 'Texto retirado.', publishedAt: now.slice(0, 10), _status: 'published' } });
+  await payload.update({ collection: 'municipal-content', overrideAccess: true, id: removed.id, data: { withdrawal: { withdrawn: true, reason: 'Ensayo de metadatos' } } });
+  const hiddenSpace = (await payload.find({ collection: 'municipal-spaces', overrideAccess: true, where: { legacyID: { equals: 'mieres' } } })).docs[0];
+  await payload.update({ collection: 'municipal-spaces', overrideAccess: true, id: hiddenSpace.id, data: { _status: 'draft' } });
   const hero = (await payload.findByID({ collection: 'media', id: image.id, overrideAccess: true })).sizes.hero;
   const storedImage = await payload.findByID({ collection: 'media', id: image.id, overrideAccess: true });
   const heroURL = `${publicBase}/${storedImage.publicKey}/${hero.filename}`;
@@ -101,13 +107,20 @@ try {
   for (const route of ['/cms/login', '/api/health', '/lena/panel']) assert.match((await fetch(`${indexable.url}${route}`)).headers.get('x-robots-tag') || '', /noindex/, route);
   const robots = await html(`${indexable.url}/robots.txt`);
   assert.match(robots, /Allow: \//); assert.match(robots, /Disallow: \/cms/); assert.match(robots, /Sitemap: http:\/\/localhost:3062\/sitemap-noticias\.xml/);
+  const invalidDate = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...base, date: 'fecha-no-valida', slug: 'fecha-invalida', title: 'Fecha antigua mal importada', _status: 'published' } });
   const sitemap = await html(`${indexable.url}/sitemap.xml`);
   assert.match(sitemap, /<loc>http:\/\/localhost:3062\/noticia\/noticia-publicada-lanzamiento<\/loc>/);
   assert.doesNotMatch(sitemap, /borrador-oculto-lanzamiento/, 'drafts never listed');
+  assert.doesNotMatch(sitemap, /noticia-despublicada|Invalid Date|NaN/);
+  assert.match(sitemap, /<loc>http:\/\/localhost:3062\/lena<\/loc>/, 'published municipal spaces included');
+  assert.doesNotMatch(sitemap, /<loc>http:\/\/localhost:3062\/mieres<\/loc>/, 'draft municipal spaces excluded');
   const news = await html(`${indexable.url}/sitemap-noticias.xml`);
   assert.match(news, /<news:title>Noticia publicada para el lanzamiento<\/news:title>/);
   assert.match(news, /<news:name>Planta 14<\/news:name>/);
   assert.doesNotMatch(news, /borrador-oculto/);
+  assert.doesNotMatch(news, /noticia-despublicada|Aviso retirado/);
+  assert.equal((await fetch(`${indexable.url}/sitemap-noticias.xml`)).headers.get('cache-control'), 'no-store');
+  await payload.delete({ collection: 'articles', id: invalidDate.id, overrideAccess: true });
   passed('SITE_INDEXABLE=true: public pages indexable, private areas noindex; sitemap.xml and news sitemap list only published content');
 
   // --- 3. Open Graph, Twitter and JSON-LD of a published article.
@@ -137,6 +150,8 @@ try {
   assert.equal(decode(meta(lena, 'property', 'og:title')), 'Ayuntamiento de Lena · Espacio municipal');
   assert.match(decode(meta(lena, 'property', 'og:image')), new RegExp(`^${publicBase}/public/[0-9a-f-]{36}/`), 'municipal page shares its latest public image');
   assert.match(lena, /<link rel="canonical" href="http:\/\/localhost:3062\/lena"/);
+  assert.doesNotMatch(lena, /Aviso retirado que no debe aparecer|Privado tras retirada/);
+  assert.equal((await fetch(`${indexable.url}/noticia/noticia-despublicada`)).status, 404);
   assert.equal((await fetch(`${indexable.url}/noticia/borrador-oculto-lanzamiento`)).status, 404);
   passed('published article exposes og:title/description/image (absolute hero variant with size), twitter card, canonical and valid NewsArticle JSON-LD; municipal page shares its image');
 
@@ -159,14 +174,14 @@ try {
   // --- 5. Cookie consent in a real browser (Chromium/Playwright). GA4 is stubbed: no request leaves the machine.
   const require = createRequire(import.meta.url);
   const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-  const browser = await chromium.launch({ headless: true, args: ['--no-proxy-server'] });
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || undefined, args: ['--no-proxy-server'] });
   try {
     const context = await browser.newContext();
     const gaRequests = [];
     await context.route(/googletagmanager\.com|google-analytics\.com/, async route => {
       gaRequests.push(route.request().url());
       // Stub of gtag.js: behaves like GA4 by writing its first-party cookies.
-      await route.fulfill({ contentType: 'text/javascript', body: `document.cookie="_ga=GA1.1.111.222; path=/; max-age=63072000"; document.cookie="_ga_TEST1234=GS1.1.333; path=/; max-age=63072000";` });
+      await route.fulfill({ contentType: 'text/javascript', body: `document.cookie="_ga=GA1.1.111.222; path=/; max-age=63072000"; document.cookie="_ga_TEST1234=GS1.1.333; path=/; max-age=63072000"; window.__launchGaLoaded=true;` });
     });
     const errors = []; context.on('page', p => p.on('pageerror', e => errors.push(e.message)));
     const tab = await context.newPage();
@@ -175,6 +190,7 @@ try {
     await banner.waitFor();
     await tab.waitForTimeout(500);
     assert.equal(gaRequests.length, 0, 'GA4 not requested before consent');
+    assert.equal(await tab.locator('script[src*="googletagmanager"], link[href*="googletagmanager"], link[href*="google-analytics"]').count(), 0, 'no script, preload or preconnect before consent');
     assert.deepEqual((await context.cookies()).map(c => c.name), [], 'no cookies at all before a decision');
     const [reject, accept] = [banner.getByRole('button', { name: 'Rechazar' }), banner.getByRole('button', { name: 'Aceptar' })];
     const [rb, ab] = [await reject.boundingBox(), await accept.boundingBox()];
@@ -193,13 +209,34 @@ try {
     assert(errors.length === 0, errors.join('\n'));
     await tab.reload(); await tab.waitForTimeout(500);
     assert(gaRequests.length >= 2, 'accepted consent is remembered and GA4 loads on the next page');
+    const mirror = await context.newPage();
+    await mirror.goto(`${plain.url}/lena`);
+    await mirror.waitForFunction(() => window.__launchGaLoaded === true);
     // Withdraw consent from the footer: GA cookies removed and GA4 no longer loaded.
     await tab.getByRole('button', { name: 'Configurar cookies' }).click();
     const before = gaRequests.length;
-    await Promise.all([tab.waitForEvent('load'), banner.getByRole('button', { name: 'Rechazar' }).click()]);
+    await Promise.all([tab.waitForEvent('load'), mirror.waitForEvent('load'), banner.getByRole('button', { name: 'Rechazar' }).click()]);
     await tab.waitForTimeout(500);
     assert.deepEqual((await context.cookies()).map(c => c.name).filter(n => n.startsWith('_ga')), [], 'analytics cookies removed on withdrawal');
     assert.equal(gaRequests.length, before, 'GA4 not loaded after withdrawing consent');
+    assert.equal(await tab.locator('#planta14-ga4').count(), 0);
+    assert.equal(await mirror.locator('#planta14-ga4').count(), 0, 'withdrawal propagated to another open tab without persistent storage');
+    await mirror.close();
+    // An already visited page (and a warm script) must re-check consent when reached via Back.
+    await tab.getByRole('button', { name: 'Configurar cookies' }).click();
+    await banner.getByRole('button', { name: 'Aceptar' }).click();
+    await tab.waitForFunction(() => document.cookie.includes('_ga='));
+    await tab.goto('about:blank');
+    await context.addCookies([{ name: 'planta14_consent', value: '1%3Arejected', url: plain.url }]);
+    const beforeBack = gaRequests.length;
+    await tab.goBack(); await tab.waitForTimeout(700);
+    assert.equal(gaRequests.length, beforeBack, 'Back/Forward cannot load GA after consent was withdrawn in another tab');
+    assert.equal(await tab.locator('#planta14-ga4').count(), 0);
+    assert.deepEqual((await context.cookies()).filter(c => c.name.startsWith('_ga')), []);
+    // Malformed cookies fail closed and show a working choice instead of throwing URIError.
+    await context.addCookies([{ name: 'planta14_consent', value: '%E0%A4%A', url: plain.url }]);
+    await tab.reload(); await banner.waitFor();
+    assert.equal(gaRequests.length, beforeBack);
     // A site without GA4 configured shows no banner and sets no cookies.
     const other = await browser.newContext();
     const otherTab = await other.newPage();
@@ -208,6 +245,8 @@ try {
     assert.equal(await otherTab.getByRole('dialog').count(), 0);
     assert.deepEqual(await other.cookies(), []);
     passed('cookies: no GA4 and no cookies before consent; reject as easy as accept; accept loads GA4; choice changed from the footer removes GA cookies');
+    const { testCachedConsent } = await import('./launch-cached-consent.mjs');
+    await testCachedConsent(browser, plain.url, gaId);
 
     if (process.env.MANUAL_SCREENSHOTS === 'true') {
       const { captureManual } = await import('./manual-screenshots.mjs');

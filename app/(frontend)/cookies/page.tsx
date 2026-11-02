@@ -15,13 +15,14 @@ export default function Page() {
       <thead><tr><th>Cookie</th><th>Titular</th><th>Finalidad</th><th>Tipo</th><th>Duración</th></tr></thead>
       <tbody>
         <tr><td>planta14_consent</td><td>Propia</td><td>Recordar si aceptaste o rechazaste las cookies de medición</td><td>Técnica (exenta)</td><td>180 días</td></tr>
-        <tr><td>payload-token</td><td>Propia</td><td>Mantener la sesión de las cuentas municipales y de la redacción</td><td>Técnica (exenta)</td><td>La sesión (2 horas)</td></tr>
-        <tr><td>planta14_session</td><td>Propia</td><td>Sesión del panel de demostración de la redacción</td><td>Técnica (exenta)</td><td>La sesión</td></tr>
-        <tr><td>_ga</td><td>Google</td><td>Distinguir visitantes de forma anónima para medir la audiencia</td><td>Analítica (requiere consentimiento)</td><td>2 años</td></tr>
+        <tr><td>payload-token</td><td>Propia</td><td>Mantener la sesión de las cuentas municipales y de la redacción, después de iniciar sesión</td><td>Técnica (exenta)</td><td>2 horas; puede renovarse al mantener la sesión activa</td></tr>
+        <tr><td>payload-theme</td><td>Propia</td><td>Recordar el tema claro u oscuro elegido en el CMS</td><td>Preferencia solicitada</td><td>365 días</td></tr>
+        <tr><td>planta14_session</td><td>Propia</td><td>Sesión del panel de demostración de la redacción, si se utiliza</td><td>Técnica (exenta)</td><td>8 horas</td></tr>
+        <tr><td>_ga</td><td>Google</td><td>Distinguir visitantes mediante un identificador seudónimo para medir la audiencia</td><td>Analítica (requiere consentimiento)</td><td>2 años</td></tr>
         <tr><td>_ga_&lt;ID&gt;</td><td>Google</td><td>Mantener el estado de la sesión de medición</td><td>Analítica (requiere consentimiento)</td><td>2 años</td></tr>
       </tbody>
     </table>
-    <p>Google Analytics se configura sin señales publicitarias ni personalización de anuncios. Información de Google: <a href="https://policies.google.com/technologies/cookies" rel="noopener noreferrer">policies.google.com/technologies/cookies</a>.</p>
+    <p>Las cookies de Google solo se utilizan si la medición está activada y la aceptas. Su caducidad de dos años puede renovarse con las visitas mientras exista consentimiento. Google Analytics se configura sin señales publicitarias ni personalización de anuncios. Información de Google: <a href="https://policies.google.com/technologies/cookies" rel="noopener noreferrer">policies.google.com/technologies/cookies</a>.</p>
     <h2>Cambiar tu elección</h2>
     <p>Puedes aceptar o rechazar las cookies de medición en cualquier momento. Al rechazarlas se borran las cookies de Google Analytics de este sitio.</p>
     {analytics ? <p><CookieSettingsButton /></p> : <p>Ahora mismo la medición de audiencia está desactivada en este sitio y no se usan cookies de Google.</p>}

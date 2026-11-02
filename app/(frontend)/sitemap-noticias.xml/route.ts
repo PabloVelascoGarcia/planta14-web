@@ -23,5 +23,5 @@ ${articles.map(a => `  <url>
   </url>`).join("\n")}
 </urlset>
 `;
-  return new Response(body, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=300" } });
+  return new Response(body, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "no-store" } });
 }

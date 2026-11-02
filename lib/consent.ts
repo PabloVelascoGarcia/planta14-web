@@ -16,7 +16,10 @@ export function analyticsId(env: Record<string, string | undefined> = process.en
 export function readConsent(cookieString: string | null | undefined): ConsentDecision | null {
   const raw = (cookieString || "").split(/;\s*/).find(part => part.startsWith(`${CONSENT_COOKIE}=`))?.slice(CONSENT_COOKIE.length + 1);
   if (!raw) return null;
-  const [version, decision] = decodeURIComponent(raw).split(":");
+  let decoded: string;
+  try { decoded = decodeURIComponent(raw); } catch { return null; }
+  const [version, decision, extra] = decoded.split(":");
+  if (extra !== undefined) return null;
   return version === CONSENT_VERSION && (decision === "accepted" || decision === "rejected") ? decision : null;
 }
 

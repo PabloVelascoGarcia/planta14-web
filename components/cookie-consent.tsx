@@ -8,6 +8,8 @@ export const OPEN_COOKIE_SETTINGS = "planta14:open-cookie-settings";
 declare global { interface Window { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void } }
 
 function loadAnalytics(gaId: string) {
+  if (readConsent(document.cookie) !== "accepted") return;
+  (window as unknown as Record<string, unknown>)[`ga-disable-${gaId}`] = false;
   if (document.getElementById("planta14-ga4")) return;
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag() { window.dataLayer!.push(arguments); }; // eslint-disable-line prefer-rest-params
@@ -36,17 +38,26 @@ function removeAnalyticsCookies() {
  */
 export function CookieConsent({ gaId }: { gaId: string }) {
   const [open, setOpen] = useState(false);
+  const disable = useCallback(() => {
+    (window as unknown as Record<string, unknown>)[`ga-disable-${gaId}`] = true;
+    document.getElementById("planta14-ga4")?.remove();
+    removeAnalyticsCookies();
+  }, [gaId]);
   const decide = useCallback((decision: ConsentDecision) => {
     const previous = readConsent(document.cookie);
     document.cookie = consentCookie(decision, location.protocol === "https:");
+    if (typeof BroadcastChannel !== "undefined") {
+      const channel = new BroadcastChannel("planta14-consent");
+      channel.postMessage("changed"); channel.close();
+    }
     setOpen(false);
     if (decision === "accepted") loadAnalytics(gaId);
     else {
-      removeAnalyticsCookies();
+      disable();
       // A loaded gtag cannot be unloaded: reload so the page runs without it.
       if (previous === "accepted") location.reload();
     }
-  }, [gaId]);
+  }, [gaId, disable]);
   useEffect(() => {
     const decision = readConsent(document.cookie);
     const frame = requestAnimationFrame(() => {
@@ -54,9 +65,33 @@ export function CookieConsent({ gaId }: { gaId: string }) {
       else { removeAnalyticsCookies(); setOpen(decision === null); }
     });
     const reopen = () => setOpen(true);
+    const recheck = () => {
+      if (readConsent(document.cookie) === "accepted") loadAnalytics(gaId);
+      else {
+        const loaded = Boolean(window.gtag);
+        disable();
+        if (loaded) location.reload();
+        else setOpen(readConsent(document.cookie) === null);
+      }
+    };
+    // A bfcache restore does not remount React. Revalidate after Back/Forward and after another tab
+    // changes the shared cookie; pagehide disables a suspended analytics instance immediately.
+    const hide = () => { (window as unknown as Record<string, unknown>)[`ga-disable-${gaId}`] = true; };
+    const visible = () => { if (document.visibilityState === "visible") recheck(); };
+    window.addEventListener("pageshow", recheck);
+    window.addEventListener("focus", recheck);
+    window.addEventListener("pagehide", hide);
+    document.addEventListener("visibilitychange", visible);
+    const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("planta14-consent") : null;
+    if (channel) channel.onmessage = recheck;
     window.addEventListener(OPEN_COOKIE_SETTINGS, reopen);
-    return () => { cancelAnimationFrame(frame); window.removeEventListener(OPEN_COOKIE_SETTINGS, reopen); };
-  }, [gaId]);
+    return () => {
+      cancelAnimationFrame(frame); window.removeEventListener(OPEN_COOKIE_SETTINGS, reopen);
+      window.removeEventListener("pageshow", recheck); window.removeEventListener("pagehide", hide);
+      window.removeEventListener("focus", recheck); channel?.close();
+      document.removeEventListener("visibilitychange", visible);
+    };
+  }, [gaId, disable]);
   if (!open) return null;
   return <div role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title" className="cookie-consent">
     <div className="container-p14 cookie-consent-inner">

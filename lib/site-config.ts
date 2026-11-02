@@ -1,5 +1,13 @@
 export const voiceDemoEnabled = process.env.DEMO_CONTENT !== "example";
-export const siteUrl = (process.env.SITE_URL || process.env.DEPLOY_PRIME_URL || process.env.URL || "http://localhost:3000").replace(/\/+$/, "");
+export function configuredSiteUrl(env: Record<string, string | undefined> = process.env) {
+  const value = env.SITE_URL || env.DEPLOY_PRIME_URL || env.URL || "http://localhost:3000";
+  const url = new URL(value);
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== '/') {
+    throw new Error('SITE_URL debe ser un origen http(s), sin credenciales, ruta ni parámetros');
+  }
+  return url.origin;
+}
+export const siteUrl = configuredSiteUrl();
 export const siteName = "Planta 14";
 export const publisherName = "Agencia Social de Servicios Asturiana S.L. (ASSA)";
 
