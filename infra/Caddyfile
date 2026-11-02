@@ -5,17 +5,32 @@
 	admin off
 }
 
-{$STAGING_DOMAIN} {
-	tls {$CADDY_TLS}
-	encode zstd gzip
-
-	# El entorno de pruebas no debe indexarse.
+(staging_security_headers) {
 	header {
 		X-Robots-Tag "noindex, nofollow"
 		Strict-Transport-Security "max-age=31536000"
 		X-Content-Type-Options "nosniff"
 		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Cache-Control "private, no-store"
 		-Server
+	}
+}
+
+{$STAGING_DOMAIN} {
+	tls {$CADDY_TLS}
+	encode zstd gzip
+	import staging_security_headers
+	# No hay rutas públicas de aplicación, ni siquiera /cms o los archivos estáticos.
+	basic_auth {
+		{$CADDY_BASIC_AUTH_USER} {$CADDY_BASIC_AUTH_HASH}
+	}
+
+	# Los desafíos 401 y los errores del proxy también deben llevar noindex y no-store.
+	handle_errors {
+		import staging_security_headers
+		respond "{err.status_text}" {err.status_code}
 	}
 
 	# Cargas del CMS: 10 MiB por imagen, con margen para el multipart.
@@ -24,6 +39,8 @@
 	}
 
 	reverse_proxy app:3000 {
+		# Payload usa su propia cookie; no se reenvía la contraseña de la barrera exterior.
+		header_up -Authorization
 		header_up X-Forwarded-Proto {scheme}
 	}
 

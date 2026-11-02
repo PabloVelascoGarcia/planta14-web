@@ -14,11 +14,12 @@ load_env_file() {
   local file=$1 line key value
   [[ -f $file ]] || die "No existe el archivo de entorno: $file"
   while IFS= read -r line || [[ -n $line ]]; do
+    line=${line%$'\r'}
     [[ $line =~ ^[[:space:]]*(#|$) ]] && continue
     [[ $line =~ ^([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]] || continue
     key=${BASH_REMATCH[1]}
     value=${BASH_REMATCH[2]}
-    value=${value%\"}; value=${value#\"}
+    if [[ $value == \"*\" || $value == \'*\' ]]; then value=${value:1:${#value}-2}; fi
     if [[ -z ${!key+x} ]]; then export "$key=$value"; fi
   done < "$file"
 }
@@ -42,12 +43,16 @@ encrypt_file() {
     age)
       require_cmd age
       [[ -n ${BACKUP_AGE_RECIPIENT:-} ]] || die "BACKUP_ENCRYPTION=age requiere BACKUP_AGE_RECIPIENT"
-      age -r "$BACKUP_AGE_RECIPIENT" -o "$src.age" "$src" && rm -f "$src"
+      age -r "$BACKUP_AGE_RECIPIENT" -o "$src.age.partial" "$src" || { rm -f -- "$src.age.partial"; die "Ha fallado el cifrado age"; }
+      mv -- "$src.age.partial" "$src.age" || die "No se pudo finalizar la copia age"
+      rm -f -- "$src"
       printf '%s\n' "$src.age" ;;
     gpg)
       require_cmd gpg
       [[ -n ${BACKUP_GPG_RECIPIENT:-} ]] || die "BACKUP_ENCRYPTION=gpg requiere BACKUP_GPG_RECIPIENT"
-      gpg --batch --yes --trust-model always --encrypt --recipient "$BACKUP_GPG_RECIPIENT" --output "$src.gpg" "$src" && rm -f "$src"
+      gpg --batch --yes --trust-model always --encrypt --recipient "$BACKUP_GPG_RECIPIENT" --output "$src.gpg.partial" "$src" || { rm -f -- "$src.gpg.partial"; die "Ha fallado el cifrado gpg"; }
+      mv -- "$src.gpg.partial" "$src.gpg" || die "No se pudo finalizar la copia gpg"
+      rm -f -- "$src"
       printf '%s\n' "$src.gpg" ;;
     *) die "BACKUP_ENCRYPTION no válido: ${BACKUP_ENCRYPTION} (none|age|gpg)" ;;
   esac
@@ -89,7 +94,7 @@ prune_backups() {
   [[ $keep =~ ^[0-9]+$ ]] || die "BACKUP_KEEP_MIN debe ser un entero"
   local cutoff; cutoff=$(date -u -d "-$days days" +%Y%m%dT%H%M%SZ)
   local -a files=()
-  mapfile -t files < <(find "$dir" -maxdepth 1 -type f -name "$prefix-*" ! -name '*.sha256' -printf '%f\n' | sort -r)
+  mapfile -t files < <(find "$dir" -maxdepth 1 -type f -name "$prefix-*" ! -name '*.sha256' ! -name '*.partial' -printf '%f\n' | sort -r)
   local i=0 f stamp
   for f in "${files[@]}"; do
     i=$((i + 1))

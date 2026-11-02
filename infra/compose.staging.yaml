@@ -11,7 +11,8 @@ name: ${COMPOSE_PROJECT_NAME:-planta14-staging}
 
 x-app-env: &app-env
   NODE_ENV: production
-  CMS_ENABLED: ${CMS_ENABLED:-false}
+  CMS_ENABLED: "true"
+  CONTENT_SOURCE: payload
   PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Define PAYLOAD_SECRET (mínimo 32 caracteres)}
   DATABASE_URL: postgres://${POSTGRES_USER:-planta14}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-planta14}
   CMS_SERVER_URL: https://${STAGING_DOMAIN:?Define STAGING_DOMAIN}
@@ -94,6 +95,8 @@ services:
     environment:
       STAGING_DOMAIN: ${STAGING_DOMAIN:?Define STAGING_DOMAIN}
       CADDY_TLS: ${CADDY_TLS:?Define CADDY_TLS (email para Let's Encrypt o "internal")}
+      CADDY_BASIC_AUTH_USER: ${CADDY_BASIC_AUTH_USER:-planta14}
+      CADDY_BASIC_AUTH_HASH: ${CADDY_BASIC_AUTH_HASH:?Define el hash bcrypt de acceso a staging}
     ports:
       - "${HTTP_BIND:-0.0.0.0}:80:80"
       - "${HTTPS_BIND:-0.0.0.0}:443:443"

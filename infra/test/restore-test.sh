@@ -11,6 +11,7 @@
 # Uso: infra/test/restore-test.sh
 # Variables: POSTGRES_IMAGE, RCLONE_IMAGE, RESTORE_TEST_PAYLOAD=auto|0|1,
 #            RESTORE_TEST_STORAGE=auto|0|1, RESTORE_TEST_KEEP=1 (conserva infra/test/out).
+#            RESTORE_TEST_APP_IMAGE: imagen local de la app para migrar en la red aislada.
 # No usa ningún recurso real: todo se crea y se borra en esta máquina.
 set -Eeuo pipefail
 SCRIPT_NAME=restore-test
@@ -63,14 +64,26 @@ start_pg "$src"
 docker exec "$src" postgres --version
 
 payload=${RESTORE_TEST_PAYLOAD:-auto}
-if [[ $payload == auto ]]; then [[ -x $root/node_modules/.bin/payload ]] && payload=1 || payload=0; fi
+if [[ $payload == auto ]]; then
+  if [[ -n ${RESTORE_TEST_APP_IMAGE:-} || -x $root/node_modules/.bin/payload ]]; then payload=1; else payload=0; fi
+fi
 if [[ $payload == 1 ]]; then
-  port=$(docker port "$src" 5432/tcp | head -n1 | sed 's/.*://')
   log "Aplicando migraciones de Payload (cms/migrations) en la base de origen"
-  (cd "$root" && env CMS_ENABLED=true NODE_ENV=development PAYLOAD_SECRET="$(openssl rand -hex 32)" \
+  if [[ -n ${RESTORE_TEST_APP_IMAGE:-} ]]; then
+    payload_secret=$(openssl rand -hex 32)
+    CMS_ENABLED=true NODE_ENV=development PAYLOAD_SECRET="$payload_secret" \
+       DATABASE_URL="postgres://planta14:$pw@$src:5432/planta14" CMS_SERVER_URL=http://localhost:3000 \
+       S3_BUCKET=restore-test S3_REGION=us-east-1 S3_ACCESS_KEY_ID=restore-test S3_SECRET_ACCESS_KEY=restore-test \
+     docker run --rm --network "$net" -e CMS_ENABLED -e NODE_ENV -e PAYLOAD_SECRET -e DATABASE_URL \
+       -e CMS_SERVER_URL -e S3_BUCKET -e S3_REGION -e S3_ACCESS_KEY_ID -e S3_SECRET_ACCESS_KEY \
+       "$RESTORE_TEST_APP_IMAGE" npm run cms:migrate
+  else
+    port=$(docker port "$src" 5432/tcp | head -n1 | sed 's/.*://')
+    (cd "$root" && env CMS_ENABLED=true NODE_ENV=development PAYLOAD_SECRET="$(openssl rand -hex 32)" \
      DATABASE_URL="postgres://planta14:$pw@127.0.0.1:$port/planta14" CMS_SERVER_URL=http://localhost:3000 \
      S3_BUCKET=restore-test S3_REGION=us-east-1 S3_ACCESS_KEY_ID=restore-test S3_SECRET_ACCESS_KEY=restore-test \
      ./node_modules/.bin/payload migrate) 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E 'Migrat|Done|ERROR' | sed 's/^/    /'
+  fi
 else
   log "AVISO: sin migraciones de Payload (falta node_modules); solo datos sintéticos"
 fi
@@ -123,7 +136,7 @@ if [[ $storage == 1 ]]; then
   export S3_BUCKET=planta14-prueba
   for n in $(seq 1 40); do head -c $((1000 + n * 137)) /dev/urandom > "$out/seed/media/2026/11/imagen-$n.webp"; done
   for n in $(seq 1 5); do head -c 4096 /dev/urandom > "$out/seed/media/original-$n.jpg"; done
-  chmod -R a+rwX "$out"
+  chmod -R a+rwX "$out/s3data" "$out/seed"
   rclone_setup "$key" "$secret"
   run_rclone "$out/seed" mkdir "p14:$S3_BUCKET"
   run_rclone "$out/seed" copy /work "p14:$S3_BUCKET"
