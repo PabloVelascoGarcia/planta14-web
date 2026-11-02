@@ -4,6 +4,8 @@ Rama: `desarrollo/planta14-v2-infra`, creada desde `desarrollo/planta14-v2-fase1
 
 Este documento explica cómo levantar un entorno de pruebas en un servidor virtual (pensado para IONOS), cómo funcionan las copias y la restauración, el dimensionado y qué tiene que decidir o contratar Pablo. **No se ha contratado ni desplegado nada.** Netlify sigue alojando solo la demo ([NETLIFY-CONFIG.md](NETLIFY-CONFIG.md)).
 
+**Revisión posterior:** [INFRA-REVISION-2026-11-02.md](INFRA-REVISION-2026-11-02.md). Esta rama todavía parte de fase 1 y no tiene el adaptador de contenidos: configurar `CONTENT_SOURCE=payload` no basta hasta integrar el código de contenidos en un trabajo aparte. Tampoco está elegido ni validado el proveedor S3. No presentar esta plantilla como un staging completo listo para desplegar.
+
 ## Qué hay en `infra/`
 
 | Archivo | Para qué |
@@ -12,7 +14,7 @@ Este documento explica cómo levantar un entorno de pruebas en un servidor virtu
 | `.env.staging.example` | Plantilla de variables, sin valores reales. |
 | `generate-env.sh` | Crea `infra/.env.staging` con secretos aleatorios (permisos 600, ignorado por Git). |
 | `app.Dockerfile` (+ `.dockerignore`) | Imagen de la app. Build con el CMS desactivado; se activa en ejecución. |
-| `Caddyfile` | Proxy inverso, HTTPS automático (Let's Encrypt) o certificado interno, `noindex`, límite de subida 12 MB. |
+| `Caddyfile` | Proxy inverso con contraseña obligatoria (hash bcrypt), HTTPS, `noindex` también en 401/errores y límite de subida 12 MB. |
 | `minio/init.sh` | Bucket privado con versionado y una clave de la app limitada a ese bucket. |
 | `backup/backup-postgres.sh` | `pg_dump` con fecha, SHA-256, cifrado opcional y retención. |
 | `backup/backup-storage.sh` | Copia del bucket S3 (rclone) en `.tar.gz` con manifiesto SHA-256, cifrado opcional y retención. |
@@ -30,7 +32,7 @@ Internet ──80/443──> caddy ──(red edge)──> app:3000 ──(red b
 ```
 
 - Solo Caddy publica puertos. PostgreSQL no se publica. La consola de MinIO solo escucha en `127.0.0.1` del servidor (acceso por túnel SSH).
-- La red `backend` es `internal`: PostgreSQL y MinIO no salen a Internet.
+- La red `backend` es `internal`: PostgreSQL no tiene salida a Internet. MinIO está también en `minio_admin`, una red no interna para su consola en loopback, por lo que no se debe asumir que carece de salida.
 - El servicio `migrate` aplica `cms/migrations` (Payload tiene `push:false`) y la app no arranca hasta que termina bien.
 - Las imágenes del CMS siguen siendo privadas: el bucket no se publica y Caddy no lo expone; se sirven a través de Payload.
 
@@ -51,6 +53,15 @@ Registro `A` (y `AAAA` si hay IPv6) de, por ejemplo, `staging.<dominio>` apuntan
 
 ### 3. Código y variables
 
+Genera primero el hash de acceso exterior con la imagen oficial de Caddy. No escribas la contraseña directamente en una orden ni la guardes en Git:
+
+```bash
+read -rsp 'Contraseña de acceso a staging: ' STAGING_PASSWORD
+CADDY_BASIC_AUTH_HASH=$(printf '%s\n' "$STAGING_PASSWORD" | docker run --rm -i caddy:2.10.2-alpine caddy hash-password)
+unset STAGING_PASSWORD
+export CADDY_BASIC_AUTH_HASH
+```
+
 ```bash
 git clone https://github.com/PabloVelascoGarcia/planta14-web.git
 ```
@@ -63,7 +74,7 @@ cd planta14-web && git checkout desarrollo/planta14-v2-infra
 infra/generate-env.sh staging.example.org admin@example.org
 ```
 
-Sustituye el dominio y el email por los reales. Revisa `infra/.env.staging`: con `CADDY_TLS=internal` Caddy usa un certificado propio (útil en local con `localhost`; el navegador avisará). `CMS_ENABLED=false` mantiene `/cms` cerrado; cámbialo a `true` cuando quieras probar el CMS. **Guarda una copia de ese archivo en un gestor de secretos** y no lo subas a Git (`infra/.gitignore` lo excluye).
+Después: `unset CADDY_BASIC_AUTH_HASH`. Sustituye el dominio y el email por los reales. Revisa `infra/.env.staging`: con `CADDY_TLS=internal` Caddy usa un certificado propio (útil en local con `localhost`; el navegador avisará). Compose fija `CMS_ENABLED=true` y `CONTENT_SOURCE=payload`. El generador exige un hash bcrypt y lo escribe entre comillas simples para preservar sus signos `$`; si lo rellenas manualmente, conserva esas comillas. **Guarda una copia de ese archivo en un gestor de secretos** y no lo subas a Git (`infra/.gitignore` lo excluye). La contraseña exterior y las cuentas individuales de Payload son controles distintos; la contraseña de Caddy no se reenvía a la app.
 
 ### 4. Validar y arrancar
 
@@ -103,7 +114,7 @@ unset CMS_BOOTSTRAP_EMAIL CMS_BOOTSTRAP_PASSWORD
 curl -sI https://staging.example.org/robots.txt
 ```
 
-Debe responder 200 con `x-robots-tag: noindex, nofollow`. Con el CMS activo, `https://staging.example.org/cms` muestra el acceso de Payload.
+Sin credenciales debe responder **401**, con `WWW-Authenticate`, `x-robots-tag: noindex, nofollow` y `Cache-Control: private, no-store`. Con `curl -u planta14 -sI https://staging.example.org/robots.txt` se solicita la contraseña interactivamente y debe responder 200. El navegador pide primero la contraseña exterior; después `/cms` muestra el acceso individual de Payload. Para clientes API, usar Basic en la barrera exterior y la cookie de Payload para la sesión de la aplicación; el proxy elimina `Authorization` antes de reenviar.
 
 ### 7. Actualizar
 
@@ -143,7 +154,7 @@ infra/backup/backup-storage.sh --env-file infra/.env.staging
 ```
 
 - **Fuera del servidor**: una copia que vive en el mismo servidor no protege de su pérdida. Hay que sincronizar `BACKUP_DIR` a otro sitio (otro proveedor u otra región). Está en la lista de decisiones.
-- Para producción, la copia completa diaria del bucket crecerá con las imágenes. Lo razonable es versionado en el bucket + réplica incremental a otro bucket (`rclone sync`), y dejar el `.tar.gz` para instantáneas periódicas.
+- La copia completa diaria del bucket crecerá con las imágenes. La política de réplica externa sigue pendiente: una sincronización con borrados puede propagar eliminaciones. Decidir versionado, retención independiente y protección contra borrado antes de programarla. Los scripts actuales no realizan esa réplica.
 
 ## Restauración
 
@@ -209,6 +220,8 @@ Para staging: 80 GB. Para producción con MinIO local: 160 GB o más, o S3 exter
 13. **Registro de imágenes**: construir en el servidor o en CI y subir a un registro privado (GitHub Container Registry u otro).
 
 ## Lo que no se ha comprobado
+
+El listado siguiente corresponde al trabajo inicial. En la revisión posterior **sí** se construyó la imagen, se validó Caddy oficial y se repitió la restauración completa: ver [el informe actualizado](INFRA-REVISION-2026-11-02.md). Siguen sin validar el proveedor S3, MinIO, GPG positivo y un despliegue HTTPS real.
 
 - La imagen de la app (`infra/app.Dockerfile`) no se ha podido construir en el entorno del agente: dentro del build, `npm ci` no llega al registro de npm por el proxy de ese entorno. El `npm run build` de la app sí se verificó en la fase 1.
 - El `Caddyfile` no se ha validado con `caddy validate`: Docker Hub limitó la descarga de la imagen (429).
