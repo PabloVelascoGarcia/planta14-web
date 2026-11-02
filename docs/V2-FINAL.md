@@ -88,3 +88,7 @@ La prueba de roles necesitó que un adaptador exclusivo del ejecutor apuntara a 
 7. **Primera semana:** revisar memoria, disco de 120 GB, correo y copia diaria. Si RAM >85 % sostenida 10 minutos, investigar y preparar mudanza a otro servidor con copia/restauración; este M+ no se amplía. No contratar automáticamente ni limpiar volúmenes. La demo Netlify y las ramas históricas se gestionan aparte.
 
 No comprobado: SSH del PC de Pablo al VPS, servicios/systemd/swap/cortafuegos y aislamiento nativos reales, DNS/ACME externos, SMTP entregado, S3/IAM/retención IONOS reales, carga sostenida del VPS y revisión jurídica profesional. No se han usado credenciales ni recursos de producción.
+
+## Cierre por puntos del encargo
+
+- **Punto 1 — kit de producción revisado:** cerrado como revisión de código y ensayos locales. Se conservan aparte las decisiones de aislamiento, escrituras/rollback, custodia age y efectos S3. No equivale a aprobar la apertura ni a una instalación en IONOS.
