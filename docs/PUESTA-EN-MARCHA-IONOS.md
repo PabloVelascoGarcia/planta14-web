@@ -1,16 +1,30 @@
 # Puesta en marcha de Planta 14 en IONOS
 
-Salida pública: **4 de diciembre de 2026**. Rama de instalación: **desarrollo/planta14-v2-final**; se instala un commit concreto ya probado, no una rama que pueda cambiar durante la operación.
+Salida pública: **4 de diciembre de 2026**. Rama de instalación: **desarrollo/planta14-v2-instalacion**. Se instala el commit concreto que indica `docs/V2-INSTALACION.md`, ya probado, y no una rama que pueda cambiar durante la operación. En esta guía se llama `COMMIT-VALIDADO`.
+
+## Dónde estamos (2 de noviembre de 2026)
+
+| Paso | Estado |
+| --- | --- |
+| VPS IONOS M+ (Ubuntu 24.04, IP **87.106.30.18**) | Contratado |
+| Preparación del servidor (apartado 2) | **Hecha.** `check-server.sh` en verde, código en `/srv/planta14/app` en el commit `86aed41`. Detalle en `docs/SERVIDOR-PREPARADO.md` |
+| Object Storage: tres buckets y una clave (apartado 3) | **Creados** por Pablo |
+| La web | **No instalada** |
+| Siguiente | Instalación de prueba en **pruebas.planta14.com** (apartado 5), sin indexar. Después se pasa a planta14.com (apartado 6) |
+
+No repitas el apartado 2: empieza en el 4 y sigue el 5 en orden.
 
 ## 1. Lo contratado y lo que se va a usar
 
 Pablo ya ha contratado **IONOS VPS Linux M+**, Ubuntu 24.04, **2 vCores, 4 GB RAM y 120 GB NVMe**. Este plan **no se amplía**. Si falta capacidad, se prepara otro servidor y se cambia con copia y restauración. No hace falta volver a contratar este VPS.
 
-Todo el almacenamiento será **IONOS Cloud Object Storage**: originales en un bucket privado, imágenes publicadas en otro público y copias cifradas en un tercer bucket, en otra región de la UE. El correo saldrá exclusivamente del buzón IONOS **avisos@planta14.com**. Las instrucciones no dan por creados aún el buzón, los buckets ni sus claves.
+Todo el almacenamiento es **IONOS Object Storage** (el sencillo del panel): originales en un bucket privado y imágenes publicadas en otro público, en Berlín, y copias cifradas en un tercero en Fráncfort, con bloqueo de objetos. Ya están creados (apartado 3). El correo saldrá exclusivamente del buzón IONOS **avisos@planta14.com**, que la guía todavía no da por creado.
 
 Los datos del contrato y de los tratamientos deben ser revisados por quien gestione la protección de datos. No se completa [REGISTRO MERCANTIL] sin los datos reales.
 
 ## 2. Desde dónde se trabaja: PC Windows y servidor Linux
+
+> **Hecho el 2 de noviembre** (`docs/SERVIDOR-PREPARADO.md`). Este apartado queda como referencia, para un servidor nuevo o una mudanza. Para entrar ahora: `ssh planta14@87.106.30.18` desde PowerShell, con la clave `planta14_ionos` cargada en el agente SSH de Windows.
 
 La IA de instalación trabajará **desde el PC Windows de Pablo**, abriendo una conexión SSH al servidor. Windows actúa como mando a distancia. Los comandos de Docker, preparación y despliegue se ejecutan **dentro del servidor Ubuntu**, en `/srv/planta14/app`; la imagen se construye allí. No se instala producción en Windows ni en Netlify.
 
@@ -48,7 +62,7 @@ Ya dentro de Ubuntu, la persona técnica ejecuta:
 ```bash
 apt-get update && apt-get install -y git
 mkdir -p /srv/planta14
-git clone --branch desarrollo/planta14-v2-final https://github.com/PabloVelascoGarcia/planta14-web.git /srv/planta14/app
+git clone --branch desarrollo/planta14-v2-instalacion https://github.com/PabloVelascoGarcia/planta14-web.git /srv/planta14/app
 cd /srv/planta14/app
 git checkout COMMIT-VALIDADO
 bash infra/server/setup-server.sh --admin-user planta14 --ssh-key /root/clave-pablo.pub
@@ -137,16 +151,21 @@ La configuración del código es **smtp.ionos.es, puerto 465, SSL/TLS**, usuario
 
 Como `planta14`, dentro del servidor:
 
+Los pasos 1 a 3 del apartado 5 dejan el código listo. Después, para la **instalación de prueba**:
+
 ```bash
-sudo chown -R planta14: /srv/planta14
 cd /srv/planta14/app
-bash infra/deploy/generate-production-env.sh info@planta14.com
+bash infra/deploy/generate-production-env.sh --pruebas info@planta14.com
 nano infra/.env.production
 ```
 
-El generador no sobrescribe archivos existentes y deja permisos 600. Completa:
+El generador no sobrescribe archivos existentes y deja permisos 600. Con `--pruebas` ya vienen puestos:
+- `SITE_DOMAIN=pruebas.planta14.com`;
+- `SITE_INDEXABLE=false`: el despliegue se niega a indexar otro dominio que no sea planta14.com;
+- `CADDY_WWW_REDIRECT=off`, porque no existe `www.pruebas`;
+- copias externas bajo `planta14/pruebas`.
 
-- `SITE_INDEXABLE=false` antes del 4 de diciembre.
+Completa:
 - `S3_ACCESS_KEY_ID` y `S3_SECRET_ACCESS_KEY` con la clave única de Object Storage. Buckets, regiones, endpoints y `PUBLIC_MEDIA_BASE_URL` ya vienen puestos (apartado 3). Deja vacíos `STORAGE_BACKUP_*`, `OFFSITE_ACCESS_KEY_ID` y `OFFSITE_SECRET_ACCESS_KEY`: usan la misma clave.
 - `BACKUP_AGE_RECIPIENT` con la clave **pública** age (empieza por `age1`). La pareja se crea en Windows (siguiente apartado). La privada **nunca** va al servidor ni a este archivo: no rellenes `BACKUP_AGE_IDENTITY`.
 - `SMTP_PASSWORD` con la contraseña de `avisos@planta14.com`; `SMTP_ENABLED=true` tras revisarla. La misma contraseña alimenta las alertas: deja `ALERT_SMTP_PASSWORD` vacío.
@@ -191,22 +210,48 @@ Web + PostgreSQL + Caddy + constructor suman **3 GiB de límites de RAM**, dejan
 
 La imagen se construye con `infra/deploy/build-image.sh`, mediante BuildKit limitado. **La web anterior sigue funcionando durante la construcción.** El cambio final de contenedor puede cortar el servicio unos segundos; no se promete ausencia total de interrupciones.
 
-Desde `/srv/planta14/app` en la sesión SSH:
+### Instalación de prueba en pruebas.planta14.com, paso a paso
+
+Se parte del servidor preparado (commit `86aed41`, sin web). Todo se hace como `planta14`, en una sesión SSH desde PowerShell: `ssh planta14@87.106.30.18`. Pablo escribe él mismo las contraseñas y claves; la IA no las ve.
+
+**1. Código del commit validado.** Hoy `/srv/planta14/app` es de root; se pasa a `planta14` y se fija el commit:
+
+```bash
+sudo chown -R planta14: /srv/planta14
+cd /srv/planta14/app
+git fetch origin desarrollo/planta14-v2-instalacion
+git checkout --detach COMMIT-VALIDADO
+git log -1 --format='%h %s'
+```
+
+**2. Comprobar que el servidor sigue igual.** Los scripts del servidor no cambian entre `86aed41` y la rama de instalación, así que repetir la preparación debe dar **0 cambios**:
+
+```bash
+sudo bash infra/server/setup-server.sh --admin-user planta14 --ssh-key /root/clave-pablo.pub
+sudo bash infra/server/check-server.sh --admin-user planta14
+```
+
+Deben terminar en «Terminado: 0 cambios» y «RESULTADO: servidor preparado». Si setup hiciera cambios, para y revisa por qué.
+
+**3. DNS de la instalación de prueba.** En el panel de IONOS, en el dominio planta14.com, **añade** un registro **A** con nombre `pruebas` y valor `87.106.30.18`. **No toques** `@`, `www`, MX ni TXT: planta14.com, la redirección actual y el correo siguen igual. Comprueba desde PowerShell, en unos minutos, que responde la IP del servidor:
+
+```powershell
+Resolve-DnsName pruebas.planta14.com -Type A
+```
+
+Caddy pide el certificado de Let's Encrypt en el primer despliegue: el registro tiene que funcionar antes.
+
+**4. Archivo `.env` y claves.** Apartado 4: `generate-production-env.sh --pruebas`, la clave de Object Storage, la clave **pública** age y el correo. En el panel, la política de lectura pública del bucket de imágenes (apartado 3).
+
+**5. Desplegar.** Es la primera instalación: no hay modo mantenimiento ni copia previa, porque no hay datos. La construcción tarda varios minutos:
 
 ```bash
 bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
 ```
 
-**Cómo se protege una actualización** (decidido por Pablo; detalle para él en `docs/MANUAL-OPERACION.md`, apartados 8 a 10):
+Debe terminar en «Desplegada». Comprueba en el navegador `https://pruebas.planta14.com/api/health`: debe responder `"status":"ok"`, con un candado válido de Let's Encrypt.
 
-1. **Modo mantenimiento.** Antes de la copia previa, `deploy.sh` pone el `/cms`, la API de escritura y los paneles municipales en **solo lectura**, con un mensaje claro para quien intente guardar. La web pública sigue funcionando. Se activa con un archivo en `/srv/planta14/mantenimiento`, que Caddy y la app consultan en cada petición: no hay que reconstruir ni reiniciar. Se desactiva **solo** cuando `/api/health` responde bien con la versión nueva. Así ningún cambio queda fuera de la copia.
-2. **Si la versión nueva falla sin haber tocado la base**, se vuelve sola a la anterior y se quita el mantenimiento (código 1).
-3. **Si falla después de cambiar la base** (código 2), se vuelve a la imagen anterior, se **deja el mantenimiento** y **no se restaura sola**, porque la clave privada no está en el servidor. La orden explica en lenguaje llano los pasos: Pablo ejecuta `infra/deploy/restaurar.sh` por SSH desde su PC y pega la clave cuando se la pide. La clave llega por la entrada estándar: no se escribe en disco, no aparece en el historial ni en la lista de procesos. El script restaura y quita el mantenimiento al comprobar la salud.
-4. Mientras haya una restauración pendiente, `deploy.sh` no despliega otra versión.
-
-Una restauración SQL no revierte por sí sola efectos en S3. Las copias públicas se reconcilian con `npm run cms:media:sync-public`, si la persona técnica lo considera necesario.
-
-Tras instalar, crea el primer administrador desde la sesión SSH. Pablo introduce la contraseña en ese terminal, de forma oculta:
+**6. Primer administrador.** Pablo introduce la contraseña en el terminal, sin que se vea:
 
 ```bash
 cd /srv/planta14/app
@@ -219,13 +264,58 @@ APP_IMAGE="planta14-app:${installed_commit:0:12}" docker compose -f infra/compos
 unset CMS_BOOTSTRAP_EMAIL CMS_BOOTSTRAP_PASSWORD
 ```
 
-Comprueba que informa de administrador creado y entra en `https://planta14.com/cms`. Después sigue `docs/MANUAL-OPERACION.md` para las cuentas municipales. No ejecutes el importador de demostración en producción. Carga exclusivamente contenido con origen y derechos comprobados.
+Comprueba que dice que el administrador está creado y entra en `https://pruebas.planta14.com/cms`. No ejecutes el importador de demostración: carga solo contenido de prueba propio o con derechos comprobados.
 
-## 6. DNS y prueba antes de abrir
+**7. Prueba completa de restauración y aislamiento, con la imagen de la web.** Es la que quedó a medias al preparar el servidor. Ahora debe pasar entera y no dejar volúmenes:
 
-Cuando el servidor esté preparado, cambia el registro A de `planta14.com` a su IPv4 y `www` a la configuración acordada. No cambies MX ni TXT del correo. Revisa/elimina un AAAA antiguo si no has configurado y comprobado IPv6; no dejes una ruta a otro servidor. Caddy necesita los puertos 80 y 443 abiertos para emitir el certificado. Comprueba el cortafuegos de IONOS además del de Ubuntu.
+```bash
+docker volume ls -q | sort > /tmp/volumenes-antes.txt
+installed_commit=$(cat /srv/planta14/state/current)
+RESTORE_TEST_APP_IMAGE="planta14-app:${installed_commit:0:12}" bash infra/test/restore-test.sh
+docker volume ls -q | sort | diff /tmp/volumenes-antes.txt - && echo "Sin volúmenes nuevos"
+```
 
-Con `SITE_INDEXABLE=false`, prueba dominio y www, HTTPS real, sesión municipal, publicación, retirada con motivo desde CMS, originales privados, copia pública retirada, recuperación de contraseña y llegada del aviso municipal. Envía una alerta sintética y comprueba que llega al destinatario. Prueba el modo mantenimiento (`infra/deploy/mantenimiento.sh … activar`): intenta guardar en `/cms` y en un panel, comprueba el mensaje, comprueba que la portada se ve y desactívalo. Con al menos una copia hecha, Pablo hace desde su PC el **simulacro de restauración** (`restaurar.sh --solo-comprobar`, `docs/MANUAL-OPERACION.md`, apartado 9) con la clave del gestor y con la del papel: los dos deben decir «SIMULACRO CORRECTO». Haz una copia cifrada, súbela al bucket de la otra región y restáurala en un entorno vacío. Guarda el resultado; no basta con ver que existe un archivo.
+Debe terminar en «prueba de restauración SUPERADA» y «Sin volúmenes nuevos».
+
+**8. Almacenamiento y copias, una vez a mano.** Haz las comprobaciones del apartado 3: original privado, listado denegado, imagen publicada visible y retirada, y bloqueo en la copia externa. Después:
+
+```bash
+bash infra/backup/backup-postgres.sh --env-file infra/.env.production
+bash infra/backup/backup-storage.sh --env-file infra/.env.production
+bash infra/backup/offsite-sync.sh --env-file infra/.env.production
+```
+
+Los tres deben terminar sin error. El último dice «Copia externa verificada en p14off:planta14-copias-b11/planta14/pruebas».
+
+**9. Mantenimiento y simulacro de restauración.**
+- `bash infra/deploy/mantenimiento.sh --env-file infra/.env.production activar "prueba"`: intenta guardar en `/cms` y en un panel municipal, comprueba el mensaje y que la portada se ve, y luego `… desactivar`.
+- Pablo, desde su PC: `restaurar.sh --solo-comprobar` (`docs/MANUAL-OPERACION.md`, apartado 9), con la clave del gestor y con la del papel. Las dos deben decir «SIMULACRO CORRECTO».
+
+**10. Programar las tareas** (apartado 6) y repasar la lista de pruebas antes de abrir.
+
+**Cómo se protege una actualización** (decidido por Pablo; detalle para él en `docs/MANUAL-OPERACION.md`, apartados 8 a 10):
+
+1. **Modo mantenimiento.** Antes de la copia previa, `deploy.sh` pone el `/cms`, la API de escritura y los paneles municipales en **solo lectura**, con un mensaje claro para quien intente guardar. La web pública sigue funcionando. Se activa con un archivo en `/srv/planta14/mantenimiento`, que Caddy y la app consultan en cada petición: no hay que reconstruir ni reiniciar. Se desactiva **solo** cuando `/api/health` responde bien con la versión nueva. Así ningún cambio queda fuera de la copia.
+2. **Si la versión nueva falla sin haber tocado la base**, se vuelve sola a la anterior y se quita el mantenimiento (código 1).
+3. **Si falla después de cambiar la base** (código 2), se vuelve a la imagen anterior, se **deja el mantenimiento** y **no se restaura sola**, porque la clave privada no está en el servidor. La orden explica en lenguaje llano los pasos: Pablo ejecuta `infra/deploy/restaurar.sh` por SSH desde su PC y pega la clave cuando se la pide. La clave llega por la entrada estándar: no se escribe en disco, no aparece en el historial ni en la lista de procesos. El script restaura y quita el mantenimiento al comprobar la salud.
+4. Mientras haya una restauración pendiente, `deploy.sh` no despliega otra versión.
+
+Una restauración SQL no revierte por sí sola efectos en S3. Las copias públicas se reconcilian con `npm run cms:media:sync-public`, si la persona técnica lo considera necesario.
+
+## 6. Pruebas antes de abrir y paso a planta14.com
+
+### Lista de pruebas en pruebas.planta14.com
+
+Con `SITE_INDEXABLE=false` comprueba:
+- HTTPS real y que la web responde;
+- sesión municipal, publicación y retirada con motivo desde el CMS;
+- originales privados y copia pública retirada;
+- recuperación de contraseña y llegada del aviso municipal;
+- que llega una alerta sintética al destinatario;
+- el modo mantenimiento y el simulacro de restauración (paso 9);
+- una copia cifrada subida al bucket de Fráncfort y restaurada en un entorno vacío (paso 7).
+
+Guarda el resultado: no basta con ver que existe un archivo.
 
 Programa las tareas, solo después de probarlas:
 
@@ -235,9 +325,32 @@ sudo bash infra/deploy/schedule.sh --env-file /srv/planta14/app/infra/.env.produ
 
 Copia PostgreSQL 03:15, originales 03:30, destino externo 03:45, disco cada hora y memoria cada minuto. Comprueba la primera noche y que los trabajos no se solapan. A más del **85 % de RAM durante 10 minutos**, el monitor intenta enviar un correo; repite como máximo cada seis horas durante el mismo episodio. Es la señal para revisar carga y preparar la mudanza, no para ampliar este plan. Una pausa larga en las muestras reinicia la medición. Si SMTP falla, consulta el registro y el monitor externo.
 
+### Pasar de pruebas.planta14.com a planta14.com
+
+Cuando las pruebas estén bien, la misma instalación pasa al dominio definitivo. Hasta entonces planta14.com sigue como está.
+
+1. **Decide qué pasa con los datos de prueba** (decisión de Pablo):
+   - **Conservarlos**, si lo creado en pruebas ya es contenido real: cuentas, publicaciones o imágenes. No hay que hacer nada más.
+   - **Empezar de cero.** La persona técnica borra la base de datos de la instalación y vacía los buckets de originales e imágenes; esos dos no tienen bloqueo. Las copias de prueba del bucket de Fráncfort (`planta14/pruebas`) no se pueden borrar: caducan con el bloqueo, a los 30 días. Después se repite el administrador (paso 6 del apartado 5).
+2. **DNS de planta14.com.** Antes de tocar nada, haz una captura de todos los registros del dominio. Baja el TTL de `@` y `www` un día antes, si el panel lo permite. Cambia el registro **A** de `@` a `87.106.30.18` y `www` a esa misma IP, o a un CNAME a `planta14.com`. **No cambies** MX ni TXT: el correo de info@planta14.com sigue igual. Quita un AAAA antiguo si lo hubiera: no hay IPv6 configurado. Comprueba con `Resolve-DnsName planta14.com -Type A` y `Resolve-DnsName www.planta14.com`.
+3. **`.env`.** En `infra/.env.production` cambia:
+   - `SITE_DOMAIN=planta14.com`;
+   - `CADDY_WWW_REDIRECT=on`;
+   - `OFFSITE_PREFIX=planta14/produccion`.
+
+   Deja `SITE_INDEXABLE=false` hasta el 4 de diciembre.
+4. **Volver a desplegar el mismo commit** para que Caddy y la web tomen el dominio nuevo y pidan los certificados:
+
+   ```bash
+   DEPLOY_FORCE=1 bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
+   ```
+
+   Comprueba `https://planta14.com/api/health`, y que `https://www.planta14.com/…` redirige a `https://planta14.com/…`.
+5. **Borra el registro `pruebas`** del DNS: el servidor ya no sirve ese nombre. Envía de nuevo a los ayuntamientos el enlace de su panel con el dominio definitivo.
+
 ## 7. El 4 de diciembre y después
 
-Solo con las pruebas y textos legales resueltos, cambia `SITE_INDEXABLE=true` y actualiza el contenedor con la versión ya validada. Activa GA4 únicamente cuando su configuración y textos estén revisados; la casilla de consentimiento no configura una propiedad de Google por sí misma. Da de alta el monitor externo y envía los sitemaps a Search Console.
+Solo con las pruebas y textos legales resueltos, cambia `SITE_INDEXABLE=true` y vuelve a desplegar el mismo commit con `DEPLOY_FORCE=1` (como en el paso 4 anterior). Solo se acepta con `SITE_DOMAIN=planta14.com`. Activa GA4 únicamente cuando su configuración y textos estén revisados; la casilla de consentimiento no configura una propiedad de Google por sí misma. Da de alta el monitor externo y envía los sitemaps a Search Console.
 
 Revisa copia diaria y alertas cada mañana la primera semana. Guarda tres versiones locales y vigila el disco de 120 GB: el constructor conserva caché. La persona técnica revisará el espacio antes de limpiar **solo** caché del constructor; nunca use una limpieza general que borre volúmenes. Mantén las versiones anterior/actual y las copias.
 
