@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { contentSource } from "@/lib/content-source";
 import { AdSlot } from "@/components/ad-slot";
 
 export const metadata: Metadata = {
@@ -24,7 +25,9 @@ export default function AdvertisingPage() {
       <section className="mt-10 max-w-3xl space-y-4 text-coal-800">
         <h2 className="font-serif text-3xl font-black text-coal-950">Formatos disponibles</h2>
         <p>Campañas por territorio, patrocinios de agenda, módulos en portada y presencia en boletín.</p>
-        <p>Propuesta comercial en preparación. Los formatos mostrados son ejemplos de integración.</p>
+        {contentSource() === "demo"
+          ? <p>Propuesta comercial en preparación. Los formatos mostrados son ejemplos de integración.</p>
+          : <p>Para anunciarte en Planta 14, escríbenos a <a href="mailto:info@planta14.com" className="underline">info@planta14.com</a>.</p>}
       </section>
     </div>
   );

@@ -8,7 +8,7 @@ import news from "@/lib/demo/data/news.json";
 
 const demoTopics = topics.filter(topic => topic === "Agenda" || news.some(article => article.topic === topic));
 
-export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]> }) {
+export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories, demo = true }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]>; demo?: boolean }) {
   const pathname = usePathname();
   if (townSlugs.some(slug => pathname === `/${slug}` || pathname === `/${slug}/panel`)) return null;
   return (
@@ -16,7 +16,7 @@ export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().m
       <div className="container-p14">
         <div className="masthead-topline">
           <span>Asturias · El Caudal</span>
-          <span>Edición de demostración</span>
+          {demo ? <span>Edición de demostración</span> : null}
         </div>
         <div className="masthead">
           <p className="masthead-note">Donde otros<br />no llegan.</p>

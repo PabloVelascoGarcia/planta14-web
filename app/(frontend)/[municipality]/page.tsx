@@ -23,5 +23,10 @@ export default async function Page({ params }: { params: Promise<{ municipality:
   const { municipality } = await params;
   const space = await getMunicipalSpace(municipality);
   if (!space) notFound();
-  return <MunicipalPage space={space} active={spaceIsActive(space)} contents={(await getMunicipalContents()).filter(c => c.space === space.id)} articles={await getArticlesByConcejo(space.territory)} demo={contentSource() === "demo"} />;
+  const demo = contentSource() === "demo";
+  // With real content the server drops expired items (Madrid date); the demo keeps its client-side behaviour.
+  // PLANTA14_TEST_TODAY (AAAA-MM-DD) only for tests that compare with the demo's fixed date.
+  const today = process.env.PLANTA14_TEST_TODAY || new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
+  const contents = (await getMunicipalContents()).filter(c => c.space === space.id && (demo || !c.expiresAt || c.expiresAt >= today));
+  return <MunicipalPage space={space} active={spaceIsActive(space)} contents={contents} articles={await getArticlesByConcejo(space.territory)} demo={demo} />;
 }

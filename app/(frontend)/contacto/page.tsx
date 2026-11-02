@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { contentSource } from "@/lib/content-source";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -19,7 +20,9 @@ export default function ContactPage() {
         <section className="space-y-3 text-coal-800">
           <h2 className="font-serif text-3xl font-black text-coal-950">Una redacción cerca de ti</h2>
           <p>Noticias, historias locales, convocatorias y propuestas de colaboración.</p>
-          <p>Los canales de contacto estarán disponibles con el lanzamiento de Planta 14. Esta edición de demostración no recoge mensajes ni datos personales.</p>
+          {contentSource() === "demo"
+            ? <p>Los canales de contacto estarán disponibles con el lanzamiento de Planta 14. Esta edición de demostración no recoge mensajes ni datos personales.</p>
+            : <p>Escríbenos a <a href="mailto:info@planta14.com" className="underline">info@planta14.com</a>.</p>}
         </section>
       </div>
     </div>

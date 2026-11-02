@@ -8,11 +8,12 @@ import { formatDate } from "@/lib/utils";
 import { getMunicipalIdentity, identityStyle } from "@/lib/demo/identities";
 
 // Content published by a municipal account (not demo, no external reference) is labelled as such.
-function originLabel(item: MunicipalContent) { return item.sourceUrl ? "Referencia" : item.demo ? "Ejemplo" : "Publicado por el ayuntamiento"; }
-function ContentCard({ item, space, compact = false }: { item: MunicipalContent; space: MunicipalSpace; compact?: boolean }) {
+// With real content (CONTENT_SOURCE=payload) the demo flag is ignored: there are no example items.
+function originLabel(item: MunicipalContent, demo: boolean) { return item.sourceUrl ? "Referencia" : demo && item.demo ? "Ejemplo" : "Publicado por el ayuntamiento"; }
+function ContentCard({ item, space, compact = false, demo }: { item: MunicipalContent; space: MunicipalSpace; compact?: boolean; demo: boolean }) {
   const kind = sections.find(s => s.id === item.type)?.label;
   return <article className={`municipal-content-card ${compact ? "is-compact" : ""}`}>
-    <div className="municipal-card-meta"><span>{space.name}</span><span>{kind} · {originLabel(item)}</span></div>
+    <div className="municipal-card-meta"><span>{space.name}</span><span>{kind} · {originLabel(item, demo)}</span></div>
     <details><summary><h3>{item.title}</h3><span aria-hidden="true">↗</span></summary>
       <p className="municipal-detail-text">{item.body}</p>
       {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Consultar la referencia oficial ↗</a> : null}
@@ -32,14 +33,17 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
   const identity = getMunicipalIdentity(space.id);
   const [section, setSection] = useState<string>("news");
   const [browserItems, setBrowserItems] = useState<MunicipalContent[]>([]);
+  // Demo only: items published in this browser (localStorage) and a fixed date until hydration. With real content
+  // the server already filters expired items (app/(frontend)/[municipality]/page.tsx).
   const [today, setToday] = useState("2026-10-15");
   useEffect(() => {
+    if (!demo) return;
     const sync = () => { try { setBrowserItems(readBrowserContent(localStorage.getItem(storageKey(space.id)), space.id)); } catch { setBrowserItems([]); } };
     const frame = requestAnimationFrame(() => { sync(); setToday(new Date().toLocaleDateString("en-CA")); });
     window.addEventListener("storage", sync); window.addEventListener("pageshow", sync);
     return () => { cancelAnimationFrame(frame); window.removeEventListener("storage", sync); window.removeEventListener("pageshow", sync); };
-  }, [space.id]);
-  const all = active ? [...browserItems, ...contents].filter(c => c.status === "published" && (!c.expiresAt || c.expiresAt >= today)) : [];
+  }, [space.id, demo]);
+  const all = active ? [...(demo ? browserItems : []), ...contents].filter(c => c.status === "published" && (!demo || !c.expiresAt || c.expiresAt >= today)) : [];
   const notices = all.filter(c => c.type === "notice");
   const events = all.filter(c => c.type === "event").sort((a,b) => (a.eventAt ?? "").localeCompare(b.eventAt ?? ""));
   return <div className={`municipal-shell ${identity ? "aller-theme" : ""}`} style={identityStyle(identity)}>
@@ -53,19 +57,19 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
         <div className="municipal-main-column">
           <div className="municipal-section-heading"><div><p className="municipal-kicker">{section === "news" ? "La vida del concejo" : "Información municipal"}</p><h2>{section === "news" ? "Noticias del concejo" : sections.find(s => s.id === section)?.label}</h2></div><span aria-hidden="true">{section === "news" ? "01" : "↗"}</span></div>
           {section === "contact" && active ? <div className="municipal-contact"><h3>Estamos cerca</h3><p>{space.contact.place}</p><p>{space.contact.hours}</p><p className="municipal-detail-text">{space.contact.note}</p>{identity ? <p><a href={identity.official} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Web municipal de {identity.name} ↗</a><br /><a href={identity.tourism} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Información turística de {identity.name} ↗</a></p> : null}<p>Este espacio complementa la comunicación municipal. No es la web institucional ni la sede electrónica y no tramita solicitudes.</p></div> : null}
-          {all.filter(c => c.type === section).map(item => <ContentCard key={item.id} item={item} space={space} />)}
+          {all.filter(c => c.type === section).map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} />)}
           {section === "news" ? <>
             {identity ? <section className="aller-discover" aria-label={`Descubre ${identity.name}`}><p className="municipal-kicker">{identity.name}, todo el año</p><div>{identity.stories.map(story => <a key={story.id} href={story.href} target={story.href.startsWith("https:") ? "_blank" : undefined} rel={story.href.startsWith("https:") ? "noopener noreferrer" : undefined}><span className="aller-story-number">{story.number}</span><small>{story.label}</small><h3>{story.title}</h3><p>{story.text}</p><span className="municipal-read-link">Descubrir ↗</span></a>)}</div></section> : null}
             {articles.length > 0 ? <div className="municipal-editorial-label"><span /> La mirada de Planta 14 <span /></div> : null}
             {articles.map(article => <article key={article.slug} className="municipal-editorial-card"><Link href={`/noticia/${article.slug}`} className="municipal-editorial-image"><img src={article.image} alt={article.imageAlt ?? ""} width={320} height={220} /></Link><div><p className="municipal-card-meta editorial-origin">Redacción Planta 14</p><h3><Link href={`/noticia/${article.slug}`}>{article.title}</Link></h3><p>{article.excerpt}</p><Link href={`/noticia/${article.slug}`} className="municipal-read-link">Leer la historia ↗</Link></div></article>)}
             {!active && !articles.length ? <p className="municipal-contact">El espacio municipal todavía no está activo. <Link href="/comarca/caudal">Explora las historias del Caudal ↗</Link></p> : null}
-            {active ? <section className="municipal-grant-preview"><p className="municipal-kicker">Ayudas y subvenciones</p>{all.filter(c => c.type === "grant").map(item => <ContentCard key={item.id} item={item} space={space} compact />)}<button className="municipal-text-button" onClick={() => setSection("grant")}>Ver todas las ayudas ↗</button></section> : null}
+            {active ? <section className="municipal-grant-preview"><p className="municipal-kicker">Ayudas y subvenciones</p>{all.filter(c => c.type === "grant").map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} compact />)}<button className="municipal-text-button" onClick={() => setSection("grant")}>Ver todas las ayudas ↗</button></section> : null}
           </> : null}
         </div>
         <aside className="municipal-sidebar">
-          {active ? <><section><div className="municipal-sidebar-heading"><h2>Agenda</h2><button onClick={() => setSection("event")} aria-label="Ver toda la agenda">↗</button></div>{events.slice(0,3).map(event => <button className="municipal-event" key={event.id} onClick={() => setSection("event")}><time dateTime={event.eventAt ?? undefined}><strong>{event.eventAt?.slice(8,10)}</strong><span>{new Intl.DateTimeFormat("es-ES",{month:"short"}).format(new Date(event.eventAt ?? event.publishedAt)).replace(".","")}</span></time><span><strong>{event.title}</strong><small>{event.place}</small><small>{event.eventAt?.slice(11,16)} h · {originLabel(event)}</small></span></button>)}</section>
-          <section className="municipal-notices"><h2>Avisos</h2>{notices.map(item => <ContentCard key={item.id} item={item} space={space} compact />)}</section>
-          <section className="municipal-panel-invite"><p className="municipal-kicker">Así de sencillo</p><h2>Tu ayuntamiento<br />tiene la palabra.</h2><p>Escribe un aviso, comprueba cómo queda y publícalo. Sin complicaciones.</p><Link href={`/${space.id}/panel`} className="municipal-cta">Probar el panel <span>↗</span></Link><small>Demostración · Sin registro</small></section></> : <Link href="/comarca/caudal" className="municipal-cta">Historias del Caudal ↗</Link>}
+          {active ? <><section><div className="municipal-sidebar-heading"><h2>Agenda</h2><button onClick={() => setSection("event")} aria-label="Ver toda la agenda">↗</button></div>{events.slice(0,3).map(event => <button className="municipal-event" key={event.id} onClick={() => setSection("event")}><time dateTime={event.eventAt ?? undefined}><strong>{event.eventAt?.slice(8,10)}</strong><span>{new Intl.DateTimeFormat("es-ES",{month:"short"}).format(new Date(event.eventAt ?? event.publishedAt)).replace(".","")}</span></time><span><strong>{event.title}</strong><small>{event.place}</small><small>{event.eventAt?.slice(11,16)} h · {originLabel(event, demo)}</small></span></button>)}</section>
+          <section className="municipal-notices"><h2>Avisos</h2>{notices.map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} compact />)}</section>
+          {demo ? <section className="municipal-panel-invite"><p className="municipal-kicker">Así de sencillo</p><h2>Tu ayuntamiento<br />tiene la palabra.</h2><p>Escribe un aviso, comprueba cómo queda y publícalo. Sin complicaciones.</p><Link href={`/${space.id}/panel`} className="municipal-cta">Probar el panel <span>↗</span></Link><small>Demostración · Sin registro</small></section> : null}</> : <Link href="/comarca/caudal" className="municipal-cta">Historias del Caudal ↗</Link>}
         </aside>
       </div>
       <div className="municipal-bottom-note"><span>Información municipal y periodismo local, en un mismo lugar.</span><Link href="/">Volver al periódico ↗</Link></div>

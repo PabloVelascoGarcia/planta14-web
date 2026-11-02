@@ -4,6 +4,7 @@ import { MagazineFooter } from "@/components/magazine-footer";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 import { contentSource } from '@/lib/content-source';
+import { notFound } from 'next/navigation';
 
 import "./niebla.css";
 
@@ -15,7 +16,8 @@ export const metadata = {
 };
 
 export default async function Niebla() {
-  if (contentSource() === 'payload') return <div className="container-p14 py-20"><h1 className="font-serif text-5xl">El semanal de Planta 14</h1><p className="mt-5">Próximamente, nuevas historias propias de las Cuencas.</p></div>;
+  // El semanal es una maqueta de la demo: no existe con contenido real.
+  if (contentSource() === 'payload') notFound();
   const [lead, ...reports] = magazineStories;
   const leadPhoto = lead.cover ?? lead;
   return <div className="niebla">

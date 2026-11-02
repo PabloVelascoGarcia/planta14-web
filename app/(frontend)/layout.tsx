@@ -51,7 +51,7 @@ export default async function RootLayout({
     <html lang="es">
       <body className="min-h-screen antialiased">
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
-        <Header {...navigation} />
+        <Header {...navigation} demo={contentSource() === "demo"} />
         <main id="contenido">{children}</main>
         <Footer cookieSettings={Boolean(gaId)} />
         {gaId ? <CookieConsent gaId={gaId} /> : null}

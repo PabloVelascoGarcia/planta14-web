@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { contentSource } from "@/lib/content-source";
 import { LoginForm } from "@/components/login-form";
 
 export const metadata: Metadata = {
@@ -7,6 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
+  // Panel de la demo (archivos locales); con contenido real se usa /cms.
+  if (contentSource() === "payload") notFound();
   return (
     <div className="container-p14 flex min-h-[70vh] items-center justify-center py-10">
       <section className="w-full max-w-md border-t-4 border-coal-950 bg-white/75 p-6">

@@ -3,6 +3,7 @@ import { LegalPage } from "@/components/legal-page";
 import { CookieSettingsButton } from "@/components/cookie-consent";
 import { owner } from "@/lib/legal";
 import { analyticsId } from "@/lib/consent";
+import { contentSource } from "@/lib/content-source";
 
 export const metadata: Metadata = { title: "Política de cookies", alternates: { canonical: "/cookies" } };
 
@@ -17,7 +18,7 @@ export default function Page() {
         <tr><td>planta14_consent</td><td>Propia</td><td>Recordar si aceptaste o rechazaste las cookies de medición</td><td>Técnica (exenta)</td><td>180 días</td></tr>
         <tr><td>payload-token</td><td>Propia</td><td>Mantener la sesión de las cuentas municipales y de la redacción, después de iniciar sesión</td><td>Técnica (exenta)</td><td>2 horas; puede renovarse al mantener la sesión activa</td></tr>
         <tr><td>payload-theme</td><td>Propia</td><td>Recordar el tema claro u oscuro elegido en el CMS</td><td>Preferencia solicitada</td><td>365 días</td></tr>
-        <tr><td>planta14_session</td><td>Propia</td><td>Sesión del panel de demostración de la redacción, si se utiliza</td><td>Técnica (exenta)</td><td>8 horas</td></tr>
+        {contentSource() === "demo" ? <tr><td>planta14_session</td><td>Propia</td><td>Sesión del panel de demostración de la redacción, si se utiliza</td><td>Técnica (exenta)</td><td>8 horas</td></tr> : null}
         <tr><td>_ga</td><td>Google</td><td>Distinguir visitantes mediante un identificador seudónimo para medir la audiencia</td><td>Analítica (requiere consentimiento)</td><td>2 años</td></tr>
         <tr><td>_ga_&lt;ID&gt;</td><td>Google</td><td>Mantener el estado de la sesión de medición</td><td>Analítica (requiere consentimiento)</td><td>2 años</td></tr>
       </tbody>

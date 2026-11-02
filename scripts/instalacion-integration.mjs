@@ -84,6 +84,23 @@ try {
   }
   passed('the «Contenido de ejemplo» label on concejo pages appears only with CONTENT_SOURCE=demo');
 
+  // --- Restos de la demo: ninguno con CONTENT_SOURCE=payload; la demo sigue igual.
+  const demoTexts = ['Edición de demostración', 'Demo municipal', 'fines de demostración', 'Propuestas editoriales de demostración', 'Esta edición de demostración', 'ejemplos de integración', 'panel de demostración', 'Agenda de muestra'];
+  const visible = html => html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
+  for (const route of ['/', '/agenda', '/contacto', '/publicidad', '/cookies', '/mieres', '/lena', '/aviso-legal', '/tema/sociedad', '/buscar']) {
+    const html = visible(await page(`${cms}${route}`));
+    for (const text of demoTexts) assert.ok(!html.includes(text), `payload ${route} shows «${text}»`);
+    assert.doesNotMatch(html, /demostraci[oó]n|Contenido de ejemplo|>Ejemplo</i, `payload ${route} has no demo wording`);
+  }
+  assert.ok(!visible(await page(`${cms}/`)).includes('href="/niebla'), 'payload home has no link to the demo magazine');
+  for (const route of ['/edicion', '/niebla', '/niebla/adrian-barbon', '/admin', '/admin/login', '/mieres/panel', '/lena/panel']) {
+    assert.equal((await fetch(`${cms}${route}`, { redirect: 'manual' })).status === 404 || (await fetch(`${cms}${route}`)).status === 404, true, `payload ${route} → 404`);
+  }
+  const demoHome = await page(`${demo}/`);
+  for (const text of ['Edición de demostración', 'Demo municipal', 'fines de demostración', 'Propuestas editoriales de demostración']) assert.ok(demoHome.includes(text), `demo home keeps «${text}»`);
+  assert.equal((await fetch(`${demo}/edicion`)).status, 200); assert.equal((await fetch(`${demo}/niebla`)).status, 200); assert.equal((await fetch(`${demo}/aller/panel`)).status, 200);
+  passed('no demo leftovers with CONTENT_SOURCE=payload (header, footer, home, contact, ads, cookies, agenda, concejo pages); /edicion, /niebla, /admin and inactive panels 404; the demo is unchanged');
+
   // --- 3. «Mostrar en la página del concejo»: marcada por defecto; desmarcada, la noticia no sale en el concejo.
   const mieresTown = (await all('towns')).find(t => t.slug === 'mieres');
   const section = (await all('sections')).find(s => s.slug === 'sociedad');

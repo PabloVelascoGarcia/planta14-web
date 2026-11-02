@@ -120,7 +120,7 @@ try {
   await writeFile(path.join(directory, 'authors.json'), JSON.stringify([{ name: author.name, slug: author.slug, role: 'Redacción', bio: 'Texto original de prueba automática.' }]));
   async function start(source, port) {
     const child = spawn(process.execPath, [path.resolve('node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', String(port)], {
-      windowsHide: true, env: { ...process.env, CONTENT_SOURCE: source, DEMO_CONTENT: 'presentation', CMS_DEMO_DATA_DIR: directory, CMS_SERVER_URL: `http://localhost:${port}`, NEXT_TELEMETRY_DISABLED: '1' }, stdio: ['ignore', 'pipe', 'pipe'],
+      windowsHide: true, env: { ...process.env, CONTENT_SOURCE: source, DEMO_CONTENT: 'presentation', CMS_DEMO_DATA_DIR: directory, CMS_SERVER_URL: `http://localhost:${port}`, NEXT_TELEMETRY_DISABLED: '1', PLANTA14_TEST_TODAY: '2026-10-15' }, stdio: ['ignore', 'pipe', 'pipe'],
     });
     children.push(child);
     let logs = ''; child.stdout.on('data', b => { logs += b; }); child.stderr.on('data', b => { logs += b; });
@@ -133,10 +133,23 @@ try {
   }
   await start('demo', 3040); await start('payload', 3041);
   const mainContent = html => (html.match(/<body[^>]*>([\s\S]*?)<\/body>/)?.[1] || '').replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '').replace(/<!--.*?-->/g, '').replace(/\s+/g, ' ').trim();
-  for (const route of ['/', '/edicion', '/lena', '/mieres', '/aller', '/morcin', '/riosa', '/ribera-de-arriba', '/agenda', '/noticia/historia-original-prueba']) {
+  // Demo-only pieces (CONTENT_SOURCE=demo): header and footer notes, the demo-panel link, the magazine teaser,
+  // the panel invitation and «Ejemplo»/«de muestra» labels. Everything else must render identically.
+  const withoutDemoOnly = html => html
+    .replace('<span>Edición de demostración</span>', '')
+    .replace(/<a[^>]*href="\/aller\/panel"[^>]*>Demo municipal<\/a>/, '')
+    .replace(/<p class="mt-3">Textos e imágenes utilizados únicamente con fines de demostración\. No se publican\.<\/p>/, '')
+    .replace(/<section[^>]*aria-label="El semanal de Planta 14"[\s\S]*?<\/section>/, '')
+    .replace(/<section class="municipal-panel-invite">[\s\S]*?<\/section>/, '')
+    .replaceAll('Agenda de muestra · ', '')
+    // Origin label of municipal cards only (data such as a place may legitimately contain «Ejemplo»).
+    .replace(/(<span>[^<>]*?(?:<!-- -->)? · (?:<!-- -->)?)Ejemplo<\/span>/g, '$1Publicado por el ayuntamiento</span>')
+    .replace(/(<small>[0-9:]+(?:<!-- -->)? h(?:<!-- -->)? · (?:<!-- -->)?)Ejemplo<\/small>/g, '$1Publicado por el ayuntamiento</small>');
+  for (const route of ['/edicion', '/niebla', '/admin/login']) assert.equal((await fetch(`http://127.0.0.1:3041${route}`)).status, 404, `payload ${route} is demo-only (404)`);
+  for (const route of ['/', '/lena', '/mieres', '/aller', '/morcin', '/riosa', '/ribera-de-arriba', '/agenda', '/noticia/historia-original-prueba']) {
     const [demo, cms] = await Promise.all([fetch(`http://127.0.0.1:3040${route}`), fetch(`http://127.0.0.1:3041${route}`)]);
     assert.equal(demo.status, 200, `demo ${route}`); assert.equal(cms.status, 200, `payload ${route}`);
-    let expected = mainContent(await demo.text()); const actual = mainContent(await cms.text());
+    let expected = mainContent(withoutDemoOnly(await demo.text())); const actual = mainContent(await cms.text());
     // The concejo page's «Contenido de ejemplo» label belongs to the demo only (CONTENT_SOURCE=demo).
     const label = '<span class="municipal-example">Contenido de ejemplo</span>';
     if (/^\/(lena|mieres|aller|morcin|riosa|ribera-de-arriba)$/.test(route)) {
@@ -144,12 +157,13 @@ try {
       assert.equal(occurrences(expected), occurrences(actual) + 1, `demo shows the example label once more than payload: ${route}`);
       expected = expected.replace(label, '');
     }
+    if (actual !== expected && process.env.BLOCK2_DIFF) { let i = 0; while (expected[i] === actual[i]) i++; console.log('DIFF', route, '\nDEMO   :', expected.slice(i - 150, i + 250), '\nPAYLOAD:', actual.slice(i - 150, i + 250)); }
     assert(expected.length > 0); assert(actual === expected, `same rendered body (header, content, footer): ${route}`);
   }
   assert.equal((await fetch('http://127.0.0.1:3041/noticia/borrador-prueba')).status, 404);
   assert.equal((await fetch('http://127.0.0.1:3041/niebla/adrian-barbon')).status, 404);
   assert.doesNotMatch(await (await fetch('http://127.0.0.1:3041/niebla')).text(), /agendapublica|sobrevia\.net/);
-  passed('identical rendered body for demo/payload on ten public pages (except the demo-only «Contenido de ejemplo» label on concejo pages); HTTP draft 404 and magazine demo isolation');
+  passed('identical rendered body for demo/payload on nine public pages except demo-only pieces; /edicion, /niebla and /admin 404 in payload; HTTP draft 404 and magazine demo isolation');
 
   // Exercise downgrade/up inside real transactions after testing the protective editor guard.
   const migration = await import('../cms/migrations/20261102_094653_bloque2.ts');

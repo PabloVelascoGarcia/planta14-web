@@ -8,7 +8,7 @@ import { getMunicipalContents, getMunicipalSpace as getSpace } from '@/lib/munic
 export async function AgendaList() {
   const payloadEvents = contentSource() === 'payload' ? await Promise.all((await getMunicipalContents()).filter(c => c.type === 'event' && c.eventAt).map(async c => {
     const space = await getSpace(c.space);
-    return space ? { title: c.title, date: c.eventAt!.slice(0, 10), place: c.place || '', concejo: space.name.replace('Ayuntamiento de ', ''), description: 'Agenda de muestra · Publica el ayuntamiento' } : null;
+    return space ? { title: c.title, date: c.eventAt!.slice(0, 10), place: c.place || '', concejo: space.name.replace('Ayuntamiento de ', ''), description: 'Publica el ayuntamiento' } : null;
   })) : null;
   return (
     <div className="divide-y divide-coal-900/15 border-y border-coal-900/15">

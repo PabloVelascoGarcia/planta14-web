@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { contentSource } from "@/lib/content-source";
 import { redirect } from "next/navigation";
 import { AdminNewsForm } from "@/components/admin-news-form";
 import { getAllArticles, getAuthors } from "@/lib/cms";
@@ -12,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
+  // Panel de la demo (archivos locales); con contenido real se usa /cms.
+  if (contentSource() === "payload") notFound();
   const user = await getSession();
 
   if (!user) {

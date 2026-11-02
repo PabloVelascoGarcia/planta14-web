@@ -3,11 +3,15 @@ import { getArticles } from "@/lib/cms";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 import { AgendaList } from "@/components/agenda-list";
+import { notFound } from "next/navigation";
+import { contentSource } from "@/lib/content-source";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Una voz para las Cuencas" };
 
 export default async function EditorialEdition() {
+  // Maqueta de la demo: no existe con contenido real.
+  if (contentSource() === "payload") notFound();
   const articles = await getArticles();
   const lead = articles.find(a => a.main) ?? articles[0];
   if (!lead) return <div className="container-p14 py-16">Pronto, nuevas historias de las Cuencas.</div>;
