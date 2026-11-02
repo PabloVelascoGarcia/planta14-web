@@ -10,6 +10,7 @@ import { Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent }
 import { AuditLog, Notifications } from './cms/activity';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { smtpOptions } from './cms/email';
+import { withMaintenanceGuard } from './cms/maintenance';
 
 const baseDir = path.dirname(fileURLToPath(import.meta.url));
 const settings = cmsEnvironment();
@@ -20,8 +21,9 @@ export default buildConfig({
   email: smtp ? nodemailerAdapter(smtp) : undefined,
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3000',
   routes: { admin: '/cms', api: '/api/cms' },
-  admin: { user: 'users', disable: !settings.enabled, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
-  collections: [Users, Media, Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, AuditLog, PublicMediaOps],
+  admin: { user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
+  // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
+  collections: [Users, Media, Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, AuditLog, PublicMediaOps].map(withMaintenanceGuard),
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({
     enabled: settings.enabled,

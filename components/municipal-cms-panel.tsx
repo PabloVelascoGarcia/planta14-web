@@ -45,7 +45,7 @@ function Login({ onDone }: { onDone: () => void }) {
   </form>;
 }
 
-export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; state: PanelState }) {
+export function MunicipalCmsPanel({ space, state, maintenance = null }: { space: MunicipalSpace; state: PanelState; maintenance?: string | null }) {
   const identity = getMunicipalIdentity(space.id);
   const router = useRouter();
   const [draft, setDraft] = useState<Draft>(empty);
@@ -56,6 +56,8 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const set = (patch: Partial<Draft>) => setDraft(current => ({ ...current, ...patch }));
+  // Modo mantenimiento: solo lectura (el servidor rechaza igualmente cualquier escritura).
+  const locked = busy || Boolean(maintenance);
 
   async function logout() {
     await fetch(`${api}/users/logout`, { method: "POST", credentials: "same-origin" }).catch(() => undefined);
@@ -105,6 +107,7 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
   return <div className={`municipal-shell ${identity ? "aller-theme" : ""}`} style={identityStyle(identity)}>
     <MunicipalMasthead space={space} panel live />
     <div className="container-p14 municipal-panel-body">
+      {maintenance ? <div className="municipal-demo-banner" role="status" data-maintenance="on"><span className="municipal-example">Mantenimiento</span><p>{maintenance}</p></div> : null}
       {state.kind === "login" ? <>
         <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>Publica en tu<br />espacio municipal.</h2></div><p>Lo que publiques aparece al momento<br />en {space.name}.</p></div>
         <div className="municipal-panel-grid"><Login onDone={() => router.refresh()} /></div>
@@ -129,8 +132,8 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
             {file ? <><label>Descripción de la imagen<input value={alt} onChange={e => setAlt(e.target.value)} required /></label><label>Autoría o crédito<input value={credit} onChange={e => setCredit(e.target.value)} required /></label>
               <label className="municipal-declaration"><input type="checkbox" checked={declared} onChange={e => setDeclared(e.target.checked)} required /> {space.name} declara que tiene los derechos necesarios para publicar esta imagen en Planta 14 y que el autor o crédito indicado es correcto.</label>
               <p className="municipal-field-help">Los derechos quedan a nombre de {space.name}. <Link href="/condiciones-cuentas-municipales#declaracion-imagen" target="_blank">Qué implica esta declaración ↗</Link></p></> : draft.image ? <p className="municipal-field-help">Se mantiene la imagen actual.</p> : null}
-            <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy}>Publicar ahora ↗</button><small>Aparece al momento en tu espacio.</small></div>
-            <button type="button" className="municipal-reset" disabled={busy} onClick={() => void save(false)}>Guardar como borrador</button>
+            <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={locked}>Publicar ahora ↗</button><small>Aparece al momento en tu espacio.</small></div>
+            <button type="button" className="municipal-reset" disabled={locked} onClick={() => void save(false)}>Guardar como borrador</button>
             {draft.id ? <button type="button" className="municipal-reset" onClick={() => setDraft(empty)}>Cancelar la edición</button> : null}
             <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
           </form>
@@ -143,8 +146,8 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
               {item.withdrawn ? <p className="municipal-form-status">Motivo de la retirada: {item.withdrawalReason}</p> : <p>{item.excerpt}</p>}
               <div className="municipal-card-dates">
                 <button type="button" className="municipal-text-button" onClick={() => { setDraft(fromItem(item)); setMessage(""); }}>Editar</button>
-                {!item.withdrawn && (item.live !== "published" || item.hasDraft) ? <button type="button" className="municipal-text-button" disabled={busy} onClick={() => void setStatus(item, "published")}>{item.hasDraft ? "Publicar cambios" : "Publicar"}</button> : null}
-                {!item.withdrawn && item.live === "published" ? <button type="button" className="municipal-text-button" disabled={busy} onClick={() => void setStatus(item, "draft")}>Despublicar</button> : null}
+                {!item.withdrawn && (item.live !== "published" || item.hasDraft) ? <button type="button" className="municipal-text-button" disabled={locked} onClick={() => void setStatus(item, "published")}>{item.hasDraft ? "Publicar cambios" : "Publicar"}</button> : null}
+                {!item.withdrawn && item.live === "published" ? <button type="button" className="municipal-text-button" disabled={locked} onClick={() => void setStatus(item, "draft")}>Despublicar</button> : null}
               </div>
             </article>)}
           </aside>

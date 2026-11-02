@@ -47,12 +47,17 @@ services:
     image: ${APP_IMAGE:?APP_IMAGE la fija infra/deploy/deploy.sh}
     pull_policy: never
     restart: unless-stopped
-    environment: *app-env
+    environment:
+      <<: *app-env
+      MAINTENANCE_FLAG_FILE: /run/planta14-mantenimiento/activo
     depends_on:
       postgres:
         condition: service_healthy
     # "edge" también da salida a Internet (S3 externo y correo).
     networks: [edge, backend]
+    # Modo mantenimiento: cms/maintenance.ts mira si existe este archivo en cada petición.
+    volumes:
+      - ${MAINTENANCE_DIR:-/srv/planta14/mantenimiento}:/run/planta14-mantenimiento:ro
     mem_limit: ${APP_MEM_LIMIT:-1024m}
     memswap_limit: ${APP_MEMSWAP_LIMIT:-1536m}
     security_opt: ["no-new-privileges:true"]
@@ -138,6 +143,8 @@ services:
       - caddy_config:/config
       # Registro de accesos para fail2ban (intentos de inicio de sesión fallidos).
       - ${CADDY_LOG_DIR:-/var/log/planta14/caddy}:/var/log/caddy
+      # Modo mantenimiento: Caddy rechaza las escrituras mientras exista "activo" (ver Caddyfile.production).
+      - ${MAINTENANCE_DIR:-/srv/planta14/mantenimiento}:/srv/mantenimiento:ro
     networks: [edge]
     security_opt: ["no-new-privileges:true"]
     logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }

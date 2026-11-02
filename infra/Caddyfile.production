@@ -41,6 +41,27 @@ www.{$SITE_DOMAIN} {
 		max_size 12MB
 	}
 
+	# Modo mantenimiento (infra/deploy/mantenimiento.sh y deploy.sh): mientras exista el archivo "activo" en la
+	# carpeta montada, se rechaza toda escritura (sin reconstruir ni reiniciar: se comprueba en cada petición).
+	# La lectura sigue funcionando: web pública, /cms y paneles. Se permiten: iniciar y cerrar sesión, las
+	# lecturas de Payload por POST (X-Payload-HTTP-Method-Override: GET) y las funciones de servidor del /cms,
+	# que la propia app bloquea si escriben (cms/maintenance.ts).
+	@maintenance_write {
+		file {
+			root /srv/mantenimiento
+			try_files /activo
+		}
+		not method GET HEAD OPTIONS
+		not path /cms /cms/* /api/cms/users/login /api/cms/users/logout /api/cms/users/refresh-token
+		not header X-Payload-HTTP-Method-Override GET
+	}
+	handle @maintenance_write {
+		header Content-Type "application/json; charset=utf-8"
+		header Cache-Control "no-store"
+		header Retry-After "300"
+		respond `{"errors":[{"message":"Planta 14 se está actualizando. Durante unos minutos puedes consultarlo todo, pero no guardar cambios. Lo publicado sigue en la web. Vuelve a intentarlo en un rato."}],"maintenance":true}` 503
+	}
+
 	# Monitor externo de disponibilidad: nunca en caché.
 	handle /api/health {
 		header Cache-Control "no-store"

@@ -14,5 +14,6 @@ export default async function Page({ params }: { params: Promise<{ municipality:
   // Demo source: the existing browser-only simulation, unchanged.
   if (contentSource() === "demo") return <MunicipalPanel space={space} />;
   const { municipalPanelState } = await import("@/lib/municipal-panel");
-  return <MunicipalCmsPanel space={space} state={await municipalPanelState(space.id)} />;
+  const { MAINTENANCE_MESSAGE, maintenanceActive } = await import("@/cms/maintenance");
+  return <MunicipalCmsPanel space={space} state={await municipalPanelState(space.id)} maintenance={maintenanceActive() ? MAINTENANCE_MESSAGE : null} />;
 }

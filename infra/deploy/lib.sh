@@ -22,7 +22,11 @@ deploy_init() { # ARCHIVO_ENV
   fi
   : "${SITE_DOMAIN:?}" "${BACKUP_DIR:?Define BACKUP_DIR}"
   DEPLOY_STATE_DIR=${DEPLOY_STATE_DIR:-/srv/planta14/state}
-  mkdir -p "$DEPLOY_STATE_DIR" "$BACKUP_DIR"
+  MAINTENANCE_DIR=${MAINTENANCE_DIR:-/srv/planta14/mantenimiento}
+  export MAINTENANCE_DIR
+  mkdir -p "$DEPLOY_STATE_DIR" "$BACKUP_DIR" "$MAINTENANCE_DIR"
+  # Legible por Caddy y por la app (montada en solo lectura): solo indica si hay mantenimiento.
+  chmod 755 "$MAINTENANCE_DIR"
   export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-planta14}
   resolve_pg_container
 }
@@ -59,11 +63,14 @@ applied_migrations() {
   fi
 }
 
-# /api/health a través de Caddy (HTTPS real del dominio, resuelto al propio servidor).
-health_once() {
+# Petición HTTPS al dominio real, resuelto al propio servidor (a través de Caddy).
+site_curl() {
   local -a args=(--silent --show-error --max-time 10 --noproxy '*' --resolve "$SITE_DOMAIN:443:127.0.0.1")
   [[ ${CADDY_TLS_MODE:-acme} == internal || ${DEPLOY_HEALTH_INSECURE:-0} == 1 ]] && args+=(--insecure)
-  local body; body=$(curl "${args[@]}" -w '\n%{http_code}' "https://$SITE_DOMAIN/api/health" 2>/dev/null) || return 1
+  curl "${args[@]}" "$@"
+}
+health_once() {
+  local body; body=$(site_curl -w '\n%{http_code}' "https://$SITE_DOMAIN/api/health" 2>/dev/null) || return 1
   [[ ${body##*$'\n'} == 200 && $body == *'"status":"ok"'* ]]
 }
 wait_healthy() {
@@ -102,4 +109,73 @@ notify() { # ASUNTO CUERPO
     source "$infra/lib/alert.sh"
     send_alert "$1" "$2" || true
   fi
+}
+
+# --- Modo mantenimiento ------------------------------------------------------------------------------
+# Archivo "activo" en MAINTENANCE_DIR (montada en Caddy y en la app): mientras existe, el /cms, la API de
+# escritura y los paneles municipales están en solo lectura. La web pública sigue funcionando.
+maintenance_is_on() { [[ -f $MAINTENANCE_DIR/activo ]]; }
+maintenance_on() { # MOTIVO
+  local tmp=$MAINTENANCE_DIR/.activo.$$
+  printf 'desde=%s\nmotivo=%s\n' "$(date '+%Y-%m-%d %H:%M:%S %Z')" "$1" > "$tmp"
+  chmod 644 "$tmp"; mv -f "$tmp" "$MAINTENANCE_DIR/activo"
+  record "mantenimiento-activado $1"
+  log "Modo mantenimiento ACTIVADO ($1): /cms, API de escritura y paneles municipales en solo lectura"
+}
+maintenance_off() { # MOTIVO
+  rm -f "$MAINTENANCE_DIR/activo"
+  record "mantenimiento-desactivado $1"
+  log "Modo mantenimiento DESACTIVADO ($1): se puede volver a escribir"
+}
+# ¿Caddy rechaza ya las escrituras? (POST de prueba que, sin mantenimiento, Payload contestaría con 404).
+maintenance_enforced() {
+  local body
+  body=$(site_curl -X POST -H 'Content-Type: application/json' -d '{}' -w '\n%{http_code}' "https://$SITE_DOMAIN/api/cms/comprobacion-mantenimiento" 2>/dev/null) || return 1
+  [[ ${body##*$'\n'} == 503 && $body == *'"maintenance":true'* ]]
+}
+# Comprueba que el mantenimiento se aplica; si Caddy aún no tiene la carpeta o la regla (p. ej. primera vez
+# tras actualizar las herramientas), lo recrea con la configuración actual y vuelve a comprobar.
+maintenance_ensure_enforced() {
+  local _
+  for _ in 1 2 3; do maintenance_enforced && return 0; sleep 1; done
+  log "Caddy no aplica aún el modo mantenimiento: se recrea con la configuración actual"
+  compose up -d --no-deps --force-recreate caddy >/dev/null 2>&1 || return 1
+  for _ in $(seq 1 20); do maintenance_enforced && return 0; sleep 2; done
+  return 1
+}
+
+# --- Restauración asistida pendiente -----------------------------------------------------------------
+PENDING_RESTORE_FILE=restauracion-pendiente
+pending_restore_exists() { [[ -f $DEPLOY_STATE_DIR/$PENDING_RESTORE_FILE ]]; }
+pending_get() { sed -n "s/^$1=//p" "$DEPLOY_STATE_DIR/$PENDING_RESTORE_FILE" 2>/dev/null | head -n 1; }
+pending_set() { # COPIA VERSIÓN_FALLIDA VERSIÓN_EN_MARCHA MOTIVO
+  printf 'copia=%s\nversion_fallida=%s\nversion_en_marcha=%s\nfecha=%s\nmotivo=%s\n' \
+    "$1" "$2" "$3" "$(date '+%Y-%m-%d %H:%M:%S %Z')" "$4" > "$DEPLOY_STATE_DIR/$PENDING_RESTORE_FILE"
+}
+
+# Instrucciones en lenguaje llano para la restauración asistida (las imprimen deploy.sh y status.sh).
+restore_instructions() {
+  local cmd; cmd="cd $(cd "$infra/.." && pwd) && infra/deploy/restaurar.sh"
+  [[ $(realpath -m "$DEPLOY_ENV_FILE") == "$(realpath -m "$infra/.env.production")" ]] || cmd+=" --env-file $(realpath -m "$DEPLOY_ENV_FILE")"
+  cat <<EOF
+==================================== QUÉ HACER AHORA ====================================
+La versión nueva falló DESPUÉS de cambiar la base de datos. La web pública sigue funcionando
+con la versión anterior, pero el /cms y los paneles municipales están en SOLO LECTURA (modo
+mantenimiento) hasta que restaures la copia hecha justo antes de la actualización. Mientras
+tanto nadie puede escribir, así que no se pierde nada. No hay prisa: hazlo cuando puedas.
+
+Desde tu PC con Windows:
+  1. Abre tu gestor de contraseñas y copia la clave privada de las copias
+     (una sola línea que empieza por AGE-SECRET-KEY-1).
+  2. Abre PowerShell y escribe, en una sola línea:
+       ssh -t -i "\$env:USERPROFILE\\.ssh\\planta14_ionos" $(id -un)@$SITE_DOMAIN "$cmd"
+     (si el dominio aún no apunta al servidor, pon su IP en lugar de $SITE_DOMAIN)
+  3. Cuando pida la clave, pégala con el botón derecho del ratón y pulsa Intro.
+     Al pegar no se ve nada: es normal. La clave no se guarda en el servidor.
+  4. Espera al mensaje RESTAURACIÓN COMPLETADA. Entra en /cms y comprueba que puedes guardar.
+
+Copia que se restaurará: $(pending_get copia)
+Más detalle: docs/MANUAL-OPERACION.md, apartado "Si una actualización falla".
+=========================================================================================
+EOF
 }

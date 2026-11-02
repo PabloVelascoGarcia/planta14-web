@@ -17,6 +17,8 @@ current=$(state_get current) previous=$(state_get previous)
 echo "Versión actual:   ${current:-ninguna} $( [[ -n $current ]] && git -C "$repo" log -1 --format='(%cd, %s)' --date=short "$current" 2>/dev/null)"
 echo "Versión anterior: ${previous:-ninguna}"
 echo "Indexación en buscadores (SITE_INDEXABLE): $SITE_INDEXABLE"
+if maintenance_is_on; then echo "Modo mantenimiento: ACTIVADO, solo lectura ($(sed -n 's/^motivo=//p' "$MAINTENANCE_DIR/activo"))"
+else echo "Modo mantenimiento: desactivado"; fi
 echo; compose ps --format '{{.Service}}: {{.Status}}'
 echo; if health_once; then echo "/api/health: ok"; else echo "/api/health: ERROR"; fi
 echo; echo "Últimas copias:"
@@ -25,3 +27,4 @@ for kind in postgres storage; do
   echo "  $kind: ${last:-ninguna}"
 done
 echo; echo "Últimos despliegues:"; tail -n 5 "$DEPLOY_STATE_DIR/historial.log" 2>/dev/null | sed 's/^/  /' || echo "  ninguno"
+if pending_restore_exists; then echo; echo "ATENCIÓN: restauración asistida pendiente."; restore_instructions; fi
