@@ -1,6 +1,7 @@
 import * as migration_20261102_085958_fase1 from './20261102_085958_fase1';
 import * as migration_20261102_090101_storage from './20261102_090101_storage';
 import * as migration_20261102_094653_bloque2 from './20261102_094653_bloque2';
+import * as migration_20261102_105932_bloque3 from './20261102_105932_bloque3';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20261102_094653_bloque2.up,
     down: migration_20261102_094653_bloque2.down,
-    name: '20261102_094653_bloque2'
+    name: '20261102_094653_bloque2',
+  },
+  {
+    up: migration_20261102_105932_bloque3.up,
+    down: migration_20261102_105932_bloque3.down,
+    name: '20261102_105932_bloque3',
   },
 ];

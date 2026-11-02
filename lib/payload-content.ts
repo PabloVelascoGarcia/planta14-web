@@ -11,8 +11,9 @@ function populated<T>(value: number | T): T {
   if (typeof value === 'number') throw new Error('Relación de contenido no disponible');
   return value;
 }
+// Public pages only use the public copy (PUBLIC_MEDIA_BASE_URL, behind a CDN). Signed URLs are for authenticated panels.
 export function mediaURL(value?: number | Media | null) {
-  return value && typeof value !== 'number' && value.rightsScope === 'publicable' && value.rightsHolder && value.rightsType ? value.url || '/images/placeholder.svg' : '/images/placeholder.svg';
+  return value && typeof value !== 'number' && value.rightsScope === 'publicable' && value.rightsHolder && value.rightsType && value.publicURL ? value.publicURL : '/images/placeholder.svg';
 }
 export function articleContract(doc: PayloadArticle): Article {
   const author = populated(doc.author);

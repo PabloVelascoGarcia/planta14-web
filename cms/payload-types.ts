@@ -75,6 +75,8 @@ export interface Config {
     towns: Town;
     'municipal-spaces': MunicipalSpace;
     'municipal-content': MunicipalContent;
+    notifications: Notification;
+    'audit-log': AuditLog;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +92,8 @@ export interface Config {
     towns: TownsSelect<false> | TownsSelect<true>;
     'municipal-spaces': MunicipalSpacesSelect<false> | MunicipalSpacesSelect<true>;
     'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -136,7 +140,11 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
-  role: 'admin' | 'editor';
+  role: 'admin' | 'editor' | 'municipal';
+  /**
+   * Obligatorio para cuentas municipales; prohibido para las demás.
+   */
+  municipalSpace?: (number | null) | MunicipalSpace;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -159,6 +167,48 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-spaces".
+ */
+export interface MunicipalSpace {
+  id: number;
+  legacyID?: string | null;
+  name: string;
+  town: number | Town;
+  medium: string;
+  subscription: {
+    status: 'demo' | 'active' | 'inactive';
+    startsAt?: string | null;
+    endsAt?: string | null;
+  };
+  contact?: {
+    place?: string | null;
+    hours?: string | null;
+    note?: string | null;
+  };
+  provenance?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "towns".
+ */
+export interface Town {
+  id: number;
+  legacyID?: string | null;
+  slug: string;
+  name: string;
+  comarca: 'Caudal' | 'Nalón';
+  visible?: boolean | null;
+  provenance?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -169,6 +219,10 @@ export interface Media {
   rightsHolder?: string | null;
   rightsType?: ('propia' | 'licencia' | 'autorización' | 'institucional') | null;
   rightsScope: 'demo' | 'publicable';
+  uploadedBySpace?: (number | null) | MunicipalSpace;
+  publishedUses?: number | null;
+  publicKey?: string | null;
+  publicURL?: string | null;
   prefix?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
@@ -258,22 +312,6 @@ export interface Author {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "towns".
- */
-export interface Town {
-  id: number;
-  legacyID?: string | null;
-  slug: string;
-  name: string;
-  comarca: 'Caudal' | 'Nalón';
-  visible?: boolean | null;
-  provenance?: string | null;
-  sourceUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sections".
  */
 export interface Section {
@@ -283,32 +321,6 @@ export interface Section {
   position?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "municipal-spaces".
- */
-export interface MunicipalSpace {
-  id: number;
-  legacyID?: string | null;
-  name: string;
-  town: number | Town;
-  medium: string;
-  subscription: {
-    status: 'demo' | 'active' | 'inactive';
-    startsAt?: string | null;
-    endsAt?: string | null;
-  };
-  contact?: {
-    place?: string | null;
-    hours?: string | null;
-    note?: string | null;
-  };
-  provenance?: string | null;
-  sourceUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -339,9 +351,50 @@ export interface MunicipalContent {
   demo?: boolean | null;
   provenance?: string | null;
   sourceUrl?: string | null;
+  withdrawal?: {
+    withdrawn?: boolean | null;
+    reason?: string | null;
+    withdrawnAt?: string | null;
+    withdrawnBy?: (number | null) | User;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  kind: 'municipal-publication';
+  content?: (number | null) | MunicipalContent;
+  space?: (number | null) | MunicipalSpace;
+  title: string;
+  publishedBy?: (number | null) | User;
+  emailStatus: 'disabled' | 'sent' | 'failed';
+  reviewed?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-log".
+ */
+export interface AuditLog {
+  id: number;
+  action: 'create' | 'update' | 'publish' | 'unpublish' | 'withdraw' | 'reinstate' | 'delete';
+  targetCollection: string;
+  documentID: string;
+  title?: string | null;
+  summary?: string | null;
+  space?: (number | null) | MunicipalSpace;
+  user?: (number | null) | User;
+  userEmail?: string | null;
+  userRole?: string | null;
+  reason?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -398,6 +451,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'municipal-content';
         value: number | MunicipalContent;
+      } | null)
+    | ({
+        relationTo: 'notifications';
+        value: number | Notification;
+      } | null)
+    | ({
+        relationTo: 'audit-log';
+        value: number | AuditLog;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -448,6 +509,7 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  municipalSpace?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -477,6 +539,10 @@ export interface MediaSelect<T extends boolean = true> {
   rightsHolder?: T;
   rightsType?: T;
   rightsScope?: T;
+  uploadedBySpace?: T;
+  publishedUses?: T;
+  publicKey?: T;
+  publicURL?: T;
   prefix?: T;
   _objectKey?: T;
   updatedAt?: T;
@@ -643,9 +709,50 @@ export interface MunicipalContentSelect<T extends boolean = true> {
   demo?: T;
   provenance?: T;
   sourceUrl?: T;
+  withdrawal?:
+    | T
+    | {
+        withdrawn?: T;
+        reason?: T;
+        withdrawnAt?: T;
+        withdrawnBy?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  kind?: T;
+  content?: T;
+  space?: T;
+  title?: T;
+  publishedBy?: T;
+  emailStatus?: T;
+  reviewed?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-log_select".
+ */
+export interface AuditLogSelect<T extends boolean = true> {
+  action?: T;
+  targetCollection?: T;
+  documentID?: T;
+  title?: T;
+  summary?: T;
+  space?: T;
+  user?: T;
+  userEmail?: T;
+  userRole?: T;
+  reason?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

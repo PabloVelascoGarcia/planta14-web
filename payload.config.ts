@@ -7,6 +7,7 @@ import sharp from 'sharp';
 import { Users, Media } from './cms/collections';
 import { cmsEnvironment } from './cms/environment';
 import { Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent } from './cms/content-collections';
+import { AuditLog, Notifications } from './cms/activity';
 
 const baseDir = path.dirname(fileURLToPath(import.meta.url));
 const settings = cmsEnvironment();
@@ -16,7 +17,7 @@ export default buildConfig({
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3000',
   routes: { admin: '/cms', api: '/api/cms' },
   admin: { user: 'users', disable: !settings.enabled, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
-  collections: [Users, Media, Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent],
+  collections: [Users, Media, Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, AuditLog],
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({
     enabled: settings.enabled,
