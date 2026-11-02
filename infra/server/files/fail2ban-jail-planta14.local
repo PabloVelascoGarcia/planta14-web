@@ -1,0 +1,25 @@
+# Planta 14: protección contra intentos de acceso.
+[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 5
+# Bloqueo permanente creciente para reincidentes.
+bantime.increment = true
+
+[sshd]
+enabled = true
+mode    = aggressive
+
+# Intentos de inicio de sesión en /cms y en los paneles municipales. El tráfico va a contenedores Docker:
+# hay que bloquear en la cadena DOCKER-USER (la de INPUT no lo ve).
+[planta14-login]
+enabled   = true
+filter    = planta14-login
+logpath   = /var/log/planta14/caddy/access.log
+backend   = polling
+maxretry  = 10
+findtime  = 10m
+bantime   = 1h
+port      = http,https
+chain     = DOCKER-USER
+banaction = iptables-multiport
