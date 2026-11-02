@@ -71,5 +71,5 @@ Resultados: ver el resumen de la entrega. Pasan `npm test`, `typecheck`, `lint`,
 4. **Google Search Console** (y Google News, si se solicita): dar de alta el dominio y enviar `sitemap.xml` y `sitemap-noticias.xml`. Comprobar la vista previa con el depurador de compartir de Facebook y enviando un enlace por WhatsApp.
 5. **Correo:** contratar el proveedor y activar `ALERT_EMAIL_ENABLED`, el correo de Payload y los avisos municipales.
 6. **Monitor externo:** darlo de alta (manual de operación, apartado 1).
-7. **CI:** comprobar en GitHub que el flujo pasa, en especial la construcción de `infra/app.Dockerfile`, que en el entorno del agente no se pudo construir.
+7. **CI:** la primera ejecución en GitHub ([ejecución 41451215780](https://github.com/PabloVelascoGarcia/planta14-web/actions/runs/41451215780), commit `e011b9c`) terminó **con éxito**: tests, tipos, lint, build, shellcheck y la construcción de `infra/app.Dockerfile` sin publicar. Es la primera vez que ese Dockerfile se construye con éxito, porque en el entorno del agente no se puede. Falta que alguien con acceso a Docker la arranque como imagen de producción.
 8. Los pendientes de `docs/V2-INTEGRACION.md` (S3, CDN, copias activas, migración del contenido real).
