@@ -63,7 +63,7 @@ Ejecutado el 2 de noviembre de 2026 en Linux (Docker Engine nativo). Todo con re
 | `npm run build` | Correcto |
 | `npm run test:block2` | 8 PASS |
 | `npm run test:block3` | 17 PASS |
-| `npm run test:launch` | 27 PASS |
+| `npm run test:launch` | 6 PASS (corregido: antes ponía 27 por un recuento mal agrupado) |
 | `shellcheck -x` de todo `infra/` | Sin avisos |
 | `caddy validate` de `Caddyfile.production` (acme e internal) | `Valid configuration` |
 | `infra/test/common-test.sh`, `staging-config-test.mjs`, `monitor-test.sh`, `memory-test.sh`, `staging-guard-test.sh` | Correctos |
