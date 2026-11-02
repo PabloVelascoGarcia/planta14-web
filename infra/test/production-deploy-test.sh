@@ -148,6 +148,10 @@ log "== Datos de ensayo"
 admin_password=$(openssl rand -hex 16)
 CMS_BOOTSTRAP_EMAIL=admin@planta14.example CMS_BOOTSTRAP_PASSWORD=$admin_password dc --profile migrate run --rm -T -e CMS_BOOTSTRAP_EMAIL -e CMS_BOOTSTRAP_PASSWORD migrate npm run cms:bootstrap >/dev/null 2>&1
 dc --profile migrate run --rm -T -e NODE_ENV=development -e IMPORT_MUNICIPAL_DEMO=true migrate npm run cms:import:municipal >/dev/null 2>&1
+# Carga de estructura de producción (la de la guía), con el usuario de migraciones y después de la demo:
+# completa las secciones que falten sin duplicar ni tocar lo existente.
+dc --profile migrate run --rm -T migrate npm run cms:structure > "$ws/estructura.log" 2>&1 || true
+check "carga de estructura en el contenedor de producción (npm run cms:structure)" grep -q 'Estructura cargada. Creados: 4 secciones, 0 concejos, 0 espacios' "$ws/estructura.log"
 counts() { docker exec -i "$project-postgres-1" psql -U planta14 -d planta14 -XAtq < "$root/infra/test/count-rows.sql" | grep -v '^public.public_media_ops|'; }
 titles() { docker exec "$project-postgres-1" psql -U planta14 -d planta14 -XAtc "SELECT md5(string_agg(title, '|' ORDER BY id)) FROM municipal_content"; }
 counts > "$ws/filas-antes.txt"

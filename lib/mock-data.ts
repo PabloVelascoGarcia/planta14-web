@@ -51,18 +51,7 @@ export type AgendaEvent = {
 
 export { navigationTerritories as territories } from "./demo/territories";
 
-export const topics = [
-  "Sucesos",
-  "Economía",
-  "Empresas",
-  "Política",
-  "Sociedad",
-  "Deportes",
-  "Cultura",
-  "Patrimonio",
-  "Opinión",
-  "Agenda"
-];
+export { siteSections as topics } from "./site-sections";
 
 export const authors: Author[] = [
   {

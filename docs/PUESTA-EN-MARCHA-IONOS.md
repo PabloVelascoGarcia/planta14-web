@@ -264,7 +264,16 @@ APP_IMAGE="planta14-app:${installed_commit:0:12}" docker compose -f infra/compos
 unset CMS_BOOTSTRAP_EMAIL CMS_BOOTSTRAP_PASSWORD
 ```
 
-Comprueba que dice que el administrador está creado y entra en `https://pruebas.planta14.com/cms`. No ejecutes el importador de demostración: carga solo contenido de prueba propio o con derechos comprobados.
+Comprueba que dice que el administrador está creado y entra en `https://pruebas.planta14.com/cms`.
+
+**6 bis. Estructura de la web, sin contenido de demostración.** Crea las secciones de la navegación (Sucesos, Economía, Empresas, Política, Sociedad, Deportes, Cultura, Patrimonio, Opinión y Agenda), los seis concejos del Caudal y un espacio municipal por concejo en estado **inactivo**:
+
+```bash
+installed_commit=$(cat /srv/planta14/state/current)
+APP_IMAGE="planta14-app:${installed_commit:0:12}" docker compose -f infra/compose.production.yaml --env-file infra/.env.production --profile migrate run --rm -T migrate npm run cms:structure
+```
+
+Debe decir «Estructura cargada» con los creados. No crea noticias, avisos, autores, imágenes ni datos de contacto de ejemplo. Se puede repetir sin miedo: lo que ya existe no se duplica ni se modifica. **No uses el importador de demostración** (`cms:import:municipal`) en esta instalación: carga contenido de ejemplo.
 
 **7. Prueba completa de restauración y aislamiento, con la imagen de la web.** Es la que quedó a medias al preparar el servidor. Ahora debe pasar entera y no dejar volúmenes:
 
