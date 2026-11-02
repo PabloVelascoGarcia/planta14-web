@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { DeleteObjectsCommand, GetObjectCommand, HeadObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Payload, PayloadRequest } from 'payload';
+import { withPublicMediaLock } from './public-media-lock';
 
 /**
  * Copias públicas de imágenes publicables.
@@ -173,6 +174,10 @@ export async function countPublishedUses(payload: Payload, id: number, req?: Pay
  * Se llama desde los hooks de noticias, contenidos municipales y la propia biblioteca.
  */
 export async function syncPublicMedia(payload: Payload, id: number, req?: PayloadRequest, options: { refresh?: boolean; previous?: MediaFile; verify?: boolean } = {}) {
+  return withPublicMediaLock(payload, id, req, lockedReq => syncLockedPublicMedia(payload, id, lockedReq, options));
+}
+
+async function syncLockedPublicMedia(payload: Payload, id: number, req: PayloadRequest, options: { refresh?: boolean; previous?: MediaFile; verify?: boolean }) {
   const doc = await payload.db.findOne<MediaFile & { id: number; rightsScope?: string | null; rightsHolder?: string | null; rightsType?: string | null; publishedUses?: number | null }>({ collection: 'media', where: { id: { equals: id } }, req });
   if (!doc) return;
   const uses = await countPublishedUses(payload, id, req);
@@ -213,18 +218,20 @@ export async function cleanupLoggedOrphans(payload: Payload, now = Date.now()) {
   let cleaned = 0;
   for (const op of open.docs) {
     if (now - new Date(op.createdAt).getTime() < settings.orphanGraceMs) continue;
-    const media = await payload.db.findOne<MediaFile & { id: number }>({ collection: 'media', where: { id: { equals: op.mediaId } } });
+    await withPublicMediaLock(payload, op.mediaId, undefined, async req => {
+    const media = await payload.db.findOne<MediaFile & { id: number }>({ collection: 'media', where: { id: { equals: op.mediaId } }, req });
     const live = media?.publicKey === op.keyPrefix && (media.publicBucket || settings.bucket) === op.bucket;
-    if (op.kind === 'create' && live) { if (op.status !== 'applied') await setOp(payload, op.id, { status: 'applied' }); continue; }
-    if (op.kind === 'delete' && op.status === 'applied') continue;
+    if (op.kind === 'create' && live) { if (op.status !== 'applied') await setOp(payload, op.id, { status: 'applied' }); return; }
+    if (op.kind === 'delete' && op.status === 'applied') return;
     // A failed delete whose transaction rolled back: the key is still the live copy, so it must not be removed
     // (verify/refresh of the media record repairs it if it is incomplete).
-    if (op.kind === 'delete' && live) { await setOp(payload, op.id, { status: 'cleaned' }); continue; }
+    if (op.kind === 'delete' && live) { await setOp(payload, op.id, { status: 'cleaned' }); return; }
     // Orphan copy, or a delete to retry: remove the logged objects (idempotent) and settle the record.
     const keys = Array.isArray(op.objects) ? op.objects : [];
     await removePublicCopy(payload, op.mediaId, op.bucket, keys, op.keyPrefix, keys.map(k => settings.enabled && op.bucket === settings.bucket ? `${settings.baseURL}/${k.split('/').map(encodeURIComponent).join('/')}` : '').filter(Boolean));
     if (op.kind === 'delete') await setOp(payload, op.id, { status: 'applied' });
     cleaned++;
+    });
   }
   return cleaned;
 }

@@ -3,6 +3,7 @@ import { adminOnly, editorialUser, municipalSpaceOf, ownUserOrAdmin, relationID 
 import { auditAfterChange, auditAfterDelete } from './activity';
 import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
+import { withPublicMediaLock } from './public-media-lock';
 
 /** Text stored with each municipal upload (versioned so the evidence says what was declared). */
 export const municipalRightsStatement = (municipality: string) =>
@@ -47,13 +48,18 @@ export const Media: CollectionConfig = {
     delete: ({ req }) => editorialUser({ req }) || (municipalSpaceOf(req) !== null ? { uploadedBySpace: { equals: municipalSpaceOf(req) } } : false),
   },
   hooks: {
-    beforeOperation: [({ operation, args, req }) => {
+    beforeOperation: [async ({ operation, args, req }) => {
+      const id = (args as { id?: number | string }).id;
+      if ((operation === 'update' || operation === 'delete') && id != null) {
+        await withPublicMediaLock(req.payload, Number(id), req, async () => undefined);
+      }
       // Never let a municipal upload choose a storage namespace (e.g. a public prefix).
       const data = (args as { data?: { prefix?: unknown } }).data;
       if (operation === 'create' && municipalSpaceOf(req) !== null && data?.prefix) throw new APIError('El destino de almacenamiento lo fija el servidor', 403);
       return args;
     }],
     beforeChange: [async ({ data, originalDoc, operation, req }) => {
+      if (operation === 'update') await withPublicMediaLock(req.payload, originalDoc.id, req, async () => undefined);
       const space = municipalSpaceOf(req);
       const declaration = data.rightsDeclaration as { declared?: unknown } | undefined;
       // The declaration is only ever written here, from the session: never accepted as client data.

@@ -364,13 +364,13 @@ try {
   passed('public copies disappear from the origin on withdrawal, unpublication and deletion; CDN purge hook called with their URLs');
   const { testPublicStorageFailures } = await import('./block3-storage-failures.mjs');
   await testPublicStorageFailures({ payload, actor: editorActor, article, image, file });
+  const { testPublicConcurrency } = await import('./block3-concurrency.mjs');
+  await testPublicConcurrency({ payload, actor: editorActor, article, image });
   const { testPublicOrphans } = await import('./block3-storage-orphans.mjs');
   await testPublicOrphans({ payload, actor: editorActor, article, file, image, oldBucket: 'planta14-block3-public', newBucket: 'planta14-block3-public2', newBase: `http://127.0.0.1:${s3Port}/planta14-block3-public2` });
   if (process.env.CMS_BLOCK3_BROWSER_TEST === 'true') {
     const { testMunicipalBrowser } = await import('./block3-browser.mjs');
-    await testMunicipalBrowser({ url: `http://localhost:${webPort}`, email: lenaUser.email, password, withdraw: async (id, reason) => {
-      assert.equal((await rest('PATCH', `municipal-content/${id}`, { withdrawal: { withdrawn: true, reason } }, editorToken)).status, 200);
-    } });
+    await testMunicipalBrowser({ url: `http://localhost:${webPort}`, email: lenaUser.email, password, editorEmail: editorRes.json.doc.email });
   }
 
   // --- Migración reversible, protegida si hay cuentas municipales.

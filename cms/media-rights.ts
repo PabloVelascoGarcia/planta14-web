@@ -1,6 +1,7 @@
 import { APIError, type Access, type CollectionAfterChangeHook, type CollectionAfterDeleteHook, type PayloadRequest, type Where } from 'payload';
 import { editorialUser, municipalSpaceOf, notMunicipal, relationID } from './access';
 import { syncPublicMedia } from './public-media';
+import { withPublicMediaLock } from './public-media-lock';
 
 /** Anonymous visitors only see metadata of images in published content (indexed field kept by hooks). */
 export const publicMediaFilter: Where = { and: [{ publishedUses: { greater_than: 0 } }, { rightsScope: { equals: 'publicable' } }] };
@@ -29,10 +30,12 @@ const imageIDs = (doc?: Record<string, unknown> | null) => doc ? [doc.image, doc
 
 /** Keeps Media.publishedUses and the public copies in step with publication, unpublication and deletion. */
 export const syncLinkedMedia: CollectionAfterChangeHook = async ({ doc, previousDoc, req }) => {
-  for (const id of new Set([...imageIDs(doc), ...imageIDs(previousDoc)])) await syncPublicMedia(req.payload, id, req);
+  const ids = [...new Set([...imageIDs(doc), ...imageIDs(previousDoc)])];
+  for (const id of [...ids].sort((a, b) => a - b)) await withPublicMediaLock(req.payload, id, req, async () => undefined);
+  for (const id of ids) await syncPublicMedia(req.payload, id, req);
   return doc;
 };
 export const syncLinkedMediaAfterDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
-  for (const id of new Set(imageIDs(doc))) await syncPublicMedia(req.payload, id, req);
+  for (const id of [...new Set(imageIDs(doc))].sort((a, b) => a - b)) await syncPublicMedia(req.payload, id, req);
   return doc;
 };

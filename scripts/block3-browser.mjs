@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { withdrawThroughCMS } from './cms-browser-withdrawal.mjs';
 
-export async function testMunicipalBrowser({ url, email, password, withdraw }) {
+export async function testMunicipalBrowser({ url, email, password, editorEmail }) {
   const modulePath = process.env.PLAYWRIGHT_MODULE || path.resolve('.local/review-tools/node_modules/playwright/index.mjs');
   const { chromium } = await import(pathToFileURL(modulePath).href);
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : undefined) });
@@ -30,7 +31,14 @@ export async function testMunicipalBrowser({ url, email, password, withdraw }) {
     await publicPage.goto(`${url}/lena`);
     assert((await publicPage.locator('body').innerText()).includes(title));
     const reason = 'Motivo de retirada del ensayo de navegador';
-    await withdraw(doc.id, reason);
+    const editor = await (await browser.newContext()).newPage();
+    editor.on('pageerror', error => errors.push(error.message));
+    await editor.goto(`${url}/cms/login`);
+    await editor.locator('input[name="email"]').fill(editorEmail);
+    await editor.locator('input[name="password"]').fill(password);
+    await editor.locator('button[type="submit"]').click();
+    await editor.waitForURL(location => !location.pathname.includes('/login'));
+    await withdrawThroughCMS(editor, url, doc.id, reason);
     await publicPage.reload();
     assert(!(await publicPage.locator('body').innerText()).includes(title));
     await page.reload();
@@ -42,6 +50,6 @@ export async function testMunicipalBrowser({ url, email, password, withdraw }) {
     await page.getByText('Tu cuenta no gestiona este espacio municipal.', { exact: false }).waitFor();
     assert.equal(await page.getByRole('form', { name: 'Publicación municipal' }).count(), 0);
     assert.deepEqual(errors, []);
-    console.log('PASS: real Chrome/Playwright mobile login, publication, public visibility, withdrawal reason and cross-tenant panel denial');
+    console.log('PASS: real Chrome/Playwright mobile login, publication, withdrawal through /cms Save Draft, public disappearance, persisted reason and cross-tenant denial');
   } finally { await browser.close(); }
 }
