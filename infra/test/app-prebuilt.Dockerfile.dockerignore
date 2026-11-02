@@ -1,0 +1,14 @@
+# Igual que infra/app.Dockerfile.dockerignore, pero incluye node_modules y .next compilados en el host.
+.git
+.local
+.env
+.env.*
+!.env.example
+!.env.cms.example
+infra
+data/*.json
+public/uploads
+*.log
+*.tsbuildinfo
+audit-*.json
+.next/cache

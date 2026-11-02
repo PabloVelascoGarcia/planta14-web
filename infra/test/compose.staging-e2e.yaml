@@ -1,0 +1,26 @@
+# Override SOLO para la prueba de extremo a extremo (infra/test/staging-e2e.sh), porque la imagen de MinIO
+# no está disponible. Sustituye MinIO (perfil vacío) por:
+#   s3            rclone serve s3, autenticado, en la red interna "backend" (lo usan la app y las copias);
+#   public-media  rclone serve http de SOLO el directorio del bucket público, solo lectura, en la red
+#                 "public_media" (es el upstream de /media en Caddy, detrás de la contraseña de staging).
+# Imagen oficial de rclone fijada por digest. Los datos van a E2E_S3_DIR (directorio desechable).
+services:
+  s3:
+    image: ${RCLONE_IMAGE:-rclone/rclone:1.71.2@sha256:3103526c506266a9ecdf064efe99bf3677d92ef6407af124d8c56b4f49cbaa51}
+    command: ["serve", "s3", "--addr", ":8080", "--force-path-style=true", "--auth-key", "${S3_ACCESS_KEY_ID},${S3_SECRET_ACCESS_KEY}", "/data"]
+    volumes: ["${E2E_S3_DIR:?Define E2E_S3_DIR}:/data"]
+    networks: [backend]
+    restart: unless-stopped
+  public-media:
+    image: ${RCLONE_IMAGE:-rclone/rclone:1.71.2@sha256:3103526c506266a9ecdf064efe99bf3677d92ef6407af124d8c56b4f49cbaa51}
+    command: ["serve", "http", "--addr", ":8080", "--read-only", "--dir-cache-time", "0s", "--poll-interval", "0", "/srv"]
+    volumes: ["${E2E_S3_DIR:?Define E2E_S3_DIR}/${PUBLIC_MEDIA_BUCKET:-planta14-staging-public}:/srv/${PUBLIC_MEDIA_BUCKET:-planta14-staging-public}:ro"]
+    networks: [public_media]
+    restart: unless-stopped
+  app:
+    depends_on:
+      s3:
+        condition: service_started
+  caddy:
+    environment:
+      PUBLIC_MEDIA_UPSTREAM: public-media:8080

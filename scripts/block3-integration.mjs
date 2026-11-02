@@ -215,7 +215,7 @@ try {
   await assert.rejects(payload.update({ collection: 'media', id: image.id, user: editorActor, overrideAccess: false, data: { rightsScope: 'demo' } }));
   await assert.rejects(payload.delete({ collection: 'media', id: image.id, user: editorActor, overrideAccess: false }));
   await payload.delete({ collection: 'articles', id: draftArticle.id, overrideAccess: true });
-  passed('publishable images of published content are served from PUBLIC_MEDIA_BASE_URL with long cache; drafts and demo images are not public; unpublishing removes the copy');
+  passed('publishable images of published content are served from PUBLIC_MEDIA_BASE_URL with the configured cache (1 day); drafts and demo images are not public; unpublishing removes the copy');
 
   // --- Lectura pública sin recorrer el contenido: filtro sobre un campo indexado, sin consultas.
   const forbiddenPayload = new Proxy({}, { get() { throw new Error('anonymous media read must not query content'); } });
