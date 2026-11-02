@@ -38,10 +38,31 @@
 		max_size 12MB
 	}
 
-	reverse_proxy app:3000 {
-		# Payload usa su propia cookie; no se reenvía la contraseña de la barrera exterior.
-		header_up -Authorization
-		header_up X-Forwarded-Proto {scheme}
+	# Bloque 3 con MinIO de pruebas: PUBLIC_MEDIA_BASE_URL=https://<dominio>/media sirve el bucket
+	# público (PUBLIC_MEDIA_BUCKET) por la red public_media. Solo lectura, sin consulta (?...), sin
+	# "..", sin credenciales hacia MinIO. El bucket privado depende además de la política de MinIO.
+	# Con un CDN o un S3 público real, PUBLIC_MEDIA_BASE_URL apunta a ese servicio y esta ruta no se usa.
+	handle_path /media/* {
+		@media_unsafe {
+			not method GET HEAD
+		}
+		respond @media_unsafe 405
+		@media_traversal path_regexp `\.\.|\\|%`
+		respond @media_traversal 400
+		rewrite * /{$PUBLIC_MEDIA_BUCKET}{path}
+		reverse_proxy {$PUBLIC_MEDIA_UPSTREAM} {
+			header_up -Authorization
+			header_up -Cookie
+			header_up Host {upstream_hostport}
+		}
+	}
+
+	handle {
+		reverse_proxy app:3000 {
+			# Payload usa su propia cookie; no se reenvía la contraseña de la barrera exterior.
+			header_up -Authorization
+			header_up X-Forwarded-Proto {scheme}
+		}
 	}
 
 	log {

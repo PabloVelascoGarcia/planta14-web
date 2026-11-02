@@ -1,7 +1,8 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.28.0@sha256:bb22d9815c728170f72750f4e5b0d672e06176142e1d602c7e66c050100b7e5b
 # Imagen de la aplicación Next.js + Payload para el entorno de pruebas (staging).
 # Contexto de build: raíz del repositorio. Ver infra/compose.staging.yaml.
-ARG NODE_IMAGE=node:22.23.4-bookworm-slim
+# Fijada por digest; para actualizarla ver "Actualizar imágenes" en docs/INFRA-STAGING.md.
+ARG NODE_IMAGE=node:22.23.4-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da
 
 FROM ${NODE_IMAGE} AS deps
 WORKDIR /app

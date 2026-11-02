@@ -20,9 +20,12 @@ rand() { openssl rand -hex "$1"; }
 declare -A values=(
   [STAGING_DOMAIN]=$domain
   [CADDY_TLS]=$tls
+  [PUBLIC_MEDIA_BASE_URL]=https://$domain/media
   [CADDY_BASIC_AUTH_HASH]=$CADDY_BASIC_AUTH_HASH
   [PAYLOAD_SECRET]=$(rand 32)
   [POSTGRES_PASSWORD]=$(rand 24)
+  [POSTGRES_MIGRATOR_PASSWORD]=$(rand 24)
+  [POSTGRES_APP_PASSWORD]=$(rand 24)
   [S3_ACCESS_KEY_ID]=planta14app$(rand 4)
   [S3_SECRET_ACCESS_KEY]=$(rand 24)
   [MINIO_ROOT_USER]=planta14root$(rand 4)
