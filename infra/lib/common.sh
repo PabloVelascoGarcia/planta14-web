@@ -75,14 +75,63 @@ decrypt_file() {
 
 write_checksum() { (cd "$(dirname "$1")" && sha256sum "$(basename "$1")" > "$(basename "$1").sha256"); }
 
+# Verifica ARCHIVO contra ARCHIVO.sha256. Sin suma, se niega salvo ALLOW_MISSING_CHECKSUM=true
+# (opción explícita --allow-missing-checksum de los scripts de restauración).
 verify_checksum() {
-  local f=$1
-  if [[ -f $f.sha256 ]]; then
-    (cd "$(dirname "$f")" && sha256sum --quiet -c "$(basename "$f").sha256") || die "Suma SHA-256 incorrecta: $f"
-    log "Suma SHA-256 verificada"
-  else
-    log "AVISO: no hay $f.sha256; no se puede verificar la integridad"
+  local f=$1 sum line expected
+  sum="$f.sha256"
+  if [[ ! -e $sum ]]; then
+    [[ ${ALLOW_MISSING_CHECKSUM:-false} == true ]] || die "Falta $sum: no se restaura sin verificar la integridad (usa --allow-missing-checksum solo si sabes de dónde viene la copia)"
+    log "AVISO: restauración SIN suma SHA-256 por decisión explícita (--allow-missing-checksum)"
+    return 0
   fi
+  safe_input_file "$sum"
+  # Exactly one line, "<64 hex>  <basename of the file>": the sum cannot point to another file.
+  [[ $(wc -l < "$sum") -eq 1 ]] || die "Formato de suma no válido: $sum"
+  IFS= read -r line < "$sum"
+  expected="  $(basename "$f")"
+  [[ $line =~ ^[0-9a-f]{64}(.*)$ && ${BASH_REMATCH[1]} == "$expected" ]] || die "La suma $sum no corresponde a $(basename "$f")"
+  (cd "$(dirname "$f")" && sha256sum --quiet -c "$(basename "$sum")") || die "Suma SHA-256 incorrecta: $f"
+  log "Suma SHA-256 verificada"
+}
+
+# Archivo de entrada para restaurar: debe existir, ser un archivo regular y no un enlace simbólico.
+safe_input_file() {
+  local f=$1
+  [[ -n $f && $f != -* ]] || die "Ruta no válida: $f"
+  [[ ! -L $f ]] || die "Se rechaza un enlace simbólico como archivo de copia: $f"
+  [[ -f $f && -r $f ]] || die "No existe o no es un archivo regular legible: $f"
+}
+
+# Valida un .tar.gz de backup-storage.sh ANTES de extraerlo: solo INFO, MANIFEST.sha256 y objects/...,
+# solo archivos y directorios (sin enlaces, dispositivos ni FIFO), sin rutas absolutas ni "..".
+validate_storage_archive() {
+  local archive=$1 names types name n_names n_types
+  names=$(tar -tzf "$archive") || die "Archivo tar no legible: $archive"
+  types=$(tar -tvzf "$archive" | cut -c1) || die "Archivo tar no legible: $archive"
+  n_names=$(printf '%s\n' "$names" | grep -c '') ; n_types=$(printf '%s\n' "$types" | grep -c '')
+  [[ $n_names -eq $n_types ]] || die "Listado del archivo inconsistente"
+  while IFS= read -r name; do
+    [[ $name == INFO || $name == MANIFEST.sha256 || $name == objects/ || $name == objects/?* ]] || die "Entrada no permitida en la copia: $name"
+    [[ $name != /* && ! $name =~ (^|/)\.\.(/|$) && $name != *\\* ]] || die "Ruta peligrosa en la copia: $name"
+  done <<< "$names"
+  while IFS= read -r name; do
+    [[ $name == - || $name == d ]] || die "La copia contiene enlaces o archivos especiales (tipo '$name'); se rechaza"
+  done <<< "$types"
+}
+
+# Extrae un archivo ya validado sin conservar propietarios ni permisos y comprueba que no quedan enlaces.
+extract_storage_archive() {
+  local archive=$1 dest=$2
+  validate_storage_archive "$archive"
+  tar -C "$dest" -xzf "$archive" --no-same-owner --no-same-permissions || die "No se pudo extraer la copia"
+  [[ -z $(find "$dest" -type l -print -quit) ]] || die "Se han encontrado enlaces tras extraer; se rechaza la copia"
+  [[ -f $dest/MANIFEST.sha256 && -d $dest/objects ]] || die "La copia no tiene MANIFEST.sha256 u objects/"
+  # Manifest lines: "<sha256>  ./ruta" relative to objects/, without "..".
+  if grep -Evq '^[0-9a-f]{64}  \./[^\\]+$' "$dest/MANIFEST.sha256" || grep -Eq '(^|/)\.\.(/|$)' "$dest/MANIFEST.sha256"; then
+    die "MANIFEST.sha256 con formato o rutas no válidas"
+  fi
+  [[ $(grep -c '' "$dest/MANIFEST.sha256") -eq $(find "$dest/objects" -type f | wc -l) ]] || die "El número de objetos no coincide con el manifiesto"
 }
 
 # Retención: borra copias con fecha (en el nombre) anterior a BACKUP_RETENTION_DAYS,
@@ -107,6 +156,9 @@ prune_backups() {
     fi
   done
 }
+
+# Contenedor de PostgreSQL por defecto: el del proyecto Compose.
+default_pg_container() { printf '%s-postgres-1' "${COMPOSE_PROJECT_NAME:-planta14-staging}"; }
 
 # Ejecuta pg_dump/pg_restore/psql: dentro de PG_CONTAINER si está definido, si no en el host.
 pg_tool() {
