@@ -41,6 +41,21 @@ install_file() {
 . /etc/os-release
 [[ ${ID:-} == ubuntu ]] || die "Pensado para Ubuntu LTS (detectado: ${ID:-desconocido})"
 [[ $admin_user =~ ^[a-z][a-z0-9_-]{1,30}$ ]] || die "Nombre de usuario no válido: $admin_user"
+# Reject missing/invalid keys BEFORE changing users, sudoers or SSH. Accept Windows CRLF public keys.
+if [[ -n $ssh_key ]]; then
+  [[ -s $ssh_key ]] || die "No existe una clave pública no vacía en $ssh_key"
+  valid_keys=0
+  while IFS= read -r line || [[ -n $line ]]; do
+    line=${line%$'\r'}
+    [[ -z $line ]] && continue
+    [[ $line =~ ^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp[0-9]+|sk-ssh-ed25519@openssh.com)\ [A-Za-z0-9+/=]+ ]] || die 'Formato de clave pública SSH no válido'
+    valid_keys=$((valid_keys + 1))
+  done < "$ssh_key"
+  (( valid_keys > 0 )) || die 'No hay ninguna clave pública SSH'
+else
+  existing_home=$(getent passwd "$admin_user" | cut -d: -f6 || true)
+  [[ -n $existing_home && -s $existing_home/.ssh/authorized_keys ]] || die 'Pasa --ssh-key antes de preparar un usuario nuevo'
+fi
 [[ $timezone =~ ^[A-Za-z_]+/[A-Za-z_]+$ && -e /usr/share/zoneinfo/$timezone || ! -d /usr/share/zoneinfo ]] || die "Zona horaria no válida: $timezone"
 log "Ubuntu $VERSION_ID · usuario $admin_user · zona $timezone"
 export DEBIAN_FRONTEND=noninteractive
@@ -72,6 +87,7 @@ touch "$keys"; chown "$admin_user:$admin_user" "$keys"; chmod 600 "$keys"
 if [[ -n $ssh_key ]]; then
   [[ -f $ssh_key ]] || die "No existe la clave pública $ssh_key"
   while IFS= read -r line; do
+    line=${line%$'\r'}
     [[ $line =~ ^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp[0-9]+|sk-ssh-ed25519@openssh.com)\ [A-Za-z0-9+/=]+ ]] || die "La clave $ssh_key no parece una clave pública SSH"
     if grep -qxF "$line" "$keys"; then ok "clave SSH ya autorizada"; else echo "$line" >> "$keys"; changed "clave SSH autorizada para $admin_user"; fi
   done < <(grep -v '^\s*$' "$ssh_key")

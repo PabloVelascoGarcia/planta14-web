@@ -233,6 +233,9 @@ if [[ $storage == 1 ]]; then
   login_from() { docker run --rm --network "$1" -e PGPASSWORD="$POSTGRES_APP_PASSWORD" -e PGCONNECT_TIMEOUT=3 --entrypoint psql "$PG_IMAGE" -h "$src_ip" -U "$POSTGRES_APP_USER" -d planta14 -XAtc 'SELECT 1' 2>&1; }
   check "control: la red interna sí entra con esas credenciales" bash -c "[[ \$(docker run --rm --network $net -e PGPASSWORD='$POSTGRES_APP_PASSWORD' -e PGCONNECT_TIMEOUT=3 --entrypoint psql '$PG_IMAGE' -h $src_ip -U '$POSTGRES_APP_USER' -d planta14 -XAtc 'SELECT 1') == 1 ]]"
   egress_login=$(login_from "$egress" || true)
+  if [[ $egress_login == 1 ]]; then
+    log 'DIAGNÓSTICO: PostgreSQL aceptó credenciales válidas desde la red de copias; no se certifica la barrera pg_hba en este entorno'
+  fi
   check "PostgreSQL rechaza credenciales válidas desde la red de salida (pg_hba)" bash -c "[[ '$egress_login' != 1 ]] && grep -qiE 'no pg_hba.conf entry|timeout expired|could not connect|Connection refused|No route to host' <<< '$egress_login'"
   touch "$BACKUP_DIR/postgres/planta14-postgres-planta14-20991231T000000Z.dump"
   "$infra/backup/offsite-sync.sh"

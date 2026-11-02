@@ -140,7 +140,7 @@ La swap de 4 GiB es un colchón, no 4 GB extra de RAM rápida. Límites por defe
 | Constructor BuildKit separado | 1.280 MiB, heap Node 768 MiB, un trabajador de build y dos CPUs |
 | Cada trabajo rclone de copia | 256 MiB |
 
-Web + PostgreSQL + Caddy + constructor suman **3 GiB de límites de RAM**, dejando 1 GiB nominal para Ubuntu, Docker y otras tareas. El constructor se para al terminar. No programes una construcción a la vez que copias grandes o las actualizaciones/reinicio nocturno. La migración ocurre después de construir. Los límites pueden provocar un fallo controlado si no alcanza la memoria; no los elimines para forzar el despliegue.
+Web + PostgreSQL + Caddy + constructor suman **3 GiB de límites de RAM**, dejando aproximadamente 0,7–1 GiB para Ubuntu, Docker y otras tareas, según la RAM utilizable que muestre el VPS. El constructor se para al terminar. No programes una construcción a la vez que copias grandes o las actualizaciones/reinicio nocturno. La migración ocurre después de construir. Los límites pueden provocar un fallo controlado si no alcanza la memoria; no los elimines para forzar el despliegue.
 
 La imagen se construye con `infra/deploy/build-image.sh`, mediante BuildKit limitado. **La web anterior sigue funcionando durante la construcción.** El cambio final de contenedor puede cortar el servicio unos segundos; no se promete ausencia total de interrupciones.
 
@@ -152,7 +152,20 @@ bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
 
 Antes de una actualización con migraciones hay dos decisiones importantes: impedir nuevas escrituras durante la copia/migración para no perder cambios en una vuelta atrás, y disponer de un modo autorizado de descifrar la copia. La clave privada age se custodia fuera del servidor: **sin acceso temporal a ella, el rollback que restaura datos no funcionará automáticamente**. Resolver ese procedimiento con Pablo antes de actualizar datos reales; no dejar permanentemente la clave privada en el VPS por comodidad. Una restauración SQL tampoco garantiza por sí sola revertir efectos en S3.
 
-Tras instalar, crea el primer administrador con `cms:bootstrap`, siguiendo `docs/MANUAL-OPERACION.md` y las instrucciones de `scripts/bootstrap.ts`; la contraseña se introduce de forma privada y se retira del entorno al terminar. No ejecutes el importador de demostración en producción. Crea las cuentas reales y carga exclusivamente contenido con origen y derechos comprobados.
+Tras instalar, crea el primer administrador desde la sesión SSH. Pablo introduce la contraseña en ese terminal, de forma oculta:
+
+```bash
+cd /srv/planta14/app
+read -rp 'Correo administrador: ' CMS_BOOTSTRAP_EMAIL
+read -rsp 'Contraseña (16 caracteres o más): ' CMS_BOOTSTRAP_PASSWORD
+printf '\n'
+export CMS_BOOTSTRAP_EMAIL CMS_BOOTSTRAP_PASSWORD
+installed_commit=$(cat /srv/planta14/state/current)
+APP_IMAGE="planta14-app:${installed_commit:0:12}" docker compose -f infra/compose.production.yaml --env-file infra/.env.production --profile migrate run --rm -T -e CMS_BOOTSTRAP_EMAIL -e CMS_BOOTSTRAP_PASSWORD migrate npm run cms:bootstrap
+unset CMS_BOOTSTRAP_EMAIL CMS_BOOTSTRAP_PASSWORD
+```
+
+Comprueba que informa de administrador creado y entra en `https://planta14.com/cms`. Después sigue `docs/MANUAL-OPERACION.md` para las cuentas municipales. No ejecutes el importador de demostración en producción. Carga exclusivamente contenido con origen y derechos comprobados.
 
 ## 6. DNS y prueba antes de abrir
 

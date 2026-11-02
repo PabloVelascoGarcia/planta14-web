@@ -10,7 +10,7 @@ here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 server=$(cd "$here/../server" && pwd)
 work=$(mktemp -d); trap 'rm -rf -- "$work"' EXIT
 user=planta14ensayo
-ssh-keygen -q -t ed25519 -N '' -C ensayo -f "$work/clave" 2>/dev/null || { apt-get install -y -qq openssh-client >/dev/null; ssh-keygen -q -t ed25519 -N '' -C ensayo -f "$work/clave"; }
+ssh-keygen -q -t ed25519 -N '' -C ensayo -f "$work/clave" 2>/dev/null || { apt-get update -qq; apt-get install -y -qq openssh-client >/dev/null; ssh-keygen -q -t ed25519 -N '' -C ensayo -f "$work/clave"; }
 failures=0
 step() { local desc=$1; shift; if "$@"; then echo "OK    $desc"; else echo "FALLO $desc"; failures=$((failures + 1)); fi; }
 
@@ -22,8 +22,13 @@ bash "$server/setup-server.sh" --admin-user "$user" --ssh-key "$work/clave.pub" 
 grep -E 'CAMBIO|Terminado' "$work/run2.log"
 step "segunda ejecución: 0 cambios" grep -q 'Terminado: 0 cambios' "$work/run2.log"
 step "la clave no se duplica" test "$(grep -c ensayo "/home/$user/.ssh/authorized_keys")" = 1
+sed 's/$/\r/' "$work/clave.pub" > "$work/windows.pub"
+bash "$server/setup-server.sh" --admin-user "$user" --ssh-key "$work/windows.pub" > "$work/windows.log"
+step "clave pública Windows CRLF: 0 cambios" grep -q 'Terminado: 0 cambios' "$work/windows.log"
 echo "== Sin clave SSH, no se desactivan las contraseñas"
+cp /etc/sudoers.d/90-planta14 "$work/sudoers.before"
 step "se niega a crear un usuario sin clave" bash -c "! bash '$server/setup-server.sh' --admin-user planta14sinclave >/dev/null 2>&1"
+step "rechazo sin alterar sudoers" cmp /etc/sudoers.d/90-planta14 "$work/sudoers.before"
 userdel -r planta14sinclave >/dev/null 2>&1 || true
 echo "== Comprobación"
 bash "$server/check-server.sh" --admin-user "$user" | tee "$work/check.log"
