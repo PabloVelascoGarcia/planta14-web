@@ -3,6 +3,7 @@ import * as migration_20261102_090101_storage from './20261102_090101_storage';
 import * as migration_20261102_094653_bloque2 from './20261102_094653_bloque2';
 import * as migration_20261102_105932_bloque3 from './20261102_105932_bloque3';
 import * as migration_20261102_121412_integracion from './20261102_121412_integracion';
+import * as migration_20261102_174946_mostrar_en_concejo from './20261102_174946_mostrar_en_concejo';
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20261102_121412_integracion.up,
     down: migration_20261102_121412_integracion.down,
     name: '20261102_121412_integracion',
+  },
+  {
+    up: migration_20261102_174946_mostrar_en_concejo.up,
+    down: migration_20261102_174946_mostrar_en_concejo.down,
+    name: '20261102_174946_mostrar_en_concejo'
   },
 ];

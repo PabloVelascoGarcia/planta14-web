@@ -296,6 +296,7 @@ export interface Article {
   featured?: boolean | null;
   main?: boolean | null;
   opinion?: boolean | null;
+  showInTown?: boolean | null;
   sourceName?: string | null;
   sourceAuthor?: string | null;
   provenance?: string | null;
@@ -651,6 +652,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   featured?: T;
   main?: T;
   opinion?: T;
+  showInTown?: T;
   sourceName?: T;
   sourceAuthor?: T;
   provenance?: T;

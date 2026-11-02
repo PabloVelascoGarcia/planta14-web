@@ -42,6 +42,7 @@ export function articleContract(doc: PayloadArticle): Article {
     // Optional keys only when present, so the presentation contract stays identical without them.
     ...(shareImage(doc.seoImage || doc.image) ? { shareImage: shareImage(doc.seoImage || doc.image) } : {}),
     sourceName: doc.sourceName || undefined, sourceUrl: doc.sourceUrl || undefined, sourceAuthor: doc.sourceAuthor || undefined,
+    ...(doc.showInTown === false ? { showInTown: false } : {}),
   };
 }
 export async function payloadArticles(): Promise<Article[]> {

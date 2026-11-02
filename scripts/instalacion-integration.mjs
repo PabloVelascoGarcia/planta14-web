@@ -83,6 +83,40 @@ try {
     assert.ok((await page(`${demo}/${town}`)).includes(exampleLabel), `example label with CONTENT_SOURCE=demo: ${town}`);
   }
   passed('the «Contenido de ejemplo» label on concejo pages appears only with CONTENT_SOURCE=demo');
+
+  // --- 3. «Mostrar en la página del concejo»: marcada por defecto; desmarcada, la noticia no sale en el concejo.
+  const mieresTown = (await all('towns')).find(t => t.slug === 'mieres');
+  const section = (await all('sections')).find(s => s.slug === 'sociedad');
+  const author = await payload.create({ collection: 'authors', overrideAccess: true, data: { name: 'Redacción de prueba', slug: 'redaccion-prueba' } });
+  const base = { excerpt: 'Entradilla sintética.', body: ['Texto sintético.'], author: author.id, town: mieresTown.id, section: section.id, date: '2026-11-02', publishedAt: '2026-11-02T10:00:00.000Z', _status: 'published' };
+  const shown = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...base, slug: 'noticia-en-el-concejo', title: 'Noticia que sale en el concejo' } });
+  const hidden = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...base, slug: 'noticia-fuera-del-concejo', title: 'Noticia que no sale en el concejo', showInTown: false } });
+  assert.equal(shown.showInTown, true, 'checked by default');
+  assert.equal(hidden.showInTown, false);
+  const mieresPage = await page(`${cms}/mieres`);
+  assert.ok(mieresPage.includes('Noticia que sale en el concejo'), 'checked article on the concejo page');
+  assert.ok(!mieresPage.includes('Noticia que no sale en el concejo'), 'unchecked article not on the concejo page');
+  assert.ok((await page(`${cms}/noticia/noticia-fuera-del-concejo`)).includes('Noticia que no sale en el concejo'), 'unchecked article still published');
+  assert.ok((await page(`${cms}/`)).includes('Noticia que no sale en el concejo') || (await page(`${cms}/tema/sociedad`)).includes('Noticia que no sale en el concejo'), 'unchecked article still listed elsewhere');
+  await payload.update({ collection: 'articles', id: hidden.id, overrideAccess: true, data: { showInTown: true } });
+  assert.ok((await page(`${cms}/mieres`)).includes('Noticia que no sale en el concejo'), 'checking it again brings it back');
+  await payload.update({ collection: 'articles', id: hidden.id, overrideAccess: true, data: { showInTown: false } });
+  passed('«Mostrar en la página del concejo» is checked by default; unchecked news stay published (article, home or section) but leave the concejo page');
+
+  // --- Migración reversible.
+  const migration = await import('../cms/migrations/20261102_174946_mostrar_en_concejo.ts');
+  const tx = fn => payload.db.drizzle.transaction(db => fn({ db, payload, req: {} }));
+  const { sql } = await import('@payloadcms/db-postgres');
+  const columns = async () => (await payload.db.drizzle.execute(sql`SELECT table_name, column_name FROM information_schema.columns WHERE column_name IN ('show_in_town', 'version_show_in_town') ORDER BY table_name`)).rows.map(r => `${r.table_name}.${r.column_name}`);
+  assert.deepEqual(await columns(), ['_articles_v.version_show_in_town', 'articles.show_in_town']);
+  await tx(migration.down);
+  assert.deepEqual(await columns(), [], 'down removes both columns');
+  assert.equal((await payload.db.drizzle.execute(sql`SELECT count(*)::int AS n FROM articles`)).rows[0].n, 2, 'down keeps the articles');
+  await tx(migration.up);
+  assert.deepEqual(await columns(), ['_articles_v.version_show_in_town', 'articles.show_in_town']);
+  const flags = (await payload.db.drizzle.execute(sql`SELECT bool_and(show_in_town) AS all_true, bool_and(show_in_town IS NOT NULL) AS no_nulls FROM articles`)).rows[0];
+  assert.deepEqual([flags.all_true, flags.no_nulls], [true, true], 'up marks existing articles as shown');
+  passed('migration 20261102_174946_mostrar_en_concejo is reversible: down drops the columns and keeps the news; up restores them checked for existing news');
 } finally {
   for (const child of children) child.kill('SIGTERM');
   await payload?.destroy();

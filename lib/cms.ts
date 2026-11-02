@@ -141,7 +141,8 @@ export async function getArticlesByComarca(comarca: string) {
 
 export async function getArticlesByConcejo(concejo: string) {
   const allArticles = await getArticles();
-  return allArticles.filter((article) => slugify(article.concejo) === concejo);
+  // Solo las que tienen marcada «Mostrar en la página del concejo» (por defecto, todas).
+  return allArticles.filter((article) => slugify(article.concejo) === concejo && article.showInTown !== false);
 }
 
 export async function getArticlesByTopic(topic: string) {

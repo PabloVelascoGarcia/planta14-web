@@ -29,6 +29,8 @@ export type Article = {
   featured?: boolean;
   main?: boolean;
   opinion?: boolean;
+  /** false: publicada, pero fuera de la página del concejo («Mostrar en la página del concejo»). */
+  showInTown?: boolean;
 };
 
 export type Author = {

@@ -113,6 +113,8 @@ export const Articles: CollectionConfig = {
     text('date', true), text('publishedAt'), text('scheduledAt'), text('seoTitle'), { name: 'seoDescription', type: 'textarea' },
     { name: 'seoImage', type: 'relationship', relationTo: 'media' },
     { name: 'featured', type: 'checkbox' }, { name: 'main', type: 'checkbox' }, { name: 'opinion', type: 'checkbox' },
+    // Si se desmarca, la noticia sigue publicada (portada, sección, buscador) pero no sale en la página del concejo.
+    { name: 'showInTown', label: 'Mostrar en la página del concejo', type: 'checkbox', defaultValue: true, admin: { position: 'sidebar' } },
     text('sourceName'), text('sourceAuthor'), ...provenance],
 };
 
