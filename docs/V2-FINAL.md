@@ -94,3 +94,5 @@ No comprobado: SSH del PC de Pablo al VPS, servicios/systemd/swap/cortafuegos y 
 - **Punto 1 — kit de producción revisado:** cerrado como revisión de código y ensayos locales. Se conservan aparte las decisiones de aislamiento, escrituras/rollback, custodia age y efectos S3. No equivale a aprobar la apertura ni a una instalación en IONOS.
 
 - **Punto 2** — adaptación a 4 GB: cerrado en código y pruebas locales. Construcción limitada a 1280 MiB, arranque y continuidad de la web comprobados; alerta >85 % durante 10 minutos probada. Swap objetivo 4 GiB; activación y carga del VPS real pendientes, sin certificar una VM global de 4 GB.
+
+- **Punto 3** — correo IONOS: cerrado en configuración y pruebas sintéticas. Payload y alertas usan avisos@planta14.com por smtp.ionos.es:465 SSL/TLS, con una contraseña privada compartida. Entrega real, recuperación y límites del buzón se comprobarán antes de abrir.
