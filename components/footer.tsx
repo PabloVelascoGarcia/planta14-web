@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "./cookie-consent";
 
-export function Footer() {
+export function Footer({ cookieSettings = false }: { cookieSettings?: boolean }) {
   return (
     <footer className="mt-16 bg-coal-950 text-paper">
       <div className="container-p14 grid gap-8 py-10 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
@@ -25,6 +26,16 @@ export function Footer() {
           <p className="mt-3">Textos e imágenes utilizados únicamente con fines de demostración. No se publican.</p>
         </div>
       </div>
+      <nav aria-label="Información legal" className="border-t border-paper/15">
+        <div className="container-p14 flex flex-wrap gap-x-6 gap-y-2 py-5 text-xs text-paper/70">
+          <span>Planta 14, medio editado por ASSA</span>
+          <Link href="/aviso-legal" className="hover:text-white">Aviso legal</Link>
+          <Link href="/privacidad" className="hover:text-white">Privacidad</Link>
+          <Link href="/cookies" className="hover:text-white">Cookies</Link>
+          <Link href="/condiciones-cuentas-municipales" className="hover:text-white">Condiciones de las cuentas municipales</Link>
+          {cookieSettings ? <CookieSettingsButton /> : null}
+        </div>
+      </nav>
     </footer>
   );
 }

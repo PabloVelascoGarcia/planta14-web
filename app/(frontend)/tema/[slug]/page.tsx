@@ -17,7 +17,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const name = sortedTopics().find((topic) => slugify(topic) === slug);
-  return { title: name ? `${name}` : "Tema" };
+  return { title: name ? `${name}` : "Tema", alternates: { canonical: `/tema/${slug}` } };
 }
 
 export default async function TopicPage({ params }: PageProps) {

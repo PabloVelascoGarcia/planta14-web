@@ -215,3 +215,26 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
  .edition-section-heading { flex-wrap:wrap; gap:5px; }
  .edition-section-heading h2 { font-size:32px; }
 }
+
+/* Cookie consent: non-blocking bar; "Rechazar" and "Aceptar" have the same weight. */
+.cookie-consent { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: #1c1917; color: #f8f6f1; border-top: 3px solid #a4522d; box-shadow: 0 -8px 24px #0003; }
+.cookie-consent-inner { display: flex; gap: 24px; align-items: center; justify-content: space-between; padding-block: 18px; }
+.cookie-consent p { font-size: 13px; line-height: 1.6; max-width: 760px; }
+.cookie-consent a { text-decoration: underline; text-underline-offset: 3px; }
+.cookie-consent-title { font-weight: 800; text-transform: uppercase; letter-spacing: .14em; font-size: 11px !important; margin-bottom: 4px; }
+.cookie-consent-actions { display: flex; gap: 10px; flex: none; }
+.cookie-consent-actions button { min-width: 120px; min-height: 44px; padding: 10px 18px; font-size: 13px; font-weight: 800; border: 2px solid #f8f6f1; background: #f8f6f1; color: #1c1917; cursor: pointer; }
+.cookie-consent-actions button:focus-visible { outline: 3px solid #a4522d; outline-offset: 2px; }
+@media (max-width: 680px) { .cookie-consent-inner { flex-direction: column; align-items: stretch; gap: 12px; } .cookie-consent-actions button { flex: 1; } }
+
+/* Legal pages */
+.legal-page { max-width: 820px; padding-block: 40px 64px; }
+.legal-page h1 { font-family: var(--font-serif); font-size: clamp(34px, 5vw, 52px); line-height: 1.08; font-weight: 900; letter-spacing: -.03em; }
+.legal-page h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 800; margin-top: 34px; }
+.legal-page p, .legal-page li { font-size: 16px; line-height: 1.75; margin-top: 12px; }
+.legal-page ul { list-style: disc; padding-left: 22px; }
+.legal-page a { color: #a4522d; text-decoration: underline; text-underline-offset: 3px; }
+.legal-page table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+.legal-page th, .legal-page td { border-bottom: 1px solid #1c191726; padding: 10px 8px; text-align: left; vertical-align: top; }
+.legal-review { border: 2px solid #a4522d; background: #fbf1eb; padding: 14px 18px; margin-top: 18px; font-size: 14px !important; font-weight: 700; }
+.legal-meta { color: #57534e; font-size: 13px !important; }

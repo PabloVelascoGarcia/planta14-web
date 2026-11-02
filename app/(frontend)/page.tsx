@@ -9,6 +9,7 @@ import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
 export const revalidate = 300;
+export const metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
   const articles = await getArticles();

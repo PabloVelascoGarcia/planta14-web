@@ -18,7 +18,7 @@ source "$infra/lib/common.sh"
 require_cmd docker openssl age age-keygen curl node diff
 cd "$root"
 
-# This test destroys its stack and volumes. Never adopt an existing staging project, even stopped.
+# This test destroys its own stack and volumes. Never adopt an existing staging installation, even stopped.
 [[ -z $(docker ps -aq --filter label=com.docker.compose.project=planta14-staging) ]] || die "Ya existe el proyecto planta14-staging; no se ejecuta ni se borra"
 [[ -z $(docker volume ls -q --filter label=com.docker.compose.project=planta14-staging) ]] || die "Hay volúmenes de planta14-staging; no se ejecuta ni se borra"
 

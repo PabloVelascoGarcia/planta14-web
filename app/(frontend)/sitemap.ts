@@ -1,15 +1,18 @@
-import { siteUrl, indexable } from "@/lib/site-config";
+import { siteUrl, isIndexable } from "@/lib/site-config";
 import type { MetadataRoute } from "next";
 import { getArticles, getAuthors } from "@/lib/cms";
 import { territories, topics } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
 const baseUrl = siteUrl;
+// Per request: only published content, and nothing unless SITE_INDEXABLE=true.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  if (!indexable) return [];
+  if (!isIndexable()) return [];
   const articles = await getArticles();
   const authors = await getAuthors();
+  const spaces = await (await import('@/lib/payload-content')).payloadSpaces();
   const staticRoutes = ["", "/opinion", "/agenda", "/publicidad", "/contacto"].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date()
@@ -17,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const articleRoutes = articles.map((article) => ({
     url: `${baseUrl}/noticia/${article.slug}`,
-    lastModified: new Date(article.date)
+    lastModified: Number.isNaN(Date.parse(article.date)) ? undefined : new Date(article.date)
   }));
 
   const comarcaRoutes = Object.keys(territories).map((comarca) => ({
@@ -40,5 +43,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date()
   }));
 
-  return [...staticRoutes, ...articleRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes];
+  const municipalRoutes = spaces.map(space => ({ url: `${baseUrl}/${encodeURIComponent(space.id)}` }));
+  return [...staticRoutes, ...articleRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes, ...municipalRoutes];
 }

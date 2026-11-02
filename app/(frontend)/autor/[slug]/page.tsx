@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const author = (await getAuthors()).find((item) => item.slug === slug);
   const articles = await getArticlesByAuthor(slug);
-  return { title: author?.name ?? articles[0]?.author ?? "Autor" };
+  return { title: author?.name ?? articles[0]?.author ?? "Autor", alternates: { canonical: `/autor/${slug}` } };
 }
 
 export default async function AuthorPage({ params }: PageProps) {

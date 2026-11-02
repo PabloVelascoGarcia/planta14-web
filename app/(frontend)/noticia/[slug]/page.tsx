@@ -5,6 +5,7 @@ import { getArticle, getArticles } from "@/lib/cms";
 import { formatDate, slugify } from "@/lib/utils";
 import { AdSlot } from "@/components/ad-slot";
 import { ArticleCard } from "@/components/article-card";
+import { articleJsonLd, articleMetadata, jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -25,15 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {};
   }
 
-  return {
-    title: article.seoTitle ?? article.title,
-    description: article.seoDescription ?? article.excerpt,
-    openGraph: {
-      title: article.seoTitle ?? article.title,
-      description: article.seoDescription ?? article.excerpt,
-      images: [article.seoImage ?? article.image]
-    }
-  };
+  return articleMetadata(article);
 }
 
 export default async function ArticlePage({ params }: PageProps) {
@@ -50,6 +43,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
   return (
     <article className="container-p14 py-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd(article)) }} />
       <div className="grid gap-10 lg:grid-cols-[minmax(0,760px)_300px]">
         <div>
           <div className="flex flex-wrap gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-copper">

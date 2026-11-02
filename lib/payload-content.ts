@@ -1,5 +1,6 @@
 import type { Article, Author } from './mock-data';
 import type { MunicipalContent, MunicipalSpace } from './demo/municipal';
+import { publicURL } from '../cms/public-media';
 import type { Article as PayloadArticle, Author as PayloadAuthor, Media, MunicipalContent as PayloadMunicipalContent, MunicipalSpace as PayloadSpace, Town } from '../cms/payload-types';
 
 export async function contentClient() {
@@ -15,6 +16,16 @@ function populated<T>(value: number | T): T {
 export function mediaURL(value?: number | Media | null) {
   return value && typeof value !== 'number' && value.rightsScope === 'publicable' && value.rightsHolder && value.rightsType && value.publicURL ? value.publicURL : '/images/placeholder.svg';
 }
+/** Social preview image: the "hero" variant (1600 px) of the public copy, falling back to "card" and the original. */
+export function shareImage(value?: number | Media | null): Article['shareImage'] {
+  if (!value || typeof value === 'number' || mediaURL(value) === '/images/placeholder.svg') return undefined;
+  for (const size of ['hero', 'card'] as const) {
+    const variant = value.sizes?.[size];
+    const url = variant?.filename ? publicURL(value, variant.filename) : null;
+    if (url) return { url, width: variant?.width ?? undefined, height: variant?.height ?? undefined, alt: value.alt };
+  }
+  return { url: mediaURL(value), width: value.width ?? undefined, height: value.height ?? undefined, alt: value.alt };
+}
 export function articleContract(doc: PayloadArticle): Article {
   const author = populated(doc.author);
   const town = populated(doc.town);
@@ -28,6 +39,8 @@ export function articleContract(doc: PayloadArticle): Article {
     publishedAt: doc.publishedAt || doc.date, scheduledAt: doc.scheduledAt || undefined,
     seoTitle: doc.seoTitle || doc.title, seoDescription: doc.seoDescription || doc.excerpt, seoImage: mediaURL(doc.seoImage || doc.image),
     main: Boolean(doc.main), featured: Boolean(doc.featured), opinion: Boolean(doc.opinion),
+    // Optional keys only when present, so the presentation contract stays identical without them.
+    ...(shareImage(doc.seoImage || doc.image) ? { shareImage: shareImage(doc.seoImage || doc.image) } : {}),
     sourceName: doc.sourceName || undefined, sourceUrl: doc.sourceUrl || undefined, sourceAuthor: doc.sourceAuthor || undefined,
   };
 }
@@ -61,7 +74,7 @@ export function municipalContract(doc: PayloadMunicipalContent): MunicipalConten
     origin: 'municipality', status: 'published', publishedAt: doc.publishedAt, expiresAt: doc.expiresAt || null, eventAt: doc.eventAt || null,
     place: doc.place || null, deadline: doc.deadline || null, attachments: (doc.attachments || []).map(({ url, title }) => ({ url, title })),
     demo: Boolean(doc.demo), ...(doc.sourceUrl ? { sourceUrl: doc.sourceUrl } : {}),
-    ...(image && mediaURL(image) !== '/images/placeholder.svg' ? { image: { url: mediaURL(image), alt: image.alt, credit: image.credit } } : {}) };
+    ...(image && mediaURL(image) !== '/images/placeholder.svg' ? { image: { url: mediaURL(image), alt: image.alt, credit: image.credit, share: shareImage(image) } } : {}) };
 }
 export async function payloadMunicipalContent(): Promise<MunicipalContent[]> {
   const payload = await contentClient();

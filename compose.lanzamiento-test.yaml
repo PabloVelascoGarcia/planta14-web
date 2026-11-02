@@ -1,0 +1,15 @@
+name: planta14-lanzamiento-test
+services:
+  postgres:
+    image: postgres:17.6-alpine@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94
+    environment:
+      POSTGRES_DB: planta14_lanzamiento_test
+      POSTGRES_USER: planta14
+      POSTGRES_PASSWORD: local-development-only
+    ports: ["127.0.0.1:55435:5432"]
+    tmpfs: ["/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U planta14 -d planta14_lanzamiento_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 20

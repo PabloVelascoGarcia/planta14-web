@@ -24,6 +24,8 @@ export type Article = {
   seoTitle?: string;
   seoDescription?: string;
   seoImage?: string;
+  /** Payload only: lighter public variant for social previews (Open Graph), with its size. */
+  shareImage?: { url: string; width?: number; height?: number; alt?: string };
   featured?: boolean;
   main?: boolean;
   opinion?: boolean;

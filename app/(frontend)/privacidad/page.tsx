@@ -1,0 +1,38 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { LegalPage } from "@/components/legal-page";
+import { owner } from "@/lib/legal";
+
+export const metadata: Metadata = { title: "Política de privacidad", alternates: { canonical: "/privacidad" } };
+
+export default function Page() {
+  return <LegalPage title="Política de privacidad">
+    <h2>Responsable del tratamiento</h2>
+    <p>{owner.name} ({owner.shortName}), NIF {owner.nif}, {owner.address}. Teléfono {owner.phone}. Correo de privacidad: <a href={`mailto:${owner.privacyEmail}`}>{owner.privacyEmail}</a>. Delegado de protección de datos: [DELEGADO DE PROTECCIÓN DE DATOS, si se designa].</p>
+    <h2>Qué datos tratamos y para qué</h2>
+    <table>
+      <thead><tr><th>Tratamiento</th><th>Datos</th><th>Base jurídica</th><th>Conservación</th></tr></thead>
+      <tbody>
+        <tr><td>Funcionamiento y seguridad de la web</td><td>Dirección IP, fecha y página solicitada en los registros técnicos del servidor</td><td>Interés legítimo en mantener la web disponible y segura (art. 6.1.f RGPD)</td><td>[PLAZO DE CONSERVACIÓN DE REGISTROS TÉCNICOS]</td></tr>
+        <tr><td>Medición de audiencia con Google Analytics 4</td><td>Identificadores de cookies, páginas vistas, datos aproximados del dispositivo y de la ubicación. La dirección IP no se almacena</td><td>Consentimiento (art. 6.1.a RGPD y art. 22.2 LSSI). Solo si aceptas las cookies de medición</td><td>[PLAZO DE RETENCIÓN CONFIGURADO EN GOOGLE ANALYTICS]</td></tr>
+        <tr><td>Atención de consultas, rectificaciones y ejercicio de derechos</td><td>Nombre, correo y contenido del mensaje</td><td>Consentimiento al escribirnos y cumplimiento de obligaciones legales (art. 6.1.a y 6.1.c RGPD)</td><td>El tiempo necesario para responder y, después, el plazo de prescripción de posibles responsabilidades</td></tr>
+        <tr><td>Cuentas del personal municipal y de la redacción</td><td>Nombre, correo, ayuntamiento, contraseñas protegidas mediante hash y registro de actividad (qué se publicó, editó o retiró y cuándo)</td><td>Ejecución del contrato con el ayuntamiento e interés legítimo en la seguridad y trazabilidad del servicio (art. 6.1.b y 6.1.f RGPD)</td><td>Mientras dure la relación y, después, [PLAZO DE CONSERVACIÓN DE CUENTAS Y AUDITORÍA]</td></tr>
+      </tbody>
+    </table>
+    <p>Los datos personales que un ayuntamiento incluya en sus publicaciones se tratan por cuenta de ese ayuntamiento, que es su responsable. {owner.shortName} actúa como encargado del tratamiento conforme al contrato de encargo firmado con cada ayuntamiento.</p>
+    <h2>Destinatarios</h2>
+    <p>No cedemos datos a terceros salvo obligación legal. Nos prestan servicios, como encargados del tratamiento:</p>
+    <ul>
+      <li>Alojamiento del servidor: [PROVEEDOR DE ALOJAMIENTO].</li>
+      <li>Almacenamiento de imágenes: [PROVEEDOR DE ALMACENAMIENTO].</li>
+      <li>Envío de correos: [PROVEEDOR DE CORREO].</li>
+      <li>Medición de audiencia, solo con tu consentimiento: Google Ireland Limited. Google puede tratar datos en Estados Unidos, al amparo del Marco de Privacidad de Datos UE-EE. UU. y de las cláusulas contractuales tipo de la Comisión Europea.</li>
+    </ul>
+    <h2>Tus derechos</h2>
+    <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a <a href={`mailto:${owner.privacyEmail}`}>{owner.privacyEmail}</a>, indicando qué derecho ejerces. Puedes retirar tu consentimiento a las cookies de medición en cualquier momento desde «Configurar cookies», en el pie de página.</p>
+    <p>Si consideras que no hemos atendido correctamente tu solicitud, puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener noreferrer">www.aepd.es</a>).</p>
+    <h2>Seguridad</h2>
+    <p>El servicio debe operar con conexiones cifradas, credenciales individuales, permisos limitados por ayuntamiento, registro de actividad y copias de seguridad cifradas. La implantación y comprobación de estas medidas deben confirmarse antes de la puesta en servicio.</p>
+    <p>Más información sobre cookies en la <Link href="/cookies">política de cookies</Link>.</p>
+  </LegalPage>;
+}

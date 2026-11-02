@@ -8,6 +8,8 @@ const publicUrl = context && context !== "production"
   : process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL;
 
 /** @type {import('next').NextConfig} */
-const nextConfig = publicUrl ? { env: { SITE_URL: publicUrl } } : {};
+// Metadata (title, Open Graph, robots) always goes in <head>, never streamed into <body>: every client,
+// including social previews (WhatsApp, Facebook) and search crawlers, sees it in the first response.
+const nextConfig = { htmlLimitedBots: /.*/, ...(publicUrl ? { env: { SITE_URL: publicUrl } } : {}) };
 
 export default withPayload(nextConfig);

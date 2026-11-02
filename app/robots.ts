@@ -1,5 +1,13 @@
 import type { MetadataRoute } from "next";
-import { siteUrl, indexable } from "@/lib/site-config";
+import { siteUrl, isIndexable } from "@/lib/site-config";
+
+// Evaluated per request so SITE_INDEXABLE (runtime) decides, not the build.
+export const dynamic = "force-dynamic";
+
 export default function robots(): MetadataRoute.Robots {
- return indexable ? { rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/api", "/buscar"] }, sitemap: `${siteUrl}/sitemap.xml` } : { rules: { userAgent: "*", disallow: "/" } };
+  if (!isIndexable()) return { rules: { userAgent: "*", disallow: "/" } };
+  return {
+    rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/cms", "/api/", "/buscar", "/niebla", "/*/panel"] },
+    sitemap: [`${siteUrl}/sitemap.xml`, `${siteUrl}/sitemap-noticias.xml`],
+  };
 }
