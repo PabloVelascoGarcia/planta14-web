@@ -1,5 +1,7 @@
 # Fase 1: Payload, PostgreSQL e imágenes
 
+El desarrollo posterior de roles, derechos, modelos y adaptadores se documenta en [V2-BLOQUE2.md](V2-BLOQUE2.md), que actualiza esas partes de esta guía.
+
 Esta guía corresponde a la rama de desarrollo v2. El CMS está **desactivado por defecto**. La web sigue usando los datos de demostración y mantiene `noindex`.
 
 ## Arranque local

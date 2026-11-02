@@ -15,7 +15,9 @@
     "cms:migrate": "payload migrate",
     "cms:bootstrap": "payload run scripts/bootstrap.ts",
     "cms:s3:local": "node scripts/local-s3.mjs",
-    "test:cms:integration": "payload run scripts/cms-integration.mjs"
+    "test:cms:integration": "payload run scripts/cms-integration.mjs",
+    "cms:import:municipal": "payload run scripts/import-municipal.ts",
+    "test:block2": "payload run scripts/block2-integration.mjs"
   },
   "dependencies": {
     "@fontsource/gelasio": "5.3.0",

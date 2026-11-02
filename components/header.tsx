@@ -8,9 +8,9 @@ import news from "@/lib/demo/data/news.json";
 
 const demoTopics = topics.filter(topic => topic === "Agenda" || news.some(article => article.topic === topic));
 
-export function Header() {
+export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]> }) {
   const pathname = usePathname();
-  if (visibleTowns().some(t => pathname === `/${t.slug}` || pathname === `/${t.slug}/panel`)) return null;
+  if (townSlugs.some(slug => pathname === `/${slug}` || pathname === `/${slug}/panel`)) return null;
   return (
     <header className="bg-paper">
       <div className="container-p14">
@@ -25,7 +25,7 @@ export function Header() {
         </div>
         <p className="masthead-tagline">Una voz para las Cuencas</p>
         <nav aria-label="Territorio" className="territory-nav">
-          {Object.entries(territories).map(([comarca, concejos]) => (
+          {Object.entries(navigationTerritories).map(([comarca, concejos]) => (
             <div key={comarca} className="territory-group">
               <Link href={`/comarca/${slugify(comarca)}`} className="territory-name">{comarca}</Link>
               <div className="territory-towns">
@@ -37,11 +37,11 @@ export function Header() {
         <details className="section-menu">
           <summary>Explorar secciones <span aria-hidden="true">+</span></summary>
           <nav aria-label="Secciones" className="topic-nav">
-            {demoTopics.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
+            {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
           </nav>
         </details>
         <nav aria-label="Secciones destacadas" className="desktop-topics">
-          {demoTopics.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
+          {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
         </nav>
       </div>
     </header>

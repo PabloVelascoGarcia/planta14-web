@@ -10,7 +10,9 @@ export type MunicipalContent = {
   attachments: { url: string; title: string }[]; demo: boolean;
   sourceUrl?: string;
 };
-export type MunicipalSpace = typeof spaceRecords[number];
+export type MunicipalSpace = Omit<typeof spaceRecords[number], 'subscription'> & {
+  subscription: { status: string; startsAt: string | null; endsAt: string | null };
+};
 export const municipalContents = contentRecords as MunicipalContent[];
 export function getMunicipalSpace(slug: string) {
   return visibleTowns().some(t => t.slug === slug) ? spaceRecords.find(s => s.id === slug) : undefined;

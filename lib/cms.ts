@@ -6,8 +6,9 @@ import { randomUUID } from "node:crypto";
 import type { Article, Author } from "@/lib/mock-data";
 import { articles as seedArticles, authors as seedAuthors } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
+import { contentSource } from './content-source';
 
-const dataDir = path.join(process.cwd(), "data");
+const dataDir = process.env.CMS_DEMO_DATA_DIR || path.join(process.cwd(), "data");
 const articlesFile = path.join(dataDir, "articles.json");
 const authorsFile = path.join(dataDir, "authors.json");
 
@@ -48,11 +49,13 @@ export async function getArticles(): Promise<Article[]> {
 }
 
 export async function getAllArticles(): Promise<Article[]> {
-  const articles = voiceDemoEnabled ? voiceArticles : await readJson<Article[]>(articlesFile, seedArticles.map(normalizeArticle));
+  if (contentSource() === 'payload') return (await import('./payload-content')).payloadArticles();
+  const articles = voiceDemoEnabled && !process.env.CMS_DEMO_DATA_DIR ? voiceArticles : await readJson<Article[]>(articlesFile, seedArticles.map(normalizeArticle));
   return articles.map(normalizeArticle).sort(sortByDateDesc);
 }
 
 export async function saveArticle(input: ArticleInput): Promise<Article> {
+  assertDemoWriter();
   const currentArticles = await getAllArticles();
   const existingArticle = input.id
     ? currentArticles.find((article) => article.id === input.id || article.slug === input.id)
@@ -103,6 +106,7 @@ export async function saveArticle(input: ArticleInput): Promise<Article> {
 }
 
 export async function deleteArticle(id: string) {
+  assertDemoWriter();
   const currentArticles = await getAllArticles();
   await writeJson(
     articlesFile,
@@ -111,6 +115,7 @@ export async function deleteArticle(id: string) {
 }
 
 export async function updateArticleStatus(id: string, status: ArticleStatus) {
+  assertDemoWriter();
   const currentArticles = await getAllArticles();
   const nextArticles = currentArticles.map((article) =>
     article.id === id || article.slug === id
@@ -150,11 +155,13 @@ export async function getArticlesByAuthor(author: string) {
 }
 
 export async function getAuthors(): Promise<Author[]> {
-  const authors = voiceDemoEnabled ? [...voiceAuthors] : await readJson<Author[]>(authorsFile, seedAuthors);
+  if (contentSource() === 'payload') return (await import('./payload-content')).payloadAuthors();
+  const authors = voiceDemoEnabled && !process.env.CMS_DEMO_DATA_DIR ? [...voiceAuthors] : await readJson<Author[]>(authorsFile, seedAuthors);
   return authors.sort((a, b) => a.name.localeCompare(b.name, "es"));
 }
 
 export async function saveAuthor(input: AuthorInput): Promise<Author> {
+  assertDemoWriter();
   const currentAuthors = await getAuthors();
   const slug = uniqueAuthorSlug(slugify(input.name), currentAuthors);
   const author: Author = {
@@ -171,6 +178,7 @@ export async function saveAuthor(input: AuthorInput): Promise<Author> {
 }
 
 export async function updateAuthor(slug: string, input: AuthorInput): Promise<Author> {
+  assertDemoWriter();
   const currentAuthors = await getAuthors();
   const author: Author = {
     name: input.name.trim(),
@@ -186,6 +194,7 @@ export async function updateAuthor(slug: string, input: AuthorInput): Promise<Au
 }
 
 export async function deleteAuthor(slug: string) {
+  assertDemoWriter();
   const currentAuthors = await getAuthors();
   await writeJson(authorsFile, currentAuthors.filter((author) => author.slug !== slug));
 }
@@ -281,4 +290,8 @@ function sortByDateDesc(a: Article, b: Article) {
 
 function today() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function assertDemoWriter() {
+  if (contentSource() === 'payload') throw new Error('Edita el contenido mediante el panel Payload /cms');
 }

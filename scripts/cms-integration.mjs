@@ -44,16 +44,16 @@ try {
   const { token } = await login.json();
   assert(token);
   await assert.rejects(payload.find({ collection: 'users', overrideAccess: false }));
-  await assert.rejects(payload.find({ collection: 'media', overrideAccess: false }));
+  assert.equal((await payload.find({ collection: 'media', overrideAccess: false })).totalDocs, 0);
   const data = await sharp({ create: { width: 1800, height: 1000, channels: 3, background: '#24704a' } }).png().toBuffer();
   const file = { data, mimetype: 'image/png', name: `${randomUUID()}.png`, size: data.length };
   await assert.rejects(payload.create({ collection: 'media', overrideAccess: false, data: { alt: 'Forbidden', credit: 'Test' }, file }));
-  media = await payload.create({ collection: 'media', overrideAccess: false, user: actor, data: { alt: 'Prueba de integración', credit: 'Planta 14 test' }, file });
+  media = await payload.create({ collection: 'media', overrideAccess: false, user: actor, data: { alt: 'Prueba de integración', credit: 'Planta 14 test', rightsHolder: 'Planta 14 test', rightsType: 'propia', rightsScope: 'demo' }, file });
   assert(media.filename && media.sizes.card.filename && media.sizes.hero.filename);
   assert.equal((await rest('GET', ['media', 'file', media.filename])).status, 403);
   const download = await rest('GET', ['media', 'file', media.filename], undefined, token);
-  assert.equal(download.status, 200);
-  assert.equal((await download.arrayBuffer()).byteLength, media.filesize);
+  assert.equal(download.status, 302);
+  assert.equal((await (await fetch(download.headers.get('location'))).arrayBuffer()).byteLength, media.filesize);
   const { S3Client, ListObjectsV2Command, GetObjectCommand } = await import('@aws-sdk/client-s3');
   const client = new S3Client({ region: 'us-east-1', endpoint: process.env.S3_ENDPOINT, forcePathStyle: true, credentials: { accessKeyId: 'S3RVER', secretAccessKey: 'S3RVER' } });
   try {

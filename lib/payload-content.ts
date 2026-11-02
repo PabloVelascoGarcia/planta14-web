@@ -1,0 +1,77 @@
+import type { Article, Author } from './mock-data';
+import type { MunicipalContent, MunicipalSpace } from './demo/municipal';
+import type { Article as PayloadArticle, Author as PayloadAuthor, Media, MunicipalContent as PayloadMunicipalContent, MunicipalSpace as PayloadSpace, Town } from '../cms/payload-types';
+
+export async function contentClient() {
+  if (process.env.CMS_ENABLED !== 'true') throw new Error('CONTENT_SOURCE=payload requiere CMS_ENABLED=true');
+  const [{ getPayload }, { default: config }] = await Promise.all([import('payload'), import('../payload.config')]);
+  return getPayload({ config });
+}
+function populated<T>(value: number | T): T {
+  if (typeof value === 'number') throw new Error('Relación de contenido no disponible');
+  return value;
+}
+export function mediaURL(value?: number | Media | null) {
+  return value && typeof value !== 'number' && value.rightsScope === 'publicable' && value.rightsHolder && value.rightsType ? value.url || '/images/placeholder.svg' : '/images/placeholder.svg';
+}
+export function articleContract(doc: PayloadArticle): Article {
+  const author = populated(doc.author);
+  const town = populated(doc.town);
+  const section = populated(doc.section);
+  const image = typeof doc.image === 'object' ? doc.image : null;
+  return {
+    id: doc.legacyID || String(doc.id), slug: doc.slug, title: doc.title, excerpt: doc.excerpt,
+    body: doc.body as string[], image: mediaURL(doc.image), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
+    date: doc.date, author: author.name, authorSlug: author.slug,
+    comarca: town.comarca, concejo: town.name, topic: section.name, status: 'published',
+    publishedAt: doc.publishedAt || doc.date, scheduledAt: doc.scheduledAt || undefined,
+    seoTitle: doc.seoTitle || doc.title, seoDescription: doc.seoDescription || doc.excerpt, seoImage: mediaURL(doc.seoImage || doc.image),
+    main: Boolean(doc.main), featured: Boolean(doc.featured), opinion: Boolean(doc.opinion),
+    sourceName: doc.sourceName || undefined, sourceUrl: doc.sourceUrl || undefined, sourceAuthor: doc.sourceAuthor || undefined,
+  };
+}
+export async function payloadArticles(): Promise<Article[]> {
+  const payload = await contentClient();
+  const result = await payload.find({ collection: 'articles', overrideAccess: false, where: { _status: { equals: 'published' } }, depth: 2, pagination: false, sort: '-date' });
+  return result.docs.map(articleContract).sort((a, b) => (b.publishedAt || b.date).localeCompare(a.publishedAt || a.date));
+}
+export function authorContract(doc: PayloadAuthor): Author {
+  return { name: doc.name, slug: doc.slug, role: doc.role || '', bio: doc.bio || '' };
+}
+export async function payloadAuthors(): Promise<Author[]> {
+  const payload = await contentClient();
+  return (await payload.find({ collection: 'authors', overrideAccess: false, depth: 0, pagination: false })).docs.map(authorContract).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+}
+export function spaceContract(doc: PayloadSpace): MunicipalSpace {
+  const town = populated<Town>(doc.town);
+  return { id: doc.legacyID || town.slug, territory: town.slug, medium: doc.medium, name: doc.name, crest: null,
+    subscription: { status: doc.subscription?.status || 'inactive', startsAt: doc.subscription?.startsAt || null, endsAt: doc.subscription?.endsAt || null },
+    contact: { place: doc.contact?.place || '', hours: doc.contact?.hours || '', note: doc.contact?.note || '' } };
+}
+export async function payloadSpaces(): Promise<MunicipalSpace[]> {
+  const payload = await contentClient();
+  const result = await payload.find({ collection: 'municipal-spaces', overrideAccess: false, depth: 1, pagination: false, where: { _status: { equals: 'published' } } });
+  return result.docs.filter(doc => typeof doc.town === 'object' && doc.town.visible).map(spaceContract);
+}
+export function municipalContract(doc: PayloadMunicipalContent): MunicipalContent {
+  const space = populated(doc.space);
+  return { id: doc.legacyID || String(doc.id), space: space.legacyID!, type: doc.type, title: doc.title, excerpt: doc.excerpt, body: doc.body,
+    origin: 'municipality', status: 'published', publishedAt: doc.publishedAt, expiresAt: doc.expiresAt || null, eventAt: doc.eventAt || null,
+    place: doc.place || null, deadline: doc.deadline || null, attachments: (doc.attachments || []).map(({ url, title }) => ({ url, title })),
+    demo: Boolean(doc.demo), ...(doc.sourceUrl ? { sourceUrl: doc.sourceUrl } : {}) };
+}
+export async function payloadMunicipalContent(): Promise<MunicipalContent[]> {
+  const payload = await contentClient();
+  const result = await payload.find({ collection: 'municipal-content', overrideAccess: false, depth: 1, pagination: false, sort: 'id', where: { _status: { equals: 'published' } } });
+  return result.docs.filter(doc => typeof doc.space === 'object' && doc.space?._status === 'published').map(municipalContract);
+}
+
+export async function payloadNavigation() {
+  const payload = await contentClient();
+  const [sections, towns] = await Promise.all([
+    payload.find({ collection: 'sections', overrideAccess: false, pagination: false, sort: 'position' }),
+    payload.find({ collection: 'towns', overrideAccess: false, pagination: false, where: { visible: { equals: true } }, sort: 'id' }),
+  ]);
+  return { sectionNames: sections.docs.map(s => s.name), townSlugs: towns.docs.map(t => t.slug),
+    navigationTerritories: Object.fromEntries([...new Set(towns.docs.map(t => t.comarca))].map(comarca => [comarca, towns.docs.filter(t => t.comarca === comarca).map(t => t.name)])) };
+}
