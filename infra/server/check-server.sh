@@ -52,7 +52,7 @@ if has_systemd; then
   check "fail2ban: jaula sshd activa" fail2ban-client status sshd
   check "fail2ban: jaula planta14-login activa" fail2ban-client status planta14-login
   # 4 GiB menos 1 MiB: el núcleo reserva una página de cabecera en cada archivo de swap.
-  check "swap >= 4 GiB" test "$(swapon --show --bytes --noheadings --output SIZE | awk '{s+=$1} END {printf "%.0f", s+0}')" -ge 4293918720
+  check "swap >= 4 GiB" test "$(swapon --show=SIZE --bytes --noheadings | awk '{s+=$1} END {printf "%.0f", s+0}')" -ge 4293918720
 else
   skip "cortafuegos, servicios activos, jaulas en marcha y swap (sin systemd)"
 fi
