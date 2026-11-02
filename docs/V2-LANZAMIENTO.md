@@ -1,5 +1,7 @@
 # Planta 14 v2: preparación del lanzamiento (salida pública prevista el 4 de diciembre de 2026)
 
+Revisión posterior de `70b9300`: [V2-LANZAMIENTO-REVISION.md](V2-LANZAMIENTO-REVISION.md). Corrige consentimiento/caché, frecuencia de salud, SMTP, cookies, sitemaps y manuales. Los resultados originales de este documento son históricos; el informe nuevo distingue las decisiones jurídicas pendientes y el fallo de aislamiento detectado en Docker Desktop.
+
 Rama `desarrollo/planta14-v2-lanzamiento`, desde `origin/desarrollo/planta14-v2` (`2bb8270`). No se han tocado `desarrollo/planta14-v2` (en revisión), `main` ni `mejora/presentacion-la-voz`, ni tampoco `cms/public-media.ts`, las migraciones ni los scripts de test existentes. Sin PR, sin despliegues, sin contrataciones y sin secretos. El diseño se conserva: solo se añaden el pie legal, el banner de cookies y las páginas legales con el mismo estilo.
 
 Medio editado por **Agencia Social de Servicios Asturiana S.L. (ASSA)**: NIF B33524216, Plaza La Salve, 14, bajo, 33900 Langreo (Asturias), 985 69 35 04, info@planta14.com. Queda pendiente el hueco visible **[REGISTRO MERCANTIL]** (tomo, folio y hoja). Los datos están en un único archivo, `lib/legal.ts`.

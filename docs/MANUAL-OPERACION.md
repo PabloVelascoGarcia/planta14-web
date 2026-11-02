@@ -2,7 +2,11 @@
 
 Para Pablo. Explica qué hacer en las situaciones habituales sin necesidad de programar. Cuando haya que escribir una orden, cópiala tal cual. **No pegues nunca contraseñas ni el archivo `.env` en un chat ni en un correo**, tampoco en una IA.
 
-En las órdenes, «el servidor» es la máquina de IONOS. Se entra con `ssh usuario@IP-del-servidor` y se va a la carpeta del proyecto con `cd /srv/planta14-web`.
+Este manual todavía no acredita una instalación en producción. La persona técnica debe entregar primero la dirección del servidor, el acceso, la carpeta instalada, los horarios de copia y los contactos de los proveedores elegidos. No des por contratados IONOS, correo ni monitorización.
+
+Los comandos de este documento corresponden al **entorno privado de pruebas (staging)**. No los ejecutes sobre producción sin la guía específica de esa instalación. Si no tienes experiencia con el servidor, pide a la persona técnica que siga esos pasos contigo; tú puedes hacer las comprobaciones del navegador.
+
+En las órdenes, «el servidor» será la máquina contratada. `ssh usuario@IP-del-servidor` y `/srv/planta14-web` son ejemplos que la persona técnica debe sustituir por los datos reales.
 
 ## 1. Vigilar que la web funciona (monitor gratuito con aviso al móvil)
 
@@ -46,7 +50,7 @@ docker compose -f infra/compose.staging.yaml --env-file infra/.env.staging logs 
 
 ## 3. Comprobar las copias de seguridad
 
-Las copias se hacen cada noche. Si una falla o el disco pasa del 80 %, llega un correo (cuando haya proveedor de correo). Mientras tanto, los avisos se guardan en `/var/backups/planta14/alerts.log`.
+Las copias solo se harán cada noche después de que la persona técnica las programe y pruebe. Pídele confirmación del horario y de la última copia restaurada. Si una falla o el disco pasa del 80 %, se intenta enviar un correo cuando esté configurado. Un fallo de correo no se reintenta automáticamente; revisa también el registro. La ruta de ejemplo de avisos es `/var/backups/planta14/alerts.log`.
 
 **Una vez por semana:**
 
@@ -92,7 +96,7 @@ Restaurar es delicado. **Nunca se restaura encima de la web en marcha.** Los scr
 
 **Para dar de baja una cuenta:** en **Users**, ábrela y bórrala. Lo que publicó se mantiene y el registro de auditoría conserva quién lo hizo.
 
-**Para retirar una publicación municipal:** en `/cms`, ve a **Municipal Content**, ábrela, marca **Retirado** y escribe el **motivo**. El ayuntamiento lo verá en su panel.
+**Para retirar una publicación municipal:** en `/cms`, ve a **Municipal Contents**, ábrela, marca **Retirado**, escribe el **Motivo** y pulsa **Save Draft** (guardar borrador). La retirada afecta también a la versión pública. Comprueba en una ventana privada que ya no aparece; el ayuntamiento verá el motivo en su panel. No restaures una versión anterior para eludir una retirada.
 
 ## 6. Tareas programadas (cron)
 

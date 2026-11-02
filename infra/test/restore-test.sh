@@ -28,7 +28,7 @@ root=$(cd "$infra/.." && pwd)
 source "$infra/lib/common.sh"
 # shellcheck source=SCRIPTDIR/../lib/rclone.sh
 source "$infra/lib/rclone.sh"
-require_cmd docker openssl age age-keygen sha256sum diff
+require_cmd docker openssl age age-keygen sha256sum diff python3
 
 PG_IMAGE=${POSTGRES_IMAGE:-postgres:17.6-alpine@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94}
 export RCLONE_IMAGE=${RCLONE_IMAGE:-rclone/rclone:1.71.2@sha256:3103526c506266a9ecdf064efe99bf3677d92ef6407af124d8c56b4f49cbaa51}

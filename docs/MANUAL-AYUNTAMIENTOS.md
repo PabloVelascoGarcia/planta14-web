@@ -52,9 +52,9 @@ Así lo ven los vecinos en la web, marcado como contenido del ayuntamiento:
 
 Planta 14 puede retirar una publicación si incumple las condiciones de uso o la ley, o si alguien reclama con razón (por ejemplo, por un dato personal o una foto sin permiso). Entonces:
 
-- deja de verse en la web al momento, y su imagen también;
+- deja de verse en la web al momento. La copia pública de la imagen se retira cuando ninguna otra publicación la usa; una caché o un enlace compartido puede tardar en actualizarse;
 - en tu panel aparece como **Retirado por Planta 14**, con el **motivo**;
-- no se puede volver a publicar tal cual. Corrige lo que indique el motivo y crea una publicación nueva, o escríbenos si crees que es un error.
+- no intentes publicarla otra vez ni crear una copia para eludir la retirada. Escríbenos para resolver el motivo; solo Planta 14 puede restablecer esa publicación.
 
 ![Publicación retirada con su motivo](img/manual-ayuntamientos/05-retirado.png)
 

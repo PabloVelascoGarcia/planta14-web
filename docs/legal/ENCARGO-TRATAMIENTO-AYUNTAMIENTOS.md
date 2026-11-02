@@ -29,7 +29,7 @@ El mismo plazo que el contrato principal. Al terminar se aplica la cláusula 9.
 |---|---|
 | Operaciones | Recogida, registro, conservación, consulta, publicación en la web, modificación, retirada, copia de seguridad y supresión |
 | Finalidad | Comunicación municipal a la ciudadanía a través del espacio municipal |
-| Datos | Personal municipal: nombre, correo, credenciales cifradas y registro de actividad. Personas que aparezcan en las publicaciones: los datos que el Ayuntamiento incluya (nombre, imagen, cargo u otros) |
+| Datos | Personal municipal: nombre, correo, contraseñas protegidas mediante hash y registro de actividad. Personas que aparezcan en las publicaciones: los datos que el Ayuntamiento incluya (nombre, imagen, cargo u otros) |
 | Categorías especiales | No se prevén. El Ayuntamiento se compromete a no publicarlas salvo con base legal expresa y aviso previo a ASSA |
 | Interesados | Personal municipal usuario del panel y personas citadas o fotografiadas en las publicaciones |
 
@@ -74,7 +74,7 @@ Al terminar el servicio, ASSA, a elección del Ayuntamiento, devolverá los dato
 ## Anexo I: medidas de seguridad
 
 - Comunicaciones cifradas (HTTPS) entre la ciudadanía, el personal municipal y la web.
-- Cuentas individuales, sin cuentas compartidas, y contraseñas guardadas cifradas.
+- Cuentas individuales, sin cuentas compartidas, y contraseñas protegidas mediante hash.
 - Cada cuenta municipal solo accede al contenido de su ayuntamiento, y no a las noticias de la redacción ni a otros espacios.
 - Usuarios de base de datos separados: la aplicación no puede crear ni borrar tablas.
 - Registro de actividad de publicaciones, ediciones y retiradas.
