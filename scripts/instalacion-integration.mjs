@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import pg from 'pg';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
 
 // Rama de instalación: carga de estructura de producción (sin demostración), etiqueta «Contenido de ejemplo»,
 // casilla «Mostrar en la página del concejo» y su migración. Base PostgreSQL desechable
@@ -16,6 +18,22 @@ await reset.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
 await reset.end();
 const passed = name => console.log(`PASS: ${name}`);
 let payload;
+const children = [];
+// Servidor Next ya compilado (npm run build) contra la base de prueba.
+async function start(port, env) {
+  const child = spawn(process.execPath, [path.resolve('node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', String(port)], {
+    env: { ...process.env, CMS_SERVER_URL: `http://localhost:${port}`, SITE_URL: `http://localhost:${port}`, NEXT_TELEMETRY_DISABLED: '1', ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
+  children.push(child);
+  let logs = ''; child.stdout.on('data', b => { logs += b; }); child.stderr.on('data', b => { logs += b; });
+  for (let i = 0; i < 150; i++) {
+    if (child.exitCode !== null) throw new Error(`next exited: ${logs.slice(-1500)}`);
+    try { if ((await fetch(`http://127.0.0.1:${port}/robots.txt`)).ok) return `http://127.0.0.1:${port}`; } catch { /* starting */ }
+    await new Promise(r => setTimeout(r, 200));
+  }
+  throw new Error('next did not start');
+}
+const page = async url => { const response = await fetch(url); assert.equal(response.status, 200, url); return response.text(); };
+const exampleLabel = '<span class="municipal-example">Contenido de ejemplo</span>';
 try {
   const { getPayload } = await import('payload');
   const { default: config } = await import('../payload.config.ts');
@@ -56,6 +74,16 @@ try {
   assert.equal((await payload.findByID({ collection: 'sections', id: opinion.id, overrideAccess: true })).name, 'Opinión y tribuna', 'existing section untouched');
   assert.equal((await payload.findByID({ collection: 'municipal-spaces', id: mieres.id, overrideAccess: true })).subscription.status, 'active', 'existing space untouched');
   passed('structure load is repeatable: second run creates nothing, and edited sections and spaces are left as they are');
+
+  // --- 2. «Contenido de ejemplo» solo con CONTENT_SOURCE=demo.
+  const cms = await start(3071, {});
+  const demo = await start(3072, { CONTENT_SOURCE: 'demo', CMS_ENABLED: 'false' });
+  for (const town of ['mieres', 'lena']) {
+    assert.ok(!(await page(`${cms}/${town}`)).includes(exampleLabel), `no example label with CONTENT_SOURCE=payload: ${town}`);
+    assert.ok((await page(`${demo}/${town}`)).includes(exampleLabel), `example label with CONTENT_SOURCE=demo: ${town}`);
+  }
+  passed('the «Contenido de ejemplo» label on concejo pages appears only with CONTENT_SOURCE=demo');
 } finally {
+  for (const child of children) child.kill('SIGTERM');
   await payload?.destroy();
 }

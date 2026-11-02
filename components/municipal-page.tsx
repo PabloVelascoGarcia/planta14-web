@@ -28,7 +28,7 @@ function ContentCard({ item, space, compact = false }: { item: MunicipalContent;
     </div>
   </article>;
 }
-export function MunicipalPage({ space, active, contents, articles }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[] }) {
+export function MunicipalPage({ space, active, contents, articles, demo = false }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[]; demo?: boolean }) {
   const identity = getMunicipalIdentity(space.id);
   const [section, setSection] = useState<string>("news");
   const [browserItems, setBrowserItems] = useState<MunicipalContent[]>([]);
@@ -47,7 +47,7 @@ export function MunicipalPage({ space, active, contents, articles }: { space: Mu
     {identity && active ? <figure className="aller-hero"><img src={identity.image} alt={identity.imageAlt} width={1800} height={715} fetchPriority="high" /><div className="aller-hero-shade" /><div className="container-p14 aller-hero-copy"><p className="municipal-kicker">Un concejo. Mil formas de vivirlo.</p><h2>{identity.title}</h2><p>{identity.subtitle}</p><a href="#vida-municipal">Descubre tu espacio municipal <span aria-hidden="true">↓</span></a></div><figcaption><a href={identity.imageSource} target="_blank" rel="noopener noreferrer">{identity.imageCredit}</a></figcaption></figure> : null}
     {active ? <nav className="municipal-section-nav" aria-label="Secciones municipales"><div className="container-p14">{sections.map(s => <button key={s.id} onClick={() => setSection(s.id)} aria-current={section === s.id ? "page" : undefined}>{s.label}</button>)}</div></nav> : null}
     <div id="vida-municipal" className="container-p14 municipal-page-body">
-      <div className="municipal-introline"><p><span className="municipal-status-dot" />{active ? "Tu espacio de información municipal" : "El concejo en Planta 14"}</p><span className="municipal-example">Contenido de ejemplo</span></div>
+      <div className="municipal-introline"><p><span className="municipal-status-dot" />{active ? "Tu espacio de información municipal" : "El concejo en Planta 14"}</p>{demo ? <span className="municipal-example">Contenido de ejemplo</span> : null}</div>
       {active && notices.length ? <button className="municipal-notice-strip" onClick={() => setSection("notice")}><span className="municipal-notice-icon" aria-hidden="true">!</span><span><small>AVISO DESTACADO</small><strong>{notices[0].title}</strong></span><span aria-hidden="true">Ver aviso ↗</span></button> : null}
       <div className="municipal-columns">
         <div className="municipal-main-column">

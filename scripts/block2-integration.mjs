@@ -136,13 +136,20 @@ try {
   for (const route of ['/', '/edicion', '/lena', '/mieres', '/aller', '/morcin', '/riosa', '/ribera-de-arriba', '/agenda', '/noticia/historia-original-prueba']) {
     const [demo, cms] = await Promise.all([fetch(`http://127.0.0.1:3040${route}`), fetch(`http://127.0.0.1:3041${route}`)]);
     assert.equal(demo.status, 200, `demo ${route}`); assert.equal(cms.status, 200, `payload ${route}`);
-    const expected = mainContent(await demo.text()); const actual = mainContent(await cms.text());
+    let expected = mainContent(await demo.text()); const actual = mainContent(await cms.text());
+    // The concejo page's «Contenido de ejemplo» label belongs to the demo only (CONTENT_SOURCE=demo).
+    const label = '<span class="municipal-example">Contenido de ejemplo</span>';
+    if (/^\/(lena|mieres|aller|morcin|riosa|ribera-de-arriba)$/.test(route)) {
+      const occurrences = text => text.split(label).length - 1;
+      assert.equal(occurrences(expected), occurrences(actual) + 1, `demo shows the example label once more than payload: ${route}`);
+      expected = expected.replace(label, '');
+    }
     assert(expected.length > 0); assert(actual === expected, `same rendered body (header, content, footer): ${route}`);
   }
   assert.equal((await fetch('http://127.0.0.1:3041/noticia/borrador-prueba')).status, 404);
   assert.equal((await fetch('http://127.0.0.1:3041/niebla/adrian-barbon')).status, 404);
   assert.doesNotMatch(await (await fetch('http://127.0.0.1:3041/niebla')).text(), /agendapublica|sobrevia\.net/);
-  passed('identical rendered body for demo/payload on ten public pages; HTTP draft 404 and magazine demo isolation');
+  passed('identical rendered body for demo/payload on ten public pages (except the demo-only «Contenido de ejemplo» label on concejo pages); HTTP draft 404 and magazine demo isolation');
 
   // Exercise downgrade/up inside real transactions after testing the protective editor guard.
   const migration = await import('../cms/migrations/20261102_094653_bloque2.ts');
