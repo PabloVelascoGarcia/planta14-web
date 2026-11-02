@@ -3,8 +3,8 @@
 # Deja vacíos, para rellenarlos a mano, los datos de proveedores (S3, copia externa, correo), la clave pública
 # de las copias y la decisión SITE_INDEXABLE.
 # Uso: infra/deploy/generate-production-env.sh [--pruebas] CORREO_ACME [SALIDA]
-#   --pruebas  instalación de prueba en pruebas.planta14.com: SITE_INDEXABLE=false (fijo), sin redirección
-#              de www y copias externas bajo planta14/pruebas. Para pasar luego a planta14.com, ver
+#   --pruebas  preproducción en pruebas.planta14.com: SITE_INDEXABLE=false (fijo), sin redirección de www,
+#              contraseña común (PREPRODUCTION_AUTH=on; falta el hash) y copias externas bajo planta14/pruebas. Para pasar luego a planta14.com, ver
 #              docs/PUESTA-EN-MARCHA-IONOS.md, apartado 7.
 set -Eeuo pipefail
 umask 077
@@ -27,7 +27,7 @@ declare -A values=(
 # Valores que sustituyen a los de la plantilla aunque ya tengan uno (instalación de prueba).
 declare -A overrides=()
 if (( pruebas )); then
-  overrides=([SITE_DOMAIN]=pruebas.planta14.com [SITE_INDEXABLE]=false [CADDY_WWW_REDIRECT]=off [OFFSITE_PREFIX]=planta14/pruebas)
+  overrides=([SITE_DOMAIN]=pruebas.planta14.com [SITE_INDEXABLE]=false [CADDY_WWW_REDIRECT]=off [OFFSITE_PREFIX]=planta14/pruebas [PREPRODUCTION_AUTH]=on)
 fi
 while IFS= read -r line || [[ -n $line ]]; do
   key=${line%%=*}
@@ -36,7 +36,7 @@ while IFS= read -r line || [[ -n $line ]]; do
 done < "$infra/.env.production.example" > "$out"
 chmod 600 "$out"
 if (( pruebas )); then
-  echo "Creado $out para pruebas.planta14.com (SITE_INDEXABLE=false). Rellena la clave de Object Storage (S3_ACCESS_KEY_ID y S3_SECRET_ACCESS_KEY), BACKUP_AGE_RECIPIENT y el correo. Guarda una copia en el gestor de contraseñas." >&2
+  echo "Creado $out para pruebas.planta14.com (SITE_INDEXABLE=false, con contraseña de preproducción). Rellena PREPRODUCTION_AUTH_HASH, la clave de Object Storage (S3_ACCESS_KEY_ID y S3_SECRET_ACCESS_KEY), BACKUP_AGE_RECIPIENT y el correo. Guarda una copia en el gestor de contraseñas." >&2
 else
   echo "Creado $out. Rellena la clave de Object Storage (S3_ACCESS_KEY_ID y S3_SECRET_ACCESS_KEY), BACKUP_AGE_RECIPIENT, el correo y SITE_INDEXABLE. Guarda una copia en el gestor de contraseñas." >&2
 fi

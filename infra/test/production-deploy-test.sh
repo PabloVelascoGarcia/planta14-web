@@ -290,6 +290,31 @@ check "durante la actualización las escrituras se rechazaron (503)" grep -q '^5
 check "orden: mantenimiento, copia previa, health ok, fin del mantenimiento" bash -c "l() { grep -n \"\$1\" '$ws/deploy-forzada.log' | head -1 | cut -d: -f1; }; [[ \$(l 'Modo mantenimiento ACTIVADO') -lt \$(l 'Copia previa:') && \$(l 'Copia previa:') -lt \$(l '/api/health: ok') && \$(l '/api/health: ok') -lt \$(l 'Modo mantenimiento DESACTIVADO') ]]"
 check "tras la actualización el mantenimiento queda desactivado" test ! -f "$ws/mantenimiento/activo"
 check "tras la actualización: PATCH 200" test "$(patch_same_title)" = 200
+log "== 3c. Modo preproducción: contraseña común salvo /api/health; se quita sin reconstruir"
+pp_password=$(openssl rand -hex 12)
+pp_hash=$(docker run --rm caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d caddy hash-password --plaintext "$pp_password")
+sed -i "s/^PREPRODUCTION_AUTH=.*/PREPRODUCTION_AUTH=on/; s|^PREPRODUCTION_AUTH_HASH=.*|PREPRODUCTION_AUTH_HASH='$pp_hash'|" "$ws/production.env"
+app_id=$(docker inspect -f '{{.Id}}' "$project-app-1")
+infra/deploy/aplicar-caddy.sh --env-file "$ws/production.env" > "$ws/preproduccion-on.log" 2>&1 || true
+check "aplicar-caddy.sh pone la contraseña y lo comprueba" grep -q 'Contraseña de preproducción PUESTA' "$ws/preproduccion-on.log"
+check "preproducción: el contenedor de Caddy recibe el hash literal" bash -c "docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' '$project-caddy-1' | grep -qxF 'PREPRODUCTION_AUTH_HASH=$pp_hash'"
+check "preproducción: portada sin contraseña → 401" test "$(status_of "https://$domain/")" = 401
+check "preproducción: portada con la contraseña común → 200" test "$(status_of -u "planta14:$pp_password" "https://$domain/")" = 200
+check "preproducción: /api/health abierto → 200 ok" grep -q '"status":"ok"' <<< "$(c "https://$domain/api/health")"
+pp=(-u "planta14:$pp_password")
+c "${pp[@]}" -c "$ws/cookies-pp.txt" -o /dev/null -X POST -H 'Content-Type: application/json' -H "Origin: https://$domain" -d "{\"email\":\"admin@planta14.example\",\"password\":\"$admin_password\"}" "https://$domain/api/cms/users/login"
+check "preproducción: con la contraseña común se entra en /cms (sesión de Payload por cookie)" bash -c "curl -sk --noproxy '*' --resolve '$domain:443:127.0.0.1' -u 'planta14:$pp_password' -b '$ws/cookies-pp.txt' -H 'Sec-Fetch-Site: same-origin' 'https://$domain/cms' | grep -q 'municipal-content\|Municipal'"
+check "preproducción: el panel municipal también la pide" test "$(status_of "https://$domain/lena/panel")" = 401
+code=0; DEPLOY_FORCE=1 deploy "$good" con-preproduccion || code=$?
+check "preproducción: una actualización funciona con la contraseña puesta (mantenimiento y salud)" bash -c "[[ $code == 0 ]] && grep -q 'Modo mantenimiento DESACTIVADO' '$ws/deploy-con-preproduccion.log'"
+check "preproducción: tras la actualización sigue pidiendo la contraseña" test "$(status_of "https://$domain/")" = 401
+app_id=$(docker inspect -f '{{.Id}}' "$project-app-1")
+sed -i "s/^PREPRODUCTION_AUTH=.*/PREPRODUCTION_AUTH=off/" "$ws/production.env"
+infra/deploy/aplicar-caddy.sh --env-file "$ws/production.env" > "$ws/preproduccion-off.log" 2>&1 || true
+check "aplicar-caddy.sh quita la contraseña y lo comprueba" grep -q 'Contraseña de preproducción QUITADA' "$ws/preproduccion-off.log"
+check "sin preproducción: portada pública → 200" test "$(status_of "https://$domain/")" = 200
+check "quitarla no reconstruye ni reinicia la web (mismo contenedor de la app)" test "$(docker inspect -f '{{.Id}}' "$project-app-1")" = "$app_id"
+
 code=0; deploy "$good" repetida || code=$?
 check "redesplegar la versión actual no hace nada" bash -c "[[ $code == 0 ]] && grep -q 'ya está desplegada' '$ws/deploy-repetida.log'"
 sed 's/^SITE_INDEXABLE=.*/SITE_INDEXABLE=/' "$ws/production.env" > "$ws/sin-decision.env"; chmod 600 "$ws/sin-decision.env"

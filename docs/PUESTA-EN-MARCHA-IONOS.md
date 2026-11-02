@@ -10,7 +10,7 @@ Salida pública: **4 de diciembre de 2026**. Rama de instalación: **desarrollo/
 | Preparación del servidor (apartado 2) | **Hecha.** `check-server.sh` en verde, código en `/srv/planta14/app` en el commit `86aed41`. Detalle en `docs/SERVIDOR-PREPARADO.md` |
 | Object Storage: tres buckets y una clave (apartado 3) | **Creados** por Pablo |
 | La web | **No instalada** |
-| Siguiente | Instalación de prueba en **pruebas.planta14.com** (apartado 5), sin indexar. Después se pasa a planta14.com (apartado 6) |
+| Siguiente | **Preproducción** de dos semanas en **pruebas.planta14.com** (apartado 5): sin indexar, con una contraseña común para toda la web y contenido real. El día de la salida se queda tal cual y pasa a planta14.com (apartado 6) |
 
 No repitas el apartado 2: empieza en el 4 y sigue el 5 en orden.
 
@@ -161,9 +161,18 @@ nano infra/.env.production
 
 El generador no sobrescribe archivos existentes y deja permisos 600. Con `--pruebas` ya vienen puestos:
 - `SITE_DOMAIN=pruebas.planta14.com`;
-- `SITE_INDEXABLE=false`: el despliegue se niega a indexar otro dominio que no sea planta14.com;
+- `SITE_INDEXABLE=false`: el despliegue se niega a indexar otro dominio que no sea planta14.com, o con la contraseña puesta;
 - `CADDY_WWW_REDIRECT=off`, porque no existe `www.pruebas`;
+- `PREPRODUCTION_AUTH=on`: toda la web pide una contraseña común;
 - copias externas bajo `planta14/pruebas`.
+
+**Contraseña de preproducción.** Elige en el gestor de contraseñas una contraseña larga para «Planta 14 – preproducción»: es la que darás a los periodistas. Caddy no guarda la contraseña, sino su huella (hash). Para obtenerla, en el servidor:
+
+```bash
+docker run --rm -it caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d caddy hash-password
+```
+
+Escribe la contraseña dos veces (no se ve). Copia la línea que empieza por `$2a$` en `PREPRODUCTION_AUTH_HASH`, **entre comillas simples**: `PREPRODUCTION_AUTH_HASH='$2a$14$…'`. El usuario es `planta14` (`PREPRODUCTION_AUTH_USER`). Toda la web la pide (portada, `/cms`, paneles y API), salvo `https://pruebas.planta14.com/api/health`: así el monitor externo y el despliegue siguen funcionando. El navegador la pide una vez y la recuerda. Después, cada periodista entra en `/cms` con su propia cuenta.
 
 Completa:
 - `S3_ACCESS_KEY_ID` y `S3_SECRET_ACCESS_KEY` con la clave única de Object Storage. Buckets, regiones, endpoints y `PUBLIC_MEDIA_BASE_URL` ya vienen puestos (apartado 3). Deja vacíos `STORAGE_BACKUP_*`, `OFFSITE_ACCESS_KEY_ID` y `OFFSITE_SECRET_ACCESS_KEY`: usan la misma clave.
@@ -249,7 +258,7 @@ Caddy pide el certificado de Let's Encrypt en el primer despliegue: el registro 
 bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
 ```
 
-Debe terminar en «Desplegada». Comprueba en el navegador `https://pruebas.planta14.com/api/health`: debe responder `"status":"ok"`, con un candado válido de Let's Encrypt.
+Debe terminar en «Desplegada». Comprueba en el navegador `https://pruebas.planta14.com/api/health`: debe responder `"status":"ok"` sin pedir contraseña, con un candado válido de Let's Encrypt. Abre `https://pruebas.planta14.com/`: debe pedir el usuario `planta14` y la contraseña de preproducción.
 
 **6. Primer administrador.** Pablo introduce la contraseña en el terminal, sin que se vea:
 
@@ -334,32 +343,86 @@ sudo bash infra/deploy/schedule.sh --env-file /srv/planta14/app/infra/.env.produ
 
 Copia PostgreSQL 03:15, originales 03:30, destino externo 03:45, disco cada hora y memoria cada minuto. Comprueba la primera noche y que los trabajos no se solapan. A más del **85 % de RAM durante 10 minutos**, el monitor intenta enviar un correo; repite como máximo cada seis horas durante el mismo episodio. Es la señal para revisar carga y preparar la mudanza, no para ampliar este plan. Una pausa larga en las muestras reinicia la medición. Si SMTP falla, consulta el registro y el monitor externo.
 
-### Pasar de pruebas.planta14.com a planta14.com
+### El día de la salida: de pruebas.planta14.com a planta14.com
 
-Cuando las pruebas estén bien, la misma instalación pasa al dominio definitivo. Hasta entonces planta14.com sigue como está.
+Durante las dos semanas de preproducción, el contenido que se cargue es **real** y se queda para el lanzamiento. Solo se borra lo que sea de prueba. Para poder encontrarlo ese día, la regla durante la preproducción es: **todo lo que sea de prueba lleva `[PRUEBA]` al principio del título**. En las imágenes de prueba va en el texto alternativo y en los autores, en el nombre.
 
-1. **Decide qué pasa con los datos de prueba** (decisión de Pablo):
-   - **Conservarlos**, si lo creado en pruebas ya es contenido real: cuentas, publicaciones o imágenes. No hay que hacer nada más.
-   - **Empezar de cero.** La persona técnica borra la base de datos de la instalación y vacía los buckets de originales e imágenes; esos dos no tienen bloqueo. Las copias de prueba del bucket de Fráncfort (`planta14/pruebas`) no se pueden borrar: caducan con el bloqueo, a los 30 días. Después se repite el administrador (paso 6 del apartado 5).
-2. **DNS de planta14.com.** Antes de tocar nada, haz una captura de todos los registros del dominio. Baja el TTL de `@` y `www` un día antes, si el panel lo permite. Cambia el registro **A** de `@` a `87.106.30.18` y `www` a esa misma IP, o a un CNAME a `planta14.com`. **No cambies** MX ni TXT: el correo de info@planta14.com sigue igual. Quita un AAAA antiguo si lo hubiera: no hay IPv6 configurado. Comprueba con `Resolve-DnsName planta14.com -Type A` y `Resolve-DnsName www.planta14.com`.
-3. **`.env`.** En `infra/.env.production` cambia:
-   - `SITE_DOMAIN=planta14.com`;
-   - `CADDY_WWW_REDIRECT=on`;
-   - `OFFSITE_PREFIX=planta14/produccion`.
+Por qué no se pierden imágenes ni enlaces:
+- **Imágenes.** Están en los buckets de Object Storage y se muestran desde su propia dirección (`PUBLIC_MEDIA_BASE_URL`), que no depende del dominio de la web. No se mueven ni se copian.
+- **Enlaces internos** (de una noticia a otra, a un concejo o a una sección). Son relativos, así que funcionan igual en el dominio nuevo.
+- **Enlaces que alguien haya guardado o compartido con `pruebas.planta14.com`.** Ese nombre se queda apuntando al servidor y redirige de forma permanente a la misma página de planta14.com.
 
-   Deja `SITE_INDEXABLE=false` hasta el 4 de diciembre.
-4. **Volver a desplegar el mismo commit** para que Caddy y la web tomen el dominio nuevo y pidan los certificados:
+**Unos días antes**
+1. Captura de todos los registros DNS de planta14.com en el panel de IONOS. Si el panel lo permite, baja el TTL de `@` y `www` a 5 minutos.
+2. Avisa a los periodistas de la hora: durante unos minutos no podrán guardar (modo mantenimiento) y después tendrán que volver a entrar en `https://planta14.com/cms`.
+3. Comprueba que los textos legales están revisados (apartado 7) y que el simulacro de restauración salió bien.
+
+**El día, en este orden**
+1. **Copia de seguridad a mano**, para tener una justo antes:
+
+   ```bash
+   cd /srv/planta14/app
+   bash infra/backup/backup-postgres.sh --env-file infra/.env.production
+   bash infra/backup/backup-storage.sh --env-file infra/.env.production
+   bash infra/backup/offsite-sync.sh --env-file infra/.env.production
+   ```
+
+2. **Borra el contenido de prueba** en `https://pruebas.planta14.com/cms`. En cada lista (**Articles**, **Media**, **Authors** y **Users**):
+   - escribe `[PRUEBA]` en el buscador;
+   - marca todos los resultados y pulsa **Delete**;
+   - comprueba la portada y un concejo.
+
+   Al borrar una noticia o una imagen, su copia pública desaparece sola del bucket de imágenes. Los registros de auditoría no se borran: se conservan a propósito. No borres nada sin `[PRUEBA]` sin estar seguro.
+3. **DNS.** En el panel de IONOS:
+   - cambia el registro **A** de `@` a `87.106.30.18`;
+   - pon `www` como **A** a `87.106.30.18`, o como CNAME a `planta14.com`;
+   - **no toques** MX ni TXT, para que el correo de info@planta14.com siga igual;
+   - quita un AAAA antiguo si lo hay;
+   - **deja el registro `pruebas`** como está, para la redirección.
+
+   Espera a que `Resolve-DnsName planta14.com -Type A` y `Resolve-DnsName www.planta14.com` den `87.106.30.18` (minutos u horas, según el TTL anterior).
+4. **Cambia el `.env`** (`nano infra/.env.production`). Siete líneas:
+
+   ```
+   SITE_DOMAIN=planta14.com
+   CADDY_WWW_REDIRECT=on
+   PREPRODUCTION_AUTH=off
+   CADDY_PREVIOUS_DOMAIN_REDIRECT=on
+   SITE_PREVIOUS_DOMAIN=pruebas.planta14.com
+   SITE_INDEXABLE=true
+   OFFSITE_PREFIX=planta14/produccion
+   ```
+
+5. **Aplica los cambios** volviendo a desplegar la **misma** versión. No se reconstruye nada, porque la imagen ya está en el servidor. Pone unos minutos el modo mantenimiento, hace otra copia y pide los certificados del dominio nuevo:
 
    ```bash
    DEPLOY_FORCE=1 bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
    ```
 
-   Comprueba `https://planta14.com/api/health`, y que `https://www.planta14.com/…` redirige a `https://planta14.com/…`.
-5. **Borra el registro `pruebas`** del DNS: el servidor ya no sirve ese nombre. Envía de nuevo a los ayuntamientos el enlace de su panel con el dominio definitivo.
+   Debe terminar en «Desplegada». Si dijera algo de `SITE_INDEXABLE` o de la contraseña, revisa el paso 4: el despliegue se niega a indexar con la contraseña puesta o con otro dominio.
+6. **Comprueba**, mejor desde el móvil con datos:
+   - `https://planta14.com/` se ve sin contraseña, con candado válido y con las imágenes;
+   - `https://www.planta14.com/` lleva a `https://planta14.com/`;
+   - un enlace antiguo, por ejemplo `https://pruebas.planta14.com/` + la dirección de una noticia, lleva a la misma noticia en planta14.com;
+   - `https://planta14.com/api/health` dice `"status":"ok"`;
+   - `https://planta14.com/robots.txt` dice `Allow: /` y `https://planta14.com/sitemap.xml` lista direcciones de planta14.com;
+   - se puede entrar en `https://planta14.com/cms`.
+7. **Cambia el monitor externo** (`docs/MANUAL-OPERACION.md`, apartado 1) a `https://planta14.com/api/health` y envía el sitemap a Google Search Console.
+
+**Si algo sale mal en el paso 5 o 6:** vuelve a poner en el `.env` los valores de preproducción:
+- `SITE_DOMAIN=pruebas.planta14.com`;
+- `CADDY_WWW_REDIRECT=off`;
+- `PREPRODUCTION_AUTH=on`;
+- `CADDY_PREVIOUS_DOMAIN_REDIRECT=off`;
+- `SITE_INDEXABLE=false`.
+
+Repite el paso 5. La web vuelve a estar como antes en pruebas.planta14.com, con todo el contenido. Después revisa con calma.
+
+**Para quitar o volver a poner solo la contraseña** en otro momento, sin tocar nada más, cambia `PREPRODUCTION_AUTH` (`off` u `on`) y ejecuta `bash infra/deploy/aplicar-caddy.sh --env-file infra/.env.production`. Recrea solo Caddy en unos segundos, sin reconstruir ni reiniciar la web, y comprueba que la portada responde como debe.
 
 ## 7. El 4 de diciembre y después
 
-Solo con las pruebas y textos legales resueltos, cambia `SITE_INDEXABLE=true` y vuelve a desplegar el mismo commit con `DEPLOY_FORCE=1` (como en el paso 4 anterior). Solo se acepta con `SITE_DOMAIN=planta14.com`. Activa GA4 únicamente cuando su configuración y textos estén revisados; la casilla de consentimiento no configura una propiedad de Google por sí misma. Da de alta el monitor externo y envía los sitemaps a Search Console.
+`SITE_INDEXABLE=true` se activa el día de la salida (apartado 6), solo con las pruebas y los textos legales resueltos. Solo se acepta con `SITE_DOMAIN=planta14.com` y sin la contraseña de preproducción. Activa GA4 únicamente cuando su configuración y textos estén revisados; la casilla de consentimiento no configura una propiedad de Google por sí misma. Da de alta el monitor externo y envía los sitemaps a Search Console.
 
 Revisa copia diaria y alertas cada mañana la primera semana. Guarda tres versiones locales y vigila el disco de 120 GB: el constructor conserva caché. La persona técnica revisará el espacio antes de limpiar **solo** caché del constructor; nunca use una limpieza general que borre volúmenes. Mantén las versiones anterior/actual y las copias.
 

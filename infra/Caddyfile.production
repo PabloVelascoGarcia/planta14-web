@@ -40,9 +40,38 @@
 
 import www_{$CADDY_WWW_REDIRECT:on}
 
+# Dominio anterior (pruebas.planta14.com tras la salida): redirige de forma permanente al actual conservando
+# la ruta, para que no se pierdan los enlaces. SITE_PREVIOUS_DOMAIN y CADDY_PREVIOUS_DOMAIN_REDIRECT=on.
+(previous_on) {
+	{$SITE_PREVIOUS_DOMAIN} {
+		import tls_{$CADDY_TLS_MODE:acme}
+		import security_headers
+		redir https://{$SITE_DOMAIN}{uri} permanent
+	}
+}
+
+(previous_off) {
+}
+
+import previous_{$CADDY_PREVIOUS_DOMAIN_REDIRECT:off}
+
+# Modo preproducción: toda la web pide una contraseña común (autenticación básica; hash bcrypt en
+# PREPRODUCTION_AUTH_HASH), salvo /api/health (monitor externo y despliegue) y la comprobación del modo
+# mantenimiento que hace deploy.sh. Se quita con PREPRODUCTION_AUTH=off e infra/deploy/aplicar-caddy.sh.
+(preproduction_on) {
+	@preproduction_protected not path /api/health /api/cms/comprobacion-mantenimiento
+	basic_auth @preproduction_protected {
+		{$PREPRODUCTION_AUTH_USER:planta14} {$PREPRODUCTION_AUTH_HASH}
+	}
+}
+
+(preproduction_off) {
+}
+
 {$SITE_DOMAIN} {
 	import tls_{$CADDY_TLS_MODE:acme}
 	import security_headers
+	import preproduction_{$PREPRODUCTION_AUTH:off}
 	encode zstd gzip
 
 	# Cargas del CMS: 10 MiB por imagen, con margen para el multipart.

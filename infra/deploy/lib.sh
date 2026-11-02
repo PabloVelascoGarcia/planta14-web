@@ -22,6 +22,19 @@ deploy_init() { # ARCHIVO_ENV
     die "SITE_INDEXABLE=true solo para planta14.com; $SITE_DOMAIN debe quedar con SITE_INDEXABLE=false"
   fi
   case ${CADDY_WWW_REDIRECT:-on} in on|off) ;; *) die "CADDY_WWW_REDIRECT debe ser \"on\" u \"off\"" ;; esac
+  case ${PREPRODUCTION_AUTH:-off} in
+    off) ;;
+    on) [[ ${PREPRODUCTION_AUTH_HASH:-} =~ ^\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}$ ]] \
+          || die "PREPRODUCTION_AUTH=on necesita PREPRODUCTION_AUTH_HASH: el hash bcrypt de caddy hash-password, entre comillas simples"
+        [[ $SITE_INDEXABLE == false ]] || die "Con la contraseña de preproducción puesta (PREPRODUCTION_AUTH=on) no se indexa: SITE_INDEXABLE=false" ;;
+    *) die "PREPRODUCTION_AUTH debe ser \"on\" u \"off\"" ;;
+  esac
+  case ${CADDY_PREVIOUS_DOMAIN_REDIRECT:-off} in
+    off) ;;
+    on) [[ ${SITE_PREVIOUS_DOMAIN:-} =~ ^[a-z0-9.-]+\.[a-z]{2,}$ && $SITE_PREVIOUS_DOMAIN != "$SITE_DOMAIN" ]] \
+          || die "CADDY_PREVIOUS_DOMAIN_REDIRECT=on necesita SITE_PREVIOUS_DOMAIN (p. ej. pruebas.planta14.com), distinto de SITE_DOMAIN" ;;
+    *) die "CADDY_PREVIOUS_DOMAIN_REDIRECT debe ser \"on\" u \"off\"" ;;
+  esac
   if [[ ${BACKUP_ENCRYPTION:-none} == none && ${DEPLOY_ALLOW_UNENCRYPTED_BACKUP:-0} != 1 ]]; then
     die "En producción las copias van cifradas: define BACKUP_ENCRYPTION=age y BACKUP_AGE_RECIPIENT"
   fi
