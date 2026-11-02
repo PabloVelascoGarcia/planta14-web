@@ -23,3 +23,6 @@ bantime   = 1h
 port      = http,https
 chain     = DOCKER-USER
 banaction = iptables-multiport
+# Nunca se banean redes privadas: si una conexión llega a través del proxy de Docker (p. ej. IPv6 hacia un
+# puerto publicado), Caddy ve la IP de la pasarela de Docker y banearla bloquearía a todo el mundo.
+ignoreip  = 127.0.0.1/8 ::1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16

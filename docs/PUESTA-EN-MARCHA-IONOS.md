@@ -204,7 +204,7 @@ Guarda las respuestas: son la «foto» de antes. **NS** dice dónde está el DNS
 1. **Un día antes del cambio**, baja el **TTL** de los registros `A` de `planta14.com` y de `www` a 300 segundos. Así el cambio se nota en minutos y, si hay que deshacerlo, también.
 2. **No cambies los servidores de nombres (NS)** ni muevas el DNS a otro sitio: es lo que más fácilmente rompe el correo y las redirecciones.
 3. Edita **solo estos registros**:
-   - `planta14.com`, tipo **A**: la IP del servidor de IONOS (y tipo AAAA con la IPv6, si el servidor la tiene; si no, borra cualquier AAAA antiguo de la web).
+   - `planta14.com`, tipo **A**: la IP (IPv4) del servidor de IONOS. **No añadas de momento un registro AAAA (IPv6)**, y borra cualquier AAAA antiguo de la web: con IPv6, la protección contra intentos de acceso no vería la IP real de los visitantes.
    - `www.planta14.com`: tipo **A** con la misma IP, o **CNAME** a `planta14.com`.
    - Si había una «redirección web» o «reenvío de dominio» del proveedor para la web (no para el correo), desactívala: la redirección de `www` la hace ahora el servidor.
 4. **No toques** MX, TXT (SPF, DKIM, DMARC), ni ningún registro relacionado con el correo o con la redirección de correo.

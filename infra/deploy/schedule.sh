@@ -24,7 +24,7 @@ done
 log=/var/log/planta14/tareas.log
 job() { # MINUTO HORA NOMBRE ORDEN...
   local m=$1 h=$2 name=$3; shift 3
-  printf '%s %s * * * %s cd %q && ALERT_ENV_FILE=%q infra/monitor/run-with-alert.sh %q -- %s >> %s 2>&1\n' "$m" "$h" "$user" "$repo" "$env_file" "$name" "$*" "$log"
+  printf '%s %s * * * %s cd %q && ALERT_ENV_FILE=%q infra/monitor/run-with-alert.sh "%s" -- %s >> %s 2>&1\n' "$m" "$h" "$user" "$repo" "$env_file" "$name" "$*" "$log"
 }
 tmp=$(mktemp)
 {
