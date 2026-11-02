@@ -1,5 +1,5 @@
 # Caddy de producción de Planta 14: web pública (sin contraseña), HTTPS automático de Let's Encrypt para
-# SITE_DOMAIN y www.SITE_DOMAIN, con www redirigido a SITE_DOMAIN. /api/health queda abierto para el monitor
+# SITE_DOMAIN y www.SITE_DOMAIN, con www redirigido a SITE_DOMAIN (salvo CADDY_WWW_REDIRECT=off). /api/health queda abierto para el monitor
 # externo. Los intentos de inicio de sesión se limitan con fail2ban (infra/server/fail2ban) a partir de este
 # registro de accesos, y Payload bloquea además cada cuenta tras 5 fallos durante 10 minutos.
 {
@@ -25,11 +25,20 @@
 	}
 }
 
-www.{$SITE_DOMAIN} {
-	import tls_{$CADDY_TLS_MODE:acme}
-	import security_headers
-	redir https://{$SITE_DOMAIN}{uri} permanent
+# www.SITE_DOMAIN redirige a SITE_DOMAIN (planta14.com). CADDY_WWW_REDIRECT=off lo omite: para dominios sin
+# www en el DNS, como pruebas.planta14.com, así Caddy no pide a Let's Encrypt un certificado imposible.
+(www_on) {
+	www.{$SITE_DOMAIN} {
+		import tls_{$CADDY_TLS_MODE:acme}
+		import security_headers
+		redir https://{$SITE_DOMAIN}{uri} permanent
+	}
 }
+
+(www_off) {
+}
+
+import www_{$CADDY_WWW_REDIRECT:on}
 
 {$SITE_DOMAIN} {
 	import tls_{$CADDY_TLS_MODE:acme}

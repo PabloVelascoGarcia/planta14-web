@@ -17,6 +17,11 @@ deploy_init() { # ARCHIVO_ENV
     true|false) ;;
     *) die "SITE_INDEXABLE debe ser \"true\" o \"false\": es una decisión explícita (ver docs/PUESTA-EN-MARCHA-IONOS.md)" ;;
   esac
+  # Solo el dominio definitivo puede indexarse: una instalación de prueba (pruebas.planta14.com) nunca.
+  if [[ $SITE_INDEXABLE == true && ${SITE_DOMAIN:-} != planta14.com ]]; then
+    die "SITE_INDEXABLE=true solo para planta14.com; $SITE_DOMAIN debe quedar con SITE_INDEXABLE=false"
+  fi
+  case ${CADDY_WWW_REDIRECT:-on} in on|off) ;; *) die "CADDY_WWW_REDIRECT debe ser \"on\" u \"off\"" ;; esac
   if [[ ${BACKUP_ENCRYPTION:-none} == none && ${DEPLOY_ALLOW_UNENCRYPTED_BACKUP:-0} != 1 ]]; then
     die "En producción las copias van cifradas: define BACKUP_ENCRYPTION=age y BACKUP_AGE_RECIPIENT"
   fi
