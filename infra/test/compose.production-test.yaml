@@ -1,0 +1,12 @@
+# Solo para infra/test/production-deploy-test.sh: S3 "externo" sustituto (rclone serve s3, imagen oficial fijada
+# por digest) en la red de salida de la app, con un bucket privado y otro público vacíos.
+services:
+  s3:
+    image: rclone/rclone:1.71.2@sha256:3103526c506266a9ecdf064efe99bf3677d92ef6407af124d8c56b4f49cbaa51
+    command: ["serve", "s3", "--addr", ":8080", "--force-path-style=true", "--auth-key", "${S3_ACCESS_KEY_ID},${S3_SECRET_ACCESS_KEY}", "/data"]
+    volumes: ["${PRODTEST_S3_DIR:?}:/data"]
+    networks: [edge]
+  app:
+    depends_on:
+      s3:
+        condition: service_started

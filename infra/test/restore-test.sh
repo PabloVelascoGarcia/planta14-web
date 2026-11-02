@@ -59,7 +59,8 @@ start_pg() {
   docker run -d --name "$1" --network "$net" -p 127.0.0.1::5432 \
     -e POSTGRES_USER=planta14 -e POSTGRES_DB=planta14 -e POSTGRES_PASSWORD="$pw" \
     -e POSTGRES_MIGRATOR_USER -e POSTGRES_MIGRATOR_PASSWORD -e POSTGRES_APP_USER -e POSTGRES_APP_PASSWORD \
-    -v "$infra/postgres:/planta14:ro" -v "$infra/postgres/initdb:/docker-entrypoint-initdb.d:ro" "$PG_IMAGE" >/dev/null
+    -v "$infra/postgres:/planta14:ro" -v "$infra/postgres/initdb:/docker-entrypoint-initdb.d:ro" "$PG_IMAGE" \
+    postgres -c hba_file=/planta14/pg_hba.conf >/dev/null
   local i
   for i in $(seq 1 60); do
     docker exec "$1" pg_isready -h 127.0.0.1 -U planta14 -d planta14 >/dev/null 2>&1 && return 0
@@ -217,7 +218,22 @@ if [[ $storage == 1 ]]; then
   export OFFSITE_ENDPOINT=http://$off:8080 OFFSITE_REGION=us-east-1 OFFSITE_FORCE_PATH_STYLE=true OFFSITE_ACCESS_KEY_ID=$offkey OFFSITE_SECRET_ACCESS_KEY=$offsecret
   src_ip=$(docker inspect -f "{{(index .NetworkSettings.Networks \"$net\").IPAddress}}" "$src")
   check "la red de salida no resuelve PostgreSQL" bash -c "! docker run --rm --network $egress --entrypoint pg_isready '$PG_IMAGE' -h $src -t 3 >/dev/null 2>&1"
-  check "la red de salida no llega a PostgreSQL por IP" bash -c "! docker run --rm --network $egress --entrypoint pg_isready '$PG_IMAGE' -h $src_ip -t 3 >/dev/null 2>&1"
+  # Two independent barriers. (1) Network: on native Linux Docker (the production server) user bridges are
+  # isolated, so the egress network must not even reach PostgreSQL by IP. Docker Desktop may route between
+  # bridges, so there it is reported, not required. (2) PostgreSQL itself (infra/postgres/pg_hba.conf, samenet):
+  # a login with VALID credentials from the egress network is rejected everywhere; the same login from the
+  # internal network succeeds, which proves the credentials are right and the rejection is the barrier.
+  engine=$(docker info --format '{{.OperatingSystem}}' 2>/dev/null)
+  tcp_reachable() { docker run --rm --network "$egress" --entrypoint pg_isready "$PG_IMAGE" -h "$src_ip" -t 3 >/dev/null 2>&1; }
+  if [[ $engine == *"Docker Desktop"* ]]; then
+    if tcp_reachable; then log "AVISO Docker Desktop ($engine): la red de salida alcanza PostgreSQL por IP; la barrera es pg_hba (abajo). En el servidor Linux se exige el aislamiento de red."; else log "OK    la red de salida no llega a PostgreSQL por IP ($engine)"; fi
+  else
+    check "la red de salida no llega a PostgreSQL por IP (Linux: $engine)" bash -c "! docker run --rm --network $egress --entrypoint pg_isready '$PG_IMAGE' -h $src_ip -t 3 >/dev/null 2>&1"
+  fi
+  login_from() { docker run --rm --network "$1" -e PGPASSWORD="$POSTGRES_APP_PASSWORD" -e PGCONNECT_TIMEOUT=3 --entrypoint psql "$PG_IMAGE" -h "$src_ip" -U "$POSTGRES_APP_USER" -d planta14 -XAtc 'SELECT 1' 2>&1; }
+  check "control: la red interna sí entra con esas credenciales" bash -c "[[ \$(docker run --rm --network $net -e PGPASSWORD='$POSTGRES_APP_PASSWORD' -e PGCONNECT_TIMEOUT=3 --entrypoint psql '$PG_IMAGE' -h $src_ip -U '$POSTGRES_APP_USER' -d planta14 -XAtc 'SELECT 1') == 1 ]]"
+  egress_login=$(login_from "$egress" || true)
+  check "PostgreSQL rechaza credenciales válidas desde la red de salida (pg_hba)" bash -c "[[ '$egress_login' != 1 ]] && grep -qiE 'no pg_hba.conf entry|timeout expired|could not connect|Connection refused|No route to host' <<< '$egress_login'"
   touch "$BACKUP_DIR/postgres/planta14-postgres-planta14-20991231T000000Z.dump"
   "$infra/backup/offsite-sync.sh"
   remote_list() { rclone_setup_offsite; run_rclone_on "$egress" "$out" lsf -R --files-only "$(offsite_path)"; }
