@@ -51,7 +51,8 @@ if has_systemd; then
   for unit in ssh docker fail2ban unattended-upgrades cron; do check "servicio $unit activo" systemctl is-active --quiet "$unit"; done
   check "fail2ban: jaula sshd activa" fail2ban-client status sshd
   check "fail2ban: jaula planta14-login activa" fail2ban-client status planta14-login
-  check "swap >= 4 GiB" test "$(swapon --show --bytes --noheadings --output SIZE | awk '{s+=$1} END {printf "%.0f", s+0}')" -ge 4294967296
+  # 4 GiB menos 1 MiB: el núcleo reserva una página de cabecera en cada archivo de swap.
+  check "swap >= 4 GiB" test "$(swapon --show --bytes --noheadings --output SIZE | awk '{s+=$1} END {printf "%.0f", s+0}')" -ge 4293918720
 else
   skip "cortafuegos, servicios activos, jaulas en marcha y swap (sin systemd)"
 fi

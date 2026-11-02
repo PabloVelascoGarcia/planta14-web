@@ -155,7 +155,8 @@ else log "OMITIDO cortafuegos (sin systemd: ensayo en contenedor)"; fi
 if [[ -n $swap_size && $swap_size != 0 ]] && services; then
   target=$(numfmt --from=iec "$swap_size")
   available=$(swapon --show --bytes --noheadings --output SIZE | awk '{s+=$1} END {printf "%.0f", s+0}')
-  if (( available >= target )); then ok "swap >= $swap_size"
+  # The kernel keeps one page of each swap file as header: a 4 GiB file reports 4 GiB - 4 KiB. Allow 1 MiB.
+  if (( available + 1048576 >= target )); then ok "swap >= $swap_size"
   else
     swapfile=/swapfile-planta14
     [[ ! -e $swapfile && ! -L $swapfile ]] || die "$swapfile ya existe sin completar el swap requerido; revisa antes de modificarlo"
