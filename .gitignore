@@ -4,3 +4,8 @@ data/*.json
 public/uploads
 .env*.local
 *.log
+.env
+.env.local
+*.tsbuildinfo
+.local/
+audit-*.json
