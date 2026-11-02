@@ -41,7 +41,62 @@ En Docker Desktop, la red de salida de las copias llegaba a PostgreSQL por IP. A
 
 ## Resultados
 
-RESULTADOS_PENDIENTES
+Ejecutado el 2 de noviembre de 2026 en Linux (Docker Engine nativo, Ubuntu 24.04.5 LTS). Todo con resultado correcto.
+
+| Comando | Resultado |
+|---|---|
+| `npm test` | 4 PASS |
+| `npm run typecheck` | Sin errores. La primera pasada falló por tipos viejos en `.next/types`, que dejó una compilación de la rama de lanzamiento. Tras `npm run build` pasa limpio. |
+| `npm run lint` | 0 errores, 16 avisos (los que ya había) |
+| `npm run build` | Correcto |
+| `npm run test:block2` | 8 PASS |
+| `npm run test:block3` | 17 PASS |
+| `shellcheck -x` de todo `infra/` (incluidos `server/`, `deploy/` y `test/`) | Sin avisos |
+| `docker compose -f infra/compose.production.yaml config` con `.env` generado y completado | Correcto |
+| Lo mismo sin `SITE_INDEXABLE` | Se niega: «Decide SITE_INDEXABLE…» (esperado) |
+| Lo mismo con la plantilla vacía `.env.production.example` | Se niega (esperado) |
+| `docker compose -f infra/compose.staging.yaml config` | Correcto (staging no cambia) |
+| `caddy validate` de `Caddyfile.production`, modos `acme` e `internal` | `Valid configuration` en ambos |
+| `infra/test/common-test.sh` | 3 PASS |
+| `infra/test/staging-config-test.mjs` | 4 PASS |
+| `infra/test/restore-test.sh` | SUPERADA. Red de salida: no resuelve PostgreSQL, **no llega por IP en Linux** (punto 4 comprobado en Linux), control desde la red interna correcto y `pg_hba` rechaza credenciales válidas desde la red de salida. |
+| `infra/test/postgres-roles-test.sh` | SUPERADA |
+| `infra/test/staging-guard-test.sh` | PASS |
+| `infra/test/production-deploy-test.sh` | SUPERADO, 44 comprobaciones (detalle abajo) |
+| `infra/test/staging-e2e.sh` (Playwright, con la imagen reconstruida) | SUPERADO: 8 PASS y la restauración idéntica |
+| `fail2ban-regex` de Ubuntu 24.04 (paquete extraído) sobre el registro real de Caddy de producción | 3 de 3 logins fallidos detectados; 0 falsos positivos en logins correctos y otras rutas |
+| `sshd -G` de Ubuntu 24.04 (paquete extraído) con el drop-in | `passwordauthentication no`, `kbdinteractiveauthentication no`, `permitrootlogin no`, `maxauthtries 3`, `allowusers planta14`. Con el archivo renombrado a `60-` gana `50-cloud-init.conf` (`passwordauthentication yes`): el prefijo `00-` es necesario. |
+
+### Ensayo de producción (`production-deploy-test.sh`)
+
+Despliega la fusión de esta rama con `desarrollo/planta14-v2-lanzamiento`, con Caddy de producción en `CADDY_TLS_MODE=internal`, dominio `planta14.test` y `rclone serve s3` como S3 externo.
+
+1. **Versión buena:** despliegue con código 0, las 5 migraciones aplicadas y estas comprobaciones:
+   - web pública sin contraseña (200);
+   - HTTP redirige a HTTPS (308);
+   - `www` redirige a `planta14.test` (301) conservando la ruta;
+   - `/api/health` responde 200 `ok` sin caché;
+   - HSTS y `nosniff` presentes, sin cabecera `Server`;
+   - `noindex` con `SITE_INDEXABLE=false`;
+   - `/cms` accesible;
+   - PostgreSQL sin puertos publicados;
+   - logins fallidos en el registro JSON para fail2ban.
+2. **Versión mala con migración que cambia datos y salud rota:** código 1 y estos resultados:
+   - copia previa hecha;
+   - migración aplicada y detectada;
+   - copia restaurada, títulos originales recuperados y el mismo número de filas en todas las tablas;
+   - ni la tabla ni la migración de la versión mala;
+   - la base fallida se conserva;
+   - los objetos son del migrador y la app sigue con su usuario;
+   - `/api/health` vuelve a `ok` con la imagen buena.
+3. **Versión mala sin migración:** código 1 y vuelta atrás **sin restaurar**. No crea otra base fallida.
+4. **Resto:**
+   - volver a desplegar la versión actual no hace nada;
+   - sin `SITE_INDEXABLE` se niegan tanto `deploy.sh` como Compose;
+   - `status.sh` funciona;
+   - cron con 3 copias a través de `run-with-alert` y la vigilancia del disco;
+   - la copia programada del almacenamiento crea una copia cifrada;
+   - una copia que falla genera alerta, y las vueltas atrás también.
 
 ## Sin comprobar
 
