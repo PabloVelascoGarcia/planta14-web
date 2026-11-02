@@ -7,7 +7,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node tests/session-codec.test.mjs && node tests/proxy.test.mjs && node tests/cms.test.mjs",
+    "test": "node tests/session-codec.test.mjs && node tests/proxy.test.mjs && node tests/cms.test.mjs && node tests/launch.test.mjs",
     "typecheck": "tsc --noEmit",
     "cms": "payload",
     "cms:types": "payload generate:types",
@@ -19,7 +19,8 @@
     "cms:import:municipal": "payload run scripts/import-municipal.ts",
     "test:block2": "payload run scripts/block2-integration.mjs",
     "cms:media:sync-public": "payload run scripts/sync-public-media.ts",
-    "test:block3": "payload run scripts/block3-integration.mjs"
+    "test:block3": "payload run scripts/block3-integration.mjs",
+    "test:launch": "payload run scripts/launch-integration.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1161.0",
