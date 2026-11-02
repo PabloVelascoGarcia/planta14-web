@@ -29,6 +29,7 @@ while [[ $# -gt 0 ]]; do
 done
 [[ $# -eq 2 ]] || die "Uso: $0 [--env-file F] [--create] [--allow-missing-checksum] ARCHIVO BASE_DESTINO"
 src=$1 target=$2
+resolve_pg_container
 user=${POSTGRES_USER:-planta14}
 safe_input_file "$src"
 [[ $src == *.dump || $src == *.dump.age || $src == *.dump.gpg ]] || die "Extensión no válida (se espera .dump, .dump.age o .dump.gpg): $src"

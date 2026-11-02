@@ -160,6 +160,13 @@ prune_backups() {
 # Contenedor de PostgreSQL por defecto: el del proyecto Compose.
 default_pg_container() { printf '%s-postgres-1' "${COMPOSE_PROJECT_NAME:-planta14-staging}"; }
 
+# PG_CONTAINER: vacío = <COMPOSE_PROJECT_NAME>-postgres-1; "none" = herramientas PostgreSQL del host.
+resolve_pg_container() {
+  if [[ -z ${PG_CONTAINER:-} ]]; then PG_CONTAINER=$(default_pg_container); fi
+  if [[ $PG_CONTAINER == none ]]; then PG_CONTAINER=''; fi
+  export PG_CONTAINER
+}
+
 # Ejecuta pg_dump/pg_restore/psql: dentro de PG_CONTAINER si está definido, si no en el host.
 pg_tool() {
   if [[ -n ${PG_CONTAINER:-} ]]; then

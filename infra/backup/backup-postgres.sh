@@ -13,6 +13,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 if [[ ${1:-} == --env-file ]]; then load_env_file "${2:?Falta la ruta tras --env-file}"; shift 2; fi
 [[ $# -eq 0 ]] || die "Argumento no reconocido: $1"
+resolve_pg_container
 
 : "${BACKUP_DIR:?Define BACKUP_DIR}"
 db=${POSTGRES_DB:-planta14}
