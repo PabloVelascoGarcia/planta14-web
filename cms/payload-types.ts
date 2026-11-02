@@ -69,6 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    articles: Article;
+    authors: Author;
+    sections: Section;
+    towns: Town;
+    'municipal-spaces': MunicipalSpace;
+    'municipal-content': MunicipalContent;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +84,12 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    sections: SectionsSelect<false> | SectionsSelect<true>;
+    towns: TownsSelect<false> | TownsSelect<true>;
+    'municipal-spaces': MunicipalSpacesSelect<false> | MunicipalSpacesSelect<true>;
+    'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -124,7 +136,7 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
-  role: 'admin';
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -154,6 +166,9 @@ export interface Media {
   alt: string;
   credit: string;
   sourceURL?: string | null;
+  rightsHolder?: string | null;
+  rightsType?: ('propia' | 'licencia' | 'autorización' | 'institucional') | null;
+  rightsScope: 'demo' | 'publicable';
   prefix?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
@@ -188,6 +203,148 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  legacyID?: string | null;
+  slug: string;
+  title: string;
+  excerpt: string;
+  body:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  image?: (number | null) | Media;
+  author: number | Author;
+  town: number | Town;
+  section: number | Section;
+  date: string;
+  publishedAt?: string | null;
+  scheduledAt?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoImage?: (number | null) | Media;
+  featured?: boolean | null;
+  main?: boolean | null;
+  opinion?: boolean | null;
+  sourceName?: string | null;
+  sourceAuthor?: string | null;
+  provenance?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  slug: string;
+  role?: string | null;
+  bio?: string | null;
+  email?: string | null;
+  avatar?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "towns".
+ */
+export interface Town {
+  id: number;
+  legacyID?: string | null;
+  slug: string;
+  name: string;
+  comarca: 'Caudal' | 'Nalón';
+  visible?: boolean | null;
+  provenance?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sections".
+ */
+export interface Section {
+  id: number;
+  slug: string;
+  name: string;
+  position?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-spaces".
+ */
+export interface MunicipalSpace {
+  id: number;
+  legacyID?: string | null;
+  name: string;
+  town: number | Town;
+  medium: string;
+  subscription: {
+    status: 'demo' | 'active' | 'inactive';
+    startsAt?: string | null;
+    endsAt?: string | null;
+  };
+  contact?: {
+    place?: string | null;
+    hours?: string | null;
+    note?: string | null;
+  };
+  provenance?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-content".
+ */
+export interface MunicipalContent {
+  id: number;
+  legacyID?: string | null;
+  space: number | MunicipalSpace;
+  type: 'news' | 'notice' | 'event' | 'grant' | 'announcement';
+  title: string;
+  excerpt: string;
+  body: string;
+  origin: 'municipality';
+  publishedAt: string;
+  expiresAt?: string | null;
+  eventAt?: string | null;
+  place?: string | null;
+  deadline?: string | null;
+  attachments?:
+    | {
+        url: string;
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
+  image?: (number | null) | Media;
+  demo?: boolean | null;
+  provenance?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -217,6 +374,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
+      } | null)
+    | ({
+        relationTo: 'sections';
+        value: number | Section;
+      } | null)
+    | ({
+        relationTo: 'towns';
+        value: number | Town;
+      } | null)
+    | ({
+        relationTo: 'municipal-spaces';
+        value: number | MunicipalSpace;
+      } | null)
+    | ({
+        relationTo: 'municipal-content';
+        value: number | MunicipalContent;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -293,6 +474,9 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   credit?: T;
   sourceURL?: T;
+  rightsHolder?: T;
+  rightsType?: T;
+  rightsScope?: T;
   prefix?: T;
   _objectKey?: T;
   updatedAt?: T;
@@ -330,6 +514,138 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  legacyID?: T;
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  image?: T;
+  author?: T;
+  town?: T;
+  section?: T;
+  date?: T;
+  publishedAt?: T;
+  scheduledAt?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  seoImage?: T;
+  featured?: T;
+  main?: T;
+  opinion?: T;
+  sourceName?: T;
+  sourceAuthor?: T;
+  provenance?: T;
+  sourceUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  role?: T;
+  bio?: T;
+  email?: T;
+  avatar?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sections_select".
+ */
+export interface SectionsSelect<T extends boolean = true> {
+  slug?: T;
+  name?: T;
+  position?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "towns_select".
+ */
+export interface TownsSelect<T extends boolean = true> {
+  legacyID?: T;
+  slug?: T;
+  name?: T;
+  comarca?: T;
+  visible?: T;
+  provenance?: T;
+  sourceUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-spaces_select".
+ */
+export interface MunicipalSpacesSelect<T extends boolean = true> {
+  legacyID?: T;
+  name?: T;
+  town?: T;
+  medium?: T;
+  subscription?:
+    | T
+    | {
+        status?: T;
+        startsAt?: T;
+        endsAt?: T;
+      };
+  contact?:
+    | T
+    | {
+        place?: T;
+        hours?: T;
+        note?: T;
+      };
+  provenance?: T;
+  sourceUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-content_select".
+ */
+export interface MunicipalContentSelect<T extends boolean = true> {
+  legacyID?: T;
+  space?: T;
+  type?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  origin?: T;
+  publishedAt?: T;
+  expiresAt?: T;
+  eventAt?: T;
+  place?: T;
+  deadline?: T;
+  attachments?:
+    | T
+    | {
+        url?: T;
+        title?: T;
+        id?: T;
+      };
+  image?: T;
+  demo?: T;
+  provenance?: T;
+  sourceUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
