@@ -1,0 +1,11 @@
+# Archivos locales de infraestructura: nunca deben subirse.
+.env.staging
+.env.*.local
+*.env
+backups/
+test/out/
+*.age
+*.gpg
+*.dump
+*.tar.gz
+age-identity*.txt

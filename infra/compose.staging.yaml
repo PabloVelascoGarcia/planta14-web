@@ -1,0 +1,194 @@
+# Entorno de pruebas (staging) de Planta 14: Next.js + Payload, PostgreSQL 17, Caddy (HTTPS) y MinIO.
+#
+# Uso (desde la raíz del repositorio):
+#   docker compose -f infra/compose.staging.yaml --env-file infra/.env.staging config
+#   docker compose -f infra/compose.staging.yaml --env-file infra/.env.staging up -d --build
+#
+# Todo se configura con variables. Las obligatorias usan ${VAR:?} y detienen el arranque si faltan.
+# Solo Caddy publica puertos hacia Internet (80/443). PostgreSQL no se publica.
+# MinIO es un S3 DE PRUEBAS (perfil "minio"); con un S3 real, quita el perfil y cambia S3_*.
+# Imágenes base fijadas por digest (etiqueta@sha256): ver "Actualizar imágenes" en docs/INFRA-STAGING.md.
+# PostgreSQL: el superusuario (POSTGRES_USER) solo administra y hace copias; las migraciones usan
+# POSTGRES_MIGRATOR_USER (propietario del esquema) y la aplicación POSTGRES_APP_USER (solo datos).
+name: ${COMPOSE_PROJECT_NAME:-planta14-staging}
+
+x-app-env: &app-env
+  NODE_ENV: production
+  CMS_ENABLED: "true"
+  CONTENT_SOURCE: payload
+  PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Define PAYLOAD_SECRET (mínimo 32 caracteres)}
+  DATABASE_URL: postgres://${POSTGRES_APP_USER:-planta14_app}:${POSTGRES_APP_PASSWORD:?Define POSTGRES_APP_PASSWORD}@postgres:5432/${POSTGRES_DB:-planta14}
+  CMS_SERVER_URL: https://${STAGING_DOMAIN:?Define STAGING_DOMAIN}
+  SITE_URL: https://${STAGING_DOMAIN:?Define STAGING_DOMAIN}
+  S3_BUCKET: ${S3_BUCKET:-planta14-staging}
+  S3_REGION: ${S3_REGION:-us-east-1}
+  S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+  S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?Define S3_ACCESS_KEY_ID}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?Define S3_SECRET_ACCESS_KEY}
+  # Bloque 3: copias públicas de imágenes publicables (se recomienda un bucket público separado).
+  PUBLIC_MEDIA_BASE_URL: ${PUBLIC_MEDIA_BASE_URL:-}
+  PUBLIC_MEDIA_BUCKET: ${PUBLIC_MEDIA_BUCKET:-}
+  PUBLIC_MEDIA_PREFIX: ${PUBLIC_MEDIA_PREFIX:-public}
+  PUBLIC_MEDIA_CACHE_CONTROL: ${PUBLIC_MEDIA_CACHE_CONTROL:-public, max-age=31536000, immutable}
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: infra/app.Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:22.23.4-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da}
+    image: ${APP_IMAGE:-planta14-app:staging}
+    restart: unless-stopped
+    environment: *app-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      minio-init:
+        condition: service_completed_successfully
+        required: false
+    networks: [edge, backend]
+    mem_limit: ${APP_MEM_LIMIT:-2g}
+    security_opt: ["no-new-privileges:true"]
+
+  # Aplica las migraciones versionadas (cms/migrations) antes de arrancar la app. push:false en Payload.
+  migrate:
+    image: ${APP_IMAGE:-planta14-app:staging}
+    pull_policy: never
+    command: ["npm", "run", "cms:migrate"]
+    environment:
+      <<: *app-env
+      CMS_ENABLED: "true"
+      DATABASE_URL: postgres://${POSTGRES_MIGRATOR_USER:-planta14_migrator}:${POSTGRES_MIGRATOR_PASSWORD:?Define POSTGRES_MIGRATOR_PASSWORD}@postgres:5432/${POSTGRES_DB:-planta14}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [backend]
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres:17.6-alpine@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-planta14}
+      POSTGRES_USER: ${POSTGRES_USER:-planta14}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      # Leídos por infra/postgres/initdb (solo con el volumen vacío) y por apply-roles.sh.
+      POSTGRES_MIGRATOR_USER: ${POSTGRES_MIGRATOR_USER:-planta14_migrator}
+      POSTGRES_MIGRATOR_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:?Define POSTGRES_MIGRATOR_PASSWORD}
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER:-planta14_app}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?Define POSTGRES_APP_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres:/planta14:ro
+      - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
+    networks: [backend]
+    shm_size: 256mb
+    mem_limit: ${POSTGRES_MEM_LIMIT:-2g}
+    command:
+      - postgres
+      - -c
+      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-512MB}
+      - -c
+      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-2GB}
+      - -c
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-50}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    security_opt: ["no-new-privileges:true"]
+
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d}
+    restart: unless-stopped
+    depends_on: [app]
+    environment:
+      STAGING_DOMAIN: ${STAGING_DOMAIN:?Define STAGING_DOMAIN}
+      CADDY_TLS: ${CADDY_TLS:?Define CADDY_TLS (email para Let's Encrypt o "internal")}
+      CADDY_BASIC_AUTH_USER: ${CADDY_BASIC_AUTH_USER:-planta14}
+      CADDY_BASIC_AUTH_HASH: ${CADDY_BASIC_AUTH_HASH:?Define el hash bcrypt de acceso a staging}
+      # Ruta /media/* → bucket público de MinIO (solo GET/HEAD, tras la misma contraseña de staging).
+      PUBLIC_MEDIA_BUCKET: ${PUBLIC_MEDIA_BUCKET:-planta14-staging-public}
+      PUBLIC_MEDIA_UPSTREAM: ${PUBLIC_MEDIA_UPSTREAM:-minio:9000}
+    ports:
+      - "${HTTP_BIND:-0.0.0.0}:80:80"
+      - "${HTTPS_BIND:-0.0.0.0}:443:443"
+      - "${HTTPS_BIND:-0.0.0.0}:443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [edge, public_media]
+    security_opt: ["no-new-privileges:true"]
+
+  # --- S3 de pruebas (perfil "minio") -------------------------------------------------------
+  minio:
+    profiles: ["minio"]
+    # La imagen oficial ya no está en Docker Hub (minio/minio devuelve 404 desde 2025).
+    # Ver docs/INFRA-STAGING.md: la procedencia de esta imagen es una decisión pendiente.
+    image: ${MINIO_IMAGE:-quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z}
+    restart: unless-stopped
+    # Se niega a arrancar sin credenciales propias (evita el usuario por defecto minioadmin).
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - 'test -n "$$MINIO_ROOT_USER" && test "$${#MINIO_ROOT_PASSWORD}" -ge 16 || { echo "Define MINIO_ROOT_USER y MINIO_ROOT_PASSWORD (16+ caracteres)" >&2; exit 1; }; exec minio server /data --console-address :9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-}
+      MINIO_BROWSER_REDIRECT: "false"
+    volumes: ["minio_data:/data"]
+    networks: [backend, minio_admin, public_media]
+    # Solo en loopback: para administrar, usa un túnel SSH (ssh -L 9001:127.0.0.1:9001 servidor).
+    ports:
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-9001}:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    security_opt: ["no-new-privileges:true"]
+
+  # Crea el bucket privado y una clave limitada para la app (la app no usa la cuenta root).
+  # Usa el cliente mc incluido en la imagen de MinIO.
+  minio-init:
+    profiles: ["minio"]
+    image: ${MINIO_IMAGE:-quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z}
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-}
+      S3_BUCKET: ${S3_BUCKET:-planta14-staging}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?Define S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?Define S3_SECRET_ACCESS_KEY}
+      PUBLIC_MEDIA_BUCKET: ${PUBLIC_MEDIA_BUCKET:-}
+    volumes:
+      - ./minio/init.sh:/init.sh:ro
+    entrypoint: ["/bin/sh", "/init.sh"]
+    networks: [backend]
+    restart: "no"
+
+networks:
+  edge: {}
+  backend:
+    internal: true
+  # Red propia para que el puerto de consola de MinIO pueda publicarse en loopback
+  # (Docker no publica puertos de contenedores que solo están en redes internas).
+  minio_admin: {}
+  # Solo Caddy y MinIO: sirve el bucket público sin dar a Caddy acceso a la red interna (PostgreSQL).
+  public_media:
+    internal: true
+
+volumes:
+  postgres_data: {}
+  caddy_data: {}
+  minio_data: {}
+  caddy_config: {}

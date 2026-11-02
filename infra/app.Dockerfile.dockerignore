@@ -1,0 +1,15 @@
+# Se aplica solo a infra/app.Dockerfile (BuildKit). Evita meter secretos y datos en la imagen.
+.git
+.next
+node_modules
+.local
+.env
+.env.*
+!.env.example
+!.env.cms.example
+infra
+data/*.json
+public/uploads
+*.log
+*.tsbuildinfo
+audit-*.json
