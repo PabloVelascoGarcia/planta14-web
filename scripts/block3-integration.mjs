@@ -1,0 +1,286 @@
+import assert from 'node:assert/strict';
+import { mkdtemp, rm } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { spawn } from 'node:child_process';
+import { once } from 'node:events';
+import S3rver from 's3rver';
+import sharp from 'sharp';
+import pg from 'pg';
+
+// Bloque 3: cuentas municipales, retirada, avisos, auditoría e imágenes públicas.
+// Usa solo una base PostgreSQL desechable (compose.bloque3-test.yaml, puerto 55434) y S3rver local (59004).
+const databaseURL = 'postgres://planta14:local-development-only@127.0.0.1:55434/planta14_bloque3_test';
+if (process.env.CMS_BLOCK3_TEST !== 'true' || (process.env.DATABASE_URL && process.env.DATABASE_URL !== databaseURL)) throw new Error('Use CMS_BLOCK3_TEST=true and the dedicated local database on port 55434');
+const s3Port = 59004, webPort = 3051;
+const publicBase = `http://127.0.0.1:${s3Port}/planta14-block3-public`;
+Object.assign(process.env, { NODE_ENV: 'production', CMS_ENABLED: 'true', CONTENT_SOURCE: 'payload', PAYLOAD_SECRET: randomUUID() + randomUUID(), DATABASE_URL: databaseURL,
+  CMS_SERVER_URL: `http://localhost:${webPort}`, S3_BUCKET: 'planta14-block3-private', S3_REGION: 'us-east-1', S3_ENDPOINT: `http://127.0.0.1:${s3Port}`, S3_FORCE_PATH_STYLE: 'true',
+  S3_ACCESS_KEY_ID: 'S3RVER', S3_SECRET_ACCESS_KEY: 'S3RVER', PUBLIC_MEDIA_BASE_URL: publicBase, PUBLIC_MEDIA_BUCKET: 'planta14-block3-public', PUBLIC_MEDIA_PREFIX: 'public' });
+delete process.env.MUNICIPAL_NOTICE_EMAIL_ENABLED;
+const reset = new pg.Client({ connectionString: databaseURL });
+await reset.connect();
+await reset.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
+await reset.end();
+const directory = await mkdtemp(path.join(os.tmpdir(), 'planta14-block3-'));
+const s3 = new S3rver({ address: '127.0.0.1', port: s3Port, directory, silent: true, configureBuckets: [{ name: 'planta14-block3-private' }, { name: 'planta14-block3-public' }] });
+const children = [];
+let payload;
+const passed = name => console.log(`PASS: ${name}`);
+const denied = status => [403, 404].includes(status);
+const idOf = value => (value && typeof value === 'object' ? value.id : value);
+try {
+  await s3.run();
+  const { getPayload } = await import('payload');
+  const { sql } = await import('@payloadcms/db-postgres');
+  const { default: config } = await import('../payload.config.ts');
+  const { importMunicipalDemo } = await import('../cms/import-municipal.ts');
+  const { readMedia } = await import('../cms/media-rights.ts');
+  payload = await getPayload({ config });
+  await payload.db.migrate();
+  const { REST_GET, REST_POST, REST_PATCH, REST_DELETE } = await import('@payloadcms/next/routes');
+  const handlers = { GET: REST_GET, POST: REST_POST, PATCH: REST_PATCH, DELETE: REST_DELETE };
+  const rest = async (method, route, body, token) => {
+    const [pathname, search = ''] = route.split('?');
+    const slug = pathname.split('/').filter(Boolean);
+    const response = await handlers[method](config)(new Request(`http://localhost:${webPort}/api/cms/${slug.join('/')}${search ? `?${search}` : ''}`, {
+      method, headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `JWT ${token}` } : {}) }, body: body ? JSON.stringify(body) : undefined,
+    }), { params: Promise.resolve({ slug }) });
+    const text = await response.text();
+    let json; try { json = JSON.parse(text); } catch { json = null; }
+    return { status: response.status, json, headers: response.headers };
+  };
+  const password = randomUUID() + randomUUID();
+  const admin = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { email: 'admin@block3.example.test', password, name: 'Admin', role: 'admin' } });
+  const login = async email => { const r = await rest('POST', 'users/login', { email, password }); assert.equal(r.status, 200, `login ${email}`); return r.json.token; };
+  const adminToken = await login(admin.email);
+  await importMunicipalDemo(payload);
+  const space = async id => (await payload.find({ collection: 'municipal-spaces', overrideAccess: true, where: { legacyID: { equals: id } } })).docs[0];
+  const [lenaSpace, mieresSpace] = [await space('lena'), await space('mieres')];
+
+  // --- Cuentas municipales: solo el administrador las crea; espacio obligatorio solo para ese rol.
+  const editorRes = await rest('POST', 'users', { email: 'editor@block3.example.test', password, name: 'Editor', role: 'editor' }, adminToken);
+  assert.equal(editorRes.status, 201);
+  const editorToken = await login('editor@block3.example.test');
+  assert.equal((await rest('POST', 'users', { email: 'x@block3.example.test', password, name: 'X', role: 'municipal', municipalSpace: lenaSpace.id }, editorToken)).status, 403);
+  assert.equal((await rest('POST', 'users', { email: 'y@block3.example.test', password, name: 'Y', role: 'municipal' }, adminToken)).status, 400);
+  assert.equal((await rest('POST', 'users', { email: 'z@block3.example.test', password, name: 'Z', role: 'editor', municipalSpace: lenaSpace.id }, adminToken)).status, 400);
+  const lenaUser = (await rest('POST', 'users', { email: 'lena@block3.example.test', password, name: 'Ayuntamiento de Lena', role: 'municipal', municipalSpace: lenaSpace.id }, adminToken)).json.doc;
+  const mieresUser = (await rest('POST', 'users', { email: 'mieres@block3.example.test', password, name: 'Ayuntamiento de Mieres', role: 'municipal', municipalSpace: mieresSpace.id }, adminToken)).json.doc;
+  assert(lenaUser?.id && mieresUser?.id);
+  assert.equal((await rest('PATCH', `users/${lenaUser.id}`, { municipalSpace: mieresSpace.id }, editorToken)).status, 403);
+  const lena = await login(lenaUser.email), mieres = await login(mieresUser.email);
+  passed('only an administrator creates municipal accounts; the space is required for that role and forbidden for others');
+
+  // --- Aislamiento entre ayuntamientos (API).
+  const item = (title, extra = {}) => ({ type: 'news', title, excerpt: `${title}: resumen`, body: `${title}: texto original de prueba.`, ...extra });
+  const mieresDraft = (await rest('POST', 'municipal-content?draft=true', item('Borrador privado de Mieres', { _status: 'draft' }), mieres)).json.doc;
+  const mieresPublished = (await rest('POST', 'municipal-content', item('Publicación de Mieres', { _status: 'published' }), mieres)).json.doc;
+  assert(mieresDraft?.id && mieresPublished?.id);
+  assert.equal(mieresDraft.demo, false); assert.equal(idOf(mieresDraft.space), mieresSpace.id);
+  assert(denied((await rest('GET', `municipal-content/${mieresDraft.id}`, undefined, lena)).status));
+  assert(denied((await rest('GET', `municipal-content/${mieresDraft.id}?draft=true`, undefined, lena)).status));
+  const lenaList = await rest('GET', `municipal-content?draft=true&limit=200&where[space][equals]=${mieresSpace.id}`, undefined, lena);
+  assert.equal(lenaList.status, 200);
+  assert(!lenaList.json.docs.some(d => d.id === mieresDraft.id), 'Lena must not list Mieres drafts');
+  const versions = await rest('GET', 'municipal-content/versions?limit=500', undefined, lena);
+  assert(versions.status === 403 || !versions.json.docs.some(v => v.parent === mieresDraft.id || v.parent?.id === mieresDraft.id), 'Lena must not read Mieres versions');
+  assert(denied((await rest('PATCH', `municipal-content/${mieresPublished.id}`, { title: 'Hackeado' }, lena)).status));
+  assert(denied((await rest('PATCH', `municipal-content/${mieresDraft.id}`, { _status: 'published' }, lena)).status));
+  assert(denied((await rest('PATCH', `municipal-content/${mieresPublished.id}`, { _status: 'draft' }, lena)).status));
+  assert(denied((await rest('DELETE', `municipal-content/${mieresPublished.id}`, undefined, lena)).status));
+  assert(denied((await rest('DELETE', `municipal-content/${mieresDraft.id}`, undefined, lena)).status));
+  assert(denied((await rest('POST', 'municipal-content', item('Intrusión en Mieres', { space: mieresSpace.id, _status: 'published' }), lena)).status));
+  const lenaMovesOwn = (await rest('POST', 'municipal-content?draft=true', item('Borrador de Lena', { _status: 'draft' }), lena)).json.doc;
+  assert(denied((await rest('PATCH', `municipal-content/${lenaMovesOwn.id}`, { space: mieresSpace.id }, lena)).status));
+  const stillMieres = await payload.findByID({ collection: 'municipal-content', id: mieresPublished.id, overrideAccess: true, draft: true });
+  assert.equal(stillMieres.title, 'Publicación de Mieres'); assert.equal(stillMieres._status, 'published');
+  assert.equal(idOf((await payload.findByID({ collection: 'municipal-content', id: lenaMovesOwn.id, overrideAccess: true, draft: true })).space), lenaSpace.id);
+  passed('a Lena account cannot read drafts, edit, publish, unpublish, delete or create content of Mieres through the API');
+
+  // --- Sin acceso a noticias de Planta 14, usuarios, secciones, concejos, autores ni actividad.
+  const town = (await payload.find({ collection: 'towns', overrideAccess: true, where: { slug: { equals: 'lena' } } })).docs[0];
+  const section = (await payload.find({ collection: 'sections', overrideAccess: true, limit: 1 })).docs[0];
+  const author = await payload.create({ collection: 'authors', overrideAccess: true, data: { name: 'Redacción de prueba', slug: 'redaccion-prueba' } });
+  const article = await payload.create({ collection: 'articles', overrideAccess: true, data: { slug: 'noticia-bloque3', title: 'Noticia de Planta 14', excerpt: 'Resumen original', body: ['Texto original.'], author: author.id, town: town.id, section: section.id, date: '2026-11-02', _status: 'published' } });
+  for (const route of ['articles', `articles/${article.id}`, 'articles/versions', 'sections', `sections/${section.id}`, 'towns', `towns/${town.id}`, 'authors', 'notifications', 'audit-log', `users/${admin.id}`]) {
+    const r = await rest('GET', route, undefined, lena);
+    assert(denied(r.status), `municipal GET ${route} → ${r.status}`);
+  }
+  const users = await rest('GET', 'users', undefined, lena);
+  assert(users.status === 403 || (users.json.docs.length === 1 && users.json.docs[0].id === lenaUser.id), 'municipal only sees its own account');
+  assert(denied((await rest('POST', 'articles', { slug: 'x', title: 'x' }, lena)).status));
+  assert(denied((await rest('PATCH', `articles/${article.id}`, { title: 'x' }, lena)).status));
+  assert(denied((await rest('PATCH', `sections/${section.id}`, { name: 'x' }, lena)).status));
+  assert(denied((await rest('PATCH', `towns/${town.id}`, { visible: false }, lena)).status));
+  assert(denied((await rest('PATCH', `municipal-spaces/${lenaSpace.id}`, { name: 'x' }, lena)).status));
+  assert.notEqual((await rest('GET', 'access', undefined, lena)).json.canAccessAdmin, true, 'no /cms access');
+  assert.equal((await rest('GET', 'access', undefined, editorToken)).json.canAccessAdmin, true);
+  passed('a municipal account cannot access Planta 14 articles, users, sections, towns, authors, activity or the /cms administration');
+
+  // --- Imágenes: copia pública con caché larga; borradores y demo no son públicos; despublicar la retira.
+  const png = await sharp({ create: { width: 1800, height: 1000, channels: 3, background: '#24704a' } }).png().toBuffer();
+  const file = name => ({ data: png, mimetype: 'image/png', name, size: png.length });
+  const editorActor = { ...(await payload.findByID({ collection: 'users', id: editorRes.json.doc.id, overrideAccess: true })), collection: 'users' };
+  const lenaActor = { ...(await payload.findByID({ collection: 'users', id: lenaUser.id, overrideAccess: true })), collection: 'users' };
+  const mieresActor = { ...(await payload.findByID({ collection: 'users', id: mieresUser.id, overrideAccess: true })), collection: 'users' };
+  const image = await payload.create({ collection: 'media', user: editorActor, overrideAccess: false, file: file('publicable.png'), data: { alt: 'Imagen publicable', credit: 'Planta 14 test', rightsHolder: 'Planta 14 test', rightsType: 'propia', rightsScope: 'publicable' } });
+  const demoImage = await payload.create({ collection: 'media', user: editorActor, overrideAccess: false, file: file('demo.png'), data: { alt: 'Imagen demo', credit: 'Test', rightsHolder: 'Test', rightsType: 'propia', rightsScope: 'demo' } });
+  const media = id => payload.findByID({ collection: 'media', id, overrideAccess: true });
+  assert.equal((await media(image.id)).publicKey, null);
+  assert(denied((await rest('GET', `media/${image.id}`)).status), 'unlinked image is not public');
+  await payload.update({ collection: 'articles', id: article.id, overrideAccess: false, user: editorActor, data: { image: image.id } });
+  let linked = await media(image.id);
+  assert.equal(linked.publishedUses, 1);
+  assert.match(linked.publicKey, /^public\/[0-9a-f-]{36}$/);
+  assert(linked.publicURL.startsWith(`${publicBase}/public/`));
+  const anonymous = await rest('GET', `media/${image.id}`);
+  assert.equal(anonymous.status, 200);
+  assert.equal(anonymous.json.publicURL, linked.publicURL);
+  const publicFile = await fetch(linked.publicURL);
+  assert.equal(publicFile.status, 200);
+  assert.match(publicFile.headers.get('cache-control') || '', /public, max-age=31536000, immutable/);
+  for (const size of ['card', 'hero']) assert.equal((await fetch(`${publicBase}/${linked.publicKey}/${linked.sizes[size].filename}`)).status, 200, `public ${size} variant`);
+  // Signed URLs only for authenticated panels.
+  assert(denied((await rest('GET', `media/file/${linked.filename}`)).status), 'anonymous file route is not a signed-URL proxy');
+  const signed = await rest('GET', `media/file/${linked.filename}`, undefined, editorToken);
+  assert.equal(signed.status, 302);
+  assert.equal(new URL(signed.headers.get('location')).searchParams.get('X-Amz-Expires'), '60');
+  await assert.rejects(payload.update({ collection: 'articles', id: article.id, overrideAccess: false, user: editorActor, data: { seoImage: demoImage.id } }));
+  assert(denied((await rest('GET', `media/${demoImage.id}`)).status));
+  assert.equal((await media(demoImage.id)).publicKey, null);
+  // Draft content: the image stays private.
+  const draftArticle = await payload.create({ collection: 'articles', overrideAccess: false, user: editorActor, draft: true, data: { slug: 'borrador-bloque3', title: 'Borrador', excerpt: 'x', body: ['x'], author: author.id, town: town.id, section: section.id, date: '2026-11-02', _status: 'draft', image: demoImage.id } });
+  assert.equal((await media(demoImage.id)).publishedUses, 0);
+  assert(denied((await rest('GET', `media/${demoImage.id}`)).status));
+  const lenaImage = await payload.create({ collection: 'media', user: lenaActor, overrideAccess: false, file: file('lena.png'), data: { alt: 'Fiesta en Pola de Lena', credit: 'Ayuntamiento de Lena' } });
+  assert.equal(lenaImage.rightsHolder, 'Ayuntamiento de Lena'); assert.equal(lenaImage.rightsType, 'institucional'); assert.equal(idOf(lenaImage.uploadedBySpace), lenaSpace.id);
+  const lenaImageDraft = (await rest('POST', 'municipal-content?draft=true', item('Borrador con imagen', { _status: 'draft', image: lenaImage.id }), lena)).json.doc;
+  assert.equal((await media(lenaImage.id)).publicKey, null);
+  assert(denied((await rest('GET', `media/${lenaImage.id}`)).status), 'image of a draft is not public');
+  assert(denied((await rest('GET', `media/${lenaImage.id}`, undefined, mieres)).status), 'Mieres cannot read Lena private images');
+  assert(denied((await rest('POST', 'municipal-content?draft=true', item('Imagen ajena', { _status: 'draft', image: lenaImage.id }), mieres)).status));
+  assert.equal((await rest('PATCH', `municipal-content/${lenaImageDraft.id}`, { _status: 'published' }, lena)).status, 200);
+  const lenaPublic = await media(lenaImage.id);
+  assert.equal((await fetch(lenaPublic.publicURL)).status, 200);
+  // Unpublishing removes the public copy; republishing uses a new key.
+  await payload.update({ collection: 'articles', id: article.id, overrideAccess: false, user: editorActor, data: { _status: 'draft' } });
+  const afterUnpublish = await media(image.id);
+  assert.equal(afterUnpublish.publishedUses, 0); assert.equal(afterUnpublish.publicKey, null);
+  assert.equal((await fetch(linked.publicURL)).status, 404);
+  assert(denied((await rest('GET', `media/${image.id}`)).status));
+  await payload.update({ collection: 'articles', id: article.id, overrideAccess: false, user: editorActor, data: { _status: 'published' } });
+  const republished = await media(image.id);
+  assert.notEqual(republished.publicKey, linked.publicKey);
+  linked = republished;
+  await assert.rejects(payload.update({ collection: 'media', id: image.id, user: editorActor, overrideAccess: false, data: { rightsScope: 'demo' } }));
+  await assert.rejects(payload.delete({ collection: 'media', id: image.id, user: editorActor, overrideAccess: false }));
+  await payload.delete({ collection: 'articles', id: draftArticle.id, overrideAccess: true });
+  passed('publishable images of published content are served from PUBLIC_MEDIA_BASE_URL with long cache; drafts and demo images are not public; unpublishing removes the copy');
+
+  // --- Lectura pública sin recorrer el contenido: filtro sobre un campo indexado, sin consultas.
+  const forbiddenPayload = new Proxy({}, { get() { throw new Error('anonymous media read must not query content'); } });
+  const filter = await readMedia({ req: { user: null, payload: forbiddenPayload } });
+  assert.deepEqual(filter, { and: [{ publishedUses: { greater_than: 0 } }, { rightsScope: { equals: 'publicable' } }] });
+  const index = await payload.db.drizzle.execute(sql`SELECT indexname FROM pg_indexes WHERE tablename = 'media' AND indexname = 'media_published_uses_idx'`);
+  assert.equal(index.rows.length, 1);
+  passed('anonymous media reads use the indexed publishedUses field and never scan published content');
+
+  // --- Web pública: publicación inmediata, marca municipal, retirada con motivo y panel real.
+  const child = spawn(process.execPath, [path.resolve('node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', String(webPort)], {
+    windowsHide: true, env: { ...process.env, NEXT_TELEMETRY_DISABLED: '1' }, stdio: ['ignore', 'pipe', 'pipe'] });
+  children.push(child);
+  let logs = ''; child.stdout.on('data', b => { logs += b; }); child.stderr.on('data', b => { logs += b; });
+  for (let i = 0; ; i++) {
+    if (child.exitCode !== null) throw new Error(`HTTP server exited: ${logs.slice(-1500)}`);
+    try { if ((await fetch(`http://127.0.0.1:${webPort}/robots.txt`)).ok) break; } catch { /* starting */ }
+    if (i > 150) throw new Error('HTTP server did not start');
+    await new Promise(r => setTimeout(r, 200));
+  }
+  const page = async (route, token) => { const r = await fetch(`http://127.0.0.1:${webPort}${route}`, { headers: token ? { Cookie: `payload-token=${token}`, 'Sec-Fetch-Site': 'same-origin' } : {} }); return { status: r.status, html: await r.text() }; };
+  const fresh = (await rest('POST', 'municipal-content', item('Mercado semanal de Pola de Lena', { _status: 'published' }), lena)).json.doc;
+  let lenaPage = await page('/lena');
+  assert.equal(lenaPage.status, 200);
+  assert(lenaPage.html.includes('Mercado semanal de Pola de Lena'), 'published municipal content appears at once');
+  assert(lenaPage.html.includes('Publicado por el ayuntamiento'), 'municipal content is labelled');
+  assert(!lenaPage.html.includes('Borrador de Lena'));
+  assert(!(await page('/mieres')).html.includes('Borrador privado de Mieres'));
+  const articlePage = await page('/noticia/noticia-bloque3');
+  assert.equal(articlePage.status, 200);
+  assert(articlePage.html.includes(linked.publicURL.replace(/&/g, '&amp;')), 'public article uses the public media URL');
+  assert(!articlePage.html.includes('/api/cms/media/file/'), 'public pages never use signed/proxied media URLs');
+  passed('municipal publications appear immediately on their public page, labelled as municipal content');
+
+  assert.equal((await rest('PATCH', `municipal-content/${fresh.id}`, { withdrawal: { withdrawn: true } }, editorToken)).status, 400, 'reason required');
+  assert(denied((await rest('PATCH', `municipal-content/${fresh.id}`, { withdrawal: { withdrawn: true, reason: 'x' } }, lena)).status) ||
+    (await payload.findByID({ collection: 'municipal-content', id: fresh.id, overrideAccess: true })).withdrawal.withdrawn === false, 'municipality cannot withdraw');
+  const reason = 'Contiene datos personales de un vecino';
+  // Even a "save draft" from the admin applies the withdrawal to the live document.
+  assert.equal((await rest('PATCH', `municipal-content/${fresh.id}?draft=true`, { withdrawal: { withdrawn: true, reason } }, editorToken)).status, 200);
+  lenaPage = await page('/lena');
+  assert(!lenaPage.html.includes('Mercado semanal de Pola de Lena'), 'withdrawn content disappears from the public site');
+  assert(denied((await rest('GET', `municipal-content/${fresh.id}`)).status));
+  const ownView = await rest('GET', `municipal-content/${fresh.id}?draft=true`, undefined, lena);
+  assert.equal(ownView.json.withdrawal.reason, reason);
+  const republish = await rest('PATCH', `municipal-content/${fresh.id}`, { _status: 'published' }, lena);
+  assert.equal(republish.status, 403, 'a municipality cannot republish withdrawn content');
+  const lenaPanel = await page('/lena/panel', lena);
+  assert.equal(lenaPanel.status, 200);
+  assert(lenaPanel.html.includes(reason), 'the municipality sees the reason in its panel');
+  assert(lenaPanel.html.includes('Borrador de Lena') && lenaPanel.html.includes('Retirado por Planta 14'));
+  const audit = (await payload.find({ collection: 'audit-log', overrideAccess: true, pagination: false, where: { documentID: { equals: String(fresh.id) } }, sort: 'createdAt' })).docs;
+  const withdrawn = audit.find(e => e.action === 'withdraw');
+  assert(withdrawn, 'withdrawal is audited');
+  assert.equal(withdrawn.reason, reason); assert.equal(withdrawn.userEmail, 'editor@block3.example.test'); assert.equal(withdrawn.targetCollection, 'municipal-content');
+  assert(audit.some(e => e.action === 'publish' && e.userEmail === lenaUser.email && e.userRole === 'municipal'));
+  passed('a withdrawal removes the content from the site, shows the reason to the municipality and is recorded in the audit log');
+
+  // Panel isolation over HTTP: Lena's session cannot manage Mieres.
+  const crossPanel = await page('/mieres/panel', lena);
+  assert(crossPanel.html.includes('Tu cuenta no gestiona este espacio municipal'));
+  assert(!crossPanel.html.includes('Borrador privado de Mieres') && !crossPanel.html.includes('Publicación de Mieres'));
+  assert((await page('/mieres/panel', mieres)).html.includes('Borrador privado de Mieres'));
+  assert((await page('/lena/panel')).html.includes('Entra con la cuenta de tu ayuntamiento'));
+  const crossSite = await fetch(`http://127.0.0.1:${webPort}/lena/panel`, { headers: { Cookie: `payload-token=${lena}`, Origin: 'https://evil.example' } });
+  assert(!(await crossSite.text()).includes('Borrador de Lena'), 'a cross-site request does not reuse the session cookie');
+  assert((await page('/lena/panel', editorToken)).html.includes('Gestiona los contenidos desde /cms'));
+  passed('the real municipal panel requires login and only shows the account’s own space');
+
+  // --- Avisos: uno por cada publicación municipal, correo preparado pero desactivado.
+  const municipalPublications = (await payload.find({ collection: 'audit-log', overrideAccess: true, pagination: false, where: { and: [{ action: { equals: 'publish' } }, { targetCollection: { equals: 'municipal-content' } }, { userRole: { equals: 'municipal' } }] } })).docs;
+  const notices = (await payload.find({ collection: 'notifications', overrideAccess: true, pagination: false, depth: 0 })).docs;
+  assert.equal(municipalPublications.length, 3);
+  assert.equal(notices.length, municipalPublications.length);
+  assert.deepEqual(new Set(notices.map(n => n.content)), new Set([mieresPublished.id, lenaImageDraft.id, fresh.id]));
+  assert(notices.every(n => n.emailStatus === 'disabled' && n.kind === 'municipal-publication' && n.publishedBy));
+  assert.equal((await rest('GET', 'notifications', undefined, editorToken)).json.totalDocs, 3);
+  assert.equal((await rest('PATCH', `notifications/${notices[0].id}`, { reviewed: true }, editorToken)).status, 200);
+  assert(denied((await rest('POST', 'notifications', { title: 'x' }, editorToken)).status));
+  assert(denied((await rest('DELETE', `audit-log/${audit[0].id}`, undefined, adminToken)).status));
+  assert(denied((await rest('PATCH', `audit-log/${audit[0].id}`, { reason: 'x' }, adminToken)).status));
+  // Editors publishing municipal content do not create notices.
+  await rest('POST', 'municipal-content', item('Aviso de la redacción', { space: lenaSpace.id, _status: 'published' }), editorToken);
+  assert.equal((await payload.count({ collection: 'notifications', overrideAccess: true })).totalDocs, 3);
+  passed('each municipal publication creates one notice for Planta 14 (email prepared, disabled); audit log is immutable');
+
+  // --- Migración reversible, protegida si hay cuentas municipales.
+  const migration = await import('../cms/migrations/20261102_105932_bloque3.ts');
+  await assert.rejects(payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} })), /Retira las cuentas municipales/);
+  for (const user of [lenaActor, mieresActor]) await payload.delete({ collection: 'users', id: user.id, overrideAccess: true });
+  await payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} }));
+  const gone = await payload.db.drizzle.execute(sql`SELECT to_regclass('public.audit_log') AS audit, to_regclass('public.notifications') AS notices,
+    (SELECT count(*) FROM information_schema.columns WHERE table_name = 'media' AND column_name = 'published_uses') AS col`);
+  assert.equal(gone.rows[0].audit, null); assert.equal(gone.rows[0].notices, null); assert.equal(Number(gone.rows[0].col), 0);
+  await payload.db.drizzle.transaction(db => migration.up({ db, payload, req: {} }));
+  const back = await payload.db.drizzle.execute(sql`SELECT published_uses FROM media WHERE id = ${image.id}`);
+  assert.equal(Number(back.rows[0].published_uses), 1, 'up backfills publishedUses from published content');
+  assert.equal((await payload.count({ collection: 'users', overrideAccess: true })).totalDocs, 2);
+  passed('migration applies, refuses to roll back with municipal accounts, rolls back and reapplies with backfill');
+} finally {
+  for (const child of children) { if (child.exitCode === null) { const done = once(child, 'exit'); child.kill(); await done; } }
+  if (payload) await payload.destroy();
+  await s3.close();
+  if (path.dirname(path.resolve(directory)) !== path.resolve(os.tmpdir())) throw new Error('Unexpected test cleanup directory');
+  await rm(directory, { recursive: true, force: true });
+}

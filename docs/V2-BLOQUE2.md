@@ -48,6 +48,8 @@ Los artículos de magazine en `/niebla/*`, incluidos los basados en Agenda Públ
 
 Publicar una noticia o contenido municipal con una imagen sin derechos completos y ámbito `publicable` devuelve error. También se valida la imagen SEO. No se pueden retirar derechos ni borrar una imagen mientras esté vinculada a una publicación. Al retirarse o desvincularse el contenido, el acceso público al archivo deja de concederse. La lectura pública de la biblioteca se limita a imágenes publicables enlazadas a contenido publicado; no se hace público el bucket completo.
 
+> **Actualizado en el bloque 3** ([V2-BLOQUE3.md](V2-BLOQUE3.md)): la web pública usa copias públicas en `PUBLIC_MEDIA_BASE_URL`; las URL firmadas quedan solo para paneles autenticados y `readMedia` usa el campo indexado `publishedUses`.
+
 **Opción elegida: URLs S3 firmadas de 60 segundos.** Se conserva el control de acceso de Payload. `/api/cms/media/file/...` comprueba el permiso y devuelve `302` al objeto firmado; los bytes se descargan directamente de S3. La respuesta de la API lleva `Cache-Control: private, no-store`. No se utiliza `disablePayloadAccessControl`. Se prueban originales y variantes mediante el adaptador oficial.
 
 Una URL ya emitida es una capacidad temporal: puede seguir funcionando hasta esos 60 segundos tras retirar una publicación. No se promete revocación instantánea de enlaces emitidos ni de copias ya descargadas. En el proveedor definitivo, configurar caché de objetos/CDN compatible con este límite y evitar registrar URLs firmadas. Un CDN privado futuro debe validar firmas y mantener el bucket privado; no basta con cambiar un hostname dentro de la firma S3. No se ha creado ni configurado ningún CDN.

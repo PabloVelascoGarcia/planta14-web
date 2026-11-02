@@ -94,7 +94,9 @@ try {
   assert([403, 404].includes((await rest('GET', ['media', 'file', media.filename])).status), 'unlinked images remain private');
   await payload.update({ collection: 'articles', id: article.id, user: actor, overrideAccess: false, data: { image: media.id } });
   assert.equal((await rest('GET', ['media', String(media.id)])).status, 200);
-  const redirect = await rest('GET', ['media', 'file', media.filename]);
+  // Bloque 3: signed URLs are only issued to authenticated panels; the public site uses PUBLIC_MEDIA_BASE_URL.
+  assert([403, 404].includes((await rest('GET', ['media', 'file', media.filename])).status));
+  const redirect = await rest('GET', ['media', 'file', media.filename], undefined, token);
   assert.equal(redirect.status, 302);
   assert.equal(new URL(redirect.headers.get('location')).searchParams.get('X-Amz-Expires'), '60');
   assert.equal((await fetch(redirect.headers.get('location'))).status, 200);
@@ -144,12 +146,16 @@ try {
 
   // Exercise downgrade/up inside real transactions after testing the protective editor guard.
   const migration = await import('../cms/migrations/20261102_094653_bloque2.ts');
+  // Bloque 3 sits on top of bloque 2: roll it back first and reapply it at the end.
+  const block3 = await import('../cms/migrations/20261102_105932_bloque3.ts');
   await assert.rejects(payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} })), /Retira las cuentas editor/);
   await payload.delete({ collection: 'users', id: editor.id, overrideAccess: true });
+  await payload.db.drizzle.transaction(db => block3.down({ db, payload, req: {} }));
   await payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} }));
   const absent = await payload.db.drizzle.execute(sql`SELECT to_regclass('public.articles') AS name`);
   assert.equal(absent.rows[0].name, null);
   await payload.db.drizzle.transaction(db => migration.up({ db, payload, req: {} }));
+  await payload.db.drizzle.transaction(db => block3.up({ db, payload, req: {} }));
   assert.equal((await payload.count({ collection: 'articles', overrideAccess: true })).totalDocs, 0);
   assert.equal((await payload.count({ collection: 'users', overrideAccess: true })).totalDocs, 1);
   const oldMedia = await payload.findByID({ collection: 'media', id: media.id, overrideAccess: true });
