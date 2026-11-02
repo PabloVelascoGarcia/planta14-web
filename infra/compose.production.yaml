@@ -1,0 +1,140 @@
+# Producción de Planta 14 (planta14.com): web pública sin contraseña, HTTPS de Let's Encrypt, PostgreSQL 17
+# y almacenamiento S3 EXTERNO (sin MinIO). Lo usa infra/deploy/deploy.sh, que construye la imagen de una
+# versión concreta y fija APP_IMAGE. No arrancar a mano con una imagen sin construir.
+#
+#   docker compose -f infra/compose.production.yaml --env-file infra/.env.production config --quiet
+#
+# - Solo Caddy publica puertos (80/443). PostgreSQL está en una red interna y además solo acepta TCP de esa
+#   red (infra/postgres/pg_hba.conf).
+# - La app usa POSTGRES_APP_USER (solo datos); las migraciones, POSTGRES_MIGRATOR_USER (servicio "migrate",
+#   perfil "migrate": solo se ejecuta con "docker compose run").
+# - SITE_INDEXABLE no tiene valor por defecto: hay que decidir "true" (indexar en buscadores) o "false".
+# - Imágenes base fijadas por digest (ver "Actualizar imágenes" en docs/INFRA-STAGING.md).
+name: ${COMPOSE_PROJECT_NAME:-planta14}
+
+x-app-env: &app-env
+  NODE_ENV: production
+  CMS_ENABLED: "true"
+  CONTENT_SOURCE: payload
+  SITE_INDEXABLE: ${SITE_INDEXABLE:?Decide SITE_INDEXABLE (true para indexar en buscadores, false para no indexar)}
+  SITE_URL: https://${SITE_DOMAIN:?Define SITE_DOMAIN (planta14.com)}
+  CMS_SERVER_URL: https://${SITE_DOMAIN:?Define SITE_DOMAIN (planta14.com)}
+  PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Define PAYLOAD_SECRET (mínimo 32 caracteres)}
+  DATABASE_URL: postgres://${POSTGRES_APP_USER:-planta14_app}:${POSTGRES_APP_PASSWORD:?Define POSTGRES_APP_PASSWORD}@postgres:5432/${POSTGRES_DB:-planta14}
+  S3_BUCKET: ${S3_BUCKET:?Define S3_BUCKET (bucket privado)}
+  S3_REGION: ${S3_REGION:?Define S3_REGION}
+  S3_ENDPOINT: ${S3_ENDPOINT:?Define S3_ENDPOINT (https del proveedor S3)}
+  S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-false}
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?Define S3_ACCESS_KEY_ID}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?Define S3_SECRET_ACCESS_KEY}
+  PUBLIC_MEDIA_BASE_URL: ${PUBLIC_MEDIA_BASE_URL:?Define PUBLIC_MEDIA_BASE_URL (URL https del bucket público o del CDN)}
+  PUBLIC_MEDIA_BUCKET: ${PUBLIC_MEDIA_BUCKET:?Define PUBLIC_MEDIA_BUCKET (bucket público separado)}
+  PUBLIC_MEDIA_PREFIX: ${PUBLIC_MEDIA_PREFIX:-public}
+  PUBLIC_MEDIA_CACHE_CONTROL: ${PUBLIC_MEDIA_CACHE_CONTROL:-public, max-age=86400}
+  PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS: ${PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS:-600}
+  CDN_PURGE_ENABLED: ${CDN_PURGE_ENABLED:-false}
+  CDN_PURGE_URL: ${CDN_PURGE_URL:-}
+  CDN_PURGE_TOKEN: ${CDN_PURGE_TOKEN:-}
+  GA4_MEASUREMENT_ID: ${GA4_MEASUREMENT_ID:-}
+  MUNICIPAL_NOTICE_EMAIL_ENABLED: ${MUNICIPAL_NOTICE_EMAIL_ENABLED:-false}
+  MUNICIPAL_NOTICE_EMAIL_TO: ${MUNICIPAL_NOTICE_EMAIL_TO:-}
+
+services:
+  app:
+    image: ${APP_IMAGE:?APP_IMAGE la fija infra/deploy/deploy.sh}
+    pull_policy: never
+    restart: unless-stopped
+    environment: *app-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # "edge" también da salida a Internet (S3 externo y correo).
+    networks: [edge, backend]
+    mem_limit: ${APP_MEM_LIMIT:-2g}
+    security_opt: ["no-new-privileges:true"]
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
+
+  migrate:
+    image: ${APP_IMAGE:?APP_IMAGE la fija infra/deploy/deploy.sh}
+    pull_policy: never
+    profiles: ["migrate"]
+    command: ["npm", "run", "cms:migrate"]
+    environment:
+      <<: *app-env
+      DATABASE_URL: postgres://${POSTGRES_MIGRATOR_USER:-planta14_migrator}:${POSTGRES_MIGRATOR_PASSWORD:?Define POSTGRES_MIGRATOR_PASSWORD}@postgres:5432/${POSTGRES_DB:-planta14}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [edge, backend]
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres:17.6-alpine@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-planta14}
+      POSTGRES_USER: ${POSTGRES_USER:-planta14}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_MIGRATOR_USER: ${POSTGRES_MIGRATOR_USER:-planta14_migrator}
+      POSTGRES_MIGRATOR_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:?Define POSTGRES_MIGRATOR_PASSWORD}
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER:-planta14_app}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?Define POSTGRES_APP_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres:/planta14:ro
+      - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
+    networks: [backend]
+    shm_size: 256mb
+    mem_limit: ${POSTGRES_MEM_LIMIT:-2g}
+    command:
+      - postgres
+      - -c
+      - hba_file=/planta14/pg_hba.conf
+      - -c
+      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-512MB}
+      - -c
+      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-2GB}
+      - -c
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-50}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    security_opt: ["no-new-privileges:true"]
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
+
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d}
+    restart: unless-stopped
+    depends_on: [app]
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?Define SITE_DOMAIN (planta14.com)}
+      ACME_EMAIL: ${ACME_EMAIL:?Define ACME_EMAIL (avisos de Let's Encrypt)}
+      # acme = Let's Encrypt (producción). internal = certificado propio, solo para ensayos locales.
+      CADDY_TLS_MODE: ${CADDY_TLS_MODE:-acme}
+    ports:
+      - "${HTTP_BIND:-0.0.0.0}:80:80"
+      - "${HTTPS_BIND:-0.0.0.0}:443:443"
+      - "${HTTPS_BIND:-0.0.0.0}:443:443/udp"
+    volumes:
+      - ./Caddyfile.production:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      # Registro de accesos para fail2ban (intentos de inicio de sesión fallidos).
+      - ${CADDY_LOG_DIR:-/var/log/planta14/caddy}:/var/log/caddy
+    networks: [edge]
+    security_opt: ["no-new-privileges:true"]
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
+
+networks:
+  edge: {}
+  backend:
+    internal: true
+
+volumes:
+  postgres_data: {}
+  caddy_data: {}
+  caddy_config: {}

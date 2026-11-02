@@ -1,5 +1,6 @@
 # Archivos locales de infraestructura: nunca deben subirse.
 .env.staging
+.env.production
 .env.*.local
 *.env
 backups/

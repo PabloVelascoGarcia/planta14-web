@@ -1,0 +1,61 @@
+# Caddy de producción de Planta 14: web pública (sin contraseña), HTTPS automático de Let's Encrypt para
+# SITE_DOMAIN y www.SITE_DOMAIN, con www redirigido a SITE_DOMAIN. /api/health queda abierto para el monitor
+# externo. Los intentos de inicio de sesión se limitan con fail2ban (infra/server/fail2ban) a partir de este
+# registro de accesos, y Payload bloquea además cada cuenta tras 5 fallos durante 10 minutos.
+{
+	email {$ACME_EMAIL}
+	admin off
+}
+
+(tls_acme) {
+}
+
+(tls_internal) {
+	tls internal
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "SAMEORIGIN"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+}
+
+www.{$SITE_DOMAIN} {
+	import tls_{$CADDY_TLS_MODE:acme}
+	import security_headers
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
+
+{$SITE_DOMAIN} {
+	import tls_{$CADDY_TLS_MODE:acme}
+	import security_headers
+	encode zstd gzip
+
+	# Cargas del CMS: 10 MiB por imagen, con margen para el multipart.
+	request_body {
+		max_size 12MB
+	}
+
+	# Monitor externo de disponibilidad: nunca en caché.
+	handle /api/health {
+		header Cache-Control "no-store"
+		reverse_proxy app:3000
+	}
+
+	handle {
+		reverse_proxy app:3000
+	}
+
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 50MiB
+			roll_keep 10
+		}
+		format json
+	}
+}
