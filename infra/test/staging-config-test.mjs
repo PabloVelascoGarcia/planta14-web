@@ -57,7 +57,7 @@ try {
     assert.deepEqual(Object.keys(config.services.caddy.networks).sort(), ['edge', 'public_media']);
     assert.equal(config.networks.public_media.internal, true); assert.equal(config.networks.backend.internal, true);
     assert.equal(config.services.app.environment.PUBLIC_MEDIA_PREFIX, 'public');
-    assert.equal(config.services.app.environment.PUBLIC_MEDIA_CACHE_CONTROL, 'public, max-age=31536000, immutable');
+    assert.equal(config.services.app.environment.PUBLIC_MEDIA_CACHE_CONTROL, 'public, max-age=86400');
   }
   const missing = path.join(work, 'missing.env');
   writeFileSync(missing, contents.replace(/^CADDY_BASIC_AUTH_HASH=.*$/m, ''), { mode: 0o600 });

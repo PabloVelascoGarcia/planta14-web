@@ -52,6 +52,7 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
   const [file, setFile] = useState<File | null>(null);
   const [alt, setAlt] = useState("");
   const [credit, setCredit] = useState("");
+  const [declared, setDeclared] = useState(false);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const set = (patch: Partial<Draft>) => setDraft(current => ({ ...current, ...patch }));
@@ -68,9 +69,10 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
       let image = draft.image;
       if (file) {
         if (!alt.trim() || !credit.trim()) throw new Error("Describe la imagen e indica su autoría.");
+        if (!declared) throw new Error("Marca la declaración de derechos sobre la imagen.");
         const form = new FormData();
         form.append("file", file);
-        form.append("_payload", JSON.stringify({ alt: alt.trim(), credit: credit.trim(), rightsScope: "publicable" }));
+        form.append("_payload", JSON.stringify({ alt: alt.trim(), credit: credit.trim(), rightsScope: "publicable", rightsDeclaration: { declared: true } }));
         image = (await request("/media", { method: "POST", body: form })).doc.id;
       }
       const data = {
@@ -85,7 +87,7 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
       if (draft.id) await request(`/municipal-content/${draft.id}${query}`, json("PATCH", data));
       else await request(`/municipal-content${query}`, json("POST", data));
       setMessage(publish ? "Publicado. Ya se puede ver en tu espacio." : "Borrador guardado. Solo lo ve tu ayuntamiento.");
-      setDraft(empty); setFile(null); setAlt(""); setCredit("");
+      setDraft(empty); setFile(null); setAlt(""); setCredit(""); setDeclared(false);
       router.refresh();
     } catch (error) { setMessage(error instanceof Error ? error.message : "No se ha podido guardar."); }
     finally { setBusy(false); }
@@ -125,6 +127,7 @@ export function MunicipalCmsPanel({ space, state }: { space: MunicipalSpace; sta
             <div className="municipal-step"><span>2</span><h3>Imagen (opcional)</h3></div>
             <label>Archivo JPEG, PNG o WebP, hasta 10 MB<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
             {file ? <><label>Descripción de la imagen<input value={alt} onChange={e => setAlt(e.target.value)} required /></label><label>Autoría o crédito<input value={credit} onChange={e => setCredit(e.target.value)} required /></label>
+              <label className="municipal-declaration"><input type="checkbox" checked={declared} onChange={e => setDeclared(e.target.checked)} required /> {space.name} declara que tiene los derechos necesarios para publicar esta imagen en Planta 14 y que el autor o crédito indicado es correcto.</label>
               <p className="municipal-field-help">Los derechos quedan a nombre de {space.name}.</p></> : draft.image ? <p className="municipal-field-help">Se mantiene la imagen actual.</p> : null}
             <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy}>Publicar ahora ↗</button><small>Aparece al momento en tu espacio.</small></div>
             <button type="button" className="municipal-reset" disabled={busy} onClick={() => void save(false)}>Guardar como borrador</button>

@@ -18,6 +18,7 @@ function ContentCard({ item, space, compact = false }: { item: MunicipalContent;
       {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Consultar la referencia oficial ↗</a> : null}
       {item.attachments.map(file => <a key={file.url} href={file.url} className="editorial-link">{file.title} · PDF ↗</a>)}
     </details>
+    {item.image ? <figure className="municipal-content-image"><img src={item.image.url} alt={item.image.alt} loading="lazy" /><figcaption>{item.image.credit}</figcaption></figure> : null}
     <p>{item.excerpt}</p>
     <div className="municipal-card-dates">
       {item.type === "event" && item.eventAt ? <><time dateTime={item.eventAt}>{formatDate(item.eventAt.slice(0,10))} · {item.eventAt.slice(11,16)} h</time><span>{item.place}</span></> : null}

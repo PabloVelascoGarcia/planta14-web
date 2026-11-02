@@ -150,12 +150,18 @@ try {
   const block3 = await import('../cms/migrations/20261102_105932_bloque3.ts');
   await assert.rejects(payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} })), /Retira las cuentas editor/);
   await payload.delete({ collection: 'users', id: editor.id, overrideAccess: true });
+  // Later migrations first. Bloque 3 refuses to drop audit records: they are cleared explicitly here.
+  const integration = await import('../cms/migrations/20261102_121412_integracion.ts');
+  await payload.db.drizzle.transaction(db => integration.down({ db, payload, req: {} }));
+  await assert.rejects(payload.db.drizzle.transaction(db => block3.down({ db, payload, req: {} })), /auditoría/);
+  await payload.db.drizzle.execute(sql`DELETE FROM audit_log`);
   await payload.db.drizzle.transaction(db => block3.down({ db, payload, req: {} }));
   await payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} }));
   const absent = await payload.db.drizzle.execute(sql`SELECT to_regclass('public.articles') AS name`);
   assert.equal(absent.rows[0].name, null);
   await payload.db.drizzle.transaction(db => migration.up({ db, payload, req: {} }));
   await payload.db.drizzle.transaction(db => block3.up({ db, payload, req: {} }));
+  await payload.db.drizzle.transaction(db => integration.up({ db, payload, req: {} }));
   assert.equal((await payload.count({ collection: 'articles', overrideAccess: true })).totalDocs, 0);
   assert.equal((await payload.count({ collection: 'users', overrideAccess: true })).totalDocs, 1);
   const oldMedia = await payload.findByID({ collection: 'media', id: media.id, overrideAccess: true });

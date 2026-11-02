@@ -56,10 +56,12 @@ export async function payloadSpaces(): Promise<MunicipalSpace[]> {
 }
 export function municipalContract(doc: PayloadMunicipalContent): MunicipalContent {
   const space = populated(doc.space);
+  const image = typeof doc.image === 'object' && doc.image ? doc.image : null;
   return { id: doc.legacyID || String(doc.id), space: space.legacyID!, type: doc.type, title: doc.title, excerpt: doc.excerpt, body: doc.body,
     origin: 'municipality', status: 'published', publishedAt: doc.publishedAt, expiresAt: doc.expiresAt || null, eventAt: doc.eventAt || null,
     place: doc.place || null, deadline: doc.deadline || null, attachments: (doc.attachments || []).map(({ url, title }) => ({ url, title })),
-    demo: Boolean(doc.demo), ...(doc.sourceUrl ? { sourceUrl: doc.sourceUrl } : {}) };
+    demo: Boolean(doc.demo), ...(doc.sourceUrl ? { sourceUrl: doc.sourceUrl } : {}),
+    ...(image && mediaURL(image) !== '/images/placeholder.svg' ? { image: { url: mediaURL(image), alt: image.alt, credit: image.credit } } : {}) };
 }
 export async function payloadMunicipalContent(): Promise<MunicipalContent[]> {
   const payload = await contentClient();

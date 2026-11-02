@@ -101,6 +101,15 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
     IF EXISTS (SELECT 1 FROM users WHERE role::text = 'municipal') THEN
       RAISE EXCEPTION 'Retira las cuentas municipales antes de volver al bloque 2; no se convertirán en editor';
     END IF;
+    -- The downgrade would erase withdrawals (and their reasons) and the audit trail. Like editor accounts in
+    -- bloque 2, they must be resolved/exported explicitly first; nothing is discarded implicitly.
+    IF EXISTS (SELECT 1 FROM municipal_content WHERE withdrawal_withdrawn)
+       OR EXISTS (SELECT 1 FROM _municipal_content_v WHERE version_withdrawal_withdrawn) THEN
+      RAISE EXCEPTION 'Hay contenidos retirados por Planta 14: expórtalos y resuélvelos antes de volver al bloque 2 (se perderían la retirada y su motivo)';
+    END IF;
+    IF EXISTS (SELECT 1 FROM audit_log) THEN
+      RAISE EXCEPTION 'Hay registros de auditoría: expórtalos y vacíalos expresamente antes de volver al bloque 2';
+    END IF;
   END $$;`)
   await db.execute(sql`
    ALTER TABLE "notifications" DISABLE ROW LEVEL SECURITY;

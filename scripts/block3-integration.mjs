@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import http from 'node:http';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -24,7 +25,7 @@ await reset.connect();
 await reset.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
 await reset.end();
 const directory = await mkdtemp(path.join(os.tmpdir(), 'planta14-block3-'));
-const s3 = new S3rver({ address: '127.0.0.1', port: s3Port, directory, silent: true, configureBuckets: [{ name: 'planta14-block3-private' }, { name: 'planta14-block3-public' }] });
+const s3 = new S3rver({ address: '127.0.0.1', port: s3Port, directory, silent: true, configureBuckets: [{ name: 'planta14-block3-private' }, { name: 'planta14-block3-public' }, { name: 'planta14-block3-public2' }] });
 const children = [];
 let payload;
 const passed = name => console.log(`PASS: ${name}`);
@@ -154,7 +155,7 @@ try {
   assert(denied((await rest('GET', `media/file/${linked.filename}`, undefined, lena)).status), 'municipal account cannot obtain signed originals of Planta 14');
   const publicFile = await fetch(linked.publicURL);
   assert.equal(publicFile.status, 200);
-  assert.match(publicFile.headers.get('cache-control') || '', /public, max-age=31536000, immutable/);
+  assert.match(publicFile.headers.get('cache-control') || '', /public, max-age=86400/);
   for (const size of ['card', 'hero']) assert.equal((await fetch(`${publicBase}/${linked.publicKey}/${linked.sizes[size].filename}`)).status, 200, `public ${size} variant`);
   // Signed URLs only for authenticated panels.
   assert(denied((await rest('GET', `media/file/${linked.filename}`)).status), 'anonymous file route is not a signed-URL proxy');
@@ -168,7 +169,19 @@ try {
   const draftArticle = await payload.create({ collection: 'articles', overrideAccess: false, user: editorActor, draft: true, data: { slug: 'borrador-bloque3', title: 'Borrador', excerpt: 'x', body: ['x'], author: author.id, town: town.id, section: section.id, date: '2026-11-02', _status: 'draft', image: demoImage.id } });
   assert.equal((await media(demoImage.id)).publishedUses, 0);
   assert(denied((await rest('GET', `media/${demoImage.id}`)).status));
-  const lenaImage = await payload.create({ collection: 'media', user: lenaActor, overrideAccess: false, file: file('lena.png'), data: { alt: 'Fiesta en Pola de Lena', credit: 'Ayuntamiento de Lena' } });
+  // Municipal uploads require an explicit rights declaration and a credit; the evidence is set by the server.
+  await assert.rejects(payload.create({ collection: 'media', user: lenaActor, overrideAccess: false, file: file('sin-declaracion.png'), data: { alt: 'Sin declaración', credit: 'Ayuntamiento de Lena' } }), /declaración de derechos/);
+  await assert.rejects(payload.create({ collection: 'media', user: lenaActor, overrideAccess: false, file: file('sin-credito.png'), data: { alt: 'Sin crédito', credit: '   ', rightsDeclaration: { declared: true } } }), /autor o crédito/);
+  const lenaImage = await payload.create({ collection: 'media', user: lenaActor, overrideAccess: false, file: file('lena.png'),
+    data: { alt: 'Fiesta en Pola de Lena', credit: 'Ayuntamiento de Lena', rightsDeclaration: { declared: true, declaredBy: mieresUser.id, declaredAt: '2000-01-01T00:00:00.000Z', statement: 'falsificada' } } });
+  assert.equal(lenaImage.rightsDeclaration.declared, true);
+  assert.equal(idOf(lenaImage.rightsDeclaration.declaredBy), lenaUser.id, 'declaredBy comes from the session');
+  assert(Date.now() - Date.parse(lenaImage.rightsDeclaration.declaredAt) < 60_000, 'declaredAt set by the server');
+  assert.match(lenaImage.rightsDeclaration.statement, /^v1 · Ayuntamiento de Lena declara que tiene los derechos/);
+  const editorForged = await payload.create({ collection: 'media', user: editorActor, overrideAccess: false, file: file('editor.png'), data: { alt: 'Editor', credit: 'Planta 14', rightsHolder: 'Planta 14', rightsType: 'propia', rightsDeclaration: { declared: true, declaredBy: lenaUser.id } } });
+  assert.equal(editorForged.rightsDeclaration?.declared ?? false, false, 'nobody can write a declaration as client data');
+  await payload.delete({ collection: 'media', id: editorForged.id, overrideAccess: true });
+  passed('municipal image upload requires rights declaration and credit; who/when/what stored server-side, not forgeable');
   assert.equal(lenaImage.rightsHolder, 'Ayuntamiento de Lena'); assert.equal(lenaImage.rightsType, 'institucional'); assert.equal(idOf(lenaImage.uploadedBySpace), lenaSpace.id);
   const lenaImageDraft = (await rest('POST', 'municipal-content?draft=true', item('Borrador con imagen', { _status: 'draft', image: lenaImage.id }), lena)).json.doc;
   const managedFields = await rest('PATCH', `media/${lenaImage.id}`, { filename: image.filename, prefix: 'another-tenant', sizes: { card: { filename: image.filename } }, uploadedBySpace: mieresSpace.id, publishedUses: 999, publicKey: 'public/forged' }, lena);
@@ -301,14 +314,14 @@ try {
   // Real multipart REST upload: tenant ownership cannot be supplied/spoofed by the client.
   const form = new FormData();
   form.set('file', new Blob([png], { type: 'image/png' }), 'upload-rest.png');
-  form.set('_payload', JSON.stringify({ alt: 'Carga REST propia', credit: 'Ayuntamiento de Lena', uploadedBySpace: mieresSpace.id }));
+  form.set('_payload', JSON.stringify({ alt: 'Carga REST propia', credit: 'Ayuntamiento de Lena', uploadedBySpace: mieresSpace.id, rightsDeclaration: { declared: true } }));
   const uploadedResponse = await REST_POST(config)(new Request(`http://localhost:${webPort}/api/cms/media`, { method: 'POST', headers: { Authorization: `JWT ${lena}` }, body: form }), { params: Promise.resolve({ slug: ['media'] }) });
   assert.equal(uploadedResponse.status, 201);
   const uploaded = (await uploadedResponse.json()).doc;
   assert.equal(idOf(uploaded.uploadedBySpace), lenaSpace.id);
   const prefixForm = new FormData();
   prefixForm.set('file', new Blob([png], { type: 'image/png' }), 'prefix-spoof.png');
-  prefixForm.set('_payload', JSON.stringify({ alt: 'Destino falsificado', credit: 'Prueba', prefix: 'public/forged' }));
+  prefixForm.set('_payload', JSON.stringify({ alt: 'Destino falsificado', credit: 'Prueba', prefix: 'public/forged', rightsDeclaration: { declared: true } }));
   const prefixAttempt = await REST_POST(config)(new Request(`http://localhost:${webPort}/api/cms/media`, { method: 'POST', headers: { Authorization: `JWT ${lena}` }, body: prefixForm }), { params: Promise.resolve({ slug: ['media'] }) });
   assert.equal(prefixAttempt.status, 403, 'municipal uploads cannot target a public storage namespace');
   assert(denied((await rest('GET', `media/${uploaded.id}?depth=5`, undefined, mieres)).status));
@@ -318,24 +331,41 @@ try {
   const cmsPage = await page('/cms', lena);
   assert(!cmsPage.html.includes('Noticia de Planta 14'), 'CMS panel cannot reveal editorial records to a municipal cookie');
   passed('multipart upload fixes tenant ownership; other tenants cannot read/edit/delete it; GraphQL is not mounted');
+  // CDN purge hook (disabled by default) is called with the URLs on withdrawal, unpublication and deletion.
+  const purges = [];
+  const purgeServer = http.createServer((req, res) => { let b = ''; req.on('data', c => { b += c; }); req.on('end', () => { purges.push({ auth: req.headers.authorization, ...JSON.parse(b) }); res.end('ok'); }); });
+  await new Promise(r => purgeServer.listen(0, '127.0.0.1', r));
+  Object.assign(process.env, { CDN_PURGE_ENABLED: 'true', CDN_PURGE_URL: `http://127.0.0.1:${purgeServer.address().port}/purge`, CDN_PURGE_TOKEN: 'token-de-prueba' });
+  const unpublishPost = (await rest('POST', 'municipal-content', item('Prueba de despublicación con imagen', { publishedAt: '2026-11-02', space: lenaSpace.id, image: uploaded.id, _status: 'published' }), editorToken)).json.doc;
+  const unpublishURL = (await media(uploaded.id)).publicURL;
+  assert.equal((await fetch(unpublishURL)).status, 200);
+  assert.equal((await rest('PATCH', `municipal-content/${unpublishPost.id}`, { _status: 'draft' }, editorToken)).status, 200);
+  assert.equal((await fetch(unpublishURL)).status, 404);
+  assert(purges.at(-1)?.urls.includes(unpublishURL) && purges.at(-1).auth === 'Bearer token-de-prueba', 'purge on unpublish');
+  await rest('DELETE', `municipal-content/${unpublishPost.id}`, undefined, editorToken);
   const withdrawalImagePost = (await rest('POST', 'municipal-content', item('Prueba editorial de imagen municipal', { publishedAt: '2026-11-02', space: lenaSpace.id, image: uploaded.id, _status: 'published' }), editorToken)).json.doc;
   assert(withdrawalImagePost?.id);
   const withdrawalURL = (await media(uploaded.id)).publicURL;
   assert.equal((await fetch(withdrawalURL)).status, 200);
   assert.equal((await rest('PATCH', `municipal-content/${withdrawalImagePost.id}`, { withdrawal: { withdrawn: true, reason: 'Ensayo de retirada con imagen' } }, editorToken)).status, 200);
   assert.equal((await fetch(withdrawalURL)).status, 404);
+  assert(purges.at(-1)?.urls.includes(withdrawalURL), 'purge on withdrawal');
   const deletionImagePost = (await rest('POST', 'municipal-content', item('Prueba editorial de borrado con imagen', { publishedAt: '2026-11-02', space: lenaSpace.id, image: uploaded.id, _status: 'published' }), editorToken)).json.doc;
   const deletionURL = (await media(uploaded.id)).publicURL;
   assert.equal((await fetch(deletionURL)).status, 200);
   assert.equal((await rest('DELETE', `municipal-content/${deletionImagePost.id}`, undefined, editorToken)).status, 200);
   assert.equal((await fetch(deletionURL)).status, 404);
-  passed('public municipal image copies disappear from the origin on withdrawal and content deletion');
+  assert(purges.at(-1)?.urls.includes(deletionURL), 'purge on deletion');
+  assert(purges.every(p => p.urls.length === 3), 'original and both variants purged');
+  const purgeOps = await payload.find({ collection: 'public-media-ops', overrideAccess: true, pagination: false, where: { and: [{ kind: { equals: 'delete' } }, { purge: { equals: 'sent' } }] } });
+  assert(purgeOps.totalDocs >= 3, 'purge result recorded in the operation log');
+  for (const k of ['CDN_PURGE_ENABLED', 'CDN_PURGE_URL', 'CDN_PURGE_TOKEN']) delete process.env[k];
+  purgeServer.close();
+  passed('public copies disappear from the origin on withdrawal, unpublication and deletion; CDN purge hook called with their URLs');
   const { testPublicStorageFailures } = await import('./block3-storage-failures.mjs');
   await testPublicStorageFailures({ payload, actor: editorActor, article, image, file });
-  if (process.env.CMS_BLOCK3_ORPHAN_PROBE === 'true') {
-    const { probePublicOrphans } = await import('./block3-storage-orphans.mjs');
-    await probePublicOrphans({ payload, actor: editorActor, article, file });
-  }
+  const { testPublicOrphans } = await import('./block3-storage-orphans.mjs');
+  await testPublicOrphans({ payload, actor: editorActor, article, file, image, oldBucket: 'planta14-block3-public', newBucket: 'planta14-block3-public2', newBase: `http://127.0.0.1:${s3Port}/planta14-block3-public2` });
   if (process.env.CMS_BLOCK3_BROWSER_TEST === 'true') {
     const { testMunicipalBrowser } = await import('./block3-browser.mjs');
     await testMunicipalBrowser({ url: `http://localhost:${webPort}`, email: lenaUser.email, password, withdraw: async (id, reason) => {
@@ -347,17 +377,41 @@ try {
   await payload.update({ collection: 'articles', id: article.id, user: editorActor, overrideAccess: false, data: { seoImage: image.id } });
   assert.equal((await media(image.id)).publishedUses, 1, 'image and SEO use in the same document count once');
   const migration = await import('../cms/migrations/20261102_105932_bloque3.ts');
-  await assert.rejects(payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} })), /Retira las cuentas municipales/);
+  const integration = await import('../cms/migrations/20261102_121412_integracion.ts');
+  const tx = fn => payload.db.drizzle.transaction(db => fn({ db, payload, req: {} }));
+  const liveKeyBefore = (await media(image.id)).publicKey;
+  // Bloque 3 refuses with municipal accounts, withdrawals or audit records; each is resolved explicitly
+  // (accounts are retired through the API while the full schema is still in place).
+  await assert.rejects(tx(migration.down), /Retira las cuentas municipales/);
   for (const user of [lenaActor, mieresActor]) await payload.delete({ collection: 'users', id: user.id, overrideAccess: true });
-  await payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} }));
+  await assert.rejects(tx(migration.down), /retirados por Planta 14/);
+  await payload.db.drizzle.execute(sql`UPDATE municipal_content SET withdrawal_withdrawn = false; UPDATE _municipal_content_v SET version_withdrawal_withdrawn = false`);
+  await assert.rejects(tx(migration.down), /auditoría/);
+  await payload.db.drizzle.execute(sql`DELETE FROM audit_log`); // explicit, after exporting it
+  // Integration migration: refuses while rights declarations exist; keeps the durable operation log.
+  await assert.rejects(tx(integration.down), /declaraciones de derechos/);
+  await payload.db.drizzle.execute(sql`UPDATE media SET rights_declaration_declared = false`); // explicit, after exporting them
+  await tx(integration.down);
+  assert.notEqual((await payload.db.drizzle.execute(sql`SELECT to_regclass('public.public_media_ops') AS t`)).rows[0].t, null, 'operation log kept by down');
+  await tx(migration.down);
   const gone = await payload.db.drizzle.execute(sql`SELECT to_regclass('public.audit_log') AS audit, to_regclass('public.notifications') AS notices,
     (SELECT count(*) FROM information_schema.columns WHERE table_name = 'media' AND column_name = 'published_uses') AS col`);
   assert.equal(gone.rows[0].audit, null); assert.equal(gone.rows[0].notices, null); assert.equal(Number(gone.rows[0].col), 0);
-  await payload.db.drizzle.transaction(db => migration.up({ db, payload, req: {} }));
-  const back = await payload.db.drizzle.execute(sql`SELECT published_uses FROM media WHERE id = ${image.id}`);
+  await tx(migration.up);
+  await tx(integration.up);
+  const back = await payload.db.drizzle.execute(sql`SELECT published_uses, public_key FROM media WHERE id = ${image.id}`);
   assert.equal(Number(back.rows[0].published_uses), 1, 'up backfills publishedUses from published content');
+  assert.equal(back.rows[0].public_key, null, 'the SQL downgrade forgot the public key');
+  const { syncAllPublicMedia } = await import('../cms/public-media.ts');
+  process.env.PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS = '0';
+  await syncAllPublicMedia(payload);
+  delete process.env.PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS;
+  const relinked = await media(image.id);
+  assert(relinked.publicKey && relinked.publicKey !== liveKeyBefore);
+  assert.equal((await fetch(relinked.publicURL)).status, 200);
+  assert.equal((await fetch(`${publicBase}/${liveKeyBefore}/${relinked.filename}`)).status, 404, 'copy orphaned by the SQL downgrade removed via the durable log');
   assert.equal((await payload.count({ collection: 'users', overrideAccess: true })).totalDocs, 2);
-  passed('migration applies, refuses to roll back with municipal accounts, rolls back and reapplies with backfill');
+  passed('migrations: refuse to roll back with declarations, municipal accounts, withdrawals or audit; roll back and reapply; orphaned copies cleaned after the SQL downgrade');
 } finally {
   for (const child of children) { if (child.exitCode === null) { const done = once(child, 'exit'); child.kill(); await done; } }
   if (payload) await payload.destroy();

@@ -4,6 +4,10 @@ import { auditAfterChange, auditAfterDelete } from './activity';
 import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
 
+/** Text stored with each municipal upload (versioned so the evidence says what was declared). */
+export const municipalRightsStatement = (municipality: string) =>
+  `v1 · ${municipality} declara que tiene los derechos necesarios para publicar esta imagen en Planta 14 y que el autor o crédito indicado es correcto.`;
+
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: { cookies: { secure: process.env.NODE_ENV === 'production', sameSite: 'Lax' }, maxLoginAttempts: 5, lockTime: 10 * 60 * 1000 },
@@ -49,13 +53,24 @@ export const Media: CollectionConfig = {
       if (operation === 'create' && municipalSpaceOf(req) !== null && data?.prefix) throw new APIError('El destino de almacenamiento lo fija el servidor', 403);
       return args;
     }],
-    beforeChange: [async ({ data, originalDoc, req }) => {
+    beforeChange: [async ({ data, originalDoc, operation, req }) => {
       const space = municipalSpaceOf(req);
+      const declaration = data.rightsDeclaration as { declared?: unknown } | undefined;
+      // The declaration is only ever written here, from the session: never accepted as client data.
+      delete data.rightsDeclaration;
       if (space !== null) {
         // A municipality uploads images under its own rights.
         const owner = await req.payload.findByID({ collection: 'municipal-spaces', id: space, depth: 0, overrideAccess: true, req });
         // The municipality is the rights holder of what it uploads: always institutional and publishable.
         Object.assign(data, { uploadedBySpace: space, rightsHolder: owner.name, rightsType: 'institucional', rightsScope: 'publicable' });
+        const credit = typeof data.credit === 'string' ? data.credit.trim() : originalDoc?.credit;
+        if (!credit) throw new APIError('Indica el autor o crédito de la imagen', 400);
+        if (typeof data.credit === 'string') data.credit = credit;
+        // New file (upload or replacement): explicit rights declaration by the municipal account.
+        if (operation === 'create' || req.file) {
+          if (declaration?.declared !== true) throw new APIError('Marca la declaración de derechos sobre la imagen para poder subirla', 400);
+          data.rightsDeclaration = { declared: true, statement: municipalRightsStatement(owner.name), declaredBy: req.user!.id, declaredAt: new Date().toISOString() };
+        }
       }
       const next = { ...originalDoc, ...data };
       if (!next.rightsHolder || !next.rightsType) throw new APIError('Indica titular y tipo de derechos de la imagen', 400);
@@ -88,7 +103,34 @@ export const Media: CollectionConfig = {
     { name: 'publishedUses', type: 'number', defaultValue: 0, index: true, admin: { readOnly: true }, access: { create: () => false, update: () => false } },
     // Random object prefix of the current public copy (null when the image is not public).
     { name: 'publicKey', type: 'text', admin: { readOnly: true }, access: { create: () => false, update: () => false } },
+    // Bucket that holds the current public copy (to clean the old one after changing PUBLIC_MEDIA_BUCKET).
+    { name: 'publicBucket', type: 'text', admin: { readOnly: true }, access: { create: () => false, update: () => false } },
+    // Rights declaration made by a municipal account when uploading (who, when, what was declared).
+    { name: 'rightsDeclaration', label: 'Declaración de derechos', type: 'group', admin: { readOnly: true }, fields: [
+      { name: 'declared', type: 'checkbox', defaultValue: false },
+      { name: 'statement', type: 'textarea' },
+      { name: 'declaredBy', type: 'relationship', relationTo: 'users' },
+      { name: 'declaredAt', type: 'date' },
+    ] },
     { name: 'publicURL', type: 'text', virtual: true, admin: { readOnly: true }, access: { create: () => false, update: () => false },
       hooks: { afterRead: [({ siblingData }) => publicURL(siblingData)] } },
+  ],
+};
+
+/** Durable log of public-copy operations, written outside request transactions (see cms/public-media.ts). */
+export const PublicMediaOps: CollectionConfig = {
+  slug: 'public-media-ops',
+  labels: { singular: 'Operación de copia pública', plural: 'Operaciones de copias públicas' },
+  admin: { group: 'Sistema', defaultColumns: ['createdAt', 'kind', 'status', 'bucket', 'keyPrefix', 'purge'] },
+  access: { read: editorialUser, create: () => false, update: () => false, delete: () => false },
+  fields: [
+    { name: 'kind', type: 'select', required: true, options: ['create', 'delete'] },
+    { name: 'mediaId', type: 'number', required: true, index: true },
+    { name: 'bucket', type: 'text', required: true },
+    { name: 'keyPrefix', type: 'text', required: true, index: true },
+    { name: 'objects', type: 'json', required: true },
+    { name: 'status', type: 'select', required: true, index: true, defaultValue: 'pending', options: ['pending', 'applied', 'failed', 'cleaned'] },
+    { name: 'purge', type: 'select', options: ['none', 'disabled', 'sent', 'failed'] },
+    { name: 'error', type: 'text' },
   ],
 };

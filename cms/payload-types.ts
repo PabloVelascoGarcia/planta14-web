@@ -77,6 +77,7 @@ export interface Config {
     'municipal-content': MunicipalContent;
     notifications: Notification;
     'audit-log': AuditLog;
+    'public-media-ops': PublicMediaOp;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +95,7 @@ export interface Config {
     'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
+    'public-media-ops': PublicMediaOpsSelect<false> | PublicMediaOpsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -222,6 +224,13 @@ export interface Media {
   uploadedBySpace?: (number | null) | MunicipalSpace;
   publishedUses?: number | null;
   publicKey?: string | null;
+  publicBucket?: string | null;
+  rightsDeclaration?: {
+    declared?: boolean | null;
+    statement?: string | null;
+    declaredBy?: (number | null) | User;
+    declaredAt?: string | null;
+  };
   publicURL?: string | null;
   prefix?: string | null;
   _objectKey?: string | null;
@@ -398,6 +407,31 @@ export interface AuditLog {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "public-media-ops".
+ */
+export interface PublicMediaOp {
+  id: number;
+  kind: 'create' | 'delete';
+  mediaId: number;
+  bucket: string;
+  keyPrefix: string;
+  objects:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  status: 'pending' | 'applied' | 'failed' | 'cleaned';
+  purge?: ('none' | 'disabled' | 'sent' | 'failed') | null;
+  error?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -459,6 +493,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'audit-log';
         value: number | AuditLog;
+      } | null)
+    | ({
+        relationTo: 'public-media-ops';
+        value: number | PublicMediaOp;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -542,6 +580,15 @@ export interface MediaSelect<T extends boolean = true> {
   uploadedBySpace?: T;
   publishedUses?: T;
   publicKey?: T;
+  publicBucket?: T;
+  rightsDeclaration?:
+    | T
+    | {
+        declared?: T;
+        statement?: T;
+        declaredBy?: T;
+        declaredAt?: T;
+      };
   publicURL?: T;
   prefix?: T;
   _objectKey?: T;
@@ -751,6 +798,22 @@ export interface AuditLogSelect<T extends boolean = true> {
   userEmail?: T;
   userRole?: T;
   reason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "public-media-ops_select".
+ */
+export interface PublicMediaOpsSelect<T extends boolean = true> {
+  kind?: T;
+  mediaId?: T;
+  bucket?: T;
+  keyPrefix?: T;
+  objects?: T;
+  status?: T;
+  purge?: T;
+  error?: T;
   updatedAt?: T;
   createdAt?: T;
 }

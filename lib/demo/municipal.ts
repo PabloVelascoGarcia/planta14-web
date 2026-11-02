@@ -9,6 +9,8 @@ export type MunicipalContent = {
   expiresAt: string | null; eventAt: string | null; place: string | null; deadline: string | null;
   attachments: { url: string; title: string }[]; demo: boolean;
   sourceUrl?: string;
+  /** Only Payload content with a public image copy; demo data has none. */
+  image?: { url: string; alt: string; credit: string };
 };
 export type MunicipalSpace = Omit<typeof spaceRecords[number], 'subscription'> & {
   subscription: { status: string; startsAt: string | null; endsAt: string | null };
