@@ -44,7 +44,8 @@ pw=$(openssl rand -hex 16)
 failures=0
 
 cleanup() {
-  docker rm -f "$src" "$dst" "$s3" "$off" >/dev/null 2>&1 || true
+  # -v: también los volúmenes anónimos de datos de PostgreSQL de prueba.
+  docker rm -f -v "$src" "$dst" "$s3" "$off" >/dev/null 2>&1 || true
   docker network rm "$net" "$egress" >/dev/null 2>&1 || true
   if [[ ${RESTORE_TEST_KEEP:-0} != 1 ]]; then rm -rf -- "$out"; fi
 }
