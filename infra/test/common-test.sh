@@ -28,3 +28,14 @@ touch "$work/backups/test-$(timestamp).dump.age.partial"
 BACKUP_KEEP_MIN=2 BACKUP_RETENTION_DAYS=14 prune_backups "$work/backups" test
 [[ $(find "$work/backups" -name '*.dump.age' | wc -l) -eq 2 ]] || die 'partial files counted as completed backups'
 echo 'PASS: encryption failures stop the backup, quoted env parsing and partial-file retention'
+
+# Checksums are mandatory for restores unless explicitly waived, and must name the exact file.
+printf 'dump\n' > "$work/a.dump"; printf 'otro\n' > "$work/b.dump"
+if (verify_checksum "$work/a.dump") 2>/dev/null; then die 'missing checksum was accepted'; fi
+(ALLOW_MISSING_CHECKSUM=true verify_checksum "$work/a.dump") 2>/dev/null || die 'explicit --allow-missing-checksum was refused'
+write_checksum "$work/a.dump"; (verify_checksum "$work/a.dump") 2>/dev/null || die 'valid checksum rejected'
+(cd "$work" && sha256sum b.dump > a.dump.sha256)
+if (verify_checksum "$work/a.dump") 2>/dev/null; then die 'checksum of another file was accepted'; fi
+ln -s "$work/a.dump" "$work/link.dump"
+if (safe_input_file "$work/link.dump") 2>/dev/null; then die 'symlink accepted as backup file'; fi
+echo 'PASS: mandatory checksum (explicit override only), exact file name, symlinks rejected'
