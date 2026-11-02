@@ -1,5 +1,7 @@
 # Planta 14 v2: bloque 3
 
+> **Actualizado en la integración** ([V2-INTEGRACION.md](V2-INTEGRACION.md)): la caché por defecto pasa a `public, max-age=86400` con gancho de purga del CDN; las copias públicas tienen registro duradero (`public-media-ops`); las imágenes municipales exigen declaración de derechos; la reversión del bloque 3 se niega con retiradas o auditoría.
+
 Base: `origin/desarrollo/planta14-v2-bloque2`, commit `4ca4f84`. Rama: `desarrollo/planta14-v2-bloque3`. No se han tocado `desarrollo/planta14-v2-infra`, `main`, `mejora/presentacion-la-voz` ni las ramas de respaldo. Sin PR, sin despliegues, sin servicios contratados y sin secretos en el repositorio. Commits con `[skip netlify]`.
 
 Revisión posterior: [V2-BLOQUE3-REVISION.md](V2-BLOQUE3-REVISION.md). Actualiza el aislamiento y la restauración de versiones, recomienda un bucket público separado y documenta un límite importante confirmado: la reconciliación no identifica objetos huérfanos que hayan perdido su registro al revertirse una transacción SQL.

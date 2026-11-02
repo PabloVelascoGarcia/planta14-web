@@ -28,6 +28,8 @@ Este documento explica cómo levantar un entorno de pruebas en un servidor virtu
 | `test/restore-test.sh` | Prueba completa: copia, restauración local y **desde el destino externo**, usuarios separados y rechazos de seguridad. |
 | `test/postgres-roles-test.sh` | Usuarios PostgreSQL separados en base nueva y existente; la app funciona y no puede hacer DDL. |
 | `test/staging-config-test.mjs` | Compose, Caddy oficial, contraseña exterior, cabeceras y ruta `/media`. |
+| `test/staging-e2e.sh` (+ `staging-browser.mjs`, `compose.staging-e2e.yaml`) | Staging completo en Docker con navegador real, copia, borrado del entorno y restauración. Ver [V2-INTEGRACION.md](V2-INTEGRACION.md). |
+| `test/app-prebuilt.Dockerfile` | Solo para pruebas donde `npm ci` no funciona dentro de `docker build`: empaqueta lo compilado en el host con la misma base. |
 
 Resultado de la prueba ejecutada: [INFRA-PRUEBA-RESTAURACION-2026-11-02.md](INFRA-PRUEBA-RESTAURACION-2026-11-02.md).
 
@@ -263,9 +265,11 @@ El bloque 3 (otra rama) copia las imágenes publicables de contenido publicado a
 | `PUBLIC_MEDIA_BUCKET` | `planta14-staging-public` (lo crea `minio-init` con lectura anónima de objetos, sin listado) | Bucket público **separado** del privado |
 | `PUBLIC_MEDIA_BASE_URL` | `https://<STAGING_DOMAIN>/media` (lo pone `generate-env.sh`); Caddy lo sirve tras la contraseña de staging | URL HTTPS del CDN o del bucket público (raíz del bucket) |
 | `PUBLIC_MEDIA_PREFIX` | `public` | `public` |
-| `PUBLIC_MEDIA_CACHE_CONTROL` | `public, max-age=31536000, immutable` | Igual; purga del CDN al retirar |
+| `PUBLIC_MEDIA_CACHE_CONTROL` | `public, max-age=86400` (1 día) | Igual, o menos; purga del CDN al retirar |
+| `CDN_PURGE_ENABLED`, `CDN_PURGE_URL`, `CDN_PURGE_TOKEN` | `false` (sin CDN) | Gancho genérico `POST {"urls":[...]}` con `Bearer`; se llama al retirar, despublicar o borrar. Adaptar al API del CDN elegido |
+| `PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS` | `600` | Antigüedad mínima para tratar una copia como huérfana |
 
-Se recomienda el **bucket público separado**: el privado no necesita ninguna política pública y un error de configuración no lo expone. En staging, `/media` sigue tras la contraseña exterior y con `Cache-Control: private, no-store` de Caddy; la caché larga solo tiene efecto con un CDN real.
+Se recomienda el **bucket público separado**: el privado no necesita ninguna política pública y un error de configuración no lo expone. En staging, `/media` está detrás de la misma contraseña de Caddy que el resto (comprobado con navegador: 401 sin contraseña) y Caddy añade `Cache-Control: private, no-store`; la caché de un día solo tiene efecto con un CDN real.
 
 Tras integrar el bloque 3 y aplicar sus migraciones, ejecuta **una vez** la reconciliación (crea las copias públicas de lo ya publicado):
 
@@ -278,6 +282,24 @@ docker compose -f infra/compose.staging.yaml --env-file infra/.env.staging run -
 ```
 
 Repítela tras restaurar una copia o cambiar `PUBLIC_MEDIA_*`. Las copias de seguridad del almacenamiento cubren el bucket privado: el público se regenera con esta orden.
+
+Cada creación o borrado de una copia pública se anota antes de tocar S3 en `public-media-ops`, una tabla que se escribe fuera de la transacción de la petición y que la reversión de la migración conserva. La sincronización:
+
+- Recalcula usos y repara copias incompletas.
+- Mueve las copias si cambia `PUBLIC_MEDIA_BUCKET`.
+- Borra los objetos **huérfanos** del registro, por ejemplo tras revertirse una transacción SQL o una migración.
+
+Opciones (sin `--apply` solo informan):
+
+```bash
+docker compose -f infra/compose.staging.yaml --env-file infra/.env.staging run --rm migrate npm run cms:media:sync-public -- --inventory --apply
+```
+
+```bash
+docker compose -f infra/compose.staging.yaml --env-file infra/.env.staging run --rm migrate npm run cms:media:sync-public -- --cleanup-bucket=<bucket-anterior> --prefix=public --apply
+```
+
+El inventario recorre el bucket público actual. `--cleanup-bucket` limpia el bucket anterior tras un cambio. Nunca se permite limpiar sin prefijo el bucket privado.
 
 ## Actualizar imágenes (digests)
 
