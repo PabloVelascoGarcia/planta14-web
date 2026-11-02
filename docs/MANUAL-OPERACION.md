@@ -84,7 +84,10 @@ Si lo que ha fallado es una **actualización** de la web, no sigas este apartado
 
 ## 5. Crear una cuenta municipal
 
+**Solo después de la salida.** Durante la preproducción en pruebas.planta14.com solo entran periodistas, con cuentas `editor` (`docs/PUESTA-EN-MARCHA-IONOS.md`, apartado 5, paso 6 ter); los ayuntamientos todavía no tienen cuenta. Antes de la primera cuenta municipal, sigue el final del apartado 7 de esa guía: activar los avisos municipales por correo y probar el panel.
+
 1. Entra en `https://planta14.com/cms` con tu cuenta de administrador.
+   - **Activa el espacio del concejo**, que la carga de estructura dejó inactivo. En **Municipal Spaces** abre el del concejo y en **Subscription** pon **Status:** `active` y **Starts At:** la fecha de inicio del contrato (AAAA-MM-DD), y **Ends At** si lo hay. Pulsa **Publish changes**. Sin esto, su panel no se abre.
 2. Ve a **Users** (usuarios) y pulsa **Create new**.
 3. Rellena:
    - **Email:** el correo de trabajo de la persona del ayuntamiento;

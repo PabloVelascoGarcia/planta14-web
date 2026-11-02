@@ -10,7 +10,7 @@ Salida pública: **4 de diciembre de 2026**. Rama de instalación: **desarrollo/
 | Preparación del servidor (apartado 2) | **Hecha.** `check-server.sh` en verde, código en `/srv/planta14/app` en el commit `86aed41`. Detalle en `docs/SERVIDOR-PREPARADO.md` |
 | Object Storage: tres buckets y una clave (apartado 3) | **Creados** por Pablo |
 | La web | **No instalada** |
-| Siguiente | **Preproducción** de dos semanas en **pruebas.planta14.com** (apartado 5): sin indexar, con una contraseña común para toda la web y contenido real. El día de la salida se queda tal cual y pasa a planta14.com (apartado 6) |
+| Siguiente | **Preproducción** de dos semanas en **pruebas.planta14.com** (apartado 5): sin indexar, con una contraseña común para toda la web y contenido real cargado **solo por periodistas**. El día de la salida se queda tal cual y pasa a planta14.com (apartado 6). Los ayuntamientos tendrán cuenta después de la salida |
 
 No repitas el apartado 2: empieza en el 4 y sigue el 5 en orden.
 
@@ -178,7 +178,8 @@ Completa:
 - `S3_ACCESS_KEY_ID` y `S3_SECRET_ACCESS_KEY` con la clave única de Object Storage. Buckets, regiones, endpoints y `PUBLIC_MEDIA_BASE_URL` ya vienen puestos (apartado 3). Deja vacíos `STORAGE_BACKUP_*`, `OFFSITE_ACCESS_KEY_ID` y `OFFSITE_SECRET_ACCESS_KEY`: usan la misma clave.
 - `BACKUP_AGE_RECIPIENT` con la clave **pública** age (empieza por `age1`). La pareja se crea en Windows (siguiente apartado). La privada **nunca** va al servidor ni a este archivo: no rellenes `BACKUP_AGE_IDENTITY`.
 - `SMTP_PASSWORD` con la contraseña de `avisos@planta14.com`; `SMTP_ENABLED=true` tras revisarla. La misma contraseña alimenta las alertas: deja `ALERT_SMTP_PASSWORD` vacío.
-- `ALERT_EMAIL_TO` y `MUNICIPAL_NOTICE_EMAIL_TO` con el correo real de quien deba recibirlas; después `ALERT_EMAIL_ENABLED=true` y `MUNICIPAL_NOTICE_EMAIL_ENABLED=true`.
+- `ALERT_EMAIL_TO` con el correo real de quien deba recibir las alertas; después `ALERT_EMAIL_ENABLED=true`.
+- Los avisos de publicaciones municipales (`MUNICIPAL_NOTICE_EMAIL_TO` y `MUNICIPAL_NOTICE_EMAIL_ENABLED`) se dejan **desactivados** durante la preproducción, porque no hay cuentas municipales. Se activan después de la salida, antes de dar la primera cuenta a un ayuntamiento (apartado 7).
 
 ### Clave de las copias (age), en Windows
 
@@ -284,6 +285,18 @@ APP_IMAGE="planta14-app:${installed_commit:0:12}" docker compose -f infra/compos
 
 Debe decir «Estructura cargada» con los creados. No crea noticias, avisos, autores, imágenes ni datos de contacto de ejemplo. Se puede repetir sin miedo: lo que ya existe no se duplica ni se modifica. **No uses el importador de demostración** (`cms:import:municipal`) en esta instalación: carga contenido de ejemplo.
 
+**6 ter. Cuentas de los periodistas.** En la preproducción **solo entran periodistas**: los ayuntamientos no tienen cuenta hasta después de la salida. En `https://pruebas.planta14.com/cms` → **Users** → **Create new**, crea una cuenta por periodista:
+- su correo de trabajo;
+- su nombre;
+- una contraseña generada por el gestor;
+- **Role: `editor`**: publica y edita noticias, pero no crea usuarios ni cambia secciones o concejos.
+
+Dale por otra vía, por ejemplo por teléfono, su contraseña y la **contraseña común de preproducción** (usuario `planta14`). Primero el navegador pide la común; después, en `/cms`, cada uno entra con la suya. No crees cuentas `municipal`: los espacios municipales están inactivos y sus paneles no se abren. La página de cada concejo muestra las noticias de Planta 14 que tengan marcada **Mostrar en la página del concejo** (marcada por defecto).
+
+Explica a los periodistas dos reglas:
+- **Todo lo que sea de prueba lleva `[PRUEBA]` al principio del título.** Ese día se borra; lo demás se queda para el lanzamiento.
+- **Durante una actualización** puede aparecer el aviso de modo mantenimiento: se puede leer, pero no guardar unos minutos.
+
 **7. Prueba completa de restauración y aislamiento, con la imagen de la web.** Es la que quedó a medias al preparar el servidor. Ahora debe pasar entera y no dejar volúmenes:
 
 ```bash
@@ -306,7 +319,7 @@ bash infra/backup/offsite-sync.sh --env-file infra/.env.production
 Los tres deben terminar sin error. El último dice «Copia externa verificada en p14off:planta14-copias-b11/planta14/pruebas».
 
 **9. Mantenimiento y simulacro de restauración.**
-- `bash infra/deploy/mantenimiento.sh --env-file infra/.env.production activar "prueba"`: intenta guardar en `/cms` y en un panel municipal, comprueba el mensaje y que la portada se ve, y luego `… desactivar`.
+- `bash infra/deploy/mantenimiento.sh --env-file infra/.env.production activar "prueba"`: intenta guardar en `/cms`, comprueba el mensaje y que la portada se ve, y luego `… desactivar`.
 - Pablo, desde su PC: `restaurar.sh --solo-comprobar` (`docs/MANUAL-OPERACION.md`, apartado 9), con la clave del gestor y con la del papel. Las dos deben decir «SIMULACRO CORRECTO».
 
 **10. Programar las tareas** (apartado 6) y repasar la lista de pruebas antes de abrir.
@@ -326,9 +339,9 @@ Una restauración SQL no revierte por sí sola efectos en S3. Las copias públic
 
 Con `SITE_INDEXABLE=false` comprueba:
 - HTTPS real y que la web responde;
-- sesión municipal, publicación y retirada con motivo desde el CMS;
+- entrada de un periodista con la contraseña común y su cuenta, y publicación y retirada de una noticia de `[PRUEBA]` con imagen;
 - originales privados y copia pública retirada;
-- recuperación de contraseña y llegada del aviso municipal;
+- recuperación de contraseña de un periodista (correo recibido);
 - que llega una alerta sintética al destinatario;
 - el modo mantenimiento y el simulacro de restauración (paso 9);
 - una copia cifrada subida al bucket de Fráncfort y restaurada en un entorno vacío (paso 7).
@@ -421,6 +434,11 @@ Repite el paso 5. La web vuelve a estar como antes en pruebas.planta14.com, con 
 **Para quitar o volver a poner solo la contraseña** en otro momento, sin tocar nada más, cambia `PREPRODUCTION_AUTH` (`off` u `on`) y ejecuta `bash infra/deploy/aplicar-caddy.sh --env-file infra/.env.production`. Recrea solo Caddy en unos segundos, sin reconstruir ni reiniciar la web, y comprueba que la portada responde como debe.
 
 ## 7. El 4 de diciembre y después
+
+**Cuentas municipales, después de la salida.** Antes de dar la primera:
+1. Activa en el `.env` los avisos municipales: `MUNICIPAL_NOTICE_EMAIL_TO` y `MUNICIPAL_NOTICE_EMAIL_ENABLED=true`. Aplícalo con `DEPLOY_FORCE=1 deploy.sh … COMMIT-VALIDADO`.
+2. Activa el espacio de ese concejo y crea la cuenta (`docs/MANUAL-OPERACION.md`, apartado 5).
+3. Prueba su panel con esa cuenta antes de entregarla: publicar, ver el aviso en el concejo, retirada con motivo y llegada del aviso por correo.
 
 `SITE_INDEXABLE=true` se activa el día de la salida (apartado 6), solo con las pruebas y los textos legales resueltos. Solo se acepta con `SITE_DOMAIN=planta14.com` y sin la contraseña de preproducción. Activa GA4 únicamente cuando su configuración y textos estén revisados; la casilla de consentimiento no configura una propiedad de Google por sí misma. Da de alta el monitor externo y envía los sitemaps a Search Console.
 
