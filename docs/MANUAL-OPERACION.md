@@ -76,9 +76,11 @@ Restaurar es delicado. **Nunca se restaura encima de la web en marcha.** Los scr
 
 1. Si solo se ha borrado una publicación, normalmente se recupera desde el CMS (historial de versiones). No hace falta restaurar.
 2. Si se ha perdido el servidor o la base de datos, pide ayuda (apartado 7) y sigue con esa persona la guía «Restauración» de `docs/INFRA-STAGING.md`. Hace falta:
-   - la **clave privada de las copias** (archivo `age-key.txt`), guardada fuera del servidor, en el gestor de contraseñas y en una copia en papel o USB;
+   - la **clave privada de las copias** (una línea que empieza por `AGE-SECRET-KEY-1`), guardada **fuera del servidor**: en el gestor de contraseñas y en una copia impresa. Nunca se guarda en el servidor;
    - el archivo `.env` del servidor, guardado en el gestor de contraseñas.
 3. Tras restaurar, comprueba que `api/health` dice «ok», que la portada y un espacio municipal se ven bien y que puedes entrar en `/cms`.
+
+Si lo que ha fallado es una **actualización** de la web, no sigas este apartado: sigue el 9 (restauración asistida), que lo hace todo con una orden.
 
 ## 5. Crear una cuenta municipal
 
@@ -123,3 +125,102 @@ Para que lleguen los correos de alerta, cuando haya proveedor de correo, se rell
 | Dudas sobre textos legales, contratos con ayuntamientos o una reclamación de derechos | **Abogado** |
 | Entender un mensaje de error o preparar un correo | Un asistente de IA general (por ejemplo Claude). **Sin pegar contraseñas, el `.env` ni datos personales** |
 | Un ayuntamiento no puede entrar o publicar | Crea o revisa su cuenta (apartado 5); si persiste, la persona técnica |
+
+## 8. Actualizar la web
+
+Una actualización instala una versión nueva de la web (un «commit» o una «etiqueta» que te indique la persona técnica o la IA). La hace una sola orden, desde el servidor:
+
+```bash
+cd /srv/planta14/app
+bash infra/deploy/deploy.sh --env-file infra/.env.production VERSIÓN
+```
+
+Mientras dura, que suelen ser unos minutos más lo que tarde en construirse la versión:
+
+1. **Se construye la versión nueva.** La web sigue normal.
+2. **Se activa el modo mantenimiento.** La web pública sigue funcionando y se puede leer todo, también en el `/cms` y en los paneles municipales. Lo que no se puede es **guardar cambios**: quien lo intente verá «Planta 14 se está actualizando. Durante unos minutos puedes consultarlo todo, pero no guardar cambios…». Así ningún cambio se queda fuera de la copia de seguridad.
+3. **Se hace una copia de seguridad de la base de datos**, cifrada.
+4. **Se aplican los cambios de la base de datos** (migraciones), si la versión los trae.
+5. **Se arranca la versión nueva** y se comprueba que `https://planta14.com/api/health` dice «ok».
+6. **Solo entonces se desactiva el modo mantenimiento.** Ya se puede escribir.
+
+Avisa antes a los ayuntamientos y a la redacción de que durante unos minutos no podrán guardar, y elige una hora tranquila. Al terminar, la orden dice una de estas cosas:
+
+| Mensaje final | Qué significa | Qué hacer |
+|---|---|---|
+| `Desplegada …` | Todo bien. | Nada. Abre la web y el `/cms` para verlo. |
+| `La web funciona con la versión anterior` (código 1) | La versión nueva falló **sin** tocar la base de datos. Se ha vuelto sola a la anterior y se puede escribir. | Nada urgente. Pasa el mensaje a la persona técnica o a la IA para que lo revise. |
+| `QUÉ HACER AHORA` (código 2) | La versión nueva falló **después** de cambiar la base de datos. Se ha vuelto a la versión anterior, pero sigue el modo mantenimiento (solo lectura). | La **restauración asistida** del apartado 9. |
+| `Ya hay un despliegue en curso`, `Hay una restauración asistida pendiente` o un error antes de migrar (código 3) | No se ha cambiado nada. | Lee el mensaje. Si hay una restauración pendiente, hazla primera (apartado 9). |
+
+Para ver en cualquier momento cómo está todo: versión, salud, modo mantenimiento y si hay algo pendiente:
+
+```bash
+bash infra/deploy/status.sh --env-file infra/.env.production
+```
+
+## 9. Si una actualización falla: restauración asistida desde Windows
+
+**Por qué no se hace sola.** La copia de seguridad está cifrada y la clave para abrirla (la clave privada, `AGE-SECRET-KEY-1…`) **no está en el servidor**: la tienes tú en el gestor de contraseñas y en papel. Así, si alguien entrara en el servidor, no podría leer las copias. Por eso, cuando hace falta restaurar, el servidor te pide la clave y tú se la das un momento desde tu PC.
+
+**Qué ves.** La orden de actualización termina con un recuadro «QUÉ HACER AHORA» con la orden exacta. También te llega por correo, si las alertas están configuradas, y aparece en `status.sh`. Mientras tanto:
+
+- la web pública funciona, con la versión anterior;
+- el `/cms` y los paneles se pueden consultar, pero no guardar (modo mantenimiento);
+- no se pierde nada, porque nadie puede escribir. **No hay prisa**: hazlo con calma.
+
+**Paso a paso desde Windows:**
+
+1. Abre el gestor de contraseñas y **copia** la clave privada de las copias de Planta 14: una sola línea que empieza por `AGE-SECRET-KEY-1`.
+2. Abre **PowerShell** (menú Inicio → escribe «PowerShell»).
+3. Escribe esta orden en **una sola línea**. Es la misma que aparece en el recuadro; usa la de allí si es distinta:
+
+   ```powershell
+   ssh -t -i "$env:USERPROFILE\.ssh\planta14_ionos" planta14@planta14.com "cd /srv/planta14/app && infra/deploy/restaurar.sh"
+   ```
+
+   Si el dominio aún no apunta al servidor, pon la IP del servidor en lugar de `planta14.com`. Si te pide la frase de paso de tu clave SSH, escríbela.
+4. Cuando aparezca **«Pega la clave privada de las copias…»**, pégala con el **botón derecho del ratón** y pulsa **Intro**. No se ve nada al pegar: es normal, igual que una contraseña.
+5. Espera. Verás «Clave correcta», luego la restauración y, al final, **«RESTAURACIÓN COMPLETADA»**. El modo mantenimiento se quita solo, y solo cuando la web responde bien.
+6. Comprueba que en `https://planta14.com/cms` puedes guardar un cambio pequeño, que la portada y un espacio municipal se ven bien, y avisa a la persona técnica de que la versión nueva falló.
+
+**La clave no se queda en ningún sitio.** Al pegarla en la ventana del servidor no se guarda en el historial de PowerShell ni en el del servidor. El servidor la usa solo en memoria durante la restauración: no la escribe en disco ni aparece en la lista de procesos. Tras usarla, el gestor de contraseñas suele vaciar el portapapeles. Si no lo hace, copia cualquier otra cosa.
+
+**Alternativa sin teclear la clave**, si prefieres no usar el ratón: copia la clave al portapapeles y escribe en PowerShell:
+
+```powershell
+Get-Clipboard | ssh -i "$env:USERPROFILE\.ssh\planta14_ionos" planta14@planta14.com "cd /srv/planta14/app && infra/deploy/restaurar.sh"
+```
+
+**Si algo sale mal:**
+
+| Mensaje | Qué pasa | Qué hacer |
+|---|---|---|
+| `Eso no parece una clave age` | Has pegado otra cosa o nada. | Repite desde el paso 1. No se ha cambiado nada. |
+| `La clave no corresponde a la clave pública de las copias` | Es otra clave, o está incompleta. | Busca la clave correcta de Planta 14 (la impresa sirve: tecléala en el gestor). No se ha cambiado nada. |
+| `No hay ninguna restauración pendiente` | Ya se hizo, o no hacía falta. | Mira `status.sh`. |
+| Termina sin «RESTAURACIÓN COMPLETADA» | Algo no ha respondido. El modo mantenimiento sigue, así que no se pierde nada. | Pide ayuda (apartado 7) con el texto que salió en pantalla. |
+
+La base de datos con los cambios de la versión fallida no se borra: queda como `planta14_fallida_FECHA` para que la persona técnica la analice. Cuando ya no haga falta, ella la borrará.
+
+**Practica una vez al trimestre (simulacro).** Comprueba que tu clave guardada funciona, sin cambiar nada en la web:
+
+```powershell
+ssh -t -i "$env:USERPROFILE\.ssh\planta14_ionos" planta14@planta14.com "cd /srv/planta14/app && infra/deploy/restaurar.sh --solo-comprobar"
+```
+
+Pega la clave igual que arriba. Debe decir **«SIMULACRO CORRECTO»**. Si no lo dice, la clave guardada no sirve: avisa ya a la persona técnica, antes de necesitarla.
+
+## 10. Modo mantenimiento a mano
+
+Normalmente no hace falta: la actualización lo pone y lo quita sola. Si alguna vez necesitas que nadie escriba durante un rato, por ejemplo mientras se revisa algo, desde el servidor:
+
+```bash
+cd /srv/planta14/app
+bash infra/deploy/mantenimiento.sh --env-file infra/.env.production activar "revisión de datos"
+bash infra/deploy/mantenimiento.sh --env-file infra/.env.production estado
+bash infra/deploy/mantenimiento.sh --env-file infra/.env.production desactivar
+```
+
+`activar` comprueba que las escrituras se rechazan de verdad. Si hay una restauración asistida pendiente, `desactivar` se niega: primero hay que restaurar (apartado 9). Solo la persona técnica, y por una razón clara, puede renunciar a esa restauración con `desactivar --forzar`, porque entonces la base se queda como la dejó la versión que falló.
+

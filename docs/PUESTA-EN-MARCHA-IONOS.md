@@ -119,9 +119,27 @@ El generador no sobrescribe archivos existentes y deja permisos 600. Completa:
 - `S3_*`, `PUBLIC_MEDIA_BUCKET` y `PUBLIC_MEDIA_BASE_URL` con los buckets privado/público.
 - `STORAGE_BACKUP_*` con la identidad de lectura.
 - `OFFSITE_*` con el tercer bucket y su endpoint de la otra región.
-- `BACKUP_AGE_RECIPIENT` con la clave **pública** age. Crea la pareja en Windows con ayuda técnica; guarda la privada fuera del VPS y prueba antes que puedes descifrar una copia.
+- `BACKUP_AGE_RECIPIENT` con la clave **pública** age (empieza por `age1`). La pareja se crea en Windows (siguiente apartado). La privada **nunca** va al servidor ni a este archivo: no rellenes `BACKUP_AGE_IDENTITY`.
 - `SMTP_PASSWORD` con la contraseña de `avisos@planta14.com`; `SMTP_ENABLED=true` tras revisarla. La misma contraseña alimenta las alertas: deja `ALERT_SMTP_PASSWORD` vacío.
 - `ALERT_EMAIL_TO` y `MUNICIPAL_NOTICE_EMAIL_TO` con el correo real de quien deba recibirlas; después `ALERT_EMAIL_ENABLED=true` y `MUNICIPAL_NOTICE_EMAIL_ENABLED=true`.
+
+### Clave de las copias (age), en Windows
+
+Las copias de la base de datos se cifran en el servidor con la clave **pública**. Solo se pueden abrir con la clave **privada**, que custodia Pablo: en el gestor de contraseñas y en una copia impresa guardada en lugar seguro. Así una intrusión en el servidor no da acceso a las copias. Cuando hay que restaurar, la clave se entrega un momento por SSH (`docs/MANUAL-OPERACION.md`, apartado 9).
+
+En PowerShell, una sola vez:
+
+```powershell
+winget install --id FiloSottile.age
+age-keygen
+```
+
+Si `winget` no está disponible, descarga `age` para Windows desde <https://github.com/FiloSottile/age/releases> con ayuda técnica. `age-keygen` sin más opciones **muestra la pareja en pantalla y no crea ningún archivo**:
+
+- la línea `# public key: age1…` es la **pública**: cópiala en `BACKUP_AGE_RECIPIENT` del servidor;
+- la línea `AGE-SECRET-KEY-1…` es la **privada**: cópiala en una entrada nueva del gestor de contraseñas («Planta 14 – clave privada de copias»), imprímela desde allí y guarda el papel con los documentos importantes.
+
+Después cierra PowerShell. No la guardes en un archivo de texto, ni en el correo, ni la pegues en un chat o en una IA. Si se pierde la privada, las copias ya hechas no se pueden abrir: comprueba el papel y el gestor antes de seguir. Tras la primera copia, haz el simulacro del apartado 6.
 
 No configures otro proveedor SMTP. No cambies los MX del dominio para publicar la web. Conserva SPF, DKIM y DMARC de IONOS; comprueba la autenticación en un correo recibido y no crees dos registros SPF.
 
@@ -150,7 +168,14 @@ Desde `/srv/planta14/app` en la sesión SSH:
 bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
 ```
 
-Antes de una actualización con migraciones hay dos decisiones importantes: impedir nuevas escrituras durante la copia/migración para no perder cambios en una vuelta atrás, y disponer de un modo autorizado de descifrar la copia. La clave privada age se custodia fuera del servidor: **sin acceso temporal a ella, el rollback que restaura datos no funcionará automáticamente**. Resolver ese procedimiento con Pablo antes de actualizar datos reales; no dejar permanentemente la clave privada en el VPS por comodidad. Una restauración SQL tampoco garantiza por sí sola revertir efectos en S3.
+**Cómo se protege una actualización** (decidido por Pablo; detalle para él en `docs/MANUAL-OPERACION.md`, apartados 8 a 10):
+
+1. **Modo mantenimiento.** Antes de la copia previa, `deploy.sh` pone el `/cms`, la API de escritura y los paneles municipales en **solo lectura**, con un mensaje claro para quien intente guardar. La web pública sigue funcionando. Se activa con un archivo en `/srv/planta14/mantenimiento`, que Caddy y la app consultan en cada petición: no hay que reconstruir ni reiniciar. Se desactiva **solo** cuando `/api/health` responde bien con la versión nueva. Así ningún cambio queda fuera de la copia.
+2. **Si la versión nueva falla sin haber tocado la base**, se vuelve sola a la anterior y se quita el mantenimiento (código 1).
+3. **Si falla después de cambiar la base** (código 2), se vuelve a la imagen anterior, se **deja el mantenimiento** y **no se restaura sola**, porque la clave privada no está en el servidor. La orden explica en lenguaje llano los pasos: Pablo ejecuta `infra/deploy/restaurar.sh` por SSH desde su PC y pega la clave cuando se la pide. La clave llega por la entrada estándar: no se escribe en disco, no aparece en el historial ni en la lista de procesos. El script restaura y quita el mantenimiento al comprobar la salud.
+4. Mientras haya una restauración pendiente, `deploy.sh` no despliega otra versión.
+
+Una restauración SQL no revierte por sí sola efectos en S3. Las copias públicas se reconcilian con `npm run cms:media:sync-public`, si la persona técnica lo considera necesario.
 
 Tras instalar, crea el primer administrador desde la sesión SSH. Pablo introduce la contraseña en ese terminal, de forma oculta:
 
@@ -171,7 +196,7 @@ Comprueba que informa de administrador creado y entra en `https://planta14.com/c
 
 Cuando el servidor esté preparado, cambia el registro A de `planta14.com` a su IPv4 y `www` a la configuración acordada. No cambies MX ni TXT del correo. Revisa/elimina un AAAA antiguo si no has configurado y comprobado IPv6; no dejes una ruta a otro servidor. Caddy necesita los puertos 80 y 443 abiertos para emitir el certificado. Comprueba el cortafuegos de IONOS además del de Ubuntu.
 
-Con `SITE_INDEXABLE=false`, prueba dominio y www, HTTPS real, sesión municipal, publicación, retirada con motivo desde CMS, originales privados, copia pública retirada, recuperación de contraseña y llegada del aviso municipal. Envía una alerta sintética y comprueba que llega al destinatario. Haz una copia cifrada, súbela al bucket de la otra región y restáurala en un entorno vacío. Guarda el resultado; no basta con ver que existe un archivo.
+Con `SITE_INDEXABLE=false`, prueba dominio y www, HTTPS real, sesión municipal, publicación, retirada con motivo desde CMS, originales privados, copia pública retirada, recuperación de contraseña y llegada del aviso municipal. Envía una alerta sintética y comprueba que llega al destinatario. Prueba el modo mantenimiento (`infra/deploy/mantenimiento.sh … activar`): intenta guardar en `/cms` y en un panel, comprueba el mensaje, comprueba que la portada se ve y desactívalo. Con al menos una copia hecha, Pablo hace desde su PC el **simulacro de restauración** (`restaurar.sh --solo-comprobar`, `docs/MANUAL-OPERACION.md`, apartado 9) con la clave del gestor y con la del papel: los dos deben decir «SIMULACRO CORRECTO». Haz una copia cifrada, súbela al bucket de la otra región y restáurala en un entorno vacío. Guarda el resultado; no basta con ver que existe un archivo.
 
 Programa las tareas, solo después de probarlas:
 
