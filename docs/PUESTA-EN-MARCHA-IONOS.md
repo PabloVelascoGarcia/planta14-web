@@ -70,33 +70,64 @@ sudo bash /srv/planta14/app/infra/server/check-server.sh --admin-user planta14
 
 Debe terminar en «servidor preparado». Repetir setup con la misma clave debe dejar cero cambios. No ejecutes `server-setup-test.sh` en el servidor instalado: es un ensayo destructivo para una Ubuntu desechable.
 
-## 3. Crear los tres buckets IONOS y separar las claves
+## 3. Almacenamiento: IONOS Object Storage
 
-Abre la **consola de IONOS Cloud Object Storage** de tu contrato. No uses las claves de administrador en el VPS.
+Pablo ya ha creado en el **Object Storage sencillo del panel de IONOS** tres buckets y **una sola clave de acceso**. Ese producto no tiene identidades ni permisos separados: la clave es del propietario y puede hacer todo en los tres buckets. La guía y la configuración están pensadas para eso.
 
-1. Crea un bucket para originales, con nombre propio disponible, sin espacios ni puntos, por ejemplo `planta14-originales-IDENTIFICADOR`. Elige una región de la UE y **acceso privado**.
-2. Crea otro para imágenes públicas, en la misma región y accesible con el mismo endpoint de la aplicación. Ejemplo: `planta14-imagenes-IDENTIFICADOR`. La política pública solo permitirá leer objetos de `public/*`; no permitirá listar el bucket, escribir ni borrar de forma anónima. No hagas público el bucket de originales.
-3. Crea un tercero para copias, **en otra región de la UE**, privado. Ejemplo: `planta14-copias-IDENTIFICADOR`. Activa versionado y decide una retención/bloqueo de objetos con la persona técnica antes de guardar copias reales. Un versionado sin retención/bloqueo no garantiza que un atacante no sobrescriba una copia.
-4. Anota los nombres, las regiones, los endpoints HTTPS y la URL de lectura del bucket público que muestre IONOS. Usa los valores del panel, no deduzcas la URL ni la región a partir de estos ejemplos.
+| Bucket | Región | Endpoint | Para qué | Acceso |
+| --- | --- | --- | --- | --- |
+| `planta14-originales-b11` | Berlín, `eu-central-3` | `https://s3.eu-central-3.ionoscloud.com` | Originales de imágenes (`S3_BUCKET`) | Privado |
+| `planta14-imagenes-b11` | Berlín, `eu-central-3` | `https://s3.eu-central-3.ionoscloud.com` | Copias públicas de las imágenes publicadas (`PUBLIC_MEDIA_BUCKET`) | Lectura anónima solo de `public/*` |
+| `planta14-copias-b11` | Fráncfort, `eu-central-4` | `https://s3.eu-central-4.ionoscloud.com` | Copias cifradas fuera del servidor (`OFFSITE_BUCKET`) | Privado, **bloqueo de objetos en modo compliance, 30 días** |
 
-### Claves con permisos mínimos
+**De dónde salen los endpoints:** son los oficiales de IONOS para buckets «de contrato», los del panel. Están en la tabla de la página [Endpoints de IONOS Object Storage](https://docs.ionos.com/cloud/storage-and-backup/ionos-object-storage/endpoints): Berlín `eu-central-3` → `s3.eu-central-3.ionoscloud.com` y Fráncfort `eu-central-4` → `s3.eu-central-4.ionoscloud.com`. Los buckets «de usuario» usan otras regiones (`de` = `s3.eu-central-1…`, `eu-south-2`) y **no** sirven aquí. Las páginas antiguas que dan Berlín como `eu-central-2` corresponden a otro tipo de bucket. Compara la región que muestra el panel en cada bucket; si no coincide, manda el panel.
 
-Los permisos S3 pertenecen a la identidad del usuario, no al nombre de la clave. Crear otra clave del mismo administrador no la hace más limitada. Haz que una identidad administradora custodiada por Pablo sea dueña/administradora de los buckets, y crea identidades técnicas separadas para el VPS. En Gestión de usuarios de IONOS Cloud da únicamente acceso al producto Object Storage a esas identidades; desde Object Storage genera sus pares **Access Key / Secret Key** y configura los permisos de cada bucket para el identificador que muestre IONOS. La persona técnica debe adaptar la política al tipo de bucket (de usuario o de contrato) y comprobar los permisos efectivos; no copies identificadores AWS inventados.
+Ya están puestos en `infra/.env.production.example`. Solo hay que añadir la clave en `S3_ACCESS_KEY_ID` y `S3_SECRET_ACCESS_KEY`, directamente en el servidor y en el gestor de contraseñas. `STORAGE_BACKUP_*` y `OFFSITE_*_KEY` se dejan **vacías**: entonces se usa la misma clave.
 
-| Identidad | Puede hacer | No debe poder hacer |
-| --- | --- | --- |
-| Aplicación | Listar y leer/escribir/borrar originales; leer/escribir/borrar copias públicas bajo `public/`; operaciones multipart necesarias | Entrar en copias externas, cambiar políticas, borrar buckets o administrar usuarios |
-| Lectura para copia | Listar y leer el bucket privado (incluido consultar su región) | Escribir o borrar originales, acceder al bucket externo |
-| Escritura de copia externa | Listar/leer/verificar y añadir objetos en `planta14/produccion/` del bucket externo; multipart si hace falta | Borrar objetos/versiones, cambiar retención o políticas, entrar en originales |
-| Restauración, fuera del VPS | Leer las copias y versiones necesarias; acceso temporal de escritura al destino de restauración | Uso cotidiano en la aplicación |
+### Qué supone tener una sola clave
 
-La aplicación necesita `ListBucket` para la comprobación de salud del bucket privado; los objetos requieren `GetObject`, `PutObject`, `DeleteObject` y, para cargas grandes, permisos multipart adecuados. La copia de lectura no recibe permisos de borrado. La copia externa usa `copy`, no sincronización destructiva. No otorgues `s3:*` ni acceso a todos los buckets como atajo. Verifica también restricciones explícitas si la identidad conserva permisos heredados del contrato.
+- La clave está en el servidor, porque la necesita la web. Si alguien tomara el servidor, podría leer, cambiar o borrar originales e imágenes públicas. Las defensas son el propio servidor (solo SSH con clave, cortafuegos, fail2ban, actualizaciones) y las copias.
+- **Lo que protege las copias es el bloqueo de objetos del bucket de copias, en modo compliance y 30 días.** Durante esos 30 días, nadie puede borrar ni modificar una copia guardada: ni con esta clave, ni el propietario, ni IONOS ([Object Lock en IONOS](https://docs.ionos.com/cloud/storage-and-backup/s3-object-storage/settings/object-lock)). Como mucho, quien tenga la clave podría añadir un «marcador de borrado» que la oculta o subir otra versión con el mismo nombre. La versión original sigue intacta y se recupera listando las versiones.
+- Por eso **la copia externa nunca intenta borrar ni sobrescribir**. `infra/backup/offsite-sync.sh` solo sube archivos nuevos (`rclone copy --immutable`): nunca `sync`, `move` ni `delete`. Si encuentra fuera un archivo con el mismo nombre y distinto contenido, se para con error en vez de reescribirlo. No vuelve a subir lo que ya está ni intenta crear el bucket. Lo comprueba `infra/test/offsite-immutable-test.sh`, que registra cada petición HTTP.
+- Los originales no tienen bloqueo. Si se borraran, se recuperan de la copia nocturna del almacenamiento: como mucho se pierde lo subido desde la última copia.
 
-Antes de darlo por válido, prueba con archivos sintéticos: original anónimo **403**, listado público anónimo **403**, imagen publicada conocida **200**; la clave de lectura no puede subir/borrar; la de aplicación no accede a copias; la externa puede subir y recuperar/verificar una copia, pero no borrarla. Retirar una publicación debe quitar su copia del origen público cuando no haya otros usos. El navegador o un CDN pueden conservar una copia durante su caché.
+### Bucket de imágenes: solo lectura pública de `public/*`
 
-Guarda las claves directamente en el gestor de contraseñas y el `.env` del servidor. Nunca en Git. Si IONOS no permite conseguir el aislamiento indicado con las identidades disponibles, **no sustituyas las claves por las del administrador**: resuelve la política con su soporte antes de instalar.
+La web escribe las copias públicas en `public/…` de `planta14-imagenes-b11` y las muestra desde `PUBLIC_MEDIA_BASE_URL`, que en la plantilla es `https://planta14-imagenes-b11.s3.eu-central-3.ionoscloud.com`. El bucket necesita una **política** que permita a cualquiera **leer** objetos bajo `public/`, pero no listar, escribir ni borrar:
 
-Referencias oficiales: [seguridad de Object Storage](https://docs.ionos.com/cloud/security-safeguards/best-practice-guideline/best-practice-cloud-storage-products), [usuarios y tipos de bucket](https://learn.cloud.ionos.com/expert/en/courses/module-5/unit-5.2-object-storage.html). Los tres buckets son una decisión de este proyecto; los permisos efectivos se comprobarán en la cuenta real.
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "LecturaPublicaDeImagenesPublicadas",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::planta14-imagenes-b11/public/*"
+  }]
+}
+```
+
+Se pone en el panel, en la configuración del bucket («Política del bucket» o «Bucket policy»). Si el panel no lo ofrece, la persona técnica la aplica con la clave desde su equipo: `aws s3api put-bucket-policy --endpoint-url https://s3.eu-central-3.ionoscloud.com --bucket planta14-imagenes-b11 --policy file://politica.json`. No hagas público el bucket entero: IONOS advierte de que un bucket público deja **listar** su contenido. Tampoco toques los otros dos.
+
+### Comprobaciones antes de usarlo (con archivos de prueba)
+
+En la instalación de prueba (apartado 5), la persona técnica comprueba con `curl` y sin clave:
+
+1. Un original subido desde `/cms` **no** se puede leer sin clave: debe dar 403 en `https://planta14-originales-b11.s3.eu-central-3.ionoscloud.com/…`.
+2. Listar el bucket de imágenes sin clave da 403: `https://planta14-imagenes-b11.s3.eu-central-3.ionoscloud.com/`.
+3. La imagen de una publicación de prueba carga desde `PUBLIC_MEDIA_BASE_URL` (200) y deja de cargar al retirarla.
+4. Tras la primera copia externa, el objeto tiene el bloqueo. `aws s3api head-object --endpoint-url https://s3.eu-central-4.ionoscloud.com --bucket planta14-copias-b11 --key planta14/pruebas/postgres/ARCHIVO` debe mostrar `ObjectLockMode: COMPLIANCE` y una fecha de retención a 30 días. **No** intentes borrar una copia para comprobarlo.
+
+Si la URL pública del punto 3 no funciona con ese formato, usa la que muestre el panel para el bucket y cámbiala en `PUBLIC_MEDIA_BASE_URL`.
+
+### Recuperar una copia oculta
+
+Si una copia apareciera borrada en el bucket de copias, no lo está: el bloqueo la conserva como versión anterior. La persona técnica lista las versiones (`aws s3api list-object-versions … --prefix planta14/`, o `rclone ls --s3-versions`) y descarga la versión original por su identificador. Mientras tanto, conviene cambiar la clave en el panel y en el `.env`.
+
+### Coste y retención de las copias externas
+
+La copia externa no borra nunca, así que el bucket de copias crece cada noche: una copia de la base y otra del almacenamiento. En el servidor se guardan 14 días. **Hay que decidir cuánto tiempo se conservan fuera** y, si se quiere limitar, crear en el panel una regla de ciclo de vida que caduque los objetos del bucket de copias a partir de los 30 días del bloqueo, por ejemplo a los 90. Mientras no se decida, crecen sin límite. Revísalo el primer mes en la factura.
 
 ## 4. Configurar el buzón IONOS y el servidor
 
@@ -116,9 +147,7 @@ nano infra/.env.production
 El generador no sobrescribe archivos existentes y deja permisos 600. Completa:
 
 - `SITE_INDEXABLE=false` antes del 4 de diciembre.
-- `S3_*`, `PUBLIC_MEDIA_BUCKET` y `PUBLIC_MEDIA_BASE_URL` con los buckets privado/público.
-- `STORAGE_BACKUP_*` con la identidad de lectura.
-- `OFFSITE_*` con el tercer bucket y su endpoint de la otra región.
+- `S3_ACCESS_KEY_ID` y `S3_SECRET_ACCESS_KEY` con la clave única de Object Storage. Buckets, regiones, endpoints y `PUBLIC_MEDIA_BASE_URL` ya vienen puestos (apartado 3). Deja vacíos `STORAGE_BACKUP_*`, `OFFSITE_ACCESS_KEY_ID` y `OFFSITE_SECRET_ACCESS_KEY`: usan la misma clave.
 - `BACKUP_AGE_RECIPIENT` con la clave **pública** age (empieza por `age1`). La pareja se crea en Windows (siguiente apartado). La privada **nunca** va al servidor ni a este archivo: no rellenes `BACKUP_AGE_IDENTITY`.
 - `SMTP_PASSWORD` con la contraseña de `avisos@planta14.com`; `SMTP_ENABLED=true` tras revisarla. La misma contraseña alimenta las alertas: deja `ALERT_SMTP_PASSWORD` vacío.
 - `ALERT_EMAIL_TO` y `MUNICIPAL_NOTICE_EMAIL_TO` con el correo real de quien deba recibirlas; después `ALERT_EMAIL_ENABLED=true` y `MUNICIPAL_NOTICE_EMAIL_ENABLED=true`.

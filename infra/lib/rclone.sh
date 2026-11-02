@@ -21,10 +21,17 @@ rclone_remote() {
 # rclone_setup CLAVE SECRETO: remoto "p14" a partir de S3_*.
 rclone_setup() { rclone_remote p14 "$1" "$2" "${S3_ENDPOINT:-}" "${S3_REGION:-}" "${S3_FORCE_PATH_STYLE:-false}"; }
 
-# Remoto "p14off" a partir de OFFSITE_*: destino S3 fuera del servidor, con credenciales propias.
+# Remoto "p14off" a partir de OFFSITE_*: destino S3 fuera del servidor. Sin OFFSITE_ACCESS_KEY_ID se usa la
+# clave de la aplicación (S3_*): es el caso del Object Storage sencillo de IONOS, con una sola clave del
+# propietario. Entonces lo que protege las copias es el bloqueo de objetos (compliance) del bucket de destino.
 rclone_setup_offsite() {
   : "${OFFSITE_BUCKET:?Define OFFSITE_BUCKET}"
-  rclone_remote p14off "${OFFSITE_ACCESS_KEY_ID:-}" "${OFFSITE_SECRET_ACCESS_KEY:-}" "${OFFSITE_ENDPOINT:-}" "${OFFSITE_REGION:-}" "${OFFSITE_FORCE_PATH_STYLE:-false}"
+  local key=${OFFSITE_ACCESS_KEY_ID:-} secret=${OFFSITE_SECRET_ACCESS_KEY:-}
+  if [[ -z $key && -z $secret ]]; then
+    key=${S3_ACCESS_KEY_ID:-} secret=${S3_SECRET_ACCESS_KEY:-}
+    log "Copia externa con la clave de la aplicación (S3_ACCESS_KEY_ID): la protege el bloqueo de objetos del bucket"
+  fi
+  rclone_remote p14off "$key" "$secret" "${OFFSITE_ENDPOINT:-}" "${OFFSITE_REGION:-}" "${OFFSITE_FORCE_PATH_STYLE:-false}"
 }
 offsite_path() {
   local prefix=${OFFSITE_PREFIX:-planta14/${COMPOSE_PROJECT_NAME:-planta14-staging}}
@@ -71,6 +78,9 @@ run_rclone_on() {
     local -a envs=()
     local v
     while IFS= read -r v; do envs+=(-e "$v"); done < <(compgen -e | grep -E '^RCLONE_CONFIG_P14(OFF)?_')
+    # SOLO ENSAYOS (infra/test/offsite-immutable-test.sh): PLANTA14_RCLONE_DUMP=headers registra cada petición
+    # HTTP. No usar en producción: el modo detallado de rclone escribe también la clave secreta en el registro.
+    [[ -n ${PLANTA14_RCLONE_DUMP:-} ]] && envs+=(-e "RCLONE_DUMP=$PLANTA14_RCLONE_DUMP")
     docker run --rm --network "$network" --memory "${RCLONE_MEM_LIMIT:-256m}" --memory-swap "${RCLONE_MEMSWAP_LIMIT:-384m}" \
       -e RCLONE_TRANSFERS=2 -e RCLONE_CHECKERS=4 -e RCLONE_S3_UPLOAD_CONCURRENCY=2 \
       --user "$(id -u):$(id -g)" -e HOME=/tmp -e RCLONE_CONFIG=/dev/null "${envs[@]}" -v "$workdir:/work:$mode" \

@@ -6,11 +6,15 @@
 #            OFFSITE_FORCE_PATH_STYLE, OFFSITE_ACCESS_KEY_ID, OFFSITE_SECRET_ACCESS_KEY,
 #            OFFSITE_ALLOW_UNENCRYPTED (false), BACKUP_EGRESS_NETWORK, RCLONE_IMAGE.
 #
-# - Solo AÑADE: usa "rclone copy --immutable", nunca "sync". Un borrado local o una copia local
-#   dañada no se propaga, y un archivo remoto con el mismo nombre y distinto contenido es un error.
+# - Solo AÑADE y NUNCA intenta borrar ni sobrescribir: "rclone copy --immutable", nunca "sync" ni "move".
+#   Un borrado local no se propaga; un archivo remoto con el mismo nombre y distinto contenido es un error
+#   (no se reescribe); los que ya están no se vuelven a subir ni se les cambia la fecha (--no-update-modtime);
+#   y no intenta crear el bucket (--s3-no-check-bucket). Comprobado en infra/test/offsite-immutable-test.sh.
 # - Solo sube copias cifradas (.age/.gpg) y sus .sha256, salvo OFFSITE_ALLOW_UNENCRYPTED=true.
-# - La retención y la protección contra borrado del destino se configuran en el proveedor
-#   (ciclo de vida + versionado/bloqueo de objetos). La clave de este script no debe poder borrar.
+# - La protección contra borrado del destino es del proveedor: en IONOS, bloqueo de objetos en modo
+#   compliance (30 días en planta14-copias-b11). Con una sola clave (la del propietario, que podría borrar),
+#   ese bloqueo es lo que impide destruir las copias; este script, además, nunca lo intenta.
+# - Sin OFFSITE_ACCESS_KEY_ID usa la clave S3_* de la aplicación (ver infra/lib/rclone.sh).
 # - Se ejecuta en la red de salida de copias, sin acceso a la red interna ni a PostgreSQL.
 set -Eeuo pipefail
 SCRIPT_NAME=offsite-sync
@@ -43,8 +47,8 @@ uploaded=0
 for kind in postgres storage; do
   [[ -d $BACKUP_DIR/$kind ]] || continue
   log "Subiendo $kind a $remote/$kind"
-  run_rclone_on "$network" "$BACKUP_DIR/$kind:ro" copy /work "$remote/$kind" --immutable --checksum "${filters[@]}"
-  run_rclone_on "$network" "$BACKUP_DIR/$kind:ro" check /work "$remote/$kind" --one-way "${filters[@]}" || die "La verificación del destino externo ha fallado ($kind)"
+  run_rclone_on "$network" "$BACKUP_DIR/$kind:ro" copy /work "$remote/$kind" --immutable --checksum --no-update-modtime --s3-no-check-bucket "${filters[@]}"
+  run_rclone_on "$network" "$BACKUP_DIR/$kind:ro" check /work "$remote/$kind" --one-way --s3-no-check-bucket "${filters[@]}" || die "La verificación del destino externo ha fallado ($kind)"
   uploaded=$((uploaded + 1))
 done
 (( uploaded > 0 )) || die "No hay copias locales en $BACKUP_DIR/postgres ni $BACKUP_DIR/storage"
