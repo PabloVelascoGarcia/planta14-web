@@ -158,7 +158,7 @@ check "registro de accesos con los logins fallidos (para fail2ban)" test "$(grep
 grep '"uri":"/api/cms/users/login"' "$ws/caddy-logs/access.log" > "$here/out/caddy-login-sample-$id.log" || true
 
 log "== 1b. Modo mantenimiento: escrituras rechazadas, lectura pública funcionando"
-token=$(c -X POST -H 'Content-Type: application/json' -H "Origin: https://$domain" -d "{\"email\":\"admin@planta14.example\",\"password\":\"$admin_password\"}" "https://$domain/api/cms/users/login" | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
+token=$(c -c "$ws/cookies.txt" -X POST -H 'Content-Type: application/json' -H "Origin: https://$domain" -d "{\"email\":\"admin@planta14.example\",\"password\":\"$admin_password\"}" "https://$domain/api/cms/users/login" | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
 check "inicio de sesión de administración para el ensayo" test -n "$token"
 content_id=$(docker exec "$project-postgres-1" psql -U planta14 -d planta14 -XAtc "SELECT min(id) FROM municipal_content")
 current_title=$(docker exec "$project-postgres-1" psql -U planta14 -d planta14 -XAtc "SELECT title FROM municipal_content WHERE id = $content_id")
@@ -186,7 +186,8 @@ app_write=$(docker exec -e T="$token" -e ID="$content_id" "$project-app-1" node 
 fetch(`http://127.0.0.1:3000/api/cms/municipal-content/${process.env.ID}`, { method: "PATCH", headers: { Authorization: `JWT ${process.env.T}`, "Content-Type": "application/json" }, body: JSON.stringify({ title: "ESCRITURA DIRECTA" }) })
   .then(async r => console.log(r.status, await r.text())).catch(e => console.log("error", e.message))' 2>&1)
 check "mantenimiento: la app también rechaza la escritura sin pasar por Caddy (503)" grep -q '^503 .*Planta 14 se está actualizando' <<< "$app_write"
-check "mantenimiento: aviso visible en /cms" bash -c "curl -sk --noproxy '*' --resolve '$domain:443:127.0.0.1' -H 'Cookie: payload-token=$token' 'https://$domain/cms' | grep -q 'data-maintenance=\"on\"'"
+# Como un navegador: cookie de sesión y Sec-Fetch-Site (Payload lo exige para aceptar la cookie).
+check "mantenimiento: aviso visible en /cms (sesión iniciada)" bash -c "curl -sk --noproxy '*' --resolve '$domain:443:127.0.0.1' -b '$ws/cookies.txt' -H 'Sec-Fetch-Site: same-origin' 'https://$domain/cms' | grep -q 'data-maintenance=\"on\"'"
 check "mantenimiento: aviso visible en el panel municipal" bash -c "curl -sk --noproxy '*' --resolve '$domain:443:127.0.0.1' 'https://$domain/lena/panel' | grep -q 'Planta 14 se está actualizando'"
 counts > "$ws/filas-mantenimiento.txt"
 check "mantenimiento: ningún dato cambió" diff -u "$ws/filas-pre-mantenimiento.txt" "$ws/filas-mantenimiento.txt"
