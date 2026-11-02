@@ -1,5 +1,7 @@
 # Planta 14 v2: producción en IONOS
 
+> Informe histórico del kit previo. El VPS contratado es M+ (2 vCores, 4 GB RAM, 120 GB NVMe) y esta instalación utiliza desarrollo/planta14-v2-final. Configuración, pruebas y decisiones vigentes en [V2-FINAL.md](V2-FINAL.md) y [PUESTA-EN-MARCHA-IONOS.md](PUESTA-EN-MARCHA-IONOS.md). Las limitaciones y cifras originales de abajo describen aquella entrega, no el estado actual.
+
 Rama `desarrollo/planta14-v2`, sobre `e2b207a`. Solo hay archivos nuevos de producción, más la barrera `pg_hba` en `restore-test.sh` y `.env.production` en `infra/.gitignore`. No se han tocado `infra/compose.staging.yaml`, `infra/.env.staging.example`, `infra/Caddyfile`, `desarrollo/planta14-v2-lanzamiento`, `main` ni `mejora/presentacion-la-voz`. Sin PR, sin despliegues reales, sin contrataciones y sin secretos.
 
 Guía para Pablo: [PUESTA-EN-MARCHA-IONOS.md](PUESTA-EN-MARCHA-IONOS.md).

@@ -71,7 +71,8 @@ run_rclone_on() {
     local -a envs=()
     local v
     while IFS= read -r v; do envs+=(-e "$v"); done < <(compgen -e | grep -E '^RCLONE_CONFIG_P14(OFF)?_')
-    docker run --rm --network "$network" \
+    docker run --rm --network "$network" --memory "${RCLONE_MEM_LIMIT:-256m}" --memory-swap "${RCLONE_MEMSWAP_LIMIT:-384m}" \
+      -e RCLONE_TRANSFERS=2 -e RCLONE_CHECKERS=4 -e RCLONE_S3_UPLOAD_CONCURRENCY=2 \
       --user "$(id -u):$(id -g)" -e HOME=/tmp -e RCLONE_CONFIG=/dev/null "${envs[@]}" -v "$workdir:/work:$mode" \
       "${RCLONE_IMAGE:-rclone/rclone:1.71.2@sha256:3103526c506266a9ecdf064efe99bf3677d92ef6407af124d8c56b4f49cbaa51}" "$@"
   fi

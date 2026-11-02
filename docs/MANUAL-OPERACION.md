@@ -2,11 +2,11 @@
 
 Para Pablo. Explica qué hacer en las situaciones habituales sin necesidad de programar. Cuando haya que escribir una orden, cópiala tal cual. **No pegues nunca contraseñas ni el archivo `.env` en un chat ni en un correo**, tampoco en una IA.
 
-Este manual todavía no acredita una instalación en producción. La persona técnica debe entregar primero la dirección del servidor, el acceso, la carpeta instalada, los horarios de copia y los contactos de los proveedores elegidos. No des por contratados IONOS, correo ni monitorización.
+El VPS IONOS M+ ya está contratado: 2 vCores, 4 GB RAM y 120 GB NVMe. La instalación todavía debe comprobarse en el servidor real. Sigue primero PUESTA-EN-MARCHA-IONOS.md. Este plan no se amplía: una presión sostenida de memoria exige preparar una mudanza con copia y restauración.
 
 Los comandos de este documento corresponden al **entorno privado de pruebas (staging)**. No los ejecutes sobre producción sin la guía específica de esa instalación. Si no tienes experiencia con el servidor, pide a la persona técnica que siga esos pasos contigo; tú puedes hacer las comprobaciones del navegador.
 
-En las órdenes, «el servidor» será la máquina contratada. `ssh usuario@IP-del-servidor` y `/srv/planta14-web` son ejemplos que la persona técnica debe sustituir por los datos reales.
+En las órdenes, «el servidor» será la máquina contratada. `ssh usuario@IP-del-servidor` y `/srv/planta14/app` son ejemplos que la persona técnica debe sustituir por los datos reales.
 
 ## 1. Vigilar que la web funciona (monitor gratuito con aviso al móvil)
 
@@ -103,19 +103,19 @@ Restaurar es delicado. **Nunca se restaura encima de la web en marcha.** Los scr
 Las deja configuradas quien instale el servidor:
 
 ```
-15 3 * * * cd /srv/planta14-web && infra/monitor/run-with-alert.sh "Copia de PostgreSQL" -- infra/backup/backup-postgres.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
-30 3 * * * cd /srv/planta14-web && infra/monitor/run-with-alert.sh "Copia de imágenes" -- infra/backup/backup-storage.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
-45 3 * * * cd /srv/planta14-web && infra/monitor/run-with-alert.sh "Copia externa" -- infra/backup/offsite-sync.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
-0 * * * *  cd /srv/planta14-web && infra/monitor/check-disk.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
+15 3 * * * cd /srv/planta14/app && infra/monitor/run-with-alert.sh "Copia de PostgreSQL" -- infra/backup/backup-postgres.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
+30 3 * * * cd /srv/planta14/app && infra/monitor/run-with-alert.sh "Copia de imágenes" -- infra/backup/backup-storage.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
+45 3 * * * cd /srv/planta14/app && infra/monitor/run-with-alert.sh "Copia externa" -- infra/backup/offsite-sync.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
+0 * * * *  cd /srv/planta14/app && infra/monitor/check-disk.sh --env-file infra/.env.staging >> /var/log/planta14-backup.log 2>&1
 ```
 
-Para que lleguen los correos de alerta, cuando haya proveedor de correo, se rellenan `ALERT_SMTP_URL`, `ALERT_SMTP_USER`, `ALERT_SMTP_PASSWORD`, `ALERT_EMAIL_FROM` y `ALERT_EMAIL_TO` en el `.env` del servidor, se pone `ALERT_EMAIL_ENABLED=true` y se añade `ALERT_ENV_FILE=/srv/planta14-web/infra/.env.staging` al principio del cron.
+Para que lleguen los correos de alerta, cuando haya proveedor de correo, se rellenan `ALERT_SMTP_URL`, `ALERT_SMTP_USER`, `ALERT_SMTP_PASSWORD`, `ALERT_EMAIL_FROM` y `ALERT_EMAIL_TO` en el `.env` del servidor, se pone `ALERT_EMAIL_ENABLED=true` y se añade `ALERT_ENV_FILE=/srv/planta14/app/infra/.env.staging` al principio del cron.
 
 ## 7. A quién pedir ayuda
 
 | Situación | A quién |
 |---|---|
-| El servidor no arranca, no hay red, hay que ampliar disco o memoria | Soporte de **IONOS** (panel de cliente o teléfono) |
+| El servidor no arranca, no hay red, hay que preparar la mudanza por falta de disco o memoria | Soporte de **IONOS** (panel de cliente o teléfono) |
 | Las imágenes no cargan y `api/health` dice `storage: error` | Soporte del **proveedor de almacenamiento** |
 | No llegan los correos de alerta o de contraseña | Soporte del **proveedor de correo** |
 | La web da error, una función no va bien o hay que cambiar algo de la web | Una **IA de programación con acceso al repositorio** (por ejemplo Claude Code), o la persona técnica de confianza. Pídele que lea primero `docs/V2-INTEGRACION.md`, `docs/INFRA-STAGING.md` y este manual. |

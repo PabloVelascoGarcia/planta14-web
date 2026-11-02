@@ -6,12 +6,13 @@ ARG NODE_IMAGE=node:22.23.4-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025f
 
 FROM ${NODE_IMAGE} AS deps
 WORKDIR /app
+ENV NODE_OPTIONS=--max-old-space-size=768
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
 FROM ${NODE_IMAGE} AS build
 WORKDIR /app
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_TELEMETRY_DISABLED=1 NODE_OPTIONS=--max-old-space-size=768 LOW_MEMORY_BUILD=true
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # El build se hace con el CMS desactivado: no necesita base de datos ni secretos.

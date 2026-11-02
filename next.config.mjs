@@ -10,6 +10,8 @@ const publicUrl = context && context !== "production"
 /** @type {import('next').NextConfig} */
 // Metadata (title, Open Graph, robots) always goes in <head>, never streamed into <body>: every client,
 // including social previews (WhatsApp, Facebook) and search crawlers, sees it in the first response.
-const nextConfig = { htmlLimitedBots: /.*/, ...(publicUrl ? { env: { SITE_URL: publicUrl } } : {}) };
+const nextConfig = { htmlLimitedBots: /.*/,
+  ...(process.env.LOW_MEMORY_BUILD === 'true' ? { experimental: { cpus: 1, webpackMemoryOptimizations: true } } : {}),
+  ...(publicUrl ? { env: { SITE_URL: publicUrl } } : {}) };
 
 export default withPayload(nextConfig);

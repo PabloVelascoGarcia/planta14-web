@@ -19,9 +19,9 @@ check "Ubuntu ($PRETTY_NAME)" test "$ID" = ubuntu
 check "zona horaria Europe/Madrid" test "$(readlink -f /etc/localtime)" = /usr/share/zoneinfo/Europe/Madrid
 check "usuario $admin_user existe" id -u "$admin_user"
 check "$admin_user no tiene contraseña utilizable (solo clave)" bash -c "passwd -S '$admin_user' | awk '{print \$2}' | grep -qx L"
-home=$(getent passwd "$admin_user" | cut -d: -f6)
-check "$admin_user tiene al menos una clave SSH" test -s "$home/.ssh/authorized_keys"
-check "permisos de ~/.ssh (700/600)" bash -c "[[ \$(stat -c %a '$home/.ssh') == 700 && \$(stat -c %a '$home/.ssh/authorized_keys') == 600 ]]"
+admin_home=$(getent passwd "$admin_user" | cut -d: -f6)
+check "$admin_user tiene al menos una clave SSH" test -s "$admin_home/.ssh/authorized_keys"
+check "permisos de ~/.ssh (700/600)" bash -c "[[ \$(stat -c %a '$admin_home/.ssh') == 700 && \$(stat -c %a '$admin_home/.ssh/authorized_keys') == 600 ]]"
 check "$admin_user puede usar sudo" bash -c "sudo -l -U '$admin_user' | grep -q 'NOPASSWD: ALL'"
 effective=$(sshd -T 2>/dev/null)
 check "SSH: sin contraseñas" grep -qx 'passwordauthentication no' <<< "$effective"
@@ -51,7 +51,7 @@ if has_systemd; then
   for unit in ssh docker fail2ban unattended-upgrades cron; do check "servicio $unit activo" systemctl is-active --quiet "$unit"; done
   check "fail2ban: jaula sshd activa" fail2ban-client status sshd
   check "fail2ban: jaula planta14-login activa" fail2ban-client status planta14-login
-  check "swap disponible" test -n "$(swapon --show --noheadings)"
+  check "swap >= 4 GiB" test "$(swapon --show --bytes --noheadings --output SIZE | awk '{s+=$1} END {printf "%.0f", s+0}')" -ge 4294967296
 else
   skip "cortafuegos, servicios activos, jaulas en marcha y swap (sin systemd)"
 fi

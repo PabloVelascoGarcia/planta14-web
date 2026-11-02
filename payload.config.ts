@@ -8,12 +8,16 @@ import { Users, Media, PublicMediaOps } from './cms/collections';
 import { cmsEnvironment } from './cms/environment';
 import { Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent } from './cms/content-collections';
 import { AuditLog, Notifications } from './cms/activity';
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
+import { smtpOptions } from './cms/email';
 
 const baseDir = path.dirname(fileURLToPath(import.meta.url));
 const settings = cmsEnvironment();
+const smtp = smtpOptions();
 
 export default buildConfig({
   secret: settings.secret,
+  email: smtp ? nodemailerAdapter(smtp) : undefined,
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3000',
   routes: { admin: '/cms', api: '/api/cms' },
   admin: { user: 'users', disable: !settings.enabled, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },

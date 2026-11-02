@@ -13,7 +13,7 @@
 set -Eeuo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 files=$here/files
-admin_user=planta14 ssh_key='' timezone=Europe/Madrid swap_size=2G
+admin_user=planta14 ssh_key='' timezone=Europe/Madrid swap_size=4G
 while [[ $# -gt 0 ]]; do
   case $1 in
     --admin-user) admin_user=${2:?}; shift 2 ;;
@@ -65,9 +65,9 @@ else ok "usuario $admin_user"; fi
 sudoers=$(mktemp); printf '%s ALL=(ALL) NOPASSWD:ALL\n' "$admin_user" > "$sudoers"
 visudo -cf "$sudoers" >/dev/null || die "sudoers no válido"
 install_file "$sudoers" "/etc/sudoers.d/90-planta14" 0440 || true; rm -f "$sudoers"
-home=$(getent passwd "$admin_user" | cut -d: -f6)
-install -d -m 700 -o "$admin_user" -g "$admin_user" "$home/.ssh"
-keys=$home/.ssh/authorized_keys
+admin_home=$(getent passwd "$admin_user" | cut -d: -f6)
+install -d -m 700 -o "$admin_user" -g "$admin_user" "$admin_home/.ssh"
+keys=$admin_home/.ssh/authorized_keys
 touch "$keys"; chown "$admin_user:$admin_user" "$keys"; chmod 600 "$keys"
 if [[ -n $ssh_key ]]; then
   [[ -f $ssh_key ]] || die "No existe la clave pública $ssh_key"
@@ -115,7 +115,7 @@ done
 
 # 8. fail2ban (SSH y logins de /cms y paneles municipales)
 install_file "$files/fail2ban-filter-planta14-login.conf" /etc/fail2ban/filter.d/planta14-login.conf 0644 && f2b=1 || f2b=0
-install_file "$files/fail2ban-jail-planta14.local" /etc/fail2ban/jail.d/planta14.local 0644 && f2b=1 || true
+if install_file "$files/fail2ban-jail-planta14.local" /etc/fail2ban/jail.d/planta14.local 0644; then f2b=1; fi
 if services; then
   systemctl enable fail2ban >/dev/null 2>&1 || true
   if (( f2b )) || ! systemctl is-active --quiet fail2ban; then systemctl restart fail2ban; fi
@@ -135,12 +135,16 @@ if services; then
   fi
 else log "OMITIDO cortafuegos (sin systemd: ensayo en contenedor)"; fi
 
-# 10. Swap (ayuda a construir la imagen con 8 GB)
+# 10. VPS M+: ensure at least 4 GiB swap without turning off an active swap file.
 if [[ -n $swap_size && $swap_size != 0 ]] && services; then
-  if [[ -n $(swapon --show --noheadings 2>/dev/null) ]]; then ok "swap"
+  target=$(numfmt --from=iec "$swap_size")
+  available=$(swapon --show --bytes --noheadings --output SIZE | awk '{s+=$1} END {printf "%.0f", s+0}')
+  if (( available >= target )); then ok "swap >= $swap_size"
   else
-    fallocate -l "$swap_size" /swapfile && chmod 600 /swapfile && mkswap /swapfile >/dev/null && swapon /swapfile
-    grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    swapfile=/swapfile-planta14
+    [[ ! -e $swapfile && ! -L $swapfile ]] || die "$swapfile ya existe sin completar el swap requerido; revisa antes de modificarlo"
+    fallocate -l "$((target - available))" "$swapfile" && chmod 600 "$swapfile" && mkswap "$swapfile" >/dev/null && swapon "$swapfile"
+    grep -q "^$swapfile " /etc/fstab || echo "$swapfile none swap sw 0 0" >> /etc/fstab
     changed "swap de $swap_size"
   fi
 fi

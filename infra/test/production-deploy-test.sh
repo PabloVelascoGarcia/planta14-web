@@ -15,12 +15,13 @@ here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 root=$(cd "$here/../.." && pwd)
 # shellcheck source=SCRIPTDIR/../lib/common.sh
 source "$root/infra/lib/common.sh"
-require_cmd docker git curl age age-keygen openssl
+require_cmd docker git curl age age-keygen openssl python3
 [[ -d $root/node_modules ]] || die "Falta node_modules (npm ci)"
 launch_ref=${PRODTEST_LAUNCH_REF:-refs/remotes/origin/desarrollo/planta14-v2-lanzamiento}
 git -C "$root" rev-parse --verify --quiet "$launch_ref" >/dev/null || die "No está $launch_ref (git fetch origin desarrollo/planta14-v2-lanzamiento)"
 project=planta14-prodtest domain=planta14.test
 [[ -z $(docker ps -aq --filter "label=com.docker.compose.project=$project") ]] || die "Ya existen contenedores del proyecto $project; no se adopta un entorno existente"
+[[ -z $(docker volume ls -q --filter "label=com.docker.compose.project=$project") ]] || die "Ya existen volúmenes del proyecto $project; no se borran"
 
 id=$(openssl rand -hex 4)
 ws=$here/out/prod-$id
@@ -105,7 +106,9 @@ open(p, 'w').write(s)
 PY
 chmod 600 "$ws/production.env"
 export DEPLOY_STATE_DIR=$ws/state DEPLOY_NO_FETCH=1 DEPLOY_COMPOSE_EXTRA=infra/test/compose.production-test.yaml PRODTEST_S3_DIR=$ws/s3
-export DEPLOY_BUILD_COMMAND=$ws/repo/infra/test/prod-build-prebuilt.sh PREBUILT_NODE_MODULES=$root/node_modules BACKUP_AGE_IDENTITY=$ws/age-key.txt
+export PREBUILT_NODE_MODULES=$root/node_modules BACKUP_AGE_IDENTITY=$ws/age-key.txt
+if [[ ${PRODTEST_REAL_BUILD:-0} == 1 ]]; then export DEPLOY_BUILD_COMMAND=$ws/repo/infra/test/prod-build-bounded.sh
+else export DEPLOY_BUILD_COMMAND=$ws/repo/infra/test/prod-build-prebuilt.sh; fi
 dc() { APP_IMAGE=planta14-app:${good:0:12} docker compose -p "$project" -f infra/compose.production.yaml -f infra/test/compose.production-test.yaml --env-file "$ws/production.env" "$@"; }
 check "docker compose config de producción (con S3 sustituto)" dc config --quiet
 built_tags+=("planta14-app:${good:0:12}" "planta14-app:${bad_migration:0:12}" "planta14-app:${bad_plain:0:12}")
@@ -178,7 +181,8 @@ check "status.sh muestra versión y salud" bash -c "grep -q 'Versión actual:   
 log "== 4. Programación de copias y alertas"
 mkdir -p "$ws/cron" "$ws/logrotate"
 SCHEDULE_CRON_DIR=$ws/cron SCHEDULE_LOGROTATE_DIR=$ws/logrotate infra/deploy/schedule.sh --env-file "$ws/production.env" --user "$(id -un)" >/dev/null
-check "cron: 3 copias (PostgreSQL, almacenamiento, externa) y vigilancia de disco" test "$(grep -cE '^[0-9]+ [0-9*]+ \* \* \* ' "$ws/cron/planta14")" = 4
+check "cron: 3 copias y vigilancia de disco" test "$(grep -cE '^[0-9]+ [0-9*]+ \* \* \* ' "$ws/cron/planta14")" = 4
+check "cron: memoria cada minuto" grep -q '^\* \* \* \* \* .*check-memory.sh' "$ws/cron/planta14"
 check "cron: todas las copias pasan por las alertas" test "$(grep -c 'run-with-alert.sh' "$ws/cron/planta14")" = 3
 job=$(grep 'Copia del almacenamiento' "$ws/cron/planta14" | sed -E 's/^[0-9]+ [0-9]+ \* \* \* [^ ]+ //; s/ >> .*$//')
 check "la copia del almacenamiento programada funciona tal cual" bash -c "$job"

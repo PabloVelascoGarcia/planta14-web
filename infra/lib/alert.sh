@@ -8,6 +8,8 @@
 # shellcheck shell=bash
 
 send_alert() ( # ASUNTO CUERPO; subshell keeps traps and credential cleanup local to this call
+  ALERT_SMTP_USER=${ALERT_SMTP_USER:-avisos@planta14.com}
+  ALERT_SMTP_PASSWORD=${ALERT_SMTP_PASSWORD:-${SMTP_PASSWORD:-}}
   local subject="[Planta 14] $1" body=$2 host log
   host=$(hostname 2>/dev/null || echo servidor)
   log=${ALERT_LOG:-${BACKUP_DIR:-/var/log}/alerts.log}
@@ -38,7 +40,7 @@ send_alert() ( # ASUNTO CUERPO; subshell keeps traps and credential cleanup loca
   credentials=${credentials//\\/\\\\}
   credentials=${credentials//\"/\\\"}
   [[ -n ${ALERT_SMTP_USER:-} ]] && printf 'user = "%s"\n' "$credentials" > "$cfg"
-  unset ALERT_SMTP_PASSWORD ALERT_SMTP_USER credentials
+  unset ALERT_SMTP_PASSWORD ALERT_SMTP_USER SMTP_PASSWORD credentials
   args+=(--config "$cfg")
   printf 'From: %s\r\nTo: %s\r\nSubject: %s\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n%s\r\n\r\nServidor: %s\r\n' \
     "$ALERT_EMAIL_FROM" "$ALERT_EMAIL_TO" "$subject" "$body" "$host" |

@@ -20,6 +20,9 @@ x-app-env: &app-env
   SITE_URL: https://${SITE_DOMAIN:?Define SITE_DOMAIN (planta14.com)}
   CMS_SERVER_URL: https://${SITE_DOMAIN:?Define SITE_DOMAIN (planta14.com)}
   PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Define PAYLOAD_SECRET (mínimo 32 caracteres)}
+  NODE_OPTIONS: --max-old-space-size=640
+  SMTP_ENABLED: ${SMTP_ENABLED:-false}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:-}
   DATABASE_URL: postgres://${POSTGRES_APP_USER:-planta14_app}:${POSTGRES_APP_PASSWORD:?Define POSTGRES_APP_PASSWORD}@postgres:5432/${POSTGRES_DB:-planta14}
   S3_BUCKET: ${S3_BUCKET:?Define S3_BUCKET (bucket privado)}
   S3_REGION: ${S3_REGION:?Define S3_REGION}
@@ -50,7 +53,8 @@ services:
         condition: service_healthy
     # "edge" también da salida a Internet (S3 externo y correo).
     networks: [edge, backend]
-    mem_limit: ${APP_MEM_LIMIT:-2g}
+    mem_limit: ${APP_MEM_LIMIT:-1024m}
+    memswap_limit: ${APP_MEMSWAP_LIMIT:-1536m}
     security_opt: ["no-new-privileges:true"]
     logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
 
@@ -67,6 +71,8 @@ services:
         condition: service_healthy
     networks: [edge, backend]
     restart: "no"
+    mem_limit: ${MIGRATE_MEM_LIMIT:-768m}
+    memswap_limit: ${MIGRATE_MEMSWAP_LIMIT:-1024m}
     security_opt: ["no-new-privileges:true"]
 
   postgres:
@@ -87,17 +93,22 @@ services:
       - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
     networks: [backend]
     shm_size: 256mb
-    mem_limit: ${POSTGRES_MEM_LIMIT:-2g}
+    mem_limit: ${POSTGRES_MEM_LIMIT:-640m}
+    memswap_limit: ${POSTGRES_MEMSWAP_LIMIT:-768m}
     command:
       - postgres
       - -c
       - hba_file=/planta14/pg_hba.conf
       - -c
-      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-512MB}
+      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-128MB}
       - -c
-      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-2GB}
+      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-384MB}
       - -c
-      - max_connections=${POSTGRES_MAX_CONNECTIONS:-50}
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-30}
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=64MB
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
@@ -107,6 +118,8 @@ services:
     logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
 
   caddy:
+    mem_limit: ${CADDY_MEM_LIMIT:-128m}
+    memswap_limit: ${CADDY_MEMSWAP_LIMIT:-192m}
     image: ${CADDY_IMAGE:-caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d}
     restart: unless-stopped
     depends_on: [app]

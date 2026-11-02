@@ -1,265 +1,179 @@
-# Puesta en marcha de planta14.com en IONOS
+# Puesta en marcha de Planta 14 en IONOS
 
-Guía para Pablo, en lenguaje llano. Explica qué contratar, qué datos dar a la IA que haga la instalación, en qué orden irá todo, cómo cambiar el DNS sin perder el correo de **info@planta14.com**, cómo hacer la prueba final y qué hacer después con la demo de Netlify.
+Salida pública: **4 de diciembre de 2026**. Rama de instalación: **desarrollo/planta14-v2-final**; se instala un commit concreto ya probado, no una rama que pueda cambiar durante la operación.
 
-Salida pública: **4 de diciembre de 2026**. Conviene tener el servidor listo **una semana antes** (hacia el 27 de noviembre) y cambiar el DNS **dos o tres días antes**, con la web aún sin indexar en buscadores.
+## 1. Lo contratado y lo que se va a usar
 
-> Regla de oro: **las contraseñas y claves no se escriben en el chat de la IA ni en un correo.** Se guardan en el gestor de contraseñas, y en el servidor se escriben directamente en el archivo `.env` (abajo se explica cómo).
+Pablo ya ha contratado **IONOS VPS Linux M+**, Ubuntu 24.04, **2 vCores, 4 GB RAM y 120 GB NVMe**. Este plan **no se amplía**. Si falta capacidad, se prepara otro servidor y se cambia con copia y restauración. No hace falta volver a contratar este VPS.
 
-## 1. Qué contratar (lo contrata Blackeleven Capital)
+Todo el almacenamiento será **IONOS Cloud Object Storage**: originales en un bucket privado, imágenes publicadas en otro público y copias cifradas en un tercer bucket, en otra región de la UE. El correo saldrá exclusivamente del buzón IONOS **avisos@planta14.com**. Las instrucciones no dan por creados aún el buzón, los buckets ni sus claves.
 
-| Qué | Exactamente | Por qué |
-|---|---|---|
-| **Servidor** | IONOS **VPS / Cloud Server** con **Ubuntu 24.04 LTS**, **4 vCPU, 8 GB de RAM, 160 GB SSD o más**, en un centro de datos de la **UE** (España o Alemania), con IPv4 pública | Donde vive la web, la base de datos y las copias locales |
-| **Almacenamiento de objetos** | **IONOS S3 Object Storage**, en la misma región que el servidor si es posible. Hay que crear **dos buckets**: uno privado (p. ej. `planta14-privado`) y otro público (p. ej. `planta14-publico`) | Fotos originales (privadas) y copias de las publicadas (públicas) |
-| **Destino de copias externo** | Un segundo almacenamiento S3 en **otra región o en otro proveedor europeo**, con un bucket (p. ej. `planta14-copias`) con **versionado o bloqueo de objetos** | Si se pierde el servidor o la cuenta, las copias siguen a salvo |
-| **Correo transaccional** | Un proveedor europeo con **SMTP** (p. ej. Brevo, Mailjet o Scaleway Transactional Email) | Alertas, avisos de publicaciones municipales y recuperación de contraseñas |
+Los datos del contrato y de los tratamientos deben ser revisados por quien gestione la protección de datos. No se completa [REGISTRO MERCANTIL] sin los datos reales.
 
-No hace falta contratar el dominio: **planta14.com ya existe**. Solo hace falta acceso a su panel de DNS (apartado 4).
+## 2. Desde dónde se trabaja: PC Windows y servidor Linux
 
-## 2. Qué datos pasar a la IA
+La IA de instalación trabajará **desde el PC Windows de Pablo**, abriendo una conexión SSH al servidor. Windows actúa como mando a distancia. Los comandos de Docker, preparación y despliegue se ejecutan **dentro del servidor Ubuntu**, en `/srv/planta14/app`; la imagen se construye allí. No se instala producción en Windows ni en Netlify.
 
-**Se pueden decir en el chat (no son secretos):**
+Pablo conserva el control de las claves y contraseñas. La IA puede usar una conexión SSH que ya esté autorizada en su equipo. No hay que pegar contraseñas, claves privadas ni el archivo `.env` en el chat, en Git o en un correo.
 
-- La **IP del servidor** y el usuario inicial de IONOS (normalmente `root`).
-- La **región y el endpoint S3** (p. ej. `https://s3.eu-central-3.ionoscloud.com`), y los **nombres de los buckets**.
-- El **endpoint del destino de copias externo** y su bucket.
-- El **servidor SMTP** del proveedor de correo (p. ej. `smtp-relay.brevo.com`, puerto 465 o 587) y el **remitente** (p. ej. `alertas@planta14.com`).
-- El **correo para los avisos de Let's Encrypt** (p. ej. `info@planta14.com`).
-- La **clave pública SSH** de quien vaya a entrar al servidor (un archivo que termina en `.pub`; es pública, se puede compartir).
-- La **clave pública de las copias** (`age1…`; también es pública, ver el paso 3.4).
-- El **ID de Google Analytics** (`G-…`), si se quiere analítica.
-- Las **capturas del panel DNS** de planta14.com (apartado 4).
+### Crear la clave en Windows (PowerShell)
 
-**NO se dicen en el chat (secretos):**
+Comprueba que `ssh -V` funciona. Si Windows no reconoce la orden, activa el componente opcional **Cliente OpenSSH** en Configuración de Windows, con ayuda de la persona técnica.
 
-- La contraseña inicial de root del servidor. Úsala tú para la primera conexión, o dásela a la persona de confianza.
-- Las **claves de acceso S3** (de la aplicación, de solo lectura y del destino externo).
-- La **contraseña SMTP**.
-- La **clave privada de las copias** (`age-key.txt`). Esta no va nunca al servidor.
-
-Cuando la IA lo pida, se escriben en el servidor con:
-
-```bash
-nano /srv/planta14/app/infra/.env.production
+```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.ssh"
+ssh-keygen -t ed25519 -a 100 -f "$env:USERPROFILE\.ssh\planta14_ionos" -C "Pablo Planta14 IONOS"
 ```
 
-Se guarda con Ctrl+O, se sale con Ctrl+X y el valor nunca aparece en la conversación.
+Elige una frase de paso cuando la pida y guárdala en tu gestor de contraseñas. Si el archivo ya existe, **no lo sobrescribas**. Se crean dos archivos:
 
-## 3. Qué hará la IA, en este orden
+- `planta14_ionos`: clave privada, se queda en Windows y en una copia segura. No se sube al servidor.
+- `planta14_ionos.pub`: clave pública, esta sí se entrega al servidor.
 
-Cada paso se puede repetir sin estropear nada. La IA te enseñará el resultado de cada comprobación.
+Si la IA utiliza el agente SSH de Windows, la persona técnica puede habilitar ese servicio y Pablo cargar la clave con `ssh-add "$env:USERPROFILE\.ssh\planta14_ionos"`. La frase de paso se introduce en el terminal, no en la conversación.
 
-### 3.1 Preparar el servidor (una vez, como root)
+### Dar la clave al servidor por primera vez
 
-```bash
-ssh root@IP-DEL-SERVIDOR
+Busca en el panel de IONOS la IPv4 y las credenciales iniciales. Si permite asociar una clave pública a ese VPS, entrega únicamente el archivo `.pub`. Si el servidor ya está creado con contraseña de root, utiliza esta vía inicial desde PowerShell, sustituyendo `IP-REAL`:
+
+```powershell
+scp "$env:USERPROFILE\.ssh\planta14_ionos.pub" root@IP-REAL:/root/clave-pablo.pub
+ssh root@IP-REAL
 ```
 
-```bash
-apt-get update && apt-get install -y git && git clone https://github.com/PabloVelascoGarcia/planta14-web.git /srv/planta14/app
-```
+Pablo escribe la contraseña inicial en el terminal cuando se solicite. En la primera conexión comprueba la huella del servidor por un canal fiable de IONOS o su consola; no aceptes una huella cambiada sin investigar. Conserva acceso a la consola de recuperación del panel.
+
+Ya dentro de Ubuntu, la persona técnica ejecuta:
 
 ```bash
-cd /srv/planta14/app && git checkout <rama o etiqueta de la versión de salida>
+apt-get update && apt-get install -y git
+mkdir -p /srv/planta14
+git clone --branch desarrollo/planta14-v2-final https://github.com/PabloVelascoGarcia/planta14-web.git /srv/planta14/app
+cd /srv/planta14/app
+git checkout COMMIT-VALIDADO
+bash infra/server/setup-server.sh --admin-user planta14 --ssh-key /root/clave-pablo.pub
 ```
 
-```bash
-bash infra/server/setup-server.sh --admin-user planta14 --ssh-key /root/clave-de-pablo.pub
+`COMMIT-VALIDADO` es el identificador de la entrega aprobada, no texto para copiar literalmente. El script prepara usuario, SSH, cortafuegos, Docker, actualizaciones, fail2ban y **al menos 4 GiB de swap**. No apaga un swap activo para aumentarlo.
+
+**No cierres la sesión inicial** hasta abrir una segunda ventana de PowerShell y comprobar:
+
+```powershell
+ssh -i "$env:USERPROFILE\.ssh\planta14_ionos" planta14@IP-REAL
 ```
 
-Esto deja preparado el servidor:
-
-- usuario `planta14`, que entra solo con clave;
-- root sin acceso por SSH;
-- cortafuegos con 22, 80 y 443;
-- actualizaciones de seguridad automáticas, con reinicio a las 04:30 solo si hace falta;
-- fail2ban contra intentos de acceso por SSH y en `/cms`;
-- Docker y hora de Madrid.
-
-**Antes de cerrar la sesión de root**, abre otra ventana y comprueba que entras:
-
-```bash
-ssh planta14@IP-DEL-SERVIDOR
-```
-
-Después, comprueba que todo ha quedado bien:
+En esa segunda sesión Linux:
 
 ```bash
 sudo bash /srv/planta14/app/infra/server/check-server.sh --admin-user planta14
 ```
 
-Tiene que terminar en «RESULTADO: servidor preparado».
+Debe terminar en «servidor preparado». Repetir setup con la misma clave debe dejar cero cambios. No ejecutes `server-setup-test.sh` en el servidor instalado: es un ensayo destructivo para una Ubuntu desechable.
 
-### 3.2 Configuración de producción
+## 3. Crear los tres buckets IONOS y separar las claves
 
-```bash
-sudo chown -R planta14: /srv/planta14 && cd /srv/planta14/app
-```
+Abre la **consola de IONOS Cloud Object Storage** de tu contrato. No uses las claves de administrador en el VPS.
 
-```bash
-infra/deploy/generate-production-env.sh info@planta14.com
-```
+1. Crea un bucket para originales, con nombre propio disponible, sin espacios ni puntos, por ejemplo `planta14-originales-IDENTIFICADOR`. Elige una región de la UE y **acceso privado**.
+2. Crea otro para imágenes públicas, en la misma región y accesible con el mismo endpoint de la aplicación. Ejemplo: `planta14-imagenes-IDENTIFICADOR`. La política pública solo permitirá leer objetos de `public/*`; no permitirá listar el bucket, escribir ni borrar de forma anónima. No hagas público el bucket de originales.
+3. Crea un tercero para copias, **en otra región de la UE**, privado. Ejemplo: `planta14-copias-IDENTIFICADOR`. Activa versionado y decide una retención/bloqueo de objetos con la persona técnica antes de guardar copias reales. Un versionado sin retención/bloqueo no garantiza que un atacante no sobrescriba una copia.
+4. Anota los nombres, las regiones, los endpoints HTTPS y la URL de lectura del bucket público que muestre IONOS. Usa los valores del panel, no deduzcas la URL ni la región a partir de estos ejemplos.
 
-Crea `infra/.env.production` con contraseñas aleatorias. Después hay que rellenar en ese archivo, con `nano`:
+### Claves con permisos mínimos
 
-- los datos S3 y de los buckets;
-- el destino externo;
-- el correo;
-- la clave pública de las copias;
-- y **`SITE_INDEXABLE=false`** hasta el día de la salida.
+Los permisos S3 pertenecen a la identidad del usuario, no al nombre de la clave. Crear otra clave del mismo administrador no la hace más limitada. Haz que una identidad administradora custodiada por Pablo sea dueña/administradora de los buckets, y crea identidades técnicas separadas para el VPS. En Gestión de usuarios de IONOS Cloud da únicamente acceso al producto Object Storage a esas identidades; desde Object Storage genera sus pares **Access Key / Secret Key** y configura los permisos de cada bucket para el identificador que muestre IONOS. La persona técnica debe adaptar la política al tipo de bucket (de usuario o de contrato) y comprobar los permisos efectivos; no copies identificadores AWS inventados.
 
-**Guarda una copia del archivo completo en el gestor de contraseñas.**
+| Identidad | Puede hacer | No debe poder hacer |
+| --- | --- | --- |
+| Aplicación | Listar y leer/escribir/borrar originales; leer/escribir/borrar copias públicas bajo `public/`; operaciones multipart necesarias | Entrar en copias externas, cambiar políticas, borrar buckets o administrar usuarios |
+| Lectura para copia | Listar y leer el bucket privado (incluido consultar su región) | Escribir o borrar originales, acceder al bucket externo |
+| Escritura de copia externa | Listar/leer/verificar y añadir objetos en `planta14/produccion/` del bucket externo; multipart si hace falta | Borrar objetos/versiones, cambiar retención o políticas, entrar en originales |
+| Restauración, fuera del VPS | Leer las copias y versiones necesarias; acceso temporal de escritura al destino de restauración | Uso cotidiano en la aplicación |
 
-### 3.3 DNS
+La aplicación necesita `ListBucket` para la comprobación de salud del bucket privado; los objetos requieren `GetObject`, `PutObject`, `DeleteObject` y, para cargas grandes, permisos multipart adecuados. La copia de lectura no recibe permisos de borrado. La copia externa usa `copy`, no sincronización destructiva. No otorgues `s3:*` ni acceso a todos los buckets como atajo. Verifica también restricciones explícitas si la identidad conserva permisos heredados del contrato.
 
-Ver el apartado 4. Se hace cuando el servidor esté listo, dos o tres días antes de la salida.
+Antes de darlo por válido, prueba con archivos sintéticos: original anónimo **403**, listado público anónimo **403**, imagen publicada conocida **200**; la clave de lectura no puede subir/borrar; la de aplicación no accede a copias; la externa puede subir y recuperar/verificar una copia, pero no borrarla. Retirar una publicación debe quitar su copia del origen público cuando no haya otros usos. El navegador o un CDN pueden conservar una copia durante su caché.
 
-### 3.4 Clave de las copias (en tu ordenador, no en el servidor)
+Guarda las claves directamente en el gestor de contraseñas y el `.env` del servidor. Nunca en Git. Si IONOS no permite conseguir el aislamiento indicado con las identidades disponibles, **no sustituyas las claves por las del administrador**: resuelve la política con su soporte antes de instalar.
 
-La IA te ayudará a crear un par de claves `age`. La **pública** va al `.env` (`BACKUP_AGE_RECIPIENT`). La **privada** (`age-key.txt`) se guarda en el gestor de contraseñas y en un USB guardado en lugar seguro. Sin ella no se pueden restaurar las copias.
+Referencias oficiales: [seguridad de Object Storage](https://docs.ionos.com/cloud/security-safeguards/best-practice-guideline/best-practice-cloud-storage-products), [usuarios y tipos de bucket](https://learn.cloud.ionos.com/expert/en/courses/module-5/unit-5.2-object-storage.html). Los tres buckets son una decisión de este proyecto; los permisos efectivos se comprobarán en la cuenta real.
 
-### 3.5 Desplegar la versión
+## 4. Configurar el buzón IONOS y el servidor
 
-```bash
-infra/deploy/deploy.sh --env-file infra/.env.production <etiqueta-de-la-version>
-```
+Crea o confirma el buzón **avisos@planta14.com** en el producto de correo de IONOS y prueba que puede enviar y recibir desde su webmail. Necesitas la contraseña del buzón, no la de la cuenta general de IONOS.
 
-Construye la web en el servidor, hace una copia antes de tocar la base de datos, migra, arranca y comprueba `https://planta14.com/api/health`. Si algo falla, **vuelve sola a la versión anterior**: solo restaura la copia si la migración llegó a cambiar datos.
+La configuración del código es **smtp.ionos.es, puerto 465, SSL/TLS**, usuario y remitente `avisos@planta14.com`. [Instrucciones oficiales de IONOS](https://www.ionos.es/ayuda/correo/otros-programas-de-correo/configurar-una-cuenta-de-correo-manualmente-en-thunderbird/).
 
-### 3.6 Primer administrador, cuentas municipales e imágenes
-
-Primer administrador:
+Como `planta14`, dentro del servidor:
 
 ```bash
-read -rp 'Correo: ' CMS_BOOTSTRAP_EMAIL && read -rsp 'Contraseña (16+): ' CMS_BOOTSTRAP_PASSWORD && export CMS_BOOTSTRAP_EMAIL CMS_BOOTSTRAP_PASSWORD
+sudo chown -R planta14: /srv/planta14
+cd /srv/planta14/app
+bash infra/deploy/generate-production-env.sh info@planta14.com
+nano infra/.env.production
 ```
+
+El generador no sobrescribe archivos existentes y deja permisos 600. Completa:
+
+- `SITE_INDEXABLE=false` antes del 4 de diciembre.
+- `S3_*`, `PUBLIC_MEDIA_BUCKET` y `PUBLIC_MEDIA_BASE_URL` con los buckets privado/público.
+- `STORAGE_BACKUP_*` con la identidad de lectura.
+- `OFFSITE_*` con el tercer bucket y su endpoint de la otra región.
+- `BACKUP_AGE_RECIPIENT` con la clave **pública** age. Crea la pareja en Windows con ayuda técnica; guarda la privada fuera del VPS y prueba antes que puedes descifrar una copia.
+- `SMTP_PASSWORD` con la contraseña de `avisos@planta14.com`; `SMTP_ENABLED=true` tras revisarla. La misma contraseña alimenta las alertas: deja `ALERT_SMTP_PASSWORD` vacío.
+- `ALERT_EMAIL_TO` y `MUNICIPAL_NOTICE_EMAIL_TO` con el correo real de quien deba recibirlas; después `ALERT_EMAIL_ENABLED=true` y `MUNICIPAL_NOTICE_EMAIL_ENABLED=true`.
+
+No configures otro proveedor SMTP. No cambies los MX del dominio para publicar la web. Conserva SPF, DKIM y DMARC de IONOS; comprueba la autenticación en un correo recibido y no crees dos registros SPF.
+
+El adaptador Payload envía recuperación y avisos; las alertas usan curl SMTP. Un fallo de aviso queda registrado y no tiene cola de reintentos. Debe probarse cada circuito antes de depender de él.
+
+## 5. Memoria, construcción y primera instalación
+
+La swap de 4 GiB es un colchón, no 4 GB extra de RAM rápida. Límites por defecto:
+
+| Trabajo | RAM máxima |
+| --- | --- |
+| Aplicación | 1.024 MiB (heap Node 640 MiB) |
+| PostgreSQL | 640 MiB (buffers 128 MiB, 30 conexiones, work_mem 4 MiB) |
+| Caddy | 128 MiB |
+| Migraciones, solo mientras se ejecutan | 768 MiB |
+| Constructor BuildKit separado | 1.280 MiB, heap Node 768 MiB, un trabajador de build y dos CPUs |
+| Cada trabajo rclone de copia | 256 MiB |
+
+Web + PostgreSQL + Caddy + constructor suman **3 GiB de límites de RAM**, dejando 1 GiB nominal para Ubuntu, Docker y otras tareas. El constructor se para al terminar. No programes una construcción a la vez que copias grandes o las actualizaciones/reinicio nocturno. La migración ocurre después de construir. Los límites pueden provocar un fallo controlado si no alcanza la memoria; no los elimines para forzar el despliegue.
+
+La imagen se construye con `infra/deploy/build-image.sh`, mediante BuildKit limitado. **La web anterior sigue funcionando durante la construcción.** El cambio final de contenedor puede cortar el servicio unos segundos; no se promete ausencia total de interrupciones.
+
+Desde `/srv/planta14/app` en la sesión SSH:
 
 ```bash
-APP_IMAGE=planta14-app:$(cut -c1-12 /srv/planta14/state/current) docker compose -f infra/compose.production.yaml --env-file infra/.env.production --profile migrate run --rm -e CMS_BOOTSTRAP_EMAIL -e CMS_BOOTSTRAP_PASSWORD migrate npm run cms:bootstrap
+bash infra/deploy/deploy.sh --env-file infra/.env.production COMMIT-VALIDADO
 ```
 
-Las cuentas municipales se crean en `/cms` (ver `docs/MANUAL-OPERACION.md`). Tras cargar contenido, ejecuta una vez `npm run cms:media:sync-public` con la misma orden, cambiando el último comando.
+Antes de una actualización con migraciones hay dos decisiones importantes: impedir nuevas escrituras durante la copia/migración para no perder cambios en una vuelta atrás, y disponer de un modo autorizado de descifrar la copia. La clave privada age se custodia fuera del servidor: **sin acceso temporal a ella, el rollback que restaura datos no funcionará automáticamente**. Resolver ese procedimiento con Pablo antes de actualizar datos reales; no dejar permanentemente la clave privada en el VPS por comodidad. Una restauración SQL tampoco garantiza por sí sola revertir efectos en S3.
 
-### 3.7 Copias, copia externa y alertas
+Tras instalar, crea el primer administrador con `cms:bootstrap`, siguiendo `docs/MANUAL-OPERACION.md` y las instrucciones de `scripts/bootstrap.ts`; la contraseña se introduce de forma privada y se retira del entorno al terminar. No ejecutes el importador de demostración en producción. Crea las cuentas reales y carga exclusivamente contenido con origen y derechos comprobados.
+
+## 6. DNS y prueba antes de abrir
+
+Cuando el servidor esté preparado, cambia el registro A de `planta14.com` a su IPv4 y `www` a la configuración acordada. No cambies MX ni TXT del correo. Revisa/elimina un AAAA antiguo si no has configurado y comprobado IPv6; no dejes una ruta a otro servidor. Caddy necesita los puertos 80 y 443 abiertos para emitir el certificado. Comprueba el cortafuegos de IONOS además del de Ubuntu.
+
+Con `SITE_INDEXABLE=false`, prueba dominio y www, HTTPS real, sesión municipal, publicación, retirada con motivo desde CMS, originales privados, copia pública retirada, recuperación de contraseña y llegada del aviso municipal. Envía una alerta sintética y comprueba que llega al destinatario. Haz una copia cifrada, súbela al bucket de la otra región y restáurala en un entorno vacío. Guarda el resultado; no basta con ver que existe un archivo.
+
+Programa las tareas, solo después de probarlas:
 
 ```bash
-sudo infra/deploy/schedule.sh --env-file /srv/planta14/app/infra/.env.production --user planta14
+sudo bash infra/deploy/schedule.sh --env-file /srv/planta14/app/infra/.env.production --user planta14
 ```
 
-Programa copias diarias de la base de datos (03:15), de las imágenes (03:30) y la copia externa (03:45), además de la vigilancia del disco cada hora. Si algo falla, llega un correo cuando el correo esté activado (`ALERT_EMAIL_ENABLED=true`).
+Copia PostgreSQL 03:15, originales 03:30, destino externo 03:45, disco cada hora y memoria cada minuto. Comprueba la primera noche y que los trabajos no se solapan. A más del **85 % de RAM durante 10 minutos**, el monitor intenta enviar un correo; repite como máximo cada seis horas durante el mismo episodio. Es la señal para revisar carga y preparar la mudanza, no para ampliar este plan. Una pausa larga en las muestras reinicia la medición. Si SMTP falla, consulta el registro y el monitor externo.
 
-### 3.8 Monitor externo
+## 7. El 4 de diciembre y después
 
-Da de alta UptimeRobot u otro servicio parecido sobre `https://planta14.com/api/health`, con aviso al móvil (ver `docs/MANUAL-OPERACION.md`).
+Solo con las pruebas y textos legales resueltos, cambia `SITE_INDEXABLE=true` y actualiza el contenedor con la versión ya validada. Activa GA4 únicamente cuando su configuración y textos estén revisados; la casilla de consentimiento no configura una propiedad de Google por sí misma. Da de alta el monitor externo y envía los sitemaps a Search Console.
 
-### 3.9 Estado en cualquier momento
+Revisa copia diaria y alertas cada mañana la primera semana. Guarda tres versiones locales y vigila el disco de 120 GB: el constructor conserva caché. La persona técnica revisará el espacio antes de limpiar **solo** caché del constructor; nunca use una limpieza general que borre volúmenes. Mantén las versiones anterior/actual y las copias.
 
-```bash
-infra/deploy/status.sh --env-file infra/.env.production
-```
+Para mudarse: contratar el destino cuando Pablo lo autorice, preparar Ubuntu y claves, detener escrituras, hacer copia final SQL + originales, restaurar en vacío, ejecutar sincronización de copias públicas, comprobar cuentas/retiradas/derechos/correo, cambiar DNS y conservar el servidor anterior hasta verificar el resultado. No se amplía el VPS M+.
 
-Muestra la versión actual y la anterior, los contenedores, la salud de la web, las últimas copias y los últimos despliegues.
-
-## 4. Cambiar el DNS de planta14.com sin romper el correo
-
-El correo de **info@planta14.com** depende de registros del DNS que **no hay que tocar**: los **MX** y los **TXT** (SPF, DKIM y DMARC). Si el correo funciona por **redirección** del proveedor del dominio, también depende de que el DNS siga en ese proveedor.
-
-### 4.1 Antes de tocar nada: anotar cómo está
-
-1. Entra en el panel del proveedor del dominio, en la sección DNS, y haz **capturas de pantalla de todos los registros**. Pásaselas a la IA.
-2. Anota también si hay configurada una **redirección de correo** (por ejemplo, info@ → otra dirección) y a dónde va.
-3. Comprueba desde fuera cómo responde el DNS. Si no usas terminal, utiliza https://toolbox.googleapps.com/apps/dig/ (escribe `planta14.com` y elige el tipo). Si usas terminal:
-
-```bash
-dig +short NS planta14.com
-```
-
-```bash
-dig +short MX planta14.com
-```
-
-```bash
-dig +short TXT planta14.com
-```
-
-```bash
-dig +short TXT _dmarc.planta14.com
-```
-
-```bash
-dig +short A planta14.com
-```
-
-```bash
-dig +short CNAME www.planta14.com
-```
-
-Guarda las respuestas: son la «foto» de antes. **NS** dice dónde está el DNS, **MX** a dónde llega el correo, y **TXT** contiene el SPF (`v=spf1 …`).
-
-4. Envía un correo de prueba a info@planta14.com desde otra cuenta y confirma que llega. Así sabrás que funcionaba antes del cambio.
-
-### 4.2 El cambio (dos o tres días antes de la salida)
-
-1. **Un día antes del cambio**, baja el **TTL** de los registros `A` de `planta14.com` y de `www` a 300 segundos. Así el cambio se nota en minutos y, si hay que deshacerlo, también.
-2. **No cambies los servidores de nombres (NS)** ni muevas el DNS a otro sitio: es lo que más fácilmente rompe el correo y las redirecciones.
-3. Edita **solo estos registros**:
-   - `planta14.com`, tipo **A**: la IP (IPv4) del servidor de IONOS. **No añadas de momento un registro AAAA (IPv6)**, y borra cualquier AAAA antiguo de la web: con IPv6, la protección contra intentos de acceso no vería la IP real de los visitantes.
-   - `www.planta14.com`: tipo **A** con la misma IP, o **CNAME** a `planta14.com`.
-   - Si había una «redirección web» o «reenvío de dominio» del proveedor para la web (no para el correo), desactívala: la redirección de `www` la hace ahora el servidor.
-4. **No toques** MX, TXT (SPF, DKIM, DMARC), ni ningún registro relacionado con el correo o con la redirección de correo.
-5. **Correo transaccional:** el proveedor pedirá añadir registros (DKIM y a veces un CNAME de verificación). Añádelos como registros **nuevos**. Si pide añadir algo al SPF, **edita el registro SPF que ya existe** añadiendo su `include:`: nunca debe haber dos registros `v=spf1`. Si dudas, pásale a la IA la captura y el texto que pide el proveedor.
-
-### 4.3 Después del cambio
-
-1. Comprueba que `dig +short A planta14.com` devuelve la IP nueva y que `dig +short MX planta14.com` **devuelve lo mismo que antes**.
-2. Abre https://planta14.com: el candado debe estar bien (Let's Encrypt tarda uno o dos minutos la primera vez).
-3. Envía de nuevo un correo de prueba a info@planta14.com y confirma que llega.
-4. Si algo va mal, **vuelve a poner en los registros A los valores anotados** en el paso 4.1. Con el TTL bajo, se arregla en minutos.
-
-## 5. Prueba final antes del 4 de diciembre
-
-Hazla con `SITE_INDEXABLE=false` (la web ya responde en planta14.com pero los buscadores no la indexan):
-
-- [ ] `infra/deploy/status.sh` sin errores y `https://planta14.com/api/health` dice «ok».
-- [ ] `http://planta14.com` y `https://www.planta14.com` llevan a `https://planta14.com`.
-- [ ] Portada, una noticia, un espacio municipal, las páginas legales y el banner de cookies se ven bien en el móvil y en el ordenador.
-- [ ] Con una cuenta municipal de prueba: publicar un aviso con imagen y declaración, verlo en la web, retirarlo desde `/cms` con un motivo y comprobar que desaparece. Borra después la cuenta de prueba.
-- [ ] Al día siguiente hay copias nuevas (`status.sh`) y en el destino externo.
-- [ ] Prueba de restauración en el servidor, sin tocar la web:
-
-```bash
-RESTORE_TEST_PAYLOAD=0 infra/test/restore-test.sh
-```
-
-- [ ] Alerta de prueba: con el correo ya activado, debe llegar un correo «FALLO: Prueba de alerta».
-
-```bash
-ALERT_ENV_FILE=/srv/planta14/app/infra/.env.production infra/monitor/run-with-alert.sh "Prueba de alerta" -- false
-```
-
-- [ ] Monitor externo: para la web 5 minutos y comprueba que llega el aviso al móvil y, al arrancarla, el de recuperación.
-
-```bash
-docker compose -f infra/compose.production.yaml --env-file infra/.env.production stop app
-```
-
-- [ ] Vuelta atrás: despliega una versión anterior y vuelve a la definitiva con `deploy.sh`. Comprueba que `status.sh` refleja ambas.
-- [ ] Revisión de abogado de los textos legales hecha y [REGISTRO MERCANTIL] completado.
-
-**El día 4 de diciembre:** cambia `SITE_INDEXABLE=true` en el `.env`.
-
-```bash
-DEPLOY_FORCE=1 infra/deploy/deploy.sh --env-file infra/.env.production <la misma etiqueta>
-```
-
-Después da de alta el dominio en Google Search Console y envía `https://planta14.com/sitemap.xml` y `https://planta14.com/sitemap-noticias.xml`.
-
-## 6. Qué hacer con la demo de Netlify tras la salida
-
-La demo (proyecto `planta14` del equipo B11 en Netlify, con previsualizaciones públicas como `deploy-preview-1--planta14.netlify.app`) es **pública y sin contraseña**. Una vez planta14.com funcione:
-
-1. **El mismo día de la salida:** en Netlify, desactiva las **previsualizaciones de PR** (Site configuration → Build & deploy → Deploy Previews: «Don't deploy pull requests»). Así ninguna rama de desarrollo se publica por accidente.
-2. **Si se quiere conservar para presentaciones:** déjala tal cual. Lleva `noindex`, no tiene datos reales ni formularios, y se puede seguir enseñando en `planta14.netlify.app`. Evita enlazarla desde la web nueva.
-3. **Cuando ya no haga falta** (recomendado dos o tres semanas después de una salida estable): en Netlify, Site configuration → **Delete site**. La configuración está documentada en `docs/NETLIFY-CONFIG.md` y el código sigue en GitHub, así que no se pierde nada.
-4. No apuntes planta14.com a Netlify en ningún momento: el dominio va solo al servidor de IONOS.
+La demo Netlify y las ramas históricas no se eliminan ni se modifican con esta instalación. Cualquier retirada o redirección de la demo se decide aparte.

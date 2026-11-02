@@ -17,7 +17,7 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -n $env_file && -f $env_file ]] || { echo "Indica --env-file con la ruta ABSOLUTA del .env de producción" >&2; exit 2; }
 [[ $env_file == /* ]] || { echo "--env-file debe ser una ruta absoluta" >&2; exit 2; }
-for script in infra/monitor/run-with-alert.sh infra/monitor/check-disk.sh infra/backup/backup-postgres.sh infra/backup/backup-storage.sh infra/backup/offsite-sync.sh; do
+for script in infra/monitor/run-with-alert.sh infra/monitor/check-disk.sh infra/monitor/check-memory.sh infra/backup/backup-postgres.sh infra/backup/backup-storage.sh infra/backup/offsite-sync.sh; do
   [[ -x $repo/$script ]] || { echo "Falta $script: fusiona antes la rama de lanzamiento (alertas)" >&2; exit 1; }
 done
 [[ $user =~ ^[a-z][a-z0-9_-]*$ ]] || { echo "Usuario no válido" >&2; exit 2; }
@@ -36,6 +36,7 @@ tmp=$(mktemp)
   job 30 3 "Copia del almacenamiento" "infra/backup/backup-storage.sh --env-file $env_file"
   job 45 3 "Copia externa" "infra/backup/offsite-sync.sh --env-file $env_file"
   printf '0 * * * * %s cd %q && ALERT_ENV_FILE=%q infra/monitor/check-disk.sh --env-file %q >> %s 2>&1\n' "$user" "$repo" "$env_file" "$env_file" "$log"
+  printf '* * * * * %s cd %q && infra/monitor/check-memory.sh --env-file %q >> %s 2>&1\n' "$user" "$repo" "$env_file" "$log"
 } > "$tmp"
 install -D -m 0644 "$tmp" "$cron_dir/planta14"; rm -f "$tmp"
 cat > "$logrotate_dir/planta14" <<ROTATE

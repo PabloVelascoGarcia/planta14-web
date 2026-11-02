@@ -57,7 +57,7 @@ else
   [[ -f $build/infra/app.Dockerfile ]] || { log "La versión $ref no tiene infra/app.Dockerfile"; exit 3; }
   log "Construyendo $tag (puede tardar varios minutos)"
   if [[ -n ${DEPLOY_BUILD_COMMAND:-} ]]; then "$DEPLOY_BUILD_COMMAND" "$build" "$tag"
-  else docker build --pull=false -f "$build/infra/app.Dockerfile" -t "$tag" --label "org.planta14.commit=$sha" "$build"; fi || { log "Falló la construcción; no se ha cambiado nada"; exit 3; }
+  else bash "$here/build-image.sh" "$build" "$tag"; fi || { log "Falló la construcción; no se ha cambiado nada"; exit 3; }
 fi
 
 # --- 2. Base de datos en marcha y copia previa -----------------------------------------------------
