@@ -2,6 +2,8 @@
 
 Base: `origin/desarrollo/planta14-v2-bloque2`, commit `4ca4f84`. Rama: `desarrollo/planta14-v2-bloque3`. No se han tocado `desarrollo/planta14-v2-infra`, `main`, `mejora/presentacion-la-voz` ni las ramas de respaldo. Sin PR, sin despliegues, sin servicios contratados y sin secretos en el repositorio. Commits con `[skip netlify]`.
 
+Revisión posterior: [V2-BLOQUE3-REVISION.md](V2-BLOQUE3-REVISION.md). Actualiza el aislamiento y la restauración de versiones, recomienda un bucket público separado y documenta un límite importante confirmado: la reconciliación no identifica objetos huérfanos que hayan perdido su registro al revertirse una transacción SQL.
+
 ## Parte 1. Correcciones de la revisión del bloque 2
 
 ### Imágenes públicas: copia pública con caché larga
@@ -15,13 +17,13 @@ Base: `origin/desarrollo/planta14-v2-bloque2`, commit `4ca4f84`. Rama: `desarrol
 y la web pública la enlaza como `PUBLIC_MEDIA_BASE_URL/<prefijo>/<uuid>/<archivo>`. Los objetos se escriben con `Cache-Control: public, max-age=31536000, immutable` (configurable con `PUBLIC_MEDIA_CACHE_CONTROL`).
 
 - **Sin depender del proveedor.** Solo usa operaciones S3 estándar (`GetObject`, `PutObject`, `DeleteObjects`), sin ACL ni API propias. Sirven las dos variantes:
-  - **Prefijo en el mismo bucket** (por defecto: `PUBLIC_MEDIA_BUCKET` vacío y prefijo `public`). La política del bucket o del CDN debe permitir la lectura anónima **solo** de `public/*`.
-  - **Bucket público aparte** (`PUBLIC_MEDIA_BUCKET=<bucket>`), con las mismas credenciales. El bucket privado no cambia.
+  - **Recomendado: bucket público aparte** (`PUBLIC_MEDIA_BUCKET=<bucket>`). Mantener `S3_BUCKET` privado y limitar las credenciales de la aplicación a las operaciones necesarias en los dos buckets. La plantilla local propone `planta14-development-public`.
+  - **Compatibilidad, no recomendado: prefijo en el mismo bucket** (`PUBLIC_MEDIA_BUCKET` vacío). Una política mal configurada podría exponer también los originales. No conceder nunca lectura anónima al bucket privado completo; comprobar la política real con peticiones sin credenciales. La compatibilidad se conserva, pero no se elige para un despliegue real.
   - `PUBLIC_MEDIA_BASE_URL` apunta a la raíz del bucket público o al CDN que lo tiene como origen. En producción se exige HTTPS.
 - **Retirada.** Al despublicar, retirar, borrar o desvincular el contenido, los hooks recalculan el uso y, si ya no queda ninguno publicado, **borran la copia pública**. Una nueva publicación genera otro UUID, así que una URL antigua no vuelve a servir la imagen desde el origen y la caché puede ser inmutable. Lo que ya esté en la caché de un CDN o en los navegadores puede seguir sirviéndose hasta que caduque o se purgue: con un CDN real hay que purgar la ruta al retirar (pendiente de elegir proveedor) o reducir `PUBLIC_MEDIA_CACHE_CONTROL`.
 - **URL firmadas solo en el panel autenticado.** `/api/cms/media/file/...` deniega el acceso anónimo (la función de acceso recibe `isReadingStaticFile`). Editores, administradores y cada ayuntamiento (con sus propias imágenes) siguen recibiendo la redirección firmada de 60 s. La API conserva `Cache-Control: private, no-store`, que ya no afecta a la web pública porque las imágenes públicas no pasan por la aplicación.
 - **Sin `PUBLIC_MEDIA_BASE_URL`** no se crean copias públicas y la web muestra el marcador (`/images/placeholder.svg`), como hasta ahora con las imágenes sin derechos.
-- Las escrituras en S3 se hacen dentro del hook, pero no forman parte de la transacción de PostgreSQL. Si una transacción falla después de copiar o borrar, `npm run cms:media:sync-public` reconcilia todo (recalcula `publishedUses` y crea o borra copias). También hay que ejecutarlo tras aplicar la migración en una base con datos, tras restaurar una copia o al cambiar `PUBLIC_MEDIA_*`.
+- Las escrituras S3 no forman parte de la transacción PostgreSQL. `npm run cms:media:sync-public` recalcula usos, crea/borra copias **registradas** y comprueba que existan el original y las variantes. No es una reconciliación completa del inventario: una reversión SQL puede dejar objetos sin clave registrada. No cambiar bucket/prefijo como si el comando migrase las copias antiguas automáticamente; conservar un inventario del origen. Ver el informe de revisión para el diseño pendiente de operaciones duraderas.
 
 ### `readMedia` sin recorrer el contenido
 
@@ -40,8 +42,8 @@ Decisión de Pablo: el ayuntamiento publica directamente y Planta 14 puede retir
 | Regla | Implementación |
 |---|---|
 | Rol `municipal` vinculado a un único espacio | `users.role` admite `municipal`; `municipalSpace` es obligatorio para ese rol y está prohibido para los demás (hook `beforeChange`, error 400). Rol y espacio solo los asigna un administrador (acceso por campo y `create: adminOnly`). |
-| Solo su espacio | Lectura: su espacio (borradores incluidos) más lo publicado. Versiones: solo las de su espacio (`version.space`). Crear: solo en su espacio. Editar, publicar y despublicar: solo documentos de su espacio. El hook impone `space`, `origin=municipality`, `demo=false` y procedencia `municipal-account`, e impide cambiar de espacio. **No puede borrar**: despublica (el borrado queda para Planta 14 y la auditoría se conserva). |
-| Imágenes | Puede subirlas; el hook fija titular = nombre de su ayuntamiento, tipo `institucional`, ámbito `publicable` y `uploadedBySpace`. Solo ve, edita y usa imágenes de su espacio (más las públicas). |
+| Solo su espacio | La sesión municipal solo lee su propio espacio y contenido, incluidos borradores y publicados; no obtiene los publicados de otro ayuntamiento por la API autenticada. Las versiones se limitan a su espacio y una restauración comprueba también el propietario de la versión histórica. Crear/editar/publicar/despublicar solo en su espacio. El hook impone `space`, `origin=municipality`, `demo=false` y procedencia `municipal-account`, e impide cambiar de espacio. **No puede borrar**: despublica. La web anónima sigue mostrando el contenido publicado: no equivale a confidencialidad entre contenidos ya públicos. |
+| Imágenes | Puede subirlas; el hook fija titular = nombre de su ayuntamiento, tipo `institucional`, ámbito `publicable` y `uploadedBySpace`. La API autenticada solo permite ver, editar, usar y descargar originales de su propio espacio; tampoco entrega originales de Planta 14 ni de otro ayuntamiento aunque tengan copia pública. La afirmación automática de derechos queda como decisión de producto pendiente, no como verificación documental. |
 | Sin acceso a lo demás | Noticias y versiones de Planta 14, autores, secciones, concejos, usuarios (salvo su propia cuenta), avisos y auditoría: 403. Tampoco entra en `/cms` (`access.admin` solo para editores y administradores). |
 | Publicación inmediata y marcada | El frontend es dinámico: lo publicado aparece en la siguiente petición. Las fichas muestran «Publicado por el ayuntamiento» (las de demo siguen mostrando «Ejemplo» o «Referencia»). |
 | Aviso para Planta 14 | Cada paso a publicado hecho por una cuenta municipal crea un registro en `notifications` (contenido, espacio, autor, `emailStatus`). Lo ven editores y administradores, que solo pueden marcarlo como revisado. El correo está preparado (`MUNICIPAL_NOTICE_EMAIL_ENABLED`, `MUNICIPAL_NOTICE_EMAIL_TO`, `payload.sendEmail`) pero **desactivado**: queda `emailStatus=disabled`. Al contratar correo hay que configurar el adaptador de Payload y activar las variables. |
@@ -72,7 +74,7 @@ npm run cms:media:sync-public
 
 ```dotenv
 PUBLIC_MEDIA_BASE_URL=          # https://cdn.example.org (raíz del bucket público)
-PUBLIC_MEDIA_BUCKET=            # vacío = mismo bucket que S3_BUCKET
+PUBLIC_MEDIA_BUCKET=planta14-development-public  # recomendado: separado de S3_BUCKET
 PUBLIC_MEDIA_PREFIX=public
 PUBLIC_MEDIA_CACHE_CONTROL="public, max-age=31536000, immutable"
 MUNICIPAL_NOTICE_EMAIL_ENABLED=false

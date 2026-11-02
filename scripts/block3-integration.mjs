@@ -78,6 +78,12 @@ try {
   const mieresDraft = (await rest('POST', 'municipal-content?draft=true', item('Borrador privado de Mieres', { _status: 'draft' }), mieres)).json.doc;
   const mieresPublished = (await rest('POST', 'municipal-content', item('Publicación de Mieres', { _status: 'published' }), mieres)).json.doc;
   assert(mieresDraft?.id && mieresPublished?.id);
+  assert(denied((await rest('GET', `municipal-content/${mieresPublished.id}?depth=5&overrideAccess=true`, undefined, lena)).status), 'published content is still tenant-scoped; a query cannot override access');
+  assert(denied((await rest('GET', `municipal-spaces/${mieresSpace.id}?depth=5`, undefined, lena)).status));
+  assert(denied((await rest('GET', 'municipal-spaces/versions?depth=5', undefined, lena)).status));
+  const mieresVersion = (await payload.findVersions({ collection: 'municipal-content', overrideAccess: true, where: { parent: { equals: mieresPublished.id } }, sort: '-createdAt', limit: 1 })).docs[0];
+  assert(denied((await rest('GET', `municipal-content/versions/${mieresVersion.id}?depth=5`, undefined, lena)).status));
+  assert(denied((await rest('POST', `municipal-content/versions/${mieresVersion.id}`, {}, lena)).status));
   assert.equal(mieresDraft.demo, false); assert.equal(idOf(mieresDraft.space), mieresSpace.id);
   assert(denied((await rest('GET', `municipal-content/${mieresDraft.id}`, undefined, lena)).status));
   assert(denied((await rest('GET', `municipal-content/${mieresDraft.id}?draft=true`, undefined, lena)).status));
@@ -118,6 +124,12 @@ try {
   assert.notEqual((await rest('GET', 'access', undefined, lena)).json.canAccessAdmin, true, 'no /cms access');
   assert.equal((await rest('GET', 'access', undefined, editorToken)).json.canAccessAdmin, true);
   passed('a municipal account cannot access Planta 14 articles, users, sections, towns, authors, activity or the /cms administration');
+  assert.equal((await rest('POST', 'graphql', { query: '{ Articles { docs { id title } } }' }, lena)).status, 404, 'GraphQL is not mounted in this application');
+  const moved = (await rest('POST', 'municipal-content?draft=true', item('Histórico reservado a Mieres', { _status: 'draft' }), mieres)).json.doc;
+  const oldTenantVersion = (await payload.findVersions({ collection: 'municipal-content', overrideAccess: true, where: { parent: { equals: moved.id } }, limit: 1 })).docs[0];
+  assert.equal((await rest('PATCH', `municipal-content/${moved.id}?draft=true`, { space: lenaSpace.id, title: 'Documento reasignado a Lena' }, editorToken)).status, 200);
+  assert(denied((await rest('POST', `municipal-content/versions/${oldTenantVersion.id}?draft=true`, {}, lena)).status), 'moving a document does not grant access to historical versions from another tenant');
+  await payload.delete({ collection: 'municipal-content', id: moved.id, overrideAccess: true });
 
   // --- Imágenes: copia pública con caché larga; borradores y demo no son públicos; despublicar la retira.
   const png = await sharp({ create: { width: 1800, height: 1000, channels: 3, background: '#24704a' } }).png().toBuffer();
@@ -138,6 +150,8 @@ try {
   const anonymous = await rest('GET', `media/${image.id}`);
   assert.equal(anonymous.status, 200);
   assert.equal(anonymous.json.publicURL, linked.publicURL);
+  assert(denied((await rest('GET', `media/${image.id}?depth=5`, undefined, lena)).status), 'municipal account cannot read Planta 14 public media through authenticated API');
+  assert(denied((await rest('GET', `media/file/${linked.filename}`, undefined, lena)).status), 'municipal account cannot obtain signed originals of Planta 14');
   const publicFile = await fetch(linked.publicURL);
   assert.equal(publicFile.status, 200);
   assert.match(publicFile.headers.get('cache-control') || '', /public, max-age=31536000, immutable/);
@@ -157,12 +171,23 @@ try {
   const lenaImage = await payload.create({ collection: 'media', user: lenaActor, overrideAccess: false, file: file('lena.png'), data: { alt: 'Fiesta en Pola de Lena', credit: 'Ayuntamiento de Lena' } });
   assert.equal(lenaImage.rightsHolder, 'Ayuntamiento de Lena'); assert.equal(lenaImage.rightsType, 'institucional'); assert.equal(idOf(lenaImage.uploadedBySpace), lenaSpace.id);
   const lenaImageDraft = (await rest('POST', 'municipal-content?draft=true', item('Borrador con imagen', { _status: 'draft', image: lenaImage.id }), lena)).json.doc;
+  const managedFields = await rest('PATCH', `media/${lenaImage.id}`, { filename: image.filename, prefix: 'another-tenant', sizes: { card: { filename: image.filename } }, uploadedBySpace: mieresSpace.id, publishedUses: 999, publicKey: 'public/forged' }, lena);
+  assert.equal(managedFields.status, 200, 'managed upload fields are sanitized by Payload');
+  const safeFile = await media(lenaImage.id);
+  assert.equal(safeFile.filename, lenaImage.filename, 'tenant cannot forge stored source filename');
+  assert.equal(safeFile.prefix, lenaImage.prefix);
+  assert.equal(safeFile.sizes.card.filename, lenaImage.sizes.card.filename, 'tenant cannot forge variant source keys');
+  assert.equal(idOf(safeFile.uploadedBySpace), lenaSpace.id);
+  assert.equal(safeFile.publishedUses, 0);
+  assert.equal(safeFile.publicKey, null);
   assert.equal((await media(lenaImage.id)).publicKey, null);
   assert(denied((await rest('GET', `media/${lenaImage.id}`)).status), 'image of a draft is not public');
   assert(denied((await rest('GET', `media/${lenaImage.id}`, undefined, mieres)).status), 'Mieres cannot read Lena private images');
   assert(denied((await rest('POST', 'municipal-content?draft=true', item('Imagen ajena', { _status: 'draft', image: lenaImage.id }), mieres)).status));
   assert.equal((await rest('PATCH', `municipal-content/${lenaImageDraft.id}`, { _status: 'published' }, lena)).status, 200);
   const lenaPublic = await media(lenaImage.id);
+  assert(denied((await rest('GET', `media/${lenaImage.id}?depth=5`, undefined, mieres)).status), 'published municipal images remain scoped in authenticated API');
+  assert(denied((await rest('GET', `media/file/${lenaImage.filename}`, undefined, mieres)).status));
   assert.equal((await fetch(lenaPublic.publicURL)).status, 200);
   // Unpublishing removes the public copy; republishing uses a new key.
   await payload.update({ collection: 'articles', id: article.id, overrideAccess: false, user: editorActor, data: { _status: 'draft' } });
@@ -200,6 +225,7 @@ try {
   }
   const page = async (route, token) => { const r = await fetch(`http://127.0.0.1:${webPort}${route}`, { headers: token ? { Cookie: `payload-token=${token}`, 'Sec-Fetch-Site': 'same-origin' } : {} }); return { status: r.status, html: await r.text() }; };
   const fresh = (await rest('POST', 'municipal-content', item('Mercado semanal de Pola de Lena', { _status: 'published' }), lena)).json.doc;
+  const freshVersion = (await payload.findVersions({ collection: 'municipal-content', overrideAccess: true, where: { parent: { equals: fresh.id } }, sort: '-createdAt', limit: 1 })).docs[0];
   let lenaPage = await page('/lena');
   assert.equal(lenaPage.status, 200);
   assert(lenaPage.html.includes('Mercado semanal de Pola de Lena'), 'published municipal content appears at once');
@@ -225,6 +251,14 @@ try {
   assert.equal(ownView.json.withdrawal.reason, reason);
   const republish = await rest('PATCH', `municipal-content/${fresh.id}`, { _status: 'published' }, lena);
   assert.equal(republish.status, 403, 'a municipality cannot republish withdrawn content');
+  for (const token of [lena, editorToken]) for (const query of ['', '?draft=true']) {
+    assert(denied((await rest('POST', `municipal-content/versions/${freshVersion.id}${query}`, {}, token)).status), 'historical restore cannot bypass a live withdrawal');
+  }
+  assert.equal((await rest('PATCH', `municipal-content/${fresh.id}?draft=true`, { _status: 'published', withdrawal: { withdrawn: false, reason: null } }, lena)).status, 403);
+  const bulk = await rest('PATCH', `municipal-content?where[id][equals]=${fresh.id}`, { _status: 'published' }, lena);
+  assert(denied(bulk.status) || bulk.json.errors?.length > 0, 'bulk update cannot republish withdrawn content');
+  const storedWithdrawal = await payload.findByID({ collection: 'municipal-content', id: fresh.id, overrideAccess: true });
+  assert.equal(storedWithdrawal._status, 'draft'); assert.equal(storedWithdrawal.withdrawal.reason, reason);
   const lenaPanel = await page('/lena/panel', lena);
   assert.equal(lenaPanel.status, 200);
   assert(lenaPanel.html.includes(reason), 'the municipality sees the reason in its panel');
@@ -260,11 +294,58 @@ try {
   assert(denied((await rest('DELETE', `audit-log/${audit[0].id}`, undefined, adminToken)).status));
   assert(denied((await rest('PATCH', `audit-log/${audit[0].id}`, { reason: 'x' }, adminToken)).status));
   // Editors publishing municipal content do not create notices.
-  await rest('POST', 'municipal-content', item('Aviso de la redacción', { space: lenaSpace.id, _status: 'published' }), editorToken);
+  assert.equal((await rest('POST', 'municipal-content', item('Aviso de la redacción', { space: lenaSpace.id, _status: 'published', publishedAt: '2026-11-02' }), editorToken)).status, 201);
   assert.equal((await payload.count({ collection: 'notifications', overrideAccess: true })).totalDocs, 3);
   passed('each municipal publication creates one notice for Planta 14 (email prepared, disabled); audit log is immutable');
 
+  // Real multipart REST upload: tenant ownership cannot be supplied/spoofed by the client.
+  const form = new FormData();
+  form.set('file', new Blob([png], { type: 'image/png' }), 'upload-rest.png');
+  form.set('_payload', JSON.stringify({ alt: 'Carga REST propia', credit: 'Ayuntamiento de Lena', uploadedBySpace: mieresSpace.id }));
+  const uploadedResponse = await REST_POST(config)(new Request(`http://localhost:${webPort}/api/cms/media`, { method: 'POST', headers: { Authorization: `JWT ${lena}` }, body: form }), { params: Promise.resolve({ slug: ['media'] }) });
+  assert.equal(uploadedResponse.status, 201);
+  const uploaded = (await uploadedResponse.json()).doc;
+  assert.equal(idOf(uploaded.uploadedBySpace), lenaSpace.id);
+  const prefixForm = new FormData();
+  prefixForm.set('file', new Blob([png], { type: 'image/png' }), 'prefix-spoof.png');
+  prefixForm.set('_payload', JSON.stringify({ alt: 'Destino falsificado', credit: 'Prueba', prefix: 'public/forged' }));
+  const prefixAttempt = await REST_POST(config)(new Request(`http://localhost:${webPort}/api/cms/media`, { method: 'POST', headers: { Authorization: `JWT ${lena}` }, body: prefixForm }), { params: Promise.resolve({ slug: ['media'] }) });
+  assert.equal(prefixAttempt.status, 403, 'municipal uploads cannot target a public storage namespace');
+  assert(denied((await rest('GET', `media/${uploaded.id}?depth=5`, undefined, mieres)).status));
+  assert(denied((await rest('PATCH', `media/${uploaded.id}`, { alt: 'Intrusión' }, mieres)).status));
+  assert(denied((await rest('DELETE', `media/${uploaded.id}`, undefined, mieres)).status));
+  assert.equal((await fetch(`http://127.0.0.1:${webPort}/api/cms/graphql`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: '{ Articles { docs { id title } } }' }) })).status, 404);
+  const cmsPage = await page('/cms', lena);
+  assert(!cmsPage.html.includes('Noticia de Planta 14'), 'CMS panel cannot reveal editorial records to a municipal cookie');
+  passed('multipart upload fixes tenant ownership; other tenants cannot read/edit/delete it; GraphQL is not mounted');
+  const withdrawalImagePost = (await rest('POST', 'municipal-content', item('Prueba editorial de imagen municipal', { publishedAt: '2026-11-02', space: lenaSpace.id, image: uploaded.id, _status: 'published' }), editorToken)).json.doc;
+  assert(withdrawalImagePost?.id);
+  const withdrawalURL = (await media(uploaded.id)).publicURL;
+  assert.equal((await fetch(withdrawalURL)).status, 200);
+  assert.equal((await rest('PATCH', `municipal-content/${withdrawalImagePost.id}`, { withdrawal: { withdrawn: true, reason: 'Ensayo de retirada con imagen' } }, editorToken)).status, 200);
+  assert.equal((await fetch(withdrawalURL)).status, 404);
+  const deletionImagePost = (await rest('POST', 'municipal-content', item('Prueba editorial de borrado con imagen', { publishedAt: '2026-11-02', space: lenaSpace.id, image: uploaded.id, _status: 'published' }), editorToken)).json.doc;
+  const deletionURL = (await media(uploaded.id)).publicURL;
+  assert.equal((await fetch(deletionURL)).status, 200);
+  assert.equal((await rest('DELETE', `municipal-content/${deletionImagePost.id}`, undefined, editorToken)).status, 200);
+  assert.equal((await fetch(deletionURL)).status, 404);
+  passed('public municipal image copies disappear from the origin on withdrawal and content deletion');
+  const { testPublicStorageFailures } = await import('./block3-storage-failures.mjs');
+  await testPublicStorageFailures({ payload, actor: editorActor, article, image, file });
+  if (process.env.CMS_BLOCK3_ORPHAN_PROBE === 'true') {
+    const { probePublicOrphans } = await import('./block3-storage-orphans.mjs');
+    await probePublicOrphans({ payload, actor: editorActor, article, file });
+  }
+  if (process.env.CMS_BLOCK3_BROWSER_TEST === 'true') {
+    const { testMunicipalBrowser } = await import('./block3-browser.mjs');
+    await testMunicipalBrowser({ url: `http://localhost:${webPort}`, email: lenaUser.email, password, withdraw: async (id, reason) => {
+      assert.equal((await rest('PATCH', `municipal-content/${id}`, { withdrawal: { withdrawn: true, reason } }, editorToken)).status, 200);
+    } });
+  }
+
   // --- Migración reversible, protegida si hay cuentas municipales.
+  await payload.update({ collection: 'articles', id: article.id, user: editorActor, overrideAccess: false, data: { seoImage: image.id } });
+  assert.equal((await media(image.id)).publishedUses, 1, 'image and SEO use in the same document count once');
   const migration = await import('../cms/migrations/20261102_105932_bloque3.ts');
   await assert.rejects(payload.db.drizzle.transaction(db => migration.down({ db, payload, req: {} })), /Retira las cuentas municipales/);
   for (const user of [lenaActor, mieresActor]) await payload.delete({ collection: 'users', id: user.id, overrideAccess: true });
