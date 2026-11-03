@@ -47,9 +47,18 @@ cleanup() {
   # -v: también los volúmenes anónimos de datos de PostgreSQL de prueba.
   docker rm -f -v "$src" "$dst" "$s3" "$off" >/dev/null 2>&1 || true
   docker network rm "$net" "$egress" >/dev/null 2>&1 || true
-  if [[ ${RESTORE_TEST_KEEP:-0} != 1 ]]; then rm -rf -- "$out"; fi
+  if [[ ${RESTORE_TEST_KEEP:-0} != 1 ]]; then
+    # Si un contenedor dejó archivos de root (versiones anteriores de esta prueba), los borra otro contenedor:
+    # en el servidor la prueba la ejecuta un usuario sin privilegios.
+    rm -rf -- "$out" 2>/dev/null || {
+      docker run --rm --network none --entrypoint sh -v "$out:/out" "$RCLONE_IMAGE" -c 'rm -rf /out/* /out/.[!.]* 2>/dev/null; true' >/dev/null 2>&1 || true
+      rm -rf -- "$out" 2>/dev/null || log "AVISO: no se pudo borrar $out"
+    }
+  fi
 }
-trap cleanup EXIT
+# La limpieza nunca cambia el resultado: termina con el código de la prueba (0 si se supera).
+on_exit() { local status=$?; trap - EXIT; set +e; cleanup; exit "$status"; }
+trap on_exit EXIT
 
 check() { # check DESCRIPCIÓN CONDICIÓN...
   local desc=$1; shift
@@ -183,7 +192,9 @@ if [[ $storage == 1 ]]; then
   log "== Almacenamiento: servidor S3 de pruebas (rclone serve s3, $RCLONE_IMAGE)"
   key=p14test$(openssl rand -hex 4) secret=$(openssl rand -hex 16)
   mkdir -p "$out/s3data" "$out/seed/media/2026/11"
-  docker run -d --name "$s3" --network "$net" -v "$out/s3data:/data" \
+  chmod -R a+rwX "$out/s3data"
+  # Con el usuario que lanza la prueba: los archivos que escribe se pueden borrar sin privilegios.
+  docker run -d --name "$s3" --network "$net" --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$out/s3data:/data" \
     "$RCLONE_IMAGE" serve s3 --addr :8080 --auth-key "$key,$secret" /data >/dev/null
   sleep 2
   export S3_ENDPOINT=http://$s3:8080 S3_REGION=us-east-1 S3_FORCE_PATH_STYLE=true
@@ -212,7 +223,7 @@ if [[ $storage == 1 ]]; then
   docker network create "$egress" >/dev/null
   offkey=p14off$(openssl rand -hex 4) offsecret=$(openssl rand -hex 16)
   mkdir -p "$out/offsite-data/planta14-copias-externas"; chmod -R a+rwX "$out/offsite-data"
-  docker run -d --name "$off" --network "$egress" -v "$out/offsite-data:/data" \
+  docker run -d --name "$off" --network "$egress" --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$out/offsite-data:/data" \
     "$RCLONE_IMAGE" serve s3 --addr :8080 --auth-key "$offkey,$offsecret" /data >/dev/null
   sleep 2
   export BACKUP_EGRESS_NETWORK=$egress PG_CONTAINER=$src OFFSITE_BUCKET=planta14-copias-externas OFFSITE_PREFIX=planta14/prueba
