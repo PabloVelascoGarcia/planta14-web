@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "estadoFase1": "En curso: solo carta del director. Borrador solicitado por Pablo; resto de piezas pendiente.",
+  "notasModelo": [
+    "Los nombres ingleses title, excerpt, body, section, town, showInTown, opinion, author, publishedAt y _status corresponden al CMS real.",
+    "id, tipo, lote, estadoEditorial, concejosEtiquetados y fotoNecesaria son metadatos del conjunto; no son campos nuevos del CMS.",
+    "Las relaciones se expresan por slug para resolver sus identificadores al preparar una importación. Este archivo no se ha importado.",
+    "El CMS admite un solo town por artículo; concejosEtiquetados conserva el alcance comarcal solicitado. showInTown=false evita asignar esta carta a una sola página municipal.",
+    "La fecha es una propuesta para la maqueta, no una programación ni una publicación efectiva."
+  ],
+  "autores": [
+    {
+      "slug": "pablo-velasco",
+      "name": "Pablo Velasco",
+      "role": "director"
+    }
+  ],
+  "piezas": [
+    {
+      "id": "p14-carta-director-001",
+      "tipo": "carta_director",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-carta-director-001",
+      "slug": "darle-al-hierro",
+      "title": "Darle al hierro",
+      "excerpt": "Planta 14 empieza después de muchos intentos, con el tesón del Caudal y las ganas de contar en positivo el lugar del que somos.",
+      "body": [
+        "Planta 14 es un proyecto ambicioso. Queremos hacer un periódico que mire de cerca al Caudal, que conozca sus pueblos y que tenga ganas de contar lo que pasa aquí. Tampoco estamos intentando mandar un cohete a la luna. Aunque, después de algunas semanas, he llegado a pensar que quizá lo del cohete venía con un manual de instrucciones más claro que el nuestro.",
+        "Poner esto en marcha ha costado bastante más de lo que esperaba. Ha habido muchos noes. Buscamos a alguien para asumir la dirección y aquello no llegó a concretarse. Contamos con una persona para representar al medio y ese camino tampoco salió. Hubo dificultades para organizar la redacción y unas cuantas vueltas con la plataforma tecnológica. Cada cosa que parecía resuelta abría otra que había que pensar de nuevo.",
+        "Lo cuento con respeto por todas las personas que se han cruzado en el proyecto. A veces las circunstancias cambian, las expectativas no encajan o cada cual tiene que seguir su camino. Nos ha tocado aceptar esas situaciones, aprender y buscar otra manera de avanzar. Agradezco también las conversaciones, las manos y los ánimos que han ayudado a sostenerlo, incluso cuando todavía había poco que enseñar.",
+        "Al final, Planta 14 ha salido adelante por tesón. Por esa costumbre tan nuestra de seguir dándole al hierro hasta que parta. En la Cuenca y en el Caudal sabemos algo de esfuerzo, de resistencia y de volver al tajo después de una jornada difícil. Ahora pienso que ha sido mejor que costara. Cada obstáculo nos ha obligado a aclarar qué queríamos hacer y cuánto estábamos dispuestos a trabajar por ello.",
+        "Las cosas que cuestan nos hacen pensar. Nos sacan de las respuestas fáciles y nos piden atención, paciencia y una cierta humildad. Quizá por eso también me he puesto ahora a estudiar Filosofía. Entre apuntes, preguntas y este periódico, voy encontrando una relación bastante práctica: merece la pena detenerse a entender las cosas antes de darlas por sabidas. Y después toca ponerse con ellas.",
+        "El propósito de Planta 14 nace de ahí: contar el lugar del que somos en positivo, con honestidad y con los pies en el suelo. Aquí hay dificultades que merecen atención y preguntas que necesitan respuesta. También hay gente haciendo cosas valiosas, proyectos que avanzan, pequeños negocios que sostienen una calle, asociaciones que reúnen a un pueblo y personas que cuidan de otras sin hacer ruido. Todo eso merece espacio.",
+        "Nos gustaría ayudar a vencer algunos noes. Trabajar para que, con tiempo, esfuerzo y colaboración, puedan convertirse en síes. Que una buena iniciativa encuentre a quien pueda apoyarla. Que una historia cercana despierte otra. Que alguien descubra una oportunidad donde antes veía una puerta cerrada. Ese efecto mariposa empieza muchas veces con algo pequeño: una conversación, una noticia bien contada, unas ganas que se contagian.",
+        "Tenemos de dónde tirar. Somos un pueblo duro, resiliente y tenaz, acostumbrado al esfuerzo y al sacrificio. Lo llevamos en los recuerdos de la infancia, en lo que nos contaron los abuelos, en la mina y en la historia de tantas familias. También en las costumbres, en las fiestas, en las gaitas y en esa manera de reconocernos cuando hablamos de la Cuenca y del Caudal.",
+        "Esa herencia sigue viva cada vez que alguien decide quedarse, volver, emprender, aprender o echar una mano. Planta 14 quiere acompañar esa vida y contribuir a una dinámica positiva para la comarca y el territorio. Tendremos que ganarnos la confianza de quienes nos lean, escuchar, corregir cuando haga falta y trabajar con constancia. Empieza una tarea que merece la pena compartir.",
+        "Y como tenemos todo esto, ahora también tenemos Planta 14.",
+        "Trailará"
+      ],
+      "section": "opinion",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres",
+        "lena",
+        "aller",
+        "morcin",
+        "riosa",
+        "ribera-de-arriba"
+      ],
+      "showInTown": false,
+      "opinion": true,
+      "author": "pablo-velasco",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje horizontal del Caudal con un núcleo habitado y montañas al fondo, sin personas reconocibles en primer plano. Imagen de contexto; no sustituir por el retrato de otra persona. Mínimo 1600 píxeles de ancho.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "notaEditorial": "Texto original redactado a partir de las ideas facilitadas por Pablo. No aprobado ni definitivo. Se mantiene en el lote ensayo por su corrección expresa; no publicar ni conservar como definitivo sin su indicación.",
+      "palabrasCuerpo": 607
+    }
+  ]
+}
