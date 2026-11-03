@@ -2,7 +2,42 @@
 
 ## Versión instalada ahora
 
-**`862379192f53b60f01e9fa553047c874601c0ab5`** (`8623791`, rama `desarrollo/planta14-v2-ajustes-preproduccion`). Desplegada el **3 de noviembre de 2026 a las 09:20** (hora de Madrid). La versión anterior es `c29e024`, y `deploy.sh` la conserva para poder volver a ella.
+**`c740ceaca0160151bfb9c244472759a4709e482c`** (`c740cea`, rama `desarrollo/planta14-ensayo-carga`). Desplegada el **3 de noviembre de 2026 a las 20:58** (hora de Madrid), **con el contenido de ensayo cargado**. La versión anterior es `8623791`, y `deploy.sh` la conserva para poder volver a ella.
+
+### Actualización a c740cea y carga del ensayo (3 de noviembre de 2026)
+
+Guía seguida: `docs/V2-ENSAYO-CARGA.md` del commit `9d117a1` de la misma rama, que solo añade el documento. No se han tocado el DNS, los buckets, los secretos ni el `.env.production`. No hizo falta ninguna contraseña ni sudo. **El ensayo no se ha retirado.**
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo (`status.sh`) | Correcto. Versión `8623791`, `/api/health: ok`, mantenimiento desactivado y sin restauración pendiente |
+| 2. `git fetch` y `checkout --detach` | `c740cea cms: tipos de Payload regenerados (ayudas de Imágenes) [skip netlify]`. `infra/test/out` estaba vacía |
+| 3. `deploy.sh … c740cea…` | **Código 0.** Salieron, en este orden: «Modo mantenimiento ACTIVADO», «Copia previa: …20261103T195757Z.dump.age (160K)», «**Migraciones aplicadas: 20261103_081533_lote_ensayo 20261103_121545_formulario_noticias**», «/api/health: ok», «Modo mantenimiento DESACTIVADO» y «Desplegada». El mantenimiento duró 16 segundos. Registro: `/srv/planta14/state/deploy-c740cea.log` |
+| 4. `cms:structure` y acceso a Commons | «Estructura cargada. Creados: 0 secciones, 0 concejos, 0 espacios… Ya existían: 10, 6 y 6». No duplicó nada. El `curl` a `upload.wikimedia.org` dio `HTTP/2 200` |
+| 5a. `ensayo.sh cargar --solo-comprobar` | Código 0 y «COMPROBACIÓN TERMINADA (sin cambios)». Anunciaba 19 imágenes, 3 autores, 36 articles y 20 municipal-content; la activación de Mieres y Lena; y los 3 avisos de piezas sin foto (`p14-noticia-20`, `p14-noticia-24`, `p14-agenda-06`). Registro: `/srv/planta14/state/ensayo-comprobar.log` |
+| 5b. `ensayo.sh cargar` | Código 0 y **«CARGA TERMINADA»**, en unos 2 minutos. Creados: **19 imágenes, 3 autores, 36 noticias y 20 contenidos municipales (56 piezas)**. Mieres y Lena pasaron a activos, con los mismos 3 avisos. Registro: `/srv/planta14/state/ensayo-cargar.log` |
+| Memoria del contenedor de migraciones | **Pico de 277 MiB de 768** con `docker stats` (36 muestras). El pico del núcleo según el cgroup, que incluye la caché de archivos, fue de **354 MiB**. En el ensayo local fueron 304 y 318 MiB. Muestras: `/srv/planta14/state/ensayo-memoria.log` |
+| 6. Comprobaciones | Correctas (detalle abajo) |
+
+**Comprobaciones del paso 6.** Se hicieron desde el servidor, pidiendo las páginas directamente a la app, porque no tengo la contraseña común.
+- **En la base:**
+  - 36 noticias, todas publicadas, y 20 contenidos municipales;
+  - 19 imágenes, todas `-2560.jpg` y con «reducida de tamaño» en el crédito;
+  - los cuerpos están guardados como texto enriquecido (Lexical).
+- **Portada:** 200, con 11 enlaces a noticias y la agenda «Para salir».
+- **`/mieres` y `/lena`:** 200, con sus avisos, eventos, ayudas y tablón. Se comprobaron cuatro títulos en cada uno.
+- **`/agenda`:** 200, con las actividades próximas.
+- **`/noticia/darle-al-hierro` y `/noticia/bustiello-la-vida-alrededor-de-la-mina`:** 200, con el crédito «… (reducida de tamaño)» y Wikimedia Commons. La foto se sirve desde la copia pública del bucket: 200, `image/jpeg`, 658 KB y 1,1 MB.
+- **Buscador:** `/buscar?q=Bustiello` encuentra el reportaje.
+- **A través de Caddy, sin contraseña:** la portada da 401 y `/api/health` da 200.
+
+**Un dato que no viene de esta instalación.** El espacio de **Aller** ya estaba activo antes de la carga: lo activó alguien desde el CMS el 3 de noviembre a las 09:34 y volvió a guardarlo a las 13:00. Ahora están activos Aller, Lena y Mieres; Morcín, Ribera de Arriba y Riosa siguen inactivos.
+
+**Pendiente de hacer en el navegador** (hace falta la contraseña común y el administrador):
+- ver la portada, `/mieres`, `/lena` y `/agenda`;
+- en **Usuarios**, poner la **Firma (autor vinculado)** de cada periodista;
+- en **Noticias → Crear**, revisar las seis pestañas, el editor, el botón **Crear** de la foto y el calendario de publicación programada;
+- abrir una noticia del ensayo: el texto debe verse en el editor y el **Lote**, en la barra lateral.
 
 ### Actualización a 8623791 (3 de noviembre de 2026)
 
