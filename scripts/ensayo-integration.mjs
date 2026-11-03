@@ -5,6 +5,8 @@ import { mkdtemp, readFile, rm, readdir } from 'node:fs/promises';
 import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 import pg from 'pg';
 import S3rver from 's3rver';
 import sharp from 'sharp';
@@ -142,8 +144,11 @@ try {
   for (const image of images) {
     const foto = fotos.catalogo.find(f => f.paginaCommons === image.sourceURL);
     assert.ok(foto, 'linked to its Commons page');
-    assert.equal(image.width, foto.resolucion.ancho, 'original resolution');
-    assert.equal(image.credit, `${foto.autor} / Wikimedia Commons / ${foto.licencia}`); assert.equal(image.rightsHolder, foto.autor); assert.equal(image.rightsScope, 'publicable');
+    const long = Math.max(foto.resolucion.ancho, foto.resolucion.alto), scale = Math.min(1, 2560 / long);
+    assert.equal(Math.max(image.width, image.height), Math.round(long * scale), 'reduced to 2560 px on the long side');
+    assert.ok(Math.abs(image.width / image.height - foto.resolucion.ancho / foto.resolucion.alto) < 0.01, 'aspect ratio kept');
+    assert.equal(image.mimeType, 'image/jpeg');
+    assert.equal(image.credit, `${foto.autor} / Wikimedia Commons / ${foto.licencia} (reducida de tamaño)`); assert.equal(image.rightsHolder, foto.autor); assert.equal(image.rightsScope, 'publicable');
     assert.equal(image.rightsDeclaration.declared, true); assert.equal(image.rightsDeclaration.declaredBy, admin.id);
     assert.ok(image.rightsDeclaration.statement.includes(foto.paginaCommons) && image.rightsDeclaration.statement.includes(foto.licencia) && image.rightsDeclaration.statement.includes('administración'));
   }
@@ -151,7 +156,23 @@ try {
   assert.ok([...reportPhotos].every(id => images.find(i => i.id === id).lote === 'definitivo'), 'photos of definitive reports are definitive');
   assert.ok((await all('municipal-spaces')).every(s => !s.identity?.heroImage), 'header candidates are uploaded, not assigned');
   assert.ok(loaded.filter(a => a.image).length >= articulos.length - 3);
-  passed('photos: 19 Commons originals downloaded once (resolution checked) and uploaded with author, licence, link and an administration rights declaration citing the source; header candidates not assigned');
+  // Memoria: reducir la foto más grande (8104 × 4559, con ruido como una foto real) en un proceso aparte.
+  const biggest = fotos.catalogo.reduce((a, b) => a.resolucion.ancho * a.resolucion.alto >= b.resolucion.ancho * b.resolucion.alto ? a : b);
+  const bigFile = path.join(directory, 'mayor.jpg');
+  await sharp({ create: { width: biggest.resolucion.ancho, height: biggest.resolucion.alto, channels: 3, background: '#557766', noise: { type: 'gaussian', mean: 128, sigma: 40 } } }).jpeg({ quality: 92 }).toFile(bigFile);
+  const bigBytes = (await import('node:fs')).statSync(bigFile).size;
+  const measureScript = path.join(directory, 'medir.mts');
+  (await import('node:fs')).writeFileSync(measureScript, `
+    import { readFileSync } from 'node:fs'; import sharp from ${JSON.stringify(pathToFileURL(createRequire(import.meta.url).resolve('sharp')).href)}; import { reducirFoto } from ${JSON.stringify(path.resolve('cms/ensayo.ts'))};
+    const out = await reducirFoto(readFileSync(${JSON.stringify(bigFile)}));
+    const meta = await sharp(out).metadata();
+    console.log(JSON.stringify({ maxRSS: process.resourceUsage().maxRSS, width: meta.width, height: meta.height, bytes: out.length }));`);
+  const measure = JSON.parse(execFileSync(path.resolve('node_modules/.bin/tsx'), [measureScript], { cwd: process.cwd() }).toString().trim().split('\n').pop());
+  const peakMiB = Math.round(measure.maxRSS / 1024);
+  assert.equal(measure.width, 2560); assert.equal(measure.height, Math.round(2560 * biggest.resolucion.alto / biggest.resolucion.ancho));
+  assert.ok(peakMiB < 384, `peak memory ${peakMiB} MiB must leave room in the 768 MiB migration container`);
+  console.log(`MEDIDA: reducir ${biggest.resolucion.ancho} × ${biggest.resolucion.alto} (${Math.round(bigBytes / 1048576)} MiB JPEG) → 2560 × ${measure.height} (${Math.round(measure.bytes / 1024)} KiB): pico ${peakMiB} MiB del proceso completo (Node + sharp)`);
+  passed(`photos: 19 Commons originals downloaded once (resolution checked), reduced to 2560 px (JPEG 85) and uploaded with author, licence, link and an administration rights declaration citing the source; header candidates not assigned; reducing the largest one peaks at ${peakMiB} MiB`);
 
   // Espacios y web pública.
   const spacesLoaded = await spaceState();

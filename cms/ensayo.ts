@@ -138,14 +138,27 @@ async function descargar(foto: Foto) {
       const meta = await sharp(data).metadata();
       // Se comprueba que es el original anotado en fotos.json (misma resolución).
       if (meta.width !== foto.resolucion.ancho || meta.height !== foto.resolucion.alto) throw new Error(`resolución ${meta.width}×${meta.height}, se esperaba ${foto.resolucion.ancho}×${foto.resolucion.alto}`);
-      return { data, mimetype: type.split(';')[0], name: decodeURIComponent(foto.archivoOriginal.split('/').pop() || `${foto.id}.jpg`).replace(/[^A-Za-z0-9._-]+/g, '-') };
+      const name = decodeURIComponent(foto.archivoOriginal.split('/').pop() || foto.id).replace(/\.[A-Za-z0-9]+$/, '').replace(/[^A-Za-z0-9._-]+/g, '-');
+      return { data: await reducirFoto(data), mimetype: 'image/jpeg', name: `${name}-2560.jpg` };
     } catch (error) { last = error; await new Promise(r => setTimeout(r, 1500 * attempt)); }
   }
   throw new Error(`No se pudo descargar ${foto.paginaCommons}: ${last instanceof Error ? last.message : String(last)}`);
 }
+/** Lado largo máximo de las fotos del ensayo: se reduce el original de Commons antes de subirlo (JPEG calidad 85). */
+export const LADO_MAXIMO = 2560;
+/**
+ * Reduce una foto a LADO_MAXIMO px en el lado largo (sin ampliar), con la orientación aplicada y sin metadatos.
+ * libvips decodifica el JPEG reduciendo ya al leer (shrink-on-load) y trabaja por franjas: la memoria no crece con
+ * los megapíxeles del original (medido en scripts/ensayo-integration.mjs con 8104 × 4559).
+ */
+export async function reducirFoto(data: Buffer) {
+  return sharp(data, { failOn: 'error' }).rotate()
+    .resize({ width: LADO_MAXIMO, height: LADO_MAXIMO, fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 85, mozjpeg: true }).toBuffer();
+}
 export const declaracionAdministracion = (foto: Foto, email: string) =>
   `v1 · Planta 14 (administración, ${email}) declara que esta imagen procede de Wikimedia Commons (${foto.paginaCommons}), obra de ${foto.autor}, ` +
-  `publicada con licencia ${foto.licencia} (${foto.enlaceLicencia}), y que se publica con esa atribución y sin modificar el original.`;
+  `publicada con licencia ${foto.licencia} (${foto.enlaceLicencia}), y que se publica con esa atribución. Único cambio: reducida a ${LADO_MAXIMO} px en el lado largo.`;
 
 // --- Carga --------------------------------------------------------------------------------------------
 export async function cargar(payload: Payload, opts: { dir: string; soloComprobar: boolean; now?: Date; usuario?: string; log: Log }): Promise<Informe> {
@@ -186,7 +199,7 @@ export async function cargar(payload: Payload, opts: { dir: string; soloComproba
     const doc = await payload.create({
       collection: 'media', overrideAccess: true, user, file: { ...file, size: file.data.length },
       context: { adminRightsDeclaration: { statement: declaracionAdministracion(foto, user.email) } },
-      data: { alt: foto.pieFoto, credit: `${foto.autor} / Wikimedia Commons / ${foto.licencia}`, sourceURL: foto.paginaCommons,
+      data: { alt: foto.pieFoto, credit: `${foto.autor} / Wikimedia Commons / ${foto.licencia} (reducida de tamaño)`, sourceURL: foto.paginaCommons,
         rightsHolder: foto.autor, rightsType: 'licencia', rightsScope: 'publicable', lote: loteFoto.get(foto.id) ?? 'ensayo' },
     });
     media.set(foto.id, doc.id as number);
