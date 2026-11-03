@@ -394,7 +394,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Campomanes como contexto del concejo de Lena. No muestra el relevo de La Pola ni a sus participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-06",
+        "imagen": "foto-p14-noticia-08",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -714,7 +714,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de La Foz de Morcín como contexto de la jornada cultural; no muestra actuaciones ni asistentes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-agenda-04",
+        "imagen": "foto-p14-noticia-16",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -794,7 +794,7 @@
       "fotoNecesaria": {
         "descripcion": "Paisaje de Riosa como contexto del taller de La Ará; no muestra alumnos, docentes ni pantallas con datos personales. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-17",
+        "imagen": "foto-p14-noticia-18",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -834,7 +834,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Viapará y su entorno como contexto de la actividad ciclista; no es una fotografía de la prueba. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-agenda-05",
+        "imagen": "foto-p14-noticia-19",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -994,7 +994,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista del puente de Soto de Ribera como contexto territorial; no representa a los participantes del grupo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-21",
+        "imagen": "foto-p14-noticia-23",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1585,7 +1585,7 @@
       "fotoNecesaria": {
         "descripcion": "Edificio religioso de Ujo como contexto del núcleo; no es una fotografía de la biblioteca. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-02",
+        "imagen": "foto-p14-municipal-mieres-aviso-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1628,7 +1628,7 @@
       "fotoNecesaria": {
         "descripcion": "Pozo Santa Bárbara, en Turón, como contexto territorial; no muestra la recogida de enseres. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-03",
+        "imagen": "foto-p14-municipal-mieres-aviso-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1671,7 +1671,7 @@
       "fotoNecesaria": {
         "descripcion": "Panorámica del poblado de Bustiello; no representa los trabajos anunciados. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-04",
+        "imagen": "foto-p14-municipal-mieres-aviso-03",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1714,7 +1714,7 @@
       "fotoNecesaria": {
         "descripcion": "Paisaje de Gallegos como contexto del concejo de Mieres, no como imagen de la Casa de Cultura o del taller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-carta-director-001",
+        "imagen": "foto-p14-municipal-mieres-evento-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1757,7 +1757,7 @@
       "fotoNecesaria": {
         "descripcion": "Pozo Santa Bárbara como contexto de Turón; no es el Atenéu ni una imagen del taller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-03",
+        "imagen": "foto-p14-municipal-mieres-evento-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1800,7 +1800,7 @@
       "fotoNecesaria": {
         "descripcion": "Edificio religioso de Ujo como contexto del pueblo; no representa la biblioteca ni sus usuarios. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-02",
+        "imagen": "foto-p14-municipal-mieres-evento-03",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1843,7 +1843,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Ujo como contexto territorial; sin personas presentadas como solicitantes de ayudas. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-02",
+        "imagen": "foto-p14-municipal-mieres-ayuda-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1886,7 +1886,7 @@
       "fotoNecesaria": {
         "descripcion": "Panorámica de Bustiello como contexto de la vida en los pueblos de Mieres; sin colectivos identificables. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-04",
+        "imagen": "foto-p14-municipal-mieres-ayuda-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1929,7 +1929,7 @@
       "fotoNecesaria": {
         "descripcion": "Paisaje habitado de Gallegos como contexto de las entidades vecinales de Mieres. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-carta-director-001",
+        "imagen": "foto-p14-municipal-mieres-tablon-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1972,7 +1972,7 @@
       "fotoNecesaria": {
         "descripcion": "Paisaje de Gallegos como contexto de los nombres de lugar; no representa un camino declarado ni sus derechos de paso. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-carta-director-001",
+        "imagen": "foto-p14-municipal-mieres-tablon-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2015,7 +2015,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Campomanes como contexto; no es una fotografía del centro de lectura. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-05",
+        "imagen": "foto-p14-municipal-lena-aviso-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2058,7 +2058,7 @@
       "fotoNecesaria": {
         "descripcion": "Entorno de Castiello como contexto rural de Lena; no se presenta como Pajares ni como un punto con incidencias. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-agenda-02",
+        "imagen": "foto-p14-municipal-lena-aviso-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2101,7 +2101,7 @@
       "fotoNecesaria": {
         "descripcion": "Santa Cristina de Lena como contexto patrimonial del concejo; no representa la Casa de Cultura ni los trabajos de limpieza. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-reportaje-02",
+        "imagen": "foto-p14-municipal-lena-aviso-03",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2144,7 +2144,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Campomanes como contexto del encuentro; no muestra el centro cultural, el taller o sus participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-05",
+        "imagen": "foto-p14-municipal-lena-evento-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2187,7 +2187,7 @@
       "fotoNecesaria": {
         "descripcion": "Santa Cristina de Lena como contexto cultural del concejo; no representa el Teatro Vital Aza ni su programación. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-reportaje-02",
+        "imagen": "foto-p14-municipal-lena-evento-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2230,7 +2230,7 @@
       "fotoNecesaria": {
         "descripcion": "Entorno de Castiello como contexto del concejo de Lena; no muestra la Casa de Cultura ni a participantes del taller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-agenda-02",
+        "imagen": "foto-p14-municipal-lena-evento-03",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2273,7 +2273,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Campomanes como contexto territorial; no identifica viviendas disponibles ni personas beneficiarias. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-05",
+        "imagen": "foto-p14-municipal-lena-ayuda-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2316,7 +2316,7 @@
       "fotoNecesaria": {
         "descripcion": "Entorno de Castiello como contexto rural de Lena; sin personas presentadas como cuidadoras o beneficiarias. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-agenda-02",
+        "imagen": "foto-p14-municipal-lena-ayuda-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2359,7 +2359,7 @@
       "fotoNecesaria": {
         "descripcion": "Entorno de Castiello como paisaje rural de Lena; no se identifica un camino objeto de intervención. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-agenda-02",
+        "imagen": "foto-p14-municipal-lena-tablon-01",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2402,7 +2402,7 @@
       "fotoNecesaria": {
         "descripcion": "Vista de Campomanes como contexto; no se presenta como un equipamiento concreto ni como un acto de una asociación. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-noticia-05",
+        "imagen": "foto-p14-municipal-lena-tablon-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
