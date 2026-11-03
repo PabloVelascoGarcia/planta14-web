@@ -1,0 +1,1823 @@
+{
+  "version": 1,
+  "estadoFase2": "seleccion_completada_con_tres_pendientes",
+  "consulta": "2026-11-03",
+  "criterios": {
+    "origen": "Wikimedia Commons",
+    "licenciasAdmitidas": [
+      "CC BY",
+      "CC BY-SA",
+      "dominio público"
+    ],
+    "anchoMinimo": 1600,
+    "orientacion": "horizontal",
+    "personas": "Sin personas reconocibles en primer plano en la revisión visual",
+    "archivosDescargadosAlRepositorio": false,
+    "imagenesIA": false
+  },
+  "notas": [
+    "Solo enlaces: no se han incorporado imágenes al repositorio ni al CMS.",
+    "Se reutilizan originales para ilustrar diferentes piezas. Hay 19 originales, 53 asignaciones editoriales y 18 candidatas de cabecera.",
+    "Las actividades y los sucesos de ensayo no ocurrieron: sus imágenes solo son de contexto. Nunca presentarlas como fotografías del hecho narrado.",
+    "Las atribuciones deben mostrarse con enlace a la ficha y a la licencia. Las modificaciones requieren indicación; las adaptaciones de imágenes CC BY-SA deben respetar CompartirIgual.",
+    "Las licencias se comprobaron en las propias fichas, no únicamente en resultados de búsqueda. Se guarda la revisión consultada.",
+    "La selección no supone publicación ni descarga al CMS. Las relaciones de contenido.json apuntan al id de asignaciones; idFotografia resuelve el original en catalogo.",
+    "Las miniaturas usadas para revisión visual quedaron fuera del repositorio. No son nuevos activos del proyecto."
+  ],
+  "catalogo": [
+    {
+      "id": "commons-001",
+      "concejo": "mieres",
+      "tituloCommons": "File:Gallegos (Mieres, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Gallegos_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 3730,
+        "alto": 2486
+      },
+      "pieFoto": "Gallegos, en el concejo de Mieres.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1107103615,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1107103615",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-002",
+      "concejo": "mieres",
+      "tituloCommons": "File:Bustiello.Panorámica.Anne Vero Columbier. Asociación Semeya.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1102161918,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1102161918",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-003",
+      "concejo": "mieres",
+      "tituloCommons": "File:Ujo (Mieres, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1211400776,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1211400776",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-004",
+      "concejo": "lena",
+      "tituloCommons": "File:Campomanes (Lena, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 846925049,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=846925049",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-005",
+      "concejo": "lena",
+      "tituloCommons": "File:Santa Cristina de Lena 1.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Santa_Cristina_de_Lena_1.jpg",
+      "autor": "Uviein",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4032,
+        "alto": 2268
+      },
+      "pieFoto": "Exterior de la iglesia de Santa Cristina de Lena.",
+      "atribucion": "Uviein / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1177685872,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1177685872",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-006",
+      "concejo": "lena",
+      "tituloCommons": "File:Castiello (Lena, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1059964560,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1059964560",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-007",
+      "concejo": "aller",
+      "tituloCommons": "File:Pozo San Antonio (Moreda de Aller).jpeg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozo_San_Antonio_(Moreda_de_Aller).jpeg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/19/Pozo_San_Antonio_%28Moreda_de_Aller%29.jpeg",
+      "autor": "Mujeresg231",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 1600,
+        "alto": 1200
+      },
+      "pieFoto": "Pozo San Antonio, en Moreda de Aller.",
+      "atribucion": "Mujeresg231 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozo_San_Antonio_(Moreda_de_Aller).jpeg. https://creativecommons.org/licenses/by-sa/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 972147007,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=972147007",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-008",
+      "concejo": "aller",
+      "tituloCommons": "File:Moreda, Aller, Asturias.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/5/59/Moreda%2C_Aller%2C_Asturias.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista de Moreda, en el concejo de Aller.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1134517577,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1134517577",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-009",
+      "concejo": "aller",
+      "tituloCommons": "File:Felechosa 2015.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Felechosa_2015.jpg",
+      "autor": "Snia1991",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 2022,
+        "alto": 1431
+      },
+      "pieFoto": "Felechosa, en el concejo de Aller, en una fotografía de 2015.",
+      "atribucion": "Snia1991 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg. https://creativecommons.org/licenses/by-sa/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1250929932,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1250929932",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": [
+        "Conservar la marca incorporada por el autor; no recortar para eliminarla."
+      ]
+    },
+    {
+      "id": "commons-010",
+      "concejo": "morcin",
+      "tituloCommons": "File:Peñerudes (Morcín, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/11/Pe%C3%B1erudes_%28Morc%C3%ADn%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Paisaje de Peñerudes y su torre, en el concejo de Morcín.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1059619508,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1059619508",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-011",
+      "concejo": "morcin",
+      "tituloCommons": "File:La Foz de Morcin , Asturias . - panoramio.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/af/La_Foz_de_Morcin_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "La Foz de Morcín, con el relieve del entorno al fondo.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 629491057,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=629491057",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-012",
+      "concejo": "morcin",
+      "tituloCommons": "File:Ermita de Santiago (Monsacro).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ermita_de_Santiago_(Monsacro).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Ermita_de_Santiago_%28Monsacro%29.jpg",
+      "autor": "D.Rovchak",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 4476,
+        "alto": 3358
+      },
+      "pieFoto": "Ermita de Santiago, en el Monsacro, Morcín.",
+      "atribucion": "D.Rovchak / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ermita_de_Santiago_(Monsacro).jpg. https://creativecommons.org/licenses/by-sa/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1232171255,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1232171255",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-013",
+      "concejo": "riosa",
+      "tituloCommons": "File:Riosa , Asturias . - panoramio.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Riosa_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "Paisaje del concejo de Riosa.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 662038078,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=662038078",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-014",
+      "concejo": "riosa",
+      "tituloCommons": "File:Atardece En El Angliru (63084929).jpeg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Atardece_En_El_Angliru_(63084929).jpeg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Atardece_En_El_Angliru_%2863084929%29.jpeg",
+      "autor": "Eduardo Diez Viñuela",
+      "licencia": "CC BY-SA 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/3.0",
+      "resolucion": {
+        "ancho": 2048,
+        "alto": 1345
+      },
+      "pieFoto": "Atardecer en el Angliru, en el concejo de Riosa.",
+      "atribucion": "Eduardo Diez Viñuela / Wikimedia Commons / CC BY-SA 3.0. Fuente: https://commons.wikimedia.org/wiki/File:Atardece_En_El_Angliru_(63084929).jpeg. https://creativecommons.org/licenses/by-sa/3.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 806059659,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=806059659",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-015",
+      "concejo": "riosa",
+      "tituloCommons": "File:ANGLIRU VIAPARA.jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/0/07/ANGLIRU_VIAPARA.jpg",
+      "autor": "Sierra del Aramo",
+      "licencia": "Dominio público (PD-self)",
+      "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+      "resolucion": {
+        "ancho": 3648,
+        "alto": 2736
+      },
+      "pieFoto": "Viapará y su entorno, vistos desde la subida al Angliru, en Riosa.",
+      "atribucion": "Sierra del Aramo / Wikimedia Commons / Dominio público (PD-self). Fuente: https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg. https://commons.wikimedia.org/wiki/Template:PD-self",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1116973896,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1116973896",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": [
+        "Cesión al dominio público por su autor según PD-self; no se presenta como CC0."
+      ]
+    },
+    {
+      "id": "commons-016",
+      "concejo": "ribera-de-arriba",
+      "tituloCommons": "File:Ferreros (Ribera de Arriba, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/90/Ferreros_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4773,
+        "alto": 3182
+      },
+      "pieFoto": "Edificio religioso en Ferreros, concejo de Ribera de Arriba.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1251432157,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1251432157",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-017",
+      "concejo": "ribera-de-arriba",
+      "tituloCommons": "File:Soto de Ribera (Ribera de Arriba, Asturias).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Soto_de_Ribera_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 5000,
+        "alto": 3333
+      },
+      "pieFoto": "Puente en Soto de Ribera, concejo de Ribera de Arriba.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1204243625,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1204243625",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-018",
+      "concejo": "ribera-de-arriba",
+      "tituloCommons": "File:Casa conceyu La Ribera.JPG",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Casa_conceyu_La_Ribera.JPG",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/6/63/Casa_conceyu_La_Ribera.JPG",
+      "autor": "Vsuarezp",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 3072,
+        "alto": 2304
+      },
+      "pieFoto": "Casa consistorial de Ribera de Arriba.",
+      "atribucion": "Vsuarezp / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Casa_conceyu_La_Ribera.JPG. https://creativecommons.org/licenses/by-sa/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 1249323537,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1249323537",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    },
+    {
+      "id": "commons-019",
+      "concejo": "mieres",
+      "tituloCommons": "File:Pozu Santa Barbara (01).jpg",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Pozu_Santa_Barbara_%2801%29.jpg",
+      "autor": "Xuliu Pombar",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 5184,
+        "alto": 3456
+      },
+      "pieFoto": "Pozo Santa Bárbara, en La Rebaldana, Turón, concejo de Mieres.",
+      "atribucion": "Xuliu Pombar / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg. https://creativecommons.org/licenses/by-sa/4.0",
+      "cambios": "Ninguno: se enlaza al original. Si se recorta o modifica al publicarlo, indicar el cambio y cumplir la licencia correspondiente.",
+      "verificacion": {
+        "fecha": "2026-11-03",
+        "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+        "revisionPagina": 661864172,
+        "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=661864172",
+        "licenciaEnPagina": true,
+        "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+        "anchoMinimo1600": true
+      },
+      "notas": []
+    }
+  ],
+  "asignaciones": [
+    {
+      "id": "foto-p14-carta-director-001",
+      "idPieza": "p14-carta-director-001",
+      "uso": "contenido",
+      "idFotografia": "commons-001",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Gallegos_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 3730,
+        "alto": 2486
+      },
+      "pieFoto": "Gallegos, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-01",
+      "idPieza": "p14-noticia-01",
+      "uso": "contenido",
+      "idFotografia": "commons-019",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Pozu_Santa_Barbara_%2801%29.jpg",
+      "autor": "Xuliu Pombar",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 5184,
+        "alto": 3456
+      },
+      "pieFoto": "Pozo Santa Bárbara, en La Rebaldana, Turón, concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Xuliu Pombar / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-02",
+      "idPieza": "p14-noticia-02",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-03",
+      "idPieza": "p14-noticia-03",
+      "uso": "contenido",
+      "idFotografia": "commons-019",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Pozu_Santa_Barbara_%2801%29.jpg",
+      "autor": "Xuliu Pombar",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 5184,
+        "alto": 3456
+      },
+      "pieFoto": "Pozo Santa Bárbara, en La Rebaldana, Turón, concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Xuliu Pombar / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-04",
+      "idPieza": "p14-noticia-04",
+      "uso": "contenido",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-05",
+      "idPieza": "p14-noticia-05",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-06",
+      "idPieza": "p14-noticia-06",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-07",
+      "idPieza": "p14-noticia-07",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-08",
+      "idPieza": "p14-noticia-08",
+      "uso": "contenido",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-09",
+      "idPieza": "p14-noticia-09",
+      "uso": "contenido",
+      "idFotografia": "commons-009",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Felechosa_2015.jpg",
+      "autor": "Snia1991",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 2022,
+        "alto": 1431
+      },
+      "pieFoto": "Felechosa, en el concejo de Aller, en una fotografía de 2015. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Snia1991 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-10",
+      "idPieza": "p14-noticia-10",
+      "uso": "contenido",
+      "idFotografia": "commons-008",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/5/59/Moreda%2C_Aller%2C_Asturias.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista de Moreda, en el concejo de Aller. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-11",
+      "idPieza": "p14-noticia-11",
+      "uso": "contenido",
+      "idFotografia": "commons-008",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/5/59/Moreda%2C_Aller%2C_Asturias.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista de Moreda, en el concejo de Aller. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-12",
+      "idPieza": "p14-noticia-12",
+      "uso": "contenido",
+      "idFotografia": "commons-009",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Felechosa_2015.jpg",
+      "autor": "Snia1991",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 2022,
+        "alto": 1431
+      },
+      "pieFoto": "Felechosa, en el concejo de Aller, en una fotografía de 2015. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Snia1991 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-13",
+      "idPieza": "p14-noticia-13",
+      "uso": "contenido",
+      "idFotografia": "commons-010",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/11/Pe%C3%B1erudes_%28Morc%C3%ADn%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Paisaje de Peñerudes y su torre, en el concejo de Morcín. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-14",
+      "idPieza": "p14-noticia-14",
+      "uso": "contenido",
+      "idFotografia": "commons-011",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/af/La_Foz_de_Morcin_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "La Foz de Morcín, con el relieve del entorno al fondo. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-p14-noticia-15",
+      "idPieza": "p14-noticia-15",
+      "uso": "contenido",
+      "idFotografia": "commons-010",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/11/Pe%C3%B1erudes_%28Morc%C3%ADn%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Paisaje de Peñerudes y su torre, en el concejo de Morcín. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-16",
+      "idPieza": "p14-noticia-16",
+      "uso": "contenido",
+      "idFotografia": "commons-011",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/af/La_Foz_de_Morcin_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "La Foz de Morcín, con el relieve del entorno al fondo. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-p14-noticia-17",
+      "idPieza": "p14-noticia-17",
+      "uso": "contenido",
+      "idFotografia": "commons-013",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Riosa_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "Paisaje del concejo de Riosa. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-p14-noticia-18",
+      "idPieza": "p14-noticia-18",
+      "uso": "contenido",
+      "idFotografia": "commons-013",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Riosa_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "Paisaje del concejo de Riosa. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-p14-noticia-19",
+      "idPieza": "p14-noticia-19",
+      "uso": "contenido",
+      "idFotografia": "commons-015",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/0/07/ANGLIRU_VIAPARA.jpg",
+      "autor": "Sierra del Aramo",
+      "licencia": "Dominio público (PD-self)",
+      "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+      "resolucion": {
+        "ancho": 3648,
+        "alto": 2736
+      },
+      "pieFoto": "Viapará y su entorno, vistos desde la subida al Angliru, en Riosa. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Sierra del Aramo / Wikimedia Commons / Dominio público (PD-self). Fuente: https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg. https://commons.wikimedia.org/wiki/Template:PD-self"
+    },
+    {
+      "id": "foto-p14-noticia-21",
+      "idPieza": "p14-noticia-21",
+      "uso": "contenido",
+      "idFotografia": "commons-017",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Soto_de_Ribera_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 5000,
+        "alto": 3333
+      },
+      "pieFoto": "Puente en Soto de Ribera, concejo de Ribera de Arriba. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-22",
+      "idPieza": "p14-noticia-22",
+      "uso": "contenido",
+      "idFotografia": "commons-016",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/90/Ferreros_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4773,
+        "alto": 3182
+      },
+      "pieFoto": "Edificio religioso en Ferreros, concejo de Ribera de Arriba. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-noticia-23",
+      "idPieza": "p14-noticia-23",
+      "uso": "contenido",
+      "idFotografia": "commons-017",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Soto_de_Ribera_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 5000,
+        "alto": 3333
+      },
+      "pieFoto": "Puente en Soto de Ribera, concejo de Ribera de Arriba. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-opinion-01",
+      "idPieza": "p14-opinion-01",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-opinion-02",
+      "idPieza": "p14-opinion-02",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-opinion-03",
+      "idPieza": "p14-opinion-03",
+      "uso": "contenido",
+      "idFotografia": "commons-007",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozo_San_Antonio_(Moreda_de_Aller).jpeg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/19/Pozo_San_Antonio_%28Moreda_de_Aller%29.jpeg",
+      "autor": "Mujeresg231",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 1600,
+        "alto": 1200
+      },
+      "pieFoto": "Pozo San Antonio, en Moreda de Aller. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Mujeresg231 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozo_San_Antonio_(Moreda_de_Aller).jpeg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-agenda-01",
+      "idPieza": "p14-agenda-01",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-agenda-02",
+      "idPieza": "p14-agenda-02",
+      "uso": "contenido",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-agenda-03",
+      "idPieza": "p14-agenda-03",
+      "uso": "contenido",
+      "idFotografia": "commons-009",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Felechosa_2015.jpg",
+      "autor": "Snia1991",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 2022,
+        "alto": 1431
+      },
+      "pieFoto": "Felechosa, en el concejo de Aller, en una fotografía de 2015. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Snia1991 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-agenda-04",
+      "idPieza": "p14-agenda-04",
+      "uso": "contenido",
+      "idFotografia": "commons-011",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/af/La_Foz_de_Morcin_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "La Foz de Morcín, con el relieve del entorno al fondo. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-p14-agenda-05",
+      "idPieza": "p14-agenda-05",
+      "uso": "contenido",
+      "idFotografia": "commons-015",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/0/07/ANGLIRU_VIAPARA.jpg",
+      "autor": "Sierra del Aramo",
+      "licencia": "Dominio público (PD-self)",
+      "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+      "resolucion": {
+        "ancho": 3648,
+        "alto": 2736
+      },
+      "pieFoto": "Viapará y su entorno, vistos desde la subida al Angliru, en Riosa. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Sierra del Aramo / Wikimedia Commons / Dominio público (PD-self). Fuente: https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg. https://commons.wikimedia.org/wiki/Template:PD-self"
+    },
+    {
+      "id": "foto-p14-reportaje-01",
+      "idPieza": "p14-reportaje-01",
+      "uso": "contenido",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-reportaje-02",
+      "idPieza": "p14-reportaje-02",
+      "uso": "contenido",
+      "idFotografia": "commons-005",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Santa_Cristina_de_Lena_1.jpg",
+      "autor": "Uviein",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4032,
+        "alto": 2268
+      },
+      "pieFoto": "Exterior de la iglesia de Santa Cristina de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Uviein / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-aviso-01",
+      "idPieza": "p14-municipal-mieres-aviso-01",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-aviso-02",
+      "idPieza": "p14-municipal-mieres-aviso-02",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-aviso-03",
+      "idPieza": "p14-municipal-mieres-aviso-03",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-evento-01",
+      "idPieza": "p14-municipal-mieres-evento-01",
+      "uso": "contenido",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-evento-02",
+      "idPieza": "p14-municipal-mieres-evento-02",
+      "uso": "contenido",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-evento-03",
+      "idPieza": "p14-municipal-mieres-evento-03",
+      "uso": "contenido",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-ayuda-01",
+      "idPieza": "p14-municipal-mieres-ayuda-01",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-ayuda-02",
+      "idPieza": "p14-municipal-mieres-ayuda-02",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-tablon-01",
+      "idPieza": "p14-municipal-mieres-tablon-01",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-tablon-02",
+      "idPieza": "p14-municipal-mieres-tablon-02",
+      "uso": "contenido",
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-aviso-01",
+      "idPieza": "p14-municipal-lena-aviso-01",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-aviso-02",
+      "idPieza": "p14-municipal-lena-aviso-02",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-aviso-03",
+      "idPieza": "p14-municipal-lena-aviso-03",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-evento-01",
+      "idPieza": "p14-municipal-lena-evento-01",
+      "uso": "contenido",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-evento-02",
+      "idPieza": "p14-municipal-lena-evento-02",
+      "uso": "contenido",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-evento-03",
+      "idPieza": "p14-municipal-lena-evento-03",
+      "uso": "contenido",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-ayuda-01",
+      "idPieza": "p14-municipal-lena-ayuda-01",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-ayuda-02",
+      "idPieza": "p14-municipal-lena-ayuda-02",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-tablon-01",
+      "idPieza": "p14-municipal-lena-tablon-01",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-tablon-02",
+      "idPieza": "p14-municipal-lena-tablon-02",
+      "uso": "contenido",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-mieres-1",
+      "idPieza": "cabecera-mieres",
+      "uso": "cabecera",
+      "concejo": "mieres",
+      "candidata": 1,
+      "idFotografia": "commons-001",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Gallegos_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 3730,
+        "alto": 2486
+      },
+      "pieFoto": "Gallegos, en el concejo de Mieres.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-mieres-2",
+      "idPieza": "cabecera-mieres",
+      "uso": "cabecera",
+      "concejo": "mieres",
+      "candidata": 2,
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-cabecera-mieres-3",
+      "idPieza": "cabecera-mieres",
+      "uso": "cabecera",
+      "concejo": "mieres",
+      "candidata": 3,
+      "idFotografia": "commons-003",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4500,
+        "alto": 3588
+      },
+      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-lena-1",
+      "idPieza": "cabecera-lena",
+      "uso": "cabecera",
+      "concejo": "lena",
+      "candidata": 1,
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-lena-2",
+      "idPieza": "cabecera-lena",
+      "uso": "cabecera",
+      "concejo": "lena",
+      "candidata": 2,
+      "idFotografia": "commons-005",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Santa_Cristina_de_Lena_1.jpg",
+      "autor": "Uviein",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4032,
+        "alto": 2268
+      },
+      "pieFoto": "Exterior de la iglesia de Santa Cristina de Lena.",
+      "atribucion": "Uviein / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-lena-3",
+      "idPieza": "cabecera-lena",
+      "uso": "cabecera",
+      "concejo": "lena",
+      "candidata": 3,
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-aller-1",
+      "idPieza": "cabecera-aller",
+      "uso": "cabecera",
+      "concejo": "aller",
+      "candidata": 1,
+      "idFotografia": "commons-007",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozo_San_Antonio_(Moreda_de_Aller).jpeg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/19/Pozo_San_Antonio_%28Moreda_de_Aller%29.jpeg",
+      "autor": "Mujeresg231",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 1600,
+        "alto": 1200
+      },
+      "pieFoto": "Pozo San Antonio, en Moreda de Aller.",
+      "atribucion": "Mujeresg231 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozo_San_Antonio_(Moreda_de_Aller).jpeg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-cabecera-aller-2",
+      "idPieza": "cabecera-aller",
+      "uso": "cabecera",
+      "concejo": "aller",
+      "candidata": 2,
+      "idFotografia": "commons-008",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/5/59/Moreda%2C_Aller%2C_Asturias.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 1620,
+        "alto": 1080
+      },
+      "pieFoto": "Vista de Moreda, en el concejo de Aller.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Moreda,_Aller,_Asturias.jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-aller-3",
+      "idPieza": "cabecera-aller",
+      "uso": "cabecera",
+      "concejo": "aller",
+      "candidata": 3,
+      "idFotografia": "commons-009",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Felechosa_2015.jpg",
+      "autor": "Snia1991",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 2022,
+        "alto": 1431
+      },
+      "pieFoto": "Felechosa, en el concejo de Aller, en una fotografía de 2015.",
+      "atribucion": "Snia1991 / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Felechosa_2015.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-cabecera-morcin-1",
+      "idPieza": "cabecera-morcin",
+      "uso": "cabecera",
+      "concejo": "morcin",
+      "candidata": 1,
+      "idFotografia": "commons-010",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/11/Pe%C3%B1erudes_%28Morc%C3%ADn%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4752,
+        "alto": 3168
+      },
+      "pieFoto": "Paisaje de Peñerudes y su torre, en el concejo de Morcín.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-morcin-2",
+      "idPieza": "cabecera-morcin",
+      "uso": "cabecera",
+      "concejo": "morcin",
+      "candidata": 2,
+      "idFotografia": "commons-011",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/af/La_Foz_de_Morcin_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "La Foz de Morcín, con el relieve del entorno al fondo.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:La_Foz_de_Morcin_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-cabecera-morcin-3",
+      "idPieza": "cabecera-morcin",
+      "uso": "cabecera",
+      "concejo": "morcin",
+      "candidata": 3,
+      "idFotografia": "commons-012",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ermita_de_Santiago_(Monsacro).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Ermita_de_Santiago_%28Monsacro%29.jpg",
+      "autor": "D.Rovchak",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 4476,
+        "alto": 3358
+      },
+      "pieFoto": "Ermita de Santiago, en el Monsacro, Morcín.",
+      "atribucion": "D.Rovchak / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ermita_de_Santiago_(Monsacro).jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-cabecera-riosa-1",
+      "idPieza": "cabecera-riosa",
+      "uso": "cabecera",
+      "concejo": "riosa",
+      "candidata": 1,
+      "idFotografia": "commons-013",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Riosa_%2C_Asturias_._-_panoramio.jpg",
+      "autor": "McBodes",
+      "licencia": "CC BY 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/3.0",
+      "resolucion": {
+        "ancho": 4000,
+        "alto": 3000
+      },
+      "pieFoto": "Paisaje del concejo de Riosa.",
+      "atribucion": "McBodes / Wikimedia Commons / CC BY 3.0. Fuente: https://commons.wikimedia.org/wiki/File:Riosa_,_Asturias_._-_panoramio.jpg. https://creativecommons.org/licenses/by/3.0"
+    },
+    {
+      "id": "foto-cabecera-riosa-2",
+      "idPieza": "cabecera-riosa",
+      "uso": "cabecera",
+      "concejo": "riosa",
+      "candidata": 2,
+      "idFotografia": "commons-014",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Atardece_En_El_Angliru_(63084929).jpeg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Atardece_En_El_Angliru_%2863084929%29.jpeg",
+      "autor": "Eduardo Diez Viñuela",
+      "licencia": "CC BY-SA 3.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/3.0",
+      "resolucion": {
+        "ancho": 2048,
+        "alto": 1345
+      },
+      "pieFoto": "Atardecer en el Angliru, en el concejo de Riosa.",
+      "atribucion": "Eduardo Diez Viñuela / Wikimedia Commons / CC BY-SA 3.0. Fuente: https://commons.wikimedia.org/wiki/File:Atardece_En_El_Angliru_(63084929).jpeg. https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    {
+      "id": "foto-cabecera-riosa-3",
+      "idPieza": "cabecera-riosa",
+      "uso": "cabecera",
+      "concejo": "riosa",
+      "candidata": 3,
+      "idFotografia": "commons-015",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/0/07/ANGLIRU_VIAPARA.jpg",
+      "autor": "Sierra del Aramo",
+      "licencia": "Dominio público (PD-self)",
+      "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+      "resolucion": {
+        "ancho": 3648,
+        "alto": 2736
+      },
+      "pieFoto": "Viapará y su entorno, vistos desde la subida al Angliru, en Riosa.",
+      "atribucion": "Sierra del Aramo / Wikimedia Commons / Dominio público (PD-self). Fuente: https://commons.wikimedia.org/wiki/File:ANGLIRU_VIAPARA.jpg. https://commons.wikimedia.org/wiki/Template:PD-self"
+    },
+    {
+      "id": "foto-cabecera-ribera-de-arriba-1",
+      "idPieza": "cabecera-ribera-de-arriba",
+      "uso": "cabecera",
+      "concejo": "ribera-de-arriba",
+      "candidata": 1,
+      "idFotografia": "commons-016",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/90/Ferreros_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4773,
+        "alto": 3182
+      },
+      "pieFoto": "Edificio religioso en Ferreros, concejo de Ribera de Arriba.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-ribera-de-arriba-2",
+      "idPieza": "cabecera-ribera-de-arriba",
+      "uso": "cabecera",
+      "concejo": "ribera-de-arriba",
+      "candidata": 2,
+      "idFotografia": "commons-017",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Soto_de_Ribera_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 5000,
+        "alto": 3333
+      },
+      "pieFoto": "Puente en Soto de Ribera, concejo de Ribera de Arriba.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Soto_de_Ribera_(Ribera_de_Arriba,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-cabecera-ribera-de-arriba-3",
+      "idPieza": "cabecera-ribera-de-arriba",
+      "uso": "cabecera",
+      "concejo": "ribera-de-arriba",
+      "candidata": 3,
+      "idFotografia": "commons-018",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Casa_conceyu_La_Ribera.JPG",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/6/63/Casa_conceyu_La_Ribera.JPG",
+      "autor": "Vsuarezp",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 3072,
+        "alto": 2304
+      },
+      "pieFoto": "Casa consistorial de Ribera de Arriba.",
+      "atribucion": "Vsuarezp / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Casa_conceyu_La_Ribera.JPG. https://creativecommons.org/licenses/by-sa/4.0"
+    }
+  ],
+  "sinFotoValida": [
+    {
+      "idPieza": "p14-noticia-24",
+      "motivo": "Se necesita una foto de Bueño y sus hórreos. La candidata localizada en Commons es de 860 × 616 y no cumple 1600 px. No se sustituye por una imagen de otro pueblo."
+    },
+    {
+      "idPieza": "p14-agenda-06",
+      "motivo": "Se necesita una imagen de Bueño. La candidata localizada no alcanza el ancho mínimo."
+    },
+    {
+      "idPieza": "p14-noticia-20",
+      "motivo": "Se necesita una imagen del entorno minero de Llamo. La candidata de Texeo/Rioseco localizada tiene autoría supuesta según su ficha; no se asigna mientras no se aclare."
+    }
+  ],
+  "descartadas": [
+    {
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Letras_del_parque_An%C3%ADbal_V%C3%A1zquez_en_Mieres_(Asturias).jpg",
+      "motivo": "Personas reconocibles en primer plano."
+    },
+    {
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Jomezana_(Lena,_Asturias).jpg",
+      "motivo": "Se ha preferido Castiello para evitar dudas sobre figuras próximas al primer plano."
+    },
+    {
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Capilla_de_San_Juan_de_Mata_en_Bue%C3%B1o.jpg",
+      "motivo": "860 × 616 px; ancho inferior a 1600."
+    },
+    {
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:TEXEO_RIOSA_RIOSECO_ENTORNO_VISTA_SUR001.jpg",
+      "motivo": "La ficha identifica al autor como supuesto. Pendiente aclarar atribución."
+    }
+  ]
+}

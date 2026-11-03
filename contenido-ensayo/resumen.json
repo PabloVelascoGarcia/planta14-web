@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "fecha": "2026-11-03",
+  "rama": "desarrollo/planta14-contenido-ensayo",
+  "base": {
+    "rama": "desarrollo/planta14-v2-instalacion",
+    "commit": "9d91bf4"
+  },
+  "alcance": "Solo archivos de datos en contenido-ensayo/. Sin importación, publicación, código ni cambios de diseño.",
+  "resumen": {
+    "total": 56,
+    "porTipo": {
+      "carta_director": 1,
+      "noticia": 24,
+      "opinion": 3,
+      "agenda_general": 6,
+      "reportaje": 2,
+      "municipal_aviso": 6,
+      "municipal_evento": 6,
+      "municipal_ayuda": 4,
+      "municipal_tablon": 4
+    },
+    "porConcejoPrincipal": {
+      "mieres": 18,
+      "lena": 17,
+      "aller": 6,
+      "morcin": 5,
+      "riosa": 5,
+      "ribera-de-arriba": 5
+    },
+    "porSeccion": {
+      "opinion": 4,
+      "sucesos": 3,
+      "economia": 3,
+      "cultura": 3,
+      "patrimonio": 5,
+      "empresas": 3,
+      "sociedad": 13,
+      "deportes": 3,
+      "politica": 7,
+      "agenda": 12
+    },
+    "noticiasPorConcejo": {
+      "mieres": 4,
+      "lena": 4,
+      "aller": 4,
+      "morcin": 4,
+      "riosa": 4,
+      "ribera-de-arriba": 4
+    },
+    "noticiasPorSeccion": {
+      "sucesos": 3,
+      "economia": 3,
+      "cultura": 3,
+      "patrimonio": 3,
+      "empresas": 3,
+      "sociedad": 3,
+      "deportes": 3,
+      "politica": 3
+    },
+    "porLote": {
+      "ensayo": 54,
+      "definitivo": 2
+    },
+    "fotografias": {
+      "originales": 19,
+      "piezasConFoto": 53,
+      "candidatasCabecera": 18,
+      "piezasSinFoto": [
+        "p14-noticia-24",
+        "p14-agenda-06",
+        "p14-noticia-20"
+      ]
+    }
+  },
+  "comprobaciones": {
+    "resultado": "25 comprobaciones de integridad de los datos superadas; git diff --check correcto.",
+    "detalle": [
+      "IDs y legacyID únicos; 56 piezas en borrador.",
+      "Cuatro noticias por concejo y tres por cada una de las ocho secciones.",
+      "Tres opiniones, seis eventos de agenda general y veinte piezas municipales con la distribución solicitada.",
+      "Carta de 607 palabras conservada como borrador de ensayo; cierre y firma preservados.",
+      "Fechas propuestas del 1 al 4 de diciembre; eventos en diciembre de 2026 o enero de 2027.",
+      "Cuerpos por párrafos en artículos y texto en contenido municipal, como exige el CMS.",
+      "Ayudas ficticias sin cifras ni plazos; eventos sin confirmación inventada.",
+      "Dos reportajes para conservar, con fuentes institucionales; manifiesto de retirada de las otras 54 piezas.",
+      "53 relaciones con fotos y tres pendientes sin referencias rotas; tres cabeceras por concejo.",
+      "19 originales horizontales de al menos 1600 px; licencias comprobadas en la ficha y revisión de Commons registrada.",
+      "Inspección visual de miniaturas; solo enlaces en el repositorio.",
+      "Solo archivos JSON bajo contenido-ensayo/; ningún cambio de código."
+    ],
+    "limite": "Las comprobaciones de texto no certifican ausencia de coincidencias con todo internet. La redacción se ha creado de nuevo, sin importar textos de medios. No se han ejecutado pruebas de la aplicación porque solo se añaden datos y no se han importado."
+  },
+  "pendientesFotografias": [
+    {
+      "idPieza": "p14-noticia-24",
+      "motivo": "Se necesita una foto de Bueño y sus hórreos. La candidata localizada en Commons es de 860 × 616 y no cumple 1600 px. No se sustituye por una imagen de otro pueblo."
+    },
+    {
+      "idPieza": "p14-agenda-06",
+      "motivo": "Se necesita una imagen de Bueño. La candidata localizada no alcanza el ancho mínimo."
+    },
+    {
+      "idPieza": "p14-noticia-20",
+      "motivo": "Se necesita una imagen del entorno minero de Llamo. La candidata de Texeo/Rioseco localizada tiene autoría supuesta según su ficha; no se asigna mientras no se aclare."
+    }
+  ],
+  "consideraciones": [
+    "La carta sigue siendo un borrador por indicación de Pablo. No está marcada como definitiva.",
+    "Las fechas de publicación son propuestas para la maqueta. Los eventos y las actuaciones de ensayo no son reales ni están confirmados.",
+    "Los dos reportajes llevan lote definitivo para conservarlos al retirar el ensayo; continúan como borradores, sin aprobación de publicación.",
+    "Las relaciones usan slugs o referencias lógicas; resolver IDs antes de una eventual importación.",
+    "El espacio municipal no tiene slug propio: space=mieres/lena es una referencia lógica que se debe resolver por el town del espacio, no mediante búsqueda por slug en municipal-spaces.",
+    "La agenda pública actual consume eventos municipales y limita su listado a cuatro. Los seis artículos de agenda general no aparecerán automáticamente en ese listado.",
+    "El CMS solo tiene un town por artículo. concejosEtiquetados conserva etiquetas adicionales como metadatos, sin modificar el modelo.",
+    "lote no es un campo del CMS; retiradaEnsayo es un manifiesto, no una función de borrado. Revisar relaciones y conservar imágenes usadas por los reportajes al retirar.",
+    "Varias fotografías de contexto no corresponden al núcleo exacto del relato: los pies identifican el lugar real y no las presentan como documentación de sucesos o actividades.",
+    "Pendiente foto concreta de Bueño para dos piezas y del entorno minero de Llamo para una. No se ha rebajado el ancho mínimo ni supuesto una autoría.",
+    "La revisión visual se hizo sobre miniaturas. Volver a comprobar el original y cualquier recorte antes de publicar."
+  ],
+  "fuentesReportajes": [
+    {
+      "id": "p14-reportaje-01",
+      "fuentes": [
+        {
+          "titulo": "Poblado Minero de Bustiello",
+          "entidad": "Ayuntamiento de Mieres",
+          "url": "https://www.mieres.es/turismo/patrimonio/patrimonio-industrial/poblado-minero-de-bustiello/",
+          "consulta": "2026-11-03",
+          "apoya": "Identificación y lectura del conjunto industrial y residencial."
+        },
+        {
+          "titulo": "Centro de Interpretación del Poblado Minero de Bustiello",
+          "entidad": "Ayuntamiento de Mieres",
+          "url": "https://www.mieres.es/turismo/patrimonio/museos-y-centros-de-interpretacion/centro-de-interpretacion-del-poblado-minero-de-bustiello/",
+          "consulta": "2026-11-03",
+          "apoya": "Cronología 1890-1925, Sociedad Hullera Española, equipamientos y paternalismo industrial."
+        }
+      ]
+    },
+    {
+      "id": "p14-reportaje-02",
+      "fuentes": [
+        {
+          "titulo": "Monuments of Oviedo and the Kingdom of the Asturias",
+          "entidad": "UNESCO World Heritage Centre",
+          "url": "https://whc.unesco.org/en/list/312/",
+          "consulta": "2026-11-03",
+          "apoya": "Inscripción, denominación del bien, Santa Cristina y arquitectura del siglo IX."
+        },
+        {
+          "titulo": "Santa Cristina de Lena",
+          "entidad": "Prerrománico Asturias",
+          "url": "https://prerromanicoasturias.es/santa-cristina-de-lena/",
+          "consulta": "2026-11-03",
+          "apoya": "Atribución cronológica, ausencia de fecha fundacional documentada y configuración arquitectónica. También intervenciones de conservación de 1893 y reconstrucción de 1935 tras los daños de 1934."
+        }
+      ]
+    }
+  ]
+}
