@@ -354,6 +354,7 @@ export interface Article {
   sourceAuthor?: string | null;
   provenance?: string | null;
   sourceUrl?: string | null;
+  createdBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -710,6 +711,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   sourceAuthor?: T;
   provenance?: T;
   sourceUrl?: T;
+  createdBy?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

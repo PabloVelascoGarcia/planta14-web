@@ -22,7 +22,7 @@ export function isIndexable(env: Record<string, string | undefined> = process.en
 
 /** Areas that are never indexed, even with SITE_INDEXABLE=true. */
 export function isPrivatePath(pathname: string) {
-  return /^\/(admin|cms|api|buscar|niebla)(\/|$)/.test(pathname) || /^\/[^/]+\/panel(\/|$)/.test(pathname);
+  return /^\/(admin|cms|api|buscar|niebla|vista-previa)(\/|$)/.test(pathname) || /^\/[^/]+\/panel(\/|$)/.test(pathname);
 }
 
 /** Value for X-Robots-Tag, or null when the response may be indexed. */

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Same rule as robotsHeader() in lib/site-config.ts (kept dependency-free here; tests/launch.test.mjs checks both agree):
 // noindex unless SITE_INDEXABLE=true with real content (CONTENT_SOURCE=payload); private areas always noindex.
 function robotsHeader(pathname: string) {
-  const isPrivate = /^\/(admin|cms|api|buscar|niebla)(\/|$)/.test(pathname) || /^\/[^/]+\/panel(\/|$)/.test(pathname);
+  const isPrivate = /^\/(admin|cms|api|buscar|niebla|vista-previa)(\/|$)/.test(pathname) || /^\/[^/]+\/panel(\/|$)/.test(pathname);
   const indexable = process.env.SITE_INDEXABLE === "true" && process.env.CONTENT_SOURCE === "payload"; // demo content: never
   return !indexable || isPrivate ? "noindex, nofollow" : null;
 }

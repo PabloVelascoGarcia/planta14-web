@@ -25,7 +25,7 @@ export default buildConfig({
   // CMS solo en español.
   i18n: { supportedLanguages: { es }, fallbackLanguage: 'es' },
   routes: { admin: '/cms', api: '/api/cms' },
-  admin: { user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
+  admin: { user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
   collections: [Users, Media, Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),

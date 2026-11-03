@@ -7,6 +7,7 @@ import S3rver from 's3rver';
 import sharp from 'sharp';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
 
 // Rama de instalación: carga de estructura de producción (sin demostración), etiqueta «Contenido de ejemplo»,
 // casilla «Mostrar en la página del concejo» y su migración. Base PostgreSQL desechable
@@ -130,8 +131,9 @@ try {
 
   // Permisos: solo administración; la cuenta municipal lo ve en solo lectura; validaciones.
   const lenaSpace = await spaceBy('lena');
-  const admin = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Administración', email: 'admin-identidad@planta14.example', password: randomUUID(), role: 'admin' } });
-  const editor = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Redacción', email: 'redaccion-identidad@planta14.example', password: randomUUID(), role: 'editor' } });
+  const userPassword = randomUUID();
+  const admin = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Administración', email: 'admin-identidad@planta14.example', password: userPassword, role: 'admin' } });
+  const editor = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Redacción', email: 'redaccion-identidad@planta14.example', password: userPassword, role: 'editor' } });
   const municipal = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Ayto. Lena', email: 'lena-identidad@planta14.example', password: randomUUID(), role: 'municipal', municipalSpace: lenaSpace.id } });
   await assert.rejects(payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, user: editor, overrideAccess: false, data: { identity: { title: 'Cambio de la redacción' } } }), /permiso|not allowed|Forbidden|prohibido/i);
   await assert.rejects(payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, user: municipal, overrideAccess: false, data: { identity: { title: 'Cambio del ayuntamiento' } } }), /permiso|not allowed|Forbidden|prohibido/i);
@@ -217,15 +219,64 @@ try {
   await payload.update({ collection: 'articles', id: hidden.id, overrideAccess: true, data: { showInTown: false } });
   passed('«Mostrar en la página del concejo» is checked by default; unchecked news stay published (article, home or section) but leave the concejo page');
 
+  // --- CMS para periodistas: «Creada por», vista previa en vivo y panel de inicio según el rol.
+  const signIn = async email => {
+    const response = await fetch(`${cms}/api/cms/users/login`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Sec-Fetch-Site': 'same-origin' }, body: JSON.stringify({ email, password: userPassword }) });
+    assert.equal(response.status, 200, `login ${email}`);
+    return response.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
+  };
+  const as = cookie => ({ headers: { Cookie: cookie, 'Sec-Fetch-Site': 'same-origin' } });
+  const editorCookie = await signIn(editor.email), adminCookie = await signIn(admin.email);
+  const draftArticle = await payload.create({ collection: 'articles', user: editor, overrideAccess: false, draft: true,
+    data: { ...base, slug: 'borrador-de-la-redaccion', title: 'Borrador de la redacción', _status: 'draft', createdBy: admin.id } });
+  assert.equal(draftArticle.createdBy?.id ?? draftArticle.createdBy, editor.id, '«Creada por» is the session user, not the client value');
+  const edited = await payload.update({ collection: 'articles', id: draftArticle.id, user: admin, overrideAccess: false, draft: true, data: { title: 'Borrador de la redacción', createdBy: admin.id } });
+  assert.equal(edited.createdBy?.id ?? edited.createdBy, editor.id, '«Creada por» never changes');
+  const previewURL = `${cms}/vista-previa/noticia/${draftArticle.id}`;
+  assert.equal((await fetch(previewURL)).status, 404, 'preview hidden without a CMS session');
+  const preview = await fetch(previewURL, as(editorCookie));
+  assert.equal(preview.status, 200);
+  assert.match(preview.headers.get('x-robots-tag') || '', /noindex/);
+  const previewHTML = (await preview.text()).replaceAll('<!-- -->', '');
+  assert.ok(previewHTML.includes('Borrador de la redacción') && previewHTML.includes('data-preview="on"') && previewHTML.includes('lg:grid-cols-[minmax(0,760px)_300px]'), 'draft rendered with the public article layout');
+  assert.equal(payload.collections.articles.config.admin.livePreview.url({ data: { id: draftArticle.id } }), `http://localhost:3071/vista-previa/noticia/${draftArticle.id}`);
+  // En vivo: el CMS envía el formulario por postMessage (mismo origen) y la vista se actualiza sin guardar.
+  const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
+  const browser = await chromium.launch({ headless: true, args: ['--no-proxy-server'] });
+  try {
+    const context = await browser.newContext();
+    await context.addCookies(editorCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: 'http://localhost:3071' }; }));
+    const tab = await context.newPage();
+    await tab.goto(`http://localhost:3071/vista-previa/noticia/${draftArticle.id}`);
+    await tab.waitForSelector('h1');
+    const liveDoc = (await payload.findByID({ collection: 'articles', id: draftArticle.id, draft: true, depth: 2, overrideAccess: true }));
+    await tab.evaluate(doc => window.postMessage({ type: 'payload-live-preview', collectionSlug: 'articles', data: { ...doc, title: 'Título escrito ahora mismo', excerpt: 'Entradilla en vivo' } }, window.location.origin), liveDoc);
+    await tab.waitForFunction(() => document.querySelector('h1')?.textContent === 'Título escrito ahora mismo', null, { timeout: 10000 });
+    assert.ok((await tab.content()).includes('Entradilla en vivo'));
+  } finally { await browser.close(); }
+  passed('live preview: drafts render with the public article design at /vista-previa/noticia/[id] (CMS session only, noindex) and update live from the CMS form; «Creada por» is set by the server');
+
+  const dashboard = async cookie => (await (await fetch(`${cms}/cms`, as(cookie))).text()).replaceAll('<!-- -->', '');
+  const editorHome = await dashboard(editorCookie), adminHome = await dashboard(adminCookie);
+  assert.ok(editorHome.includes('data-cms-dashboard="editor"'), 'editor dashboard');
+  for (const link of ['nueva', 'borradores', 'hoy']) assert.ok(editorHome.includes(`data-dashboard-link="${link}"`), `editor sees ${link}`);
+  for (const link of ['avisos', 'espacios', 'usuarios']) assert.ok(!editorHome.includes(`data-dashboard-link="${link}"`), `editor does not see ${link}`);
+  assert.ok(editorHome.includes(`createdBy][equals]=${editor.id}`), '«Mis borradores» filters by the session user');
+  assert.match(editorHome, />1<\/span><strong[^>]*>Mis borradores/, 'one draft of mine');
+  for (const link of ['nueva', 'borradores', 'hoy', 'avisos', 'espacios', 'usuarios']) assert.ok(adminHome.includes(`data-dashboard-link="${link}"`), `admin sees ${link}`);
+  passed('CMS home: shortcuts «Nueva noticia», «Mis borradores» and «Publicadas hoy» with counts; the administration also sees municipal notices, spaces and users');
+
   // --- Migración reversible.
   const migration = await import('../cms/migrations/20261102_174946_mostrar_en_concejo.ts');
   const tx = fn => payload.db.drizzle.transaction(db => fn({ db, payload, req: {} }));
   const { sql } = await import('@payloadcms/db-postgres');
   const columns = async () => (await payload.db.drizzle.execute(sql`SELECT table_name, column_name FROM information_schema.columns WHERE column_name IN ('show_in_town', 'version_show_in_town') ORDER BY table_name`)).rows.map(r => `${r.table_name}.${r.column_name}`);
   assert.deepEqual(await columns(), ['_articles_v.version_show_in_town', 'articles.show_in_town']);
+  const articleCount = async () => (await payload.db.drizzle.execute(sql`SELECT count(*)::int AS n FROM articles`)).rows[0].n;
+  const articlesBefore = await articleCount();
   await tx(migration.down);
   assert.deepEqual(await columns(), [], 'down removes both columns');
-  assert.equal((await payload.db.drizzle.execute(sql`SELECT count(*)::int AS n FROM articles`)).rows[0].n, 2, 'down keeps the articles');
+  assert.equal(await articleCount(), articlesBefore, 'down keeps the articles');
   await tx(migration.up);
   assert.deepEqual(await columns(), ['_articles_v.version_show_in_town', 'articles.show_in_town']);
   const flags = (await payload.db.drizzle.execute(sql`SELECT bool_and(show_in_town) AS all_true, bool_and(show_in_town IS NOT NULL) AS no_nulls FROM articles`)).rows[0];

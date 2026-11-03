@@ -101,8 +101,15 @@ export const Authors: CollectionConfig = {
     { name: 'email', type: 'email', access: { read: editorialUser } }, { name: 'avatar', type: 'relationship', relationTo: 'media' }],
 };
 
+// Vista previa en vivo con el diseño público (app/(frontend)/vista-previa/noticia/[id]).
+const previewURL = ({ data }: { data: { id?: number | string } }) => `${process.env.CMS_SERVER_URL || ''}/vista-previa/noticia/${data?.id ?? ''}`;
+
 export const Articles: CollectionConfig = {
-  slug: 'articles', admin: { useAsTitle: 'title' }, ...published,
+  slug: 'articles', ...published,
+  admin: { useAsTitle: 'title', defaultColumns: ['title', '_status', 'date', 'town', 'createdBy'],
+    livePreview: { url: previewURL, breakpoints: [{ name: 'movil', label: 'Móvil', width: 390, height: 844 }, { name: 'tableta', label: 'Tableta', width: 820, height: 1180 }, { name: 'escritorio', label: 'Escritorio', width: 1366, height: 900 }] },
+    preview: (doc) => previewURL({ data: doc as { id?: number } }) },
+
   fields: [key, { name: 'slug', type: 'text', unique: true, required: true }, text('title', true),
     { name: 'excerpt', type: 'textarea', required: true },
     { name: 'body', type: 'json', required: true, validate: (value: unknown) => Array.isArray(value) && value.every(p => typeof p === 'string') || 'Usa una lista de párrafos de texto' },
@@ -115,7 +122,13 @@ export const Articles: CollectionConfig = {
     { name: 'featured', type: 'checkbox' }, { name: 'main', type: 'checkbox' }, { name: 'opinion', type: 'checkbox' },
     // Si se desmarca, la noticia sigue publicada (portada, sección, buscador) pero no sale en la página del concejo.
     { name: 'showInTown', label: 'Mostrar en la página del concejo', type: 'checkbox', defaultValue: true, admin: { position: 'sidebar' } },
-    text('sourceName'), text('sourceAuthor'), ...provenance],
+    text('sourceName'), text('sourceAuthor'), ...provenance,
+    // Quién creó la noticia en el CMS (para «Mis borradores» del panel de inicio). Lo pone el servidor.
+    { name: 'createdBy', label: 'Creada por', type: 'relationship', relationTo: 'users', index: true,
+      admin: { position: 'sidebar', readOnly: true },
+      // Siempre el usuario de la sesión al crear; después no cambia, envíe lo que envíe el cliente.
+      hooks: { beforeChange: [({ operation, req, originalDoc }) => operation === 'create'
+        ? (req.user?.collection === 'users' ? req.user.id : null) : (originalDoc?.createdBy ?? null)] } }],
 };
 
 const hexColor = (value: unknown) => !value || /^#[0-9a-fA-F]{6}$/.test(String(value)) || 'Usa un color en formato #RRGGBB';
