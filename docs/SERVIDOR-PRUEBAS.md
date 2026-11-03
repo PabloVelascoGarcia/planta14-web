@@ -1,6 +1,45 @@
 # Instalación de prueba en pruebas.planta14.com
 
-Fecha: **2 de noviembre de 2026**. Servidor IONOS 87.106.30.18, usuario `planta14`. Commit instalado: **`c29e02446361eeb5c3a7acaaab5d1bedbb4abf6e`** (`c29e024`, rama `desarrollo/planta14-v2-instalacion`). Guía seguida: `docs/PUESTA-EN-MARCHA-IONOS.md`, apartados 4 a 6.
+## Versión instalada ahora
+
+**`862379192f53b60f01e9fa553047c874601c0ab5`** (`8623791`, rama `desarrollo/planta14-v2-ajustes-preproduccion`). Desplegada el **3 de noviembre de 2026 a las 09:20** (hora de Madrid). La versión anterior es `c29e024`, y `deploy.sh` la conserva para poder volver a ella.
+
+### Actualización a 8623791 (3 de noviembre de 2026)
+
+Guía seguida: `docs/V2-AJUSTES-PREPRODUCCION.md`, pasos 1 a 6. Esa guía está en el commit `577cdd6` de la misma rama, que solo añade el documento. No se han tocado el DNS, los buckets, los secretos ni el `.env.production`. No hizo falta ninguna contraseña ni sudo.
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo (`status.sh`) | Correcto. Versión `c29e024`, `/api/health: ok`, mantenimiento desactivado y sin restauración asistida pendiente. Las copias de las 03:15 y las 03:30 se hicieron solas |
+| 2. `git fetch` y `checkout --detach` | `8623791 docs: identidad visual de los concejos y CMS para la redacción en el manual [skip netlify]` |
+| 3. Restos en `infra/test/out` | No había ninguno: la carpeta estaba vacía y no hizo falta `sudo rm` |
+| 4. `deploy.sh … 862379192f53…` | **Código 0.** Salieron, en este orden: «Modo mantenimiento ACTIVADO», «Copia previa: …20261103T082024Z.dump.age (140K)», «**Migraciones aplicadas: 20261103_000335_identidad_espacios 20261103_001210_creado_por**», «/api/health: ok», «Modo mantenimiento DESACTIVADO» y «Desplegada». El mantenimiento duró unos 17 segundos. Registro: `/srv/planta14/state/deploy-8623791.log` |
+| 5. Comprobaciones | Correctas (detalle abajo) |
+| 6. `restore-test.sh` con `planta14-app:862379192f53` | **SUPERADA**, **código 0**, 33 OK, «Sin volúmenes nuevos» y 0 restos en `infra/test/out`. El arreglo del punto 7 funciona. Registro: `/srv/planta14/state/restore-test-8623791.log` |
+
+**Comprobaciones del paso 5.** Se hicieron desde el servidor, pidiendo las páginas directamente a la app, porque ya no tengo la contraseña común: el archivo de secretos se borró al terminar la instalación.
+- **Portada:** 200. No aparecen «Edición de demostración», «Demo municipal», «fines de demostración», «Probar el panel» ni «Ejemplo».
+- **Páginas de la demo:** `/edicion` y `/niebla` dan 404. `/admin` redirige a `/admin/login`, que da 404.
+- **Los seis concejos** (`/aller`, `/lena`, `/mieres`, `/morcin`, `/ribera-de-arriba` y `/riosa`): 200, cada uno con su lema propio y sus créditos de Wikimedia. Ninguno muestra el marcador «Escudo municipal».
+- **En la base:** los 6 espacios tienen la identidad rellena (lema, colores, escudo y foto), también en su última versión, la que abre el CMS. Hay 18 historias destacadas y existe la columna nueva «Creada por» (`created_by_id`).
+- **CMS:** `/cms/login` responde 200 en español (`lang="es"`, «Iniciar sesión»).
+- **Vista previa:** `/vista-previa/noticia/1` sin sesión da 404, con `X-Robots-Tag: noindex, nofollow`.
+- **A través de Caddy, sin contraseña:** la portada y `/cms` dan 401. `/api/health` da 200, con la base y el almacenamiento `ok`.
+
+**Pendiente de comprobar en un navegador** (hace falta la contraseña común y el administrador):
+- el aspecto del CMS en español;
+- el panel de inicio con «Nueva noticia», «Mis borradores» y «Publicadas hoy»;
+- la pestaña Identidad visual de cada espacio;
+- una noticia `[PRUEBA]`: Guardar borrador → Previsualizar, y comprobar que cambia al escribir;
+- que los concejos se ven igual que antes.
+
+También queda cambiar la primera historia destacada de Aller, que enlaza a una noticia de la demo que da 404 (`docs/V2-AJUSTES-PREPRODUCCION.md`, «Para revisar en el CMS»).
+
+---
+
+## Instalación inicial (2 de noviembre de 2026)
+
+Fecha: **2 de noviembre de 2026**. Servidor IONOS 87.106.30.18, usuario `planta14`. Commit instalado entonces: **`c29e02446361eeb5c3a7acaaab5d1bedbb4abf6e`** (`c29e024`, rama `desarrollo/planta14-v2-instalacion`). Guía seguida: `docs/PUESTA-EN-MARCHA-IONOS.md`, apartados 4 a 6.
 
 Este documento se fue escribiendo durante la instalación. Ningún secreto aparece aquí.
 
