@@ -7,7 +7,9 @@ import path from 'node:path';
 const [accion, ...args] = process.argv.slice(2);
 const scripts = { cargar: 'scripts/ensayo-cargar.ts', retirar: 'scripts/ensayo-retirar.ts' };
 if (!scripts[accion]) { console.error('Uso: npm run cms:ensayo:cargar|cms:ensayo:retirar [-- --solo-comprobar] [--usuario correo-admin]'); process.exit(2); }
-const env = { ...process.env, ENSAYO_SOLO_COMPROBAR: '', ENSAYO_USUARIO: '' };
+// MALLOC_ARENA_MAX=2: con sharp (varios hilos de libvips), glibc reparte la memoria en muchas arenas y el proceso
+// no la devuelve; con dos, la carga de las fotos queda holgada en el contenedor de migraciones (768 MiB).
+const env = { ...process.env, MALLOC_ARENA_MAX: process.env.MALLOC_ARENA_MAX || '2', ENSAYO_SOLO_COMPROBAR: '', ENSAYO_USUARIO: '' };
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--solo-comprobar') env.ENSAYO_SOLO_COMPROBAR = '1';
   else if (args[i] === '--usuario' && args[i + 1] && !args[i + 1].startsWith('--')) env.ENSAYO_USUARIO = args[++i];

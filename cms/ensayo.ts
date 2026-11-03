@@ -164,6 +164,10 @@ export const declaracionAdministracion = (foto: Foto, email: string) =>
 // --- Carga --------------------------------------------------------------------------------------------
 export async function cargar(payload: Payload, opts: { dir: string; soloComprobar: boolean; now?: Date; usuario?: string; log: Log }): Promise<Informe> {
   const { log } = opts;
+  // Memoria contenida en el contenedor de migraciones: sin caché de operaciones de libvips y un solo hilo (también
+  // para los tamaños que genera Payload al subir). Proceso de un solo uso: no afecta a la web.
+  sharp.cache(false);
+  sharp.concurrency(1);
   const conjunto = await leerConjunto(opts.dir);
   const ctx = await contexto(payload, opts.usuario);
   const informe: Informe = { creados: {}, existentes: {}, espacios: [], avisos: [] };

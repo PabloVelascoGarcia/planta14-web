@@ -34,8 +34,9 @@ if [[ $action == retirar && $check_only == 0 ]]; then
   copy="$(basename "$pg_dump_file") + $(basename "$storage_file")"
   log "Copias previas: $pg_dump_file y $storage_file"
 fi
-log "npm run cms:ensayo:$action $*"
-# ENSAYO_FOTOS_BASE solo existe en ensayos locales sin acceso a Commons.
+log "cms:ensayo:$action $*"
+# ENSAYO_FOTOS_BASE solo existe en ensayos locales sin acceso a Commons. Se llama al lanzador sin npm (un proceso
+# menos en el contenedor de migraciones); es lo mismo que npm run cms:ensayo:$action.
 ENSAYO_COPIA_PREVIA=$copy compose --profile migrate run --rm -T -e ENSAYO_COPIA_PREVIA ${ENSAYO_FOTOS_BASE:+-e ENSAYO_FOTOS_BASE} \
-  migrate npm run "cms:ensayo:$action" -- "$@"
+  migrate node scripts/ensayo-run.mjs "$action" "$@"
 [[ $check_only == 1 ]] || record "ensayo-$action${copy:+ (copia previa: $copy)}"
