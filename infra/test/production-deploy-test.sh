@@ -340,7 +340,7 @@ check "cargado: todo publicado y fotos con copia pública" test "$(sql "SELECT (
 check "cargado: Mieres y Lena activos, el resto igual" test "$(sql "SELECT string_agg(legacy_i_d||':'||subscription_status, ',' ORDER BY legacy_i_d) FROM municipal_spaces")" = "$(sed -E 's/(lena|mieres):[a-z]+/\1:active/g' <<< "$spaces_before")"
 check "web: la carta del director publicada" test "$(status_of "https://$domain/noticia/darle-al-hierro")" = 200
 check "segunda carga: no duplica" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' cargar > '$ws/ensayo-cargar2.log' 2>&1 && grep -q 'Creados: nada' '$ws/ensayo-cargar2.log'"
-storage_before=$(find "$ws/backups/storage" -name '*.tar.gz*' 2>/dev/null | wc -l)
+storage_before=$( (find "$ws/backups/storage" -name '*.tar.gz*' ! -name '*.sha256' 2>/dev/null || true) | wc -l)
 check "ensayo.sh retirar --solo-comprobar no borra" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' retirar --solo-comprobar > '$ws/ensayo-retirar-comprobar.log' 2>&1 && grep -q 'Se borraría: 34 articles, 20 municipal-content' '$ws/ensayo-retirar-comprobar.log' && [[ \$(docker exec '$project-postgres-1' psql -U planta14 -d planta14 -XAtc \"SELECT count(*) FROM articles WHERE lote='ensayo'\") == 34 ]]"
 check "ensayo.sh retirar: hace antes la copia de PostgreSQL y del almacenamiento" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' retirar > '$ws/ensayo-retirar.log' 2>&1 && grep -q 'Copias previas: .*planta14-postgres-.*planta14-storage-' '$ws/ensayo-retirar.log' && grep -q 'RETIRADA TERMINADA' '$ws/ensayo-retirar.log'"
 check "copia del almacenamiento nueva antes de borrar" test "$(find "$ws/backups/storage" -name '*.tar.gz*' ! -name '*.sha256' | wc -l)" -gt "$storage_before"
