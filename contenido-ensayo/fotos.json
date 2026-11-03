@@ -684,18 +684,18 @@
       "id": "foto-p14-noticia-08",
       "idPieza": "p14-noticia-08",
       "uso": "contenido",
-      "idFotografia": "commons-006",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
+      "idFotografia": "commons-004",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
       "autor": "Carmenmoran",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 4752,
-        "alto": 3168
+        "ancho": 1620,
+        "alto": 1080
       },
-      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-noticia-09",
@@ -1126,23 +1126,74 @@
       "id": "foto-p14-municipal-mieres-aviso-02",
       "idPieza": "p14-municipal-mieres-aviso-02",
       "uso": "contenido",
-      "idFotografia": "commons-003",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
-      "autor": "Carmenmoran",
-      "licencia": "CC BY 4.0",
-      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "idFotografia": "commons-019",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Pozu_Santa_Barbara_%2801%29.jpg",
+      "autor": "Xuliu Pombar",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
       "resolucion": {
-        "ancho": 4500,
-        "alto": 3588
+        "ancho": 5184,
+        "alto": 3456
       },
-      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Pozo Santa Bárbara, en La Rebaldana, Turón, concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Xuliu Pombar / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg. https://creativecommons.org/licenses/by-sa/4.0"
     },
     {
       "id": "foto-p14-municipal-mieres-aviso-03",
       "idPieza": "p14-municipal-mieres-aviso-03",
       "uso": "contenido",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 8104,
+        "alto": 4559
+      },
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-evento-01",
+      "idPieza": "p14-municipal-mieres-evento-01",
+      "uso": "contenido",
+      "idFotografia": "commons-001",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Gallegos_%28Mieres%2C_Asturias%29.jpg",
+      "autor": "Carmenmoran",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 3730,
+        "alto": 2486
+      },
+      "pieFoto": "Gallegos, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-evento-02",
+      "idPieza": "p14-municipal-mieres-evento-02",
+      "uso": "contenido",
+      "idFotografia": "commons-019",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Pozu_Santa_Barbara_%2801%29.jpg",
+      "autor": "Xuliu Pombar",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+      "resolucion": {
+        "ancho": 5184,
+        "alto": 3456
+      },
+      "pieFoto": "Pozo Santa Bárbara, en La Rebaldana, Turón, concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Xuliu Pombar / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg. https://creativecommons.org/licenses/by-sa/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-mieres-evento-03",
+      "idPieza": "p14-municipal-mieres-evento-03",
+      "uso": "contenido",
       "idFotografia": "commons-003",
       "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
       "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
@@ -1155,57 +1206,6 @@
       },
       "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
       "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
-    },
-    {
-      "id": "foto-p14-municipal-mieres-evento-01",
-      "idPieza": "p14-municipal-mieres-evento-01",
-      "uso": "contenido",
-      "idFotografia": "commons-002",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
-      "autor": "Anne Vero Columbier. Asociación Semeya",
-      "licencia": "CC BY-SA 4.0",
-      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
-      "resolucion": {
-        "ancho": 8104,
-        "alto": 4559
-      },
-      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
-    },
-    {
-      "id": "foto-p14-municipal-mieres-evento-02",
-      "idPieza": "p14-municipal-mieres-evento-02",
-      "uso": "contenido",
-      "idFotografia": "commons-002",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
-      "autor": "Anne Vero Columbier. Asociación Semeya",
-      "licencia": "CC BY-SA 4.0",
-      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
-      "resolucion": {
-        "ancho": 8104,
-        "alto": 4559
-      },
-      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
-    },
-    {
-      "id": "foto-p14-municipal-mieres-evento-03",
-      "idPieza": "p14-municipal-mieres-evento-03",
-      "uso": "contenido",
-      "idFotografia": "commons-002",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
-      "autor": "Anne Vero Columbier. Asociación Semeya",
-      "licencia": "CC BY-SA 4.0",
-      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
-      "resolucion": {
-        "ancho": 8104,
-        "alto": 4559
-      },
-      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
     },
     {
       "id": "foto-p14-municipal-mieres-ayuda-01",
@@ -1228,52 +1228,52 @@
       "id": "foto-p14-municipal-mieres-ayuda-02",
       "idPieza": "p14-municipal-mieres-ayuda-02",
       "uso": "contenido",
-      "idFotografia": "commons-003",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
-      "autor": "Carmenmoran",
-      "licencia": "CC BY 4.0",
-      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "idFotografia": "commons-002",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+      "autor": "Anne Vero Columbier. Asociación Semeya",
+      "licencia": "CC BY-SA 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
       "resolucion": {
-        "ancho": 4500,
-        "alto": 3588
+        "ancho": 8104,
+        "alto": 4559
       },
-      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Vista panorámica del poblado minero de Bustiello, en Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Anne Vero Columbier. Asociación Semeya / Wikimedia Commons / CC BY-SA 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg. https://creativecommons.org/licenses/by-sa/4.0"
     },
     {
       "id": "foto-p14-municipal-mieres-tablon-01",
       "idPieza": "p14-municipal-mieres-tablon-01",
       "uso": "contenido",
-      "idFotografia": "commons-003",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "idFotografia": "commons-001",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Gallegos_%28Mieres%2C_Asturias%29.jpg",
       "autor": "Carmenmoran",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 4500,
-        "alto": 3588
+        "ancho": 3730,
+        "alto": 2486
       },
-      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Gallegos, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-municipal-mieres-tablon-02",
       "idPieza": "p14-municipal-mieres-tablon-02",
       "uso": "contenido",
-      "idFotografia": "commons-003",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+      "idFotografia": "commons-001",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Gallegos_%28Mieres%2C_Asturias%29.jpg",
       "autor": "Carmenmoran",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 4500,
-        "alto": 3588
+        "ancho": 3730,
+        "alto": 2486
       },
-      "pieFoto": "Edificio religioso en Ujo, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Gallegos, en el concejo de Mieres. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Gallegos_(Mieres,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-municipal-lena-aviso-01",
@@ -1296,23 +1296,40 @@
       "id": "foto-p14-municipal-lena-aviso-02",
       "idPieza": "p14-municipal-lena-aviso-02",
       "uso": "contenido",
-      "idFotografia": "commons-004",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
       "autor": "Carmenmoran",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 1620,
-        "alto": 1080
+        "ancho": 4752,
+        "alto": 3168
       },
-      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-municipal-lena-aviso-03",
       "idPieza": "p14-municipal-lena-aviso-03",
       "uso": "contenido",
+      "idFotografia": "commons-005",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Santa_Cristina_de_Lena_1.jpg",
+      "autor": "Uviein",
+      "licencia": "CC BY 4.0",
+      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+      "resolucion": {
+        "ancho": 4032,
+        "alto": 2268
+      },
+      "pieFoto": "Exterior de la iglesia de Santa Cristina de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Uviein / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg. https://creativecommons.org/licenses/by/4.0"
+    },
+    {
+      "id": "foto-p14-municipal-lena-evento-01",
+      "idPieza": "p14-municipal-lena-evento-01",
+      "uso": "contenido",
       "idFotografia": "commons-004",
       "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
       "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
@@ -1327,38 +1344,21 @@
       "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
-      "id": "foto-p14-municipal-lena-evento-01",
-      "idPieza": "p14-municipal-lena-evento-01",
-      "uso": "contenido",
-      "idFotografia": "commons-006",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
-      "autor": "Carmenmoran",
-      "licencia": "CC BY 4.0",
-      "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
-      "resolucion": {
-        "ancho": 4752,
-        "alto": 3168
-      },
-      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
-    },
-    {
       "id": "foto-p14-municipal-lena-evento-02",
       "idPieza": "p14-municipal-lena-evento-02",
       "uso": "contenido",
-      "idFotografia": "commons-006",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
-      "autor": "Carmenmoran",
+      "idFotografia": "commons-005",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Santa_Cristina_de_Lena_1.jpg",
+      "autor": "Uviein",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 4752,
-        "alto": 3168
+        "ancho": 4032,
+        "alto": 2268
       },
-      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Exterior de la iglesia de Santa Cristina de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Uviein / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-municipal-lena-evento-03",
@@ -1398,35 +1398,35 @@
       "id": "foto-p14-municipal-lena-ayuda-02",
       "idPieza": "p14-municipal-lena-ayuda-02",
       "uso": "contenido",
-      "idFotografia": "commons-004",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
       "autor": "Carmenmoran",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 1620,
-        "alto": 1080
+        "ancho": 4752,
+        "alto": 3168
       },
-      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-municipal-lena-tablon-01",
       "idPieza": "p14-municipal-lena-tablon-01",
       "uso": "contenido",
-      "idFotografia": "commons-004",
-      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg",
-      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Campomanes_%28Lena%2C_Asturias%29.jpg",
+      "idFotografia": "commons-006",
+      "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg",
+      "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/71/Castiello_%28Lena%2C_Asturias%29.jpg",
       "autor": "Carmenmoran",
       "licencia": "CC BY 4.0",
       "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
       "resolucion": {
-        "ancho": 1620,
-        "alto": 1080
+        "ancho": 4752,
+        "alto": 3168
       },
-      "pieFoto": "Vista del entorno de Campomanes, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
-      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Campomanes_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
+      "pieFoto": "Entorno de Castiello, en el concejo de Lena. Imagen de contexto; no documenta la actividad o el suceso del texto.",
+      "atribucion": "Carmenmoran / Wikimedia Commons / CC BY 4.0. Fuente: https://commons.wikimedia.org/wiki/File:Castiello_(Lena,_Asturias).jpg. https://creativecommons.org/licenses/by/4.0"
     },
     {
       "id": "foto-p14-municipal-lena-tablon-02",
