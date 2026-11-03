@@ -271,3 +271,17 @@ La administración ve además los **avisos municipales sin revisar**, los **espa
 **Mostrar en la página del concejo.** En la barra lateral de cada noticia. Viene marcada; si la desmarcas, la noticia se publica (portada, sección, buscador), pero no aparece en la página del concejo.
 
 **Creada por.** Lo pone el CMS solo, con la cuenta que creó la noticia; sirve para «Mis borradores» y no se puede cambiar.
+
+## 13. Contenido de ensayo (preproducción)
+
+Para llenar la web de preproducción con noticias, opiniones, agenda y contenidos municipales de prueba, y quitarlo todo después sin tocar lo de los periodistas, sigue `docs/ENSAYO-CONTENIDO.md`. En resumen, desde el servidor:
+
+```bash
+cd /srv/planta14/app
+bash infra/deploy/ensayo.sh --env-file infra/.env.production cargar --solo-comprobar
+bash infra/deploy/ensayo.sh --env-file infra/.env.production cargar
+bash infra/deploy/ensayo.sh --env-file infra/.env.production retirar --solo-comprobar
+bash infra/deploy/ensayo.sh --env-file infra/.env.production retirar
+```
+
+La retirada hace antes una copia de seguridad, borra solo lo marcado como ensayo, conserva los dos reportajes definitivos y lo que hayan escrito los periodistas, devuelve Mieres y Lena a su estado anterior y lo deja anotado en Auditoría.
