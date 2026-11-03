@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import type { Payload, Where } from 'payload';
+import { paragraphsToLexical } from '../lib/rich-text';
 
 /**
  * Carga y retirada del contenido de ensayo (contenido-ensayo/contenido.json y fotos.json).
@@ -252,10 +253,11 @@ export async function cargar(payload: Payload, opts: { dir: string; soloComproba
       } });
     } else {
       await payload.create({ collection: 'articles', overrideAccess: true, user, data: {
-        legacyID: p.legacyID, slug: p.slug, title: p.title, excerpt: p.excerpt, body, image,
+        legacyID: p.legacyID, slug: p.slug, title: p.title, excerpt: p.excerpt, body: paragraphsToLexical(body) as never, image,
         author: ctx.authors.get(p.author)!.id, town: ctx.towns.get(p.town)!, section: ctx.sections.get(p.section)!,
         date: dates.date, publishedAt: dates.publishedAt, opinion: p.opinion, showInTown: p.showInTown,
-        agenda: p.tipo === 'agenda_general' ? { eventAt: newEvent, place: p.eventoGeneral?.place ?? null } : undefined,
+        // La fecha de la actividad es hora de Madrid; el campo de fecha guarda el instante (ISO).
+        agenda: p.tipo === 'agenda_general' ? { eventAt: newEvent ? madridToISO(newEvent.slice(0, 10), newEvent.slice(11, 16)) : null, place: p.eventoGeneral?.place ?? null } : undefined,
         lote: p.lote, provenance: ENSAYO_PROVENANCE, _status: 'published',
       } });
     }

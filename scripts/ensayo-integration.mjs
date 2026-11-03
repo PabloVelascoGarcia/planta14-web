@@ -69,6 +69,7 @@ try {
   const { default: config } = await import('../payload.config.ts');
   const { loadStructure } = await import('../cms/structure.ts');
   const ensayo = await import('../cms/ensayo.ts');
+  const { lexicalToParagraphs } = await import('../lib/rich-text.ts');
   payload = await getPayload({ config });
   await payload.db.migrate();
   await loadStructure(payload);
@@ -123,17 +124,19 @@ try {
     if (doc.date) assert.equal(doc.date, local);
   }
   assert.equal(new Set(loaded.map(a => a.date)).size, 4, 'spread over the 4 days');
-  const events = [...loaded.filter(a => a.agenda?.eventAt).map(a => a.agenda.eventAt), ...mc.filter(m => m.type === 'event').map(m => m.eventAt)];
+  const madridLocal = iso => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(iso)).map(x => [x.type, x.value])); return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`; };
+  const events = [...loaded.filter(a => a.agenda?.eventAt).map(a => madridLocal(a.agenda.eventAt)), ...mc.filter(m => m.type === 'event').map(m => m.eventAt)];
   assert.equal(events.length, 12);
   for (const at of events) { assert.match(at, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/); assert.ok(at.slice(0, 10) > today && at.slice(0, 10) <= shift(45), `event in the following weeks (${at})`); }
   // Aviso de ensayo al final; fechas del texto actualizadas; opciones de concejo.
   for (const doc of [...loaded, ...mc]) {
-    const parrafos = Array.isArray(doc.body) ? doc.body : doc.body.split('\n\n');
+    const parrafos = typeof doc.body === 'string' ? doc.body.split('\n\n') : lexicalToParagraphs(doc.body);
     const idx = parrafos.findIndex(t => t.startsWith('Contenido ficticio de ensayo'));
     if (idx >= 0) assert.equal(idx, parrafos.length - 1, `${doc.legacyID}: notice paragraph last`);
   }
   const agenda1 = loaded.find(a => a.legacyID === 'p14-agenda-01');
-  assert.ok(!JSON.stringify(agenda1.body).includes('2026-12-12') && JSON.stringify(agenda1.body).includes(ensayo.formatoFecha(agenda1.agenda.eventAt.slice(0, 10))), 'event date in the text updated');
+  assert.ok(!JSON.stringify(agenda1.body).includes('2026-12-12') && JSON.stringify(agenda1.body).includes(ensayo.formatoFecha(madridLocal(agenda1.agenda.eventAt).slice(0, 10))), 'event date in the text updated');
+  assert.equal(agenda1.body.root.children.every(n => n.type === 'paragraph'), true, 'bodies stored as rich text (Lexical paragraphs)');
   const carta = loaded.find(a => a.legacyID === 'p14-carta-director-001');
   assert.equal(carta.showInTown, false); assert.equal(carta.opinion, true); assert.equal(carta.lote, 'ensayo');
   passed('load: articles, opinions, letter, reports, general agenda and municipal items published with lote (2 definitive reports); dates in the 4 previous days at plausible hours, events in the following weeks; test notice moved to the end');

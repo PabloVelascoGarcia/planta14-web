@@ -1,6 +1,13 @@
 import type { Article, Author } from './mock-data';
 import type { MunicipalContent, MunicipalSpace } from './demo/municipal';
 import type { MunicipalIdentity } from './municipal-identity';
+import { isPlainParagraphs, lexicalToParagraphs, toLexical } from './rich-text';
+/** Fecha y hora de Madrid en formato AAAA-MM-DDTHH:MM (agenda). */
+function madridLocal(iso: string | null | undefined) {
+  if (!iso || Number.isNaN(Date.parse(iso))) return '';
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(iso)).map(p => [p.type, p.value]));
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+}
 import { publicURL } from '../cms/public-media';
 import type { Article as PayloadArticle, Author as PayloadAuthor, Media, MunicipalContent as PayloadMunicipalContent, MunicipalSpace as PayloadSpace, Town } from '../cms/payload-types';
 
@@ -33,23 +40,23 @@ export function articleContract(doc: PayloadArticle): Article {
   const section = populated(doc.section);
   const image = typeof doc.image === 'object' ? doc.image : null;
   return {
-    id: doc.legacyID || String(doc.id), slug: doc.slug, title: doc.title, excerpt: doc.excerpt,
-    body: doc.body as string[], image: mediaURL(doc.image), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
-    date: doc.date, author: author.name, authorSlug: author.slug,
+    id: doc.legacyID || String(doc.id), slug: doc.slug || String(doc.id), title: doc.title, excerpt: doc.excerpt,
+    body: lexicalToParagraphs(doc.body), ...(toLexical(doc.body) && !isPlainParagraphs(doc.body) ? { bodyRich: toLexical(doc.body)! } : {}), image: mediaURL(doc.image), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
+    date: doc.date || madridLocal(doc.publishedAt).slice(0, 10), author: author.name, authorSlug: author.slug,
     comarca: town.comarca, concejo: town.name, topic: section.name, status: 'published',
-    publishedAt: doc.publishedAt || doc.date, scheduledAt: doc.scheduledAt || undefined,
+    publishedAt: doc.publishedAt || doc.date || '', scheduledAt: doc.scheduledAt || undefined,
     seoTitle: doc.seoTitle || doc.title, seoDescription: doc.seoDescription || doc.excerpt, seoImage: mediaURL(doc.seoImage || doc.image),
     main: Boolean(doc.main), featured: Boolean(doc.featured), opinion: Boolean(doc.opinion),
     // Optional keys only when present, so the presentation contract stays identical without them.
     ...(shareImage(doc.seoImage || doc.image) ? { shareImage: shareImage(doc.seoImage || doc.image) } : {}),
     sourceName: doc.sourceName || undefined, sourceUrl: doc.sourceUrl || undefined, sourceAuthor: doc.sourceAuthor || undefined,
     ...(doc.showInTown === false ? { showInTown: false } : {}),
-    ...(doc.agenda?.eventAt ? { eventAt: doc.agenda.eventAt, ...(doc.agenda.place ? { eventPlace: doc.agenda.place } : {}) } : {}),
+    ...(doc.agenda?.eventAt ? { eventAt: madridLocal(doc.agenda.eventAt), ...(doc.agenda.place ? { eventPlace: doc.agenda.place } : {}) } : {}),
   };
 }
 export async function payloadArticles(): Promise<Article[]> {
   const payload = await contentClient();
-  const result = await payload.find({ collection: 'articles', overrideAccess: false, where: { _status: { equals: 'published' } }, depth: 2, pagination: false, sort: '-date' });
+  const result = await payload.find({ collection: 'articles', overrideAccess: false, where: { _status: { equals: 'published' } }, depth: 2, pagination: false, sort: '-publishedAt' });
   return result.docs.map(articleContract).sort((a, b) => (b.publishedAt || b.date).localeCompare(a.publishedAt || a.date));
 }
 export function authorContract(doc: PayloadAuthor): Author {

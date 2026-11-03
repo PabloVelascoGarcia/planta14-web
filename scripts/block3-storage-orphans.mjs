@@ -9,7 +9,7 @@ export async function testPublicOrphans({ payload, actor, article, file, image, 
   const keys = async bucket => (await client.send(new ListObjectsV2Command({ Bucket: bucket }))).Contents?.map(o => o.Key).sort() || [];
   const ops = where => payload.find({ collection: 'public-media-ops', overrideAccess: true, pagination: false, where });
   const savedGrace = process.env.PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS;
-  const probe = await payload.create({ collection: 'media', user: actor, overrideAccess: false, file: file('rollback-probe.png'), data: { alt: 'Diagnóstico sintético', credit: 'Prueba', rightsHolder: 'Prueba', rightsType: 'propia', rightsScope: 'publicable' } });
+  const probe = await payload.create({ collection: 'media', user: actor, overrideAccess: false, file: file('rollback-probe.png'), data: { alt: 'Diagnóstico sintético', credit: 'Prueba', rightsHolder: 'Prueba', rightsType: 'propia', rightsScope: 'publicable', rightsConfirm: true } });
   const before = new Set(await keys(oldBucket));
   const create = payload.create;
   try {

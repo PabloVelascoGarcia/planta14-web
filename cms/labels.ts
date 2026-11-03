@@ -43,6 +43,7 @@ const fieldLabels: Record<string, string> = {
 const optionLabels: Record<string, string> = {
   admin: 'Administración', editor: 'Redacción', municipal: 'Ayuntamiento',
   'rightsScope.demo': 'Solo demostración', publicable: 'Publicable',
+  propia: 'Propia', licencia: 'Con licencia (p. ej. Creative Commons)', 'autorización': 'Cedida con autorización', institucional: 'Institucional',
   'status.demo': 'Demostración', active: 'Activo', inactive: 'Inactivo',
   news: 'Noticia', notice: 'Aviso', event: 'Agenda', grant: 'Ayuda o subvención', announcement: 'Tablón de anuncios', municipality: 'Ayuntamiento',
   'emailStatus.disabled': 'Desactivado', sent: 'Enviado', 'emailStatus.failed': 'Fallido', 'municipal-publication': 'Publicación municipal',
@@ -59,6 +60,9 @@ function label(map: Record<string, string>, keys: string[]) {
 
 function localizeFields(slug: string, fields: Field[], parent = ''): Field[] {
   return fields.map(field => {
+    // Contenedores sin nombre (pestañas, bloques plegables, filas): sus campos cuelgan del mismo nivel.
+    if (field.type === 'tabs') return { ...field, tabs: field.tabs.map(tab => ({ ...tab, fields: localizeFields(slug, tab.fields, 'name' in tab && tab.name ? (parent ? `${parent}.${tab.name}` : tab.name) : parent) })) } as Field;
+    if ((field.type === 'collapsible' || field.type === 'row') && 'fields' in field) return { ...field, fields: localizeFields(slug, field.fields, parent) } as Field;
     if (!('name' in field) || !field.name) return field;
     const path = parent ? `${parent}.${field.name}` : field.name;
     const next = { ...field } as Field & { label?: unknown; options?: unknown; fields?: Field[] };

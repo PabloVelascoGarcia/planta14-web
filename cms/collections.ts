@@ -34,6 +34,10 @@ export const Users: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text', required: true },
     { name: 'role', type: 'select', required: true, defaultValue: 'editor', options: ['admin', 'editor', 'municipal'], access: { create: adminOnly, update: adminOnly } },
+    // Firma que se pone por defecto en sus noticias.
+    { name: 'author', label: 'Firma (autor vinculado)', type: 'relationship', relationTo: 'authors',
+      admin: { condition: (data) => data?.role !== 'municipal', description: 'Autor que se pondrá por defecto en las noticias de esta cuenta.' },
+      access: { create: adminOnly, update: adminOnly } },
     { name: 'municipalSpace', label: 'Espacio municipal', type: 'relationship', relationTo: 'municipal-spaces', index: true,
       admin: { condition: (data) => data?.role === 'municipal', description: 'Obligatorio para cuentas municipales; prohibido para las demás.' },
       access: { create: adminOnly, update: adminOnly } },
@@ -82,6 +86,19 @@ export const Media: CollectionConfig = {
       // Declaración de la administración al subir desde el servidor (p. ej. la carga de ensayo citando la fuente de
       // Commons). Solo llega por el contexto de la API local, nunca como dato del cliente.
       const adminDeclaration = req.context.adminRightsDeclaration as { statement?: string } | undefined;
+      // Redacción (también desde «Crear nuevo» en una noticia): la casilla de declaración hace la foto publicable.
+      const confirmed = data.rightsConfirm === true;
+      delete data.rightsConfirm;
+      if (space === null && !adminDeclaration?.statement && editorialUser({ req }) && (operation === 'create' || req.file)) {
+        if (confirmed) {
+          const who = req.user as { id: number; name?: string; email?: string };
+          data.rightsScope = 'publicable';
+          data.rightsDeclaration = { declared: true, declaredBy: who.id, declaredAt: new Date().toISOString(),
+            statement: `v1 · ${who.name || who.email} (Planta 14) declara que Planta 14 tiene derecho a publicar esta imagen (propia, cedida o con una licencia que lo permite) y que la autoría indicada es correcta.` };
+        } else if ((data.rightsScope ?? originalDoc?.rightsScope ?? 'demo') === 'publicable') {
+          throw new APIError('Para que la foto se pueda publicar, marca la declaración de derechos', 400);
+        }
+      }
       if (space === null && adminDeclaration?.statement && (operation === 'create' || req.file)) {
         if (req.user?.collection !== 'users' || req.user.role !== 'admin') throw new APIError('Solo la administración puede declarar los derechos de esta imagen', 403);
         data.rightsDeclaration = { declared: true, statement: adminDeclaration.statement, declaredBy: req.user.id, declaredAt: new Date().toISOString() };
@@ -105,29 +122,34 @@ export const Media: CollectionConfig = {
   },
   upload: { disableLocalStorage: true, mimeTypes: ['image/jpeg', 'image/png', 'image/webp'], imageSizes: [{ name: 'card', width: 800 }, { name: 'hero', width: 1600 }] },
   fields: [
-    { name: 'alt', type: 'text', required: true },
-    { name: 'credit', type: 'text', required: true },
-    { name: 'sourceURL', type: 'text' },
+    { name: 'alt', type: 'text', required: true, admin: { description: 'Qué se ve en la foto, para quien no puede verla (lectores de pantalla y buscadores).' } },
+    { name: 'credit', type: 'text', required: true, admin: { description: 'Autor o autora de la foto, tal como debe aparecer: «Foto: …».' } },
+    { name: 'sourceURL', type: 'text', admin: { description: 'Opcional: enlace a la foto original si viene de otra web (por ejemplo, su ficha en Wikimedia Commons).' } },
     // Nullable for existing phase-1 records; creation hook requires explicit provenance.
-    { name: 'rightsHolder', label: 'Titular de los derechos', type: 'text' },
-    { name: 'rightsType', label: 'Tipo de derechos', type: 'select', options: ['propia', 'licencia', 'autorización', 'institucional'] },
-    { name: 'rightsScope', label: 'Ámbito', type: 'select', required: true, defaultValue: 'demo', options: ['demo', 'publicable'] },
-    { name: 'uploadedBySpace', label: 'Subida por el espacio municipal', type: 'relationship', relationTo: 'municipal-spaces', index: true, admin: { readOnly: true } },
+    { name: 'rightsHolder', label: 'Titular de los derechos', type: 'text', admin: { description: 'Obligatorio. Quién tiene los derechos: Planta 14, la persona que hizo la foto, una agencia, un ayuntamiento…' } },
+    { name: 'rightsType', label: 'Tipo de derechos', type: 'select', options: ['propia', 'licencia', 'autorización', 'institucional'],
+      admin: { description: 'Obligatorio. Propia: hecha por Planta 14. Con licencia: p. ej. Creative Commons. Cedida: con permiso de su autor. Institucional: de una administración.' } },
+    { name: 'rightsScope', label: 'Ámbito', type: 'select', required: true, defaultValue: 'demo', options: ['demo', 'publicable'],
+      admin: { condition: (data, _s, { user }) => Boolean(data?.id) || user?.role === 'admin', description: 'Se pone en «Publicable» al marcar la declaración de derechos. «Solo demostración» no se puede publicar.' } },
+    // Declaración de la redacción al subir una foto (no se guarda como tal: queda en «Declaración de derechos»).
+    { name: 'rightsConfirm', label: 'Declaro que Planta 14 tiene derecho a publicar esta imagen (propia, cedida o con una licencia que lo permite) y que la autoría indicada es correcta', type: 'checkbox', virtual: true,
+      admin: { readOnly: false, condition: (data) => !data?.id, description: 'Obligatorio para poder publicar la foto. Queda registrado quién y cuándo lo declara.' } },
+    { name: 'uploadedBySpace', label: 'Subida por el espacio municipal', type: 'relationship', relationTo: 'municipal-spaces', index: true, admin: { readOnly: true, condition: data => Boolean(data?.uploadedBySpace) } },
     // Maintained by hooks of articles and municipal content: number of published documents using the image.
-    { name: 'publishedUses', type: 'number', defaultValue: 0, index: true, admin: { readOnly: true }, access: { create: () => false, update: () => false } },
+    { name: 'publishedUses', type: 'number', defaultValue: 0, index: true, admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false } },
     // Random object prefix of the current public copy (null when the image is not public).
-    { name: 'publicKey', type: 'text', admin: { readOnly: true }, access: { create: () => false, update: () => false } },
+    { name: 'publicKey', type: 'text', admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false } },
     // Bucket that holds the current public copy (to clean the old one after changing PUBLIC_MEDIA_BUCKET).
-    { name: 'publicBucket', type: 'text', admin: { readOnly: true }, access: { create: () => false, update: () => false } },
+    { name: 'publicBucket', type: 'text', admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false } },
     // Rights declaration made by a municipal account when uploading (who, when, what was declared).
-    { name: 'rightsDeclaration', label: 'Declaración de derechos', type: 'group', admin: { readOnly: true }, fields: [
+    { name: 'rightsDeclaration', label: 'Declaración de derechos', type: 'group', admin: { readOnly: true, condition: data => Boolean(data?.id) }, fields: [
       { name: 'declared', type: 'checkbox', defaultValue: false },
       { name: 'statement', type: 'textarea' },
       { name: 'declaredBy', type: 'relationship', relationTo: 'users' },
       { name: 'declaredAt', type: 'date' },
     ] },
     loteField,
-    { name: 'publicURL', type: 'text', virtual: true, admin: { readOnly: true }, access: { create: () => false, update: () => false },
+    { name: 'publicURL', type: 'text', virtual: true, admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false },
       hooks: { afterRead: [({ siblingData }) => publicURL(siblingData)] } },
   ],
 };

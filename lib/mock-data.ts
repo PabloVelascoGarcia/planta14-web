@@ -31,6 +31,8 @@ export type Article = {
   opinion?: boolean;
   /** false: publicada, pero fuera de la página del concejo («Mostrar en la página del concejo»). */
   showInTown?: boolean;
+  /** Payload: texto enriquecido (Lexical) para pintarlo con formato; `body` lleva su texto plano por párrafos. */
+  bodyRich?: import('./rich-text').LexicalState;
   /** Agenda general (sección Agenda): fecha y hora del evento (AAAA-MM-DD o AAAA-MM-DDTHH:MM) y lugar. */
   eventAt?: string;
   eventPlace?: string;

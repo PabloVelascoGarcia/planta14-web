@@ -1,5 +1,7 @@
-import { APIError, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field } from 'payload';
-import { adminOnly, editorialContentRead, editorialUser, editorialVersions, municipalContentCreate, municipalContentRead, municipalContentUpdate,
+import { APIError, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field, type FieldHook } from 'payload';
+import { BlockquoteFeature, BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
+import { toLexical } from '../lib/rich-text';
+import { adminOnly, articlesRead, editorialContentRead, editorialUser, editorialVersions, municipalContentCreate, municipalContentRead, municipalContentUpdate,
   municipalContentVersions, municipalSpaceOf, municipalSpaceRead, notMunicipal, relationID } from './access';
 import { auditAfterChange, auditAfterDelete, rememberMainState } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
@@ -102,38 +104,122 @@ export const Authors: CollectionConfig = {
     { name: 'email', type: 'email', access: { read: editorialUser } }, { name: 'avatar', type: 'relationship', relationTo: 'media' }, loteField],
 };
 
+/** Editor del texto de las noticias: párrafos, negrita, cursiva, enlaces, ladillos, citas y listas, y nada más. */
+const articleEditor = lexicalEditor({ features: () => [ParagraphFeature(), BoldFeature(), ItalicFeature(), LinkFeature({ enabledCollections: [] }),
+  HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }), BlockquoteFeature(), UnorderedListFeature(), OrderedListFeature(), FixedToolbarFeature(), InlineToolbarFeature()] });
+/** Slug: se genera del título al crear si se deja vacío; siempre sin tildes, eñes ni espacios, y único. */
+export function slugText(value: string) {
+  return value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 90).replace(/-+$/, '');
+}
+const articleSlug: FieldHook = async ({ value, data, originalDoc, req }) => {
+  const base = slugText(String(value || data?.title || originalDoc?.title || '')) || 'noticia';
+  let candidate = base;
+  for (let n = 2; n < 500; n++) {
+    const clash = await req.payload.find({ collection: 'articles', where: { slug: { equals: candidate } }, limit: 1, depth: 0, overrideAccess: true, req, draft: true });
+    if (!clash.docs[0] || clash.docs[0].id === originalDoc?.id) return candidate;
+    candidate = `${base}-${n}`;
+  }
+  return `${base}-${Date.now()}`;
+};
+
+const madridDay = (iso: string) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date(iso));
+/**
+ * Fechas sin solapamientos: «Fecha de publicación» es la que se muestra (por defecto, ahora; no puede ser futura).
+ * «Publicación programada» (opcional): la noticia sale sola a esa hora, que pasa a ser su fecha de publicación.
+ * El campo interno `date` (AAAA-MM-DD) se deriva siempre de la fecha de publicación.
+ */
+const articleDates: CollectionBeforeChangeHook = ({ data, originalDoc }) => {
+  // Lo que llega en el formulario manda (también un campo vaciado); si no llega, lo guardado.
+  const value = (key: 'publishedAt' | 'scheduledAt') => (Object.prototype.hasOwnProperty.call(data, key) ? data[key] : originalDoc?.[key]) || null;
+  const same = (a: unknown, b: unknown) => Boolean(a && b) && new Date(String(a)).getTime() === new Date(String(b)).getTime();
+  const now = new Date().toISOString();
+  const scheduled = value('scheduledAt');
+  if (scheduled) data.publishedAt = scheduled;
+  else {
+    let published = value('publishedAt');
+    // Se quitó la programación: la fecha que había era la programada, no una elegida a mano.
+    if (published && same(published, originalDoc?.scheduledAt) && new Date(published).getTime() > Date.now()) published = null;
+    // Vacía: al publicar se pone la hora de publicación.
+    if (!published && (data._status ?? originalDoc?._status) === 'published') published = now;
+    if (published && new Date(published).getTime() > Date.now() + 5 * 60 * 1000) throw new APIError('La fecha de publicación no puede ser futura. Para que la noticia salga más tarde, usa «Publicación programada».', 400);
+    data.publishedAt = published;
+  }
+  data.date = madridDay(data.publishedAt || now);
+  return data;
+};
+const dateTime = { date: { pickerAppearance: 'dayAndTime' as const, displayFormat: 'dd/MM/yyyy HH:mm', timeFormat: 'HH:mm', timeIntervals: 5 } };
+const help = (description: string) => ({ admin: { description } });
+const adminOnlyReadOnly = { readOnly: true, condition: (_: unknown, __: unknown, { user }: { user?: { role?: string } | null }) => user?.role === 'admin' };
+
 // Vista previa en vivo con el diseño público (app/(frontend)/vista-previa/noticia/[id]).
 const previewURL = ({ data }: { data: { id?: number | string } }) => `${process.env.CMS_SERVER_URL || ''}/vista-previa/noticia/${data?.id ?? ''}`;
 
 export const Articles: CollectionConfig = {
   slug: 'articles', ...published,
-  admin: { useAsTitle: 'title', defaultColumns: ['title', '_status', 'date', 'town', 'createdBy'],
+  access: { ...published.access, read: articlesRead },
+  hooks: { ...published.hooks, beforeChange: [articleDates, ...published.hooks.beforeChange] },
+  admin: { useAsTitle: 'title', hideAPIURL: true, defaultColumns: ['title', '_status', 'publishedAt', 'town', 'createdBy'],
     livePreview: { url: previewURL, breakpoints: [{ name: 'movil', label: 'Móvil', width: 390, height: 844 }, { name: 'tableta', label: 'Tableta', width: 820, height: 1180 }, { name: 'escritorio', label: 'Escritorio', width: 1366, height: 900 }] },
     preview: (doc) => previewURL({ data: doc as { id?: number } }) },
-
-  fields: [key, { name: 'slug', type: 'text', unique: true, required: true }, text('title', true),
-    { name: 'excerpt', type: 'textarea', required: true },
-    { name: 'body', type: 'json', required: true, validate: (value: unknown) => Array.isArray(value) && value.every(p => typeof p === 'string') || 'Usa una lista de párrafos de texto' },
-    { name: 'image', type: 'relationship', relationTo: 'media' },
-    { name: 'author', type: 'relationship', relationTo: 'authors', required: true },
-    { name: 'town', type: 'relationship', relationTo: 'towns', required: true },
-    { name: 'section', type: 'relationship', relationTo: 'sections', required: true },
-    text('date', true), text('publishedAt'), text('scheduledAt'), text('seoTitle'), { name: 'seoDescription', type: 'textarea' },
-    { name: 'seoImage', type: 'relationship', relationTo: 'media' },
-    { name: 'featured', type: 'checkbox' }, { name: 'main', type: 'checkbox' }, { name: 'opinion', type: 'checkbox' },
-    // Si se desmarca, la noticia sigue publicada (portada, sección, buscador) pero no sale en la página del concejo.
-    { name: 'showInTown', label: 'Mostrar en la página del concejo', type: 'checkbox', defaultValue: true, admin: { position: 'sidebar' } },
-    // Agenda general (sección Agenda): con fecha, la noticia aparece en la agenda de la portada y de /agenda.
-    { name: 'agenda', label: 'Agenda', type: 'group', admin: { description: 'Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.' }, fields: [
-      { name: 'eventAt', label: 'Fecha y hora (AAAA-MM-DDTHH:MM)', type: 'text',
-        validate: (value: unknown) => !value || /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(String(value)) || 'Usa AAAA-MM-DD o AAAA-MM-DDTHH:MM' },
-      { name: 'place', label: 'Lugar', type: 'text' },
+  fields: [
+    { type: 'tabs', tabs: [
+      { label: 'Contenido', fields: [
+        { name: 'title', label: 'Título', type: 'text', required: true, ...help('El titular, claro y concreto. Aparece en la portada, en la noticia y en los buscadores.') },
+        { name: 'excerpt', label: 'Entradilla', type: 'textarea', required: true, ...help('Una o dos frases que resumen la noticia. Sale bajo el titular y en las tarjetas de la portada.') },
+        { name: 'body', label: 'Texto', type: 'richText', required: true, editor: articleEditor,
+          hooks: { beforeValidate: [({ value }) => toLexical(value) ?? value] },
+          ...help('Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas.') },
+        { name: 'image', label: 'Foto principal', type: 'upload', relationTo: 'media',
+          ...help('Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos.') },
+      ] },
+      { label: 'Clasificación', fields: [
+        { name: 'author', label: 'Autor', type: 'relationship', relationTo: 'authors', required: true,
+          defaultValue: ({ user }: { user?: { author?: number | { id: number } | null } | null }) => (user?.author && typeof user.author === 'object' ? user.author.id : user?.author) ?? undefined,
+          ...help('La firma de la noticia. Si tu cuenta tiene una firma vinculada, ya viene puesta.') },
+        { name: 'town', label: 'Concejo', type: 'relationship', relationTo: 'towns', required: true, ...help('El concejo del que trata. Decide en qué página de concejo puede salir.') },
+        { name: 'section', label: 'Sección', type: 'relationship', relationTo: 'sections', required: true, ...help('Sección de la web (Sociedad, Deportes, Opinión, Agenda…).') },
+        { name: 'opinion', label: 'Es un artículo de opinión', type: 'checkbox', ...help('Márcalo en columnas y tribunas: se presentan como opinión, no como información.') },
+        { name: 'agenda', label: 'Agenda', type: 'group', ...help('Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.'), fields: [
+          { name: 'eventAt', label: 'Fecha y hora de la actividad', type: 'date', admin: { ...dateTime, description: 'Cuándo empieza la actividad.' } },
+          { name: 'place', label: 'Lugar', type: 'text', ...help('Dónde es la actividad (local, calle, pueblo).') },
+        ] },
+      ] },
+      { label: 'Portada', fields: [
+        { name: 'main', label: 'Principal', type: 'checkbox', ...help('La noticia grande de la portada. Si hay varias marcadas, sale la más reciente.') },
+        { name: 'featured', label: 'Destacada', type: 'checkbox', ...help('Entra en el bloque de noticias destacadas de la portada.') },
+        { name: 'showInTown', label: 'Mostrar en la página del concejo', type: 'checkbox', defaultValue: true,
+          ...help('Desmárcala si la noticia no debe aparecer en la página de su concejo (sigue en portada, sección y buscador).') },
+      ] },
+      { label: 'Publicación', fields: [
+        { name: 'publishedAt', label: 'Fecha de publicación', type: 'date',
+          admin: { ...dateTime, description: 'La fecha y hora que se muestran en la noticia. Déjala vacía y se pone sola la hora a la que publiques (ahora). Puedes cambiarla a mano, pero no a una hora futura: para eso está la publicación programada.' } },
+        { name: 'scheduledAt', label: 'Publicación programada (opcional)', type: 'date',
+          admin: { ...dateTime, description: 'Si pones una fecha y hora futuras y pulsas «Publicar cambios», la noticia no se ve hasta ese momento y entonces sale sola, con esa fecha. Déjalo vacío para publicar ya.' } },
+      ] },
+      { label: 'Buscadores', fields: [
+        { name: 'seoTitle', label: 'Título para buscadores y redes (opcional)', type: 'text', ...help('Si lo dejas vacío, se usa el título.') },
+        { name: 'seoDescription', label: 'Descripción para buscadores y redes (opcional)', type: 'textarea', ...help('Si la dejas vacía, se usa la entradilla.') },
+        { name: 'seoImage', label: 'Imagen para redes (opcional)', type: 'upload', relationTo: 'media', ...help('Si la dejas vacía, se usa la foto principal.') },
+      ] },
+      { label: 'Fuente', fields: [
+        { type: 'collapsible', label: 'Fuente (opcional)', admin: { initCollapsed: true, description: 'Solo si la noticia procede de otro medio o de una nota de prensa.' }, fields: [
+          { name: 'sourceName', label: 'Medio u organismo', type: 'text', ...help('Por ejemplo, el medio original o la entidad que emitió la nota.') },
+          { name: 'sourceUrl', label: 'Enlace a la fuente', type: 'text', ...help('Dirección completa, empezando por https://') },
+          { name: 'sourceAuthor', label: 'Autor original', type: 'text', ...help('Quién firmaba la información original, si consta.') },
+        ] },
+      ] },
     ] },
+    // Barra lateral: la dirección (slug) y, solo para la administración, los datos de origen.
+    { name: 'slug', label: 'Dirección (slug)', type: 'text', unique: true, index: true,
+      hooks: { beforeValidate: [articleSlug] },
+      admin: { position: 'sidebar', description: 'Se crea sola a partir del título. Puedes cambiarla; se quitan tildes, eñes y espacios, y no se repite.' } },
+    { name: 'date', type: 'text', admin: { hidden: true } },
+    { ...key, label: 'Identificador de origen', admin: { position: 'sidebar', ...adminOnlyReadOnly } } as Field,
+    { name: 'provenance', label: 'Procedencia', type: 'text', admin: { position: 'sidebar', ...adminOnlyReadOnly } },
     loteField,
-    text('sourceName'), text('sourceAuthor'), ...provenance,
     // Quién creó la noticia en el CMS (para «Mis borradores» del panel de inicio). Lo pone el servidor.
     { name: 'createdBy', label: 'Creada por', type: 'relationship', relationTo: 'users', index: true,
-      admin: { position: 'sidebar', readOnly: true },
+      admin: { position: 'sidebar', readOnly: true, condition: data => Boolean(data?.id), description: 'Lo pone el sistema al crear la noticia.' },
       // Siempre el usuario de la sesión al crear; después no cambia, envíe lo que envíe el cliente.
       hooks: { beforeChange: [({ operation, req, originalDoc }) => operation === 'create'
         ? (req.user?.collection === 'users' ? req.user.id : null) : (originalDoc?.createdBy ?? null)] } }],

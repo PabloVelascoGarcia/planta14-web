@@ -78,7 +78,7 @@ try {
   assert.equal((await rest('GET', ['municipal-content', String(notice.id)])).status, 200);
   await payload.delete({ collection: 'municipal-content', id: notice.id, user: actor, overrideAccess: false });
   passed('editor publishes municipal content but cannot change sections or town configuration');
-  const articleData = { slug: 'historia-original-prueba', title: 'Una historia original de prueba', excerpt: 'Contenido propio creado exclusivamente para validar el adaptador.', body: ['Este párrafo es una muestra original de la prueba automática.'], author: author.id, town: town.id, section: section.id, date: '2026-11-02', publishedAt: '2026-11-02', _status: 'published', main: true, provenance: 'original-automated-test' };
+  const articleData = { slug: 'historia-original-prueba', title: 'Una historia original de prueba', excerpt: 'Contenido propio creado exclusivamente para validar el adaptador.', body: ['Este párrafo es una muestra original de la prueba automática.'], author: author.id, town: town.id, section: section.id, date: '2026-11-02', publishedAt: '2026-11-02T10:00:00.000Z', _status: 'published', main: true, provenance: 'original-automated-test' };
   const article = await payload.create({ collection: 'articles', overrideAccess: false, user: actor, data: articleData });
   const draft = await payload.create({ collection: 'articles', overrideAccess: false, user: actor, draft: true, data: { ...articleData, slug: 'borrador-prueba', title: 'Borrador privado de prueba', _status: 'draft', main: false } });
   assert.equal((await rest('GET', ['articles', String(draft.id)])).status, 404);
@@ -113,7 +113,7 @@ try {
   const current = await payload.findByID({ collection: 'articles', id: article.id, depth: 2, overrideAccess: true });
   const fixture = { id: String(article.id), slug: articleData.slug, title: articleData.title, excerpt: articleData.excerpt, body: articleData.body,
     image: '/images/placeholder.svg', imageAlt: '', imageCredit: '', date: articleData.date, author: author.name, authorSlug: author.slug,
-    comarca: 'Caudal', concejo: 'Mieres', topic: 'Cultura', status: 'published', publishedAt: articleData.date, seoTitle: articleData.title,
+    comarca: 'Caudal', concejo: 'Mieres', topic: 'Cultura', status: 'published', publishedAt: articleData.publishedAt, seoTitle: articleData.title,
     seoDescription: articleData.excerpt, seoImage: '/images/placeholder.svg', main: true, featured: false, opinion: false };
   assert.deepEqual(JSON.parse(JSON.stringify(adapter.articleContract(current))), fixture);
   await writeFile(path.join(directory, 'articles.json'), JSON.stringify([fixture, { ...fixture, id: String(draft.id), slug: draft.slug, title: draft.title, status: 'draft', main: false }]));

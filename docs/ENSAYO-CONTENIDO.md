@@ -12,17 +12,18 @@ Para ver la web llena durante la preproducción, `contenido-ensayo/` trae 56 pie
 | Reportajes documentados (Bustiello y el segundo reportaje) | 2 | **definitivo**: se conservan al retirar |
 | Agenda general (actividades en la sección Agenda) | 6 | ensayo |
 | Contenidos municipales de Mieres y Lena (avisos, eventos, ayudas, tablón) | 20 | ensayo |
-| Fotos de Wikimedia Commons (originales) | 19 | ensayo, salvo las de los reportajes definitivos |
+| Fotos de Wikimedia Commons (reducidas a 2560 px) | 19 | ensayo, salvo las de los reportajes definitivos |
 
 - **Lote.** Cada documento lleva el campo **Lote de la carga de ensayo**, en la barra lateral. Solo lo ve y lo cambia la administración. Si una pieza se quiere conservar, se cambia a «Definitivo» antes de retirar.
 - **Fechas.** Las de los archivos se ignoran. Las publicaciones se reparten en los **4 días anteriores a la carga**, entre las 7:45 y las 21:00. Las actividades de agenda y los eventos municipales quedan en las **semanas siguientes**, a horas habituales. Si el texto citaba la fecha antigua del evento, se sustituye por la nueva.
 - **Aviso de ensayo.** El párrafo «Contenido ficticio de ensayo…» va al final de cada pieza.
+- **Texto.** Los cuerpos se guardan en el formato del editor de texto del CMS (párrafos), así que las piezas se pueden editar como cualquier noticia.
 - **Todo sale publicado**, con su sección, su concejo, su autor y la opción **Mostrar en la página del concejo** que trae cada pieza. La carta y las opiniones no salen en la página del concejo.
 - **Autores.** Se crean los que falten: Pablo Velasco, Redacción Planta 14 y Firma invitada.
 - **Agenda general.** Las 6 actividades aparecen en la agenda de la portada («Para salir») y en `/agenda`, junto a los eventos municipales, ordenadas por fecha y solo mientras no hayan pasado. Cada una enlaza a su noticia.
 - **Espacios de Mieres y Lena.** Se activan para que se vean sus contenidos municipales. Antes se guarda su estado, que vuelve a quedar como estaba al retirar el ensayo.
 - **Fotos:**
-  - Se descargan los **originales** de Commons, se comprueba que tienen la resolución anotada y se suben a **Imágenes**. Llevan autor, licencia y enlace a la ficha, en «Autoría o crédito» y «Dirección de origen».
+  - Se descargan los **originales** de Commons y se comprueba que tienen la resolución anotada. Antes de subirlos a **Imágenes** se **reducen a 2560 px en el lado largo** (JPEG, calidad 85): la mayor, de 8104 × 4559, queda en 2560 × 1440 y unos 600 KB. Llevan autor, licencia y enlace a la ficha, en «Autoría o crédito» (con la nota «reducida de tamaño») y «Dirección de origen».
   - Cada una lleva una **declaración de derechos de la administración** que cita la fuente, el autor y la licencia.
   - Una misma foto puede ilustrar varias piezas. Las fotos solo son de contexto y nunca documentan los hechos ficticios.
   - Tres piezas no tienen foto válida (`p14-noticia-20`, `p14-noticia-24` y `p14-agenda-06`) y salen sin imagen.

@@ -23,6 +23,9 @@ export const municipalPublishedFilter: Where = { and: [publishedFilter, { 'withd
 export const publishedOnly: Access = (args) => editorialUser(args) || publishedFilter;
 /** Planta 14 editorial content: municipal accounts have no access at all. */
 export const editorialContentRead: Access = (args) => editorialUser(args) || (notMunicipal(args) ? publishedFilter : false);
+/** Noticias: el público solo ve las publicadas cuya fecha de publicación ya ha llegado (las programadas salen solas a su hora). */
+export const articlesRead: Access = (args) => editorialUser(args)
+  || (notMunicipal(args) ? { and: [publishedFilter, { or: [{ publishedAt: { less_than_equal: new Date().toISOString() } }, { publishedAt: { exists: false } }] }] } : false);
 export const editorialVersions: Access = (args) => editorialUser(args);
 export const ownUserOrAdmin: Access = (args) => adminOnly(args) || (args.req.user ? { id: { equals: args.req.user.id } } : false);
 

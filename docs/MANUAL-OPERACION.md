@@ -266,11 +266,57 @@ Al entrar en `/cms`, el **inicio** muestra tres accesos:
 
 La administración ve además los **avisos municipales sin revisar**, los **espacios municipales** y los **usuarios**.
 
-**Vista previa en vivo.** Con una noticia abierta, guárdala una vez con **Guardar borrador** y pulsa **Previsualizar** (arriba). Se abre a un lado la noticia con el diseño de la web, y cambia mientras escribes. Puedes elegir **Móvil**, **Tableta** o **Escritorio**. Solo la ve quien tiene sesión en el CMS: no es pública hasta que pulses **Publicar**. Las imágenes que aún no se han publicado se ven en la vista previa, pero no en la web.
+### El formulario, pestaña a pestaña
 
-**Mostrar en la página del concejo.** En la barra lateral de cada noticia. Viene marcada; si la desmarcas, la noticia se publica (portada, sección, buscador), pero no aparece en la página del concejo.
+Cada campo lleva debajo una ayuda breve. Solo son obligatorios título, entradilla, texto, autor, concejo y sección.
 
-**Creada por.** Lo pone el CMS solo, con la cuenta que creó la noticia; sirve para «Mis borradores» y no se puede cambiar.
+| Pestaña | Qué hay |
+|---|---|
+| **Contenido** | Título, entradilla, texto y foto principal. |
+| **Clasificación** | Autor (ya viene puesto si tu cuenta tiene firma), concejo, sección, «Es un artículo de opinión» y, solo para actividades, fecha y lugar de la **Agenda**. |
+| **Portada** | **Principal** (la noticia grande de la portada; si hay varias, la más reciente), **Destacada** (bloque de destacadas) y **Mostrar en la página del concejo** (viene marcada; si la desmarcas, la noticia sigue en portada, sección y buscador, pero no en la página del concejo). |
+| **Publicación** | Fecha de publicación y publicación programada (abajo). |
+| **Buscadores** | Título, descripción e imagen para Google y redes. **Opcionales:** si están vacíos se usan el título, la entradilla y la foto principal. |
+| **Fuente** | Bloque plegado y opcional: **solo si la noticia procede de otro medio o de una nota de prensa** (medio, enlace y autor original). |
+
+A la derecha, la **Dirección (slug)** se crea sola al guardar, a partir del título (sin tildes, eñes ni espacios; si ya existe, añade -2, -3…). Se puede cambiar, pero no hace falta. **Creada por** lo pone el CMS y no se cambia. El identificador de origen, la procedencia y el lote solo los ve la administración.
+
+### El texto
+
+Se escribe o se pega como en un procesador de textos. La barra de arriba tiene:
+- el desplegable **Texto normal**, para convertir un párrafo en **Encabezado 2 / 3** (ladillos), **Cita en bloque**, **Lista ordenada** o **Lista desordenada**;
+- **negrita** (B o Ctrl+B), *cursiva* (I o Ctrl+I) y **enlace** (selecciona el texto y pulsa el eslabón).
+
+No hay más formatos a propósito: la web mantiene un estilo uniforme.
+
+### La foto
+
+En **Foto principal**, **Elegir de los existentes** abre la biblioteca de Imágenes. Para una foto nueva, pulsa **Crear** (o arrástrala) sin salir de la noticia, y rellena:
+- **Texto alternativo:** qué se ve en la foto;
+- **Autoría o crédito:** cómo debe firmarse;
+- **Titular de los derechos** y **Tipo de derechos** (Propia, Con licencia, Cedida con autorización, Institucional);
+- la casilla **«Declaro que Planta 14 tiene derecho a publicar esta imagen…»**. Sin ella, la foto se guarda, pero la noticia no se puede publicar con ella. Queda registrado quién lo declaró y cuándo.
+
+Pulsa **Guardar** en esa ventana y la foto queda puesta en la noticia.
+
+### Fechas: publicar ya o programar
+
+- **Fecha de publicación:** la que se ve en la noticia. Si la dejas vacía, se pone sola la hora a la que publiques. Puedes ponerla a mano, por ejemplo para una noticia de ayer, pero no en el futuro.
+- **Publicación programada (opcional):** elige día y hora en el calendario y pulsa **Publicar cambios**. La noticia queda en estado *Publicado*, pero **no se ve en la web hasta esa hora**; entonces sale sola, con esa fecha. Para anularla, vacía el campo y pulsa **Publicar cambios** (sale en ese momento) o **Despublicar** en el menú ⋮.
+
+Las fechas se muestran en hora de Madrid.
+
+### Vista previa
+
+Guarda una vez con **Guardar borrador**. Arriba aparecen dos botones:
+- el **ojo** abre la **vista previa en vivo** a un lado, que cambia mientras escribes (Móvil, Tableta o Escritorio);
+- el **cuadro con flecha** (**Vista previa**) abre la noticia en otra pestaña con el diseño de la web.
+
+Solo la ve quien tiene sesión en el CMS: no es pública hasta que se publica. Las fotos aún no publicadas se ven en la vista previa, pero no en la web.
+
+### Firma por defecto
+
+Para que el autor venga puesto, la administración abre **Usuarios →** la cuenta de la persona → **Firma (autor vinculado)** y elige su autor. Se puede cambiar en cada noticia.
 
 ## 13. Contenido de ensayo (preproducción)
 

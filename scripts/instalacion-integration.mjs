@@ -170,13 +170,14 @@ try {
   assert.deepEqual(Object.keys(payload.config.i18n.supportedLanguages), ['es']);
   const labels = Object.fromEntries(payload.config.collections.map(c => [c.slug, c.labels.plural]));
   for (const [slug, plural] of Object.entries({ users: 'Usuarios', media: 'Imágenes', articles: 'Noticias', authors: 'Autores', sections: 'Secciones', towns: 'Concejos', 'municipal-spaces': 'Espacios municipales', 'municipal-content': 'Contenidos municipales' })) assert.equal(labels[slug], plural, slug);
-  const field = (slug, ...path) => { let fields = payload.collections[slug].config.fields; let f; for (const name of path) { f = fields.find(x => x.name === name); fields = f?.fields; } return f; };
+  const flat = fields => fields.flatMap(x => x.type === 'tabs' ? x.tabs.flatMap(t => flat(t.fields)) : (x.type === 'collapsible' || x.type === 'row') ? flat(x.fields) : [x]);
+  const field = (slug, ...path) => { let fields = payload.collections[slug].config.fields; let f; for (const name of path) { f = flat(fields).find(x => x.name === name); fields = f?.fields; } return f; };
   assert.equal(field('articles', 'title').label, 'Título'); assert.equal(field('articles', 'town').label, 'Concejo');
   assert.equal(field('municipal-spaces', 'subscription').label, 'Suscripción'); assert.equal(field('municipal-spaces', 'subscription', 'status').label, 'Estado');
   assert.deepEqual(field('municipal-spaces', 'subscription', 'status').options.map(o => o.label), ['Demostración', 'Activo', 'Inactivo']);
   assert.deepEqual(field('users', 'role').options.map(o => [o.value, o.label]), [['admin', 'Administración'], ['editor', 'Redacción'], ['municipal', 'Ayuntamiento']]);
   const unlabeled = [];
-  const walk = (slug, fields, prefix = '') => { for (const f of fields) { if (!f.name) continue; if (!f.label && !['id', 'createdAt', 'updatedAt', '_status', 'hash', 'salt', 'resetPasswordToken', 'resetPasswordExpiration', 'resetPasswordRequestedAt', 'loginAttempts', 'lockUntil', 'sessions', 'apiKey', 'enableAPIKey', 'apiKeyIndex', 'url', 'thumbnailURL', 'filename', 'mimeType', 'filesize', 'width', 'height', 'focalX', 'focalY', 'sizes', 'prefix'].includes(f.name)) unlabeled.push(`${slug}.${prefix}${f.name}`); if (f.fields && f.type !== 'group' ? false : f.fields) walk(slug, f.fields, `${prefix}${f.name}.`); } };
+  const walk = (slug, fields, prefix = '') => { for (const f of fields) { if (f.type === 'tabs') { for (const t of f.tabs) walk(slug, t.fields, prefix); continue; } if ((f.type === 'collapsible' || f.type === 'row') && f.fields) { walk(slug, f.fields, prefix); continue; } if (!f.name) continue; if (!f.label && !['id', 'createdAt', 'updatedAt', '_status', 'hash', 'salt', 'resetPasswordToken', 'resetPasswordExpiration', 'resetPasswordRequestedAt', 'loginAttempts', 'lockUntil', 'sessions', 'apiKey', 'enableAPIKey', 'apiKeyIndex', 'url', 'thumbnailURL', 'filename', 'mimeType', 'filesize', 'width', 'height', 'focalX', 'focalY', 'sizes', 'prefix'].includes(f.name)) unlabeled.push(`${slug}.${prefix}${f.name}`); if (f.fields && f.type !== 'group' ? false : f.fields) walk(slug, f.fields, `${prefix}${f.name}.`); } };
   for (const c of payload.config.collections.filter(c => !c.slug.startsWith('payload-'))) walk(c.slug, c.fields);
   assert.deepEqual(unlabeled, [], 'every visible field has a Spanish label');
   const login = await page(`${cms}/cms/login`);
@@ -265,6 +266,91 @@ try {
   assert.match(editorHome, />1<\/span><strong[^>]*>Mis borradores/, 'one draft of mine');
   for (const link of ['nueva', 'borradores', 'hoy', 'avisos', 'espacios', 'usuarios']) assert.ok(adminHome.includes(`data-dashboard-link="${link}"`), `admin sees ${link}`);
   passed('CMS home: shortcuts «Nueva noticia», «Mis borradores» and «Publicadas hoy» with counts; the administration also sees municipal notices, spaces and users');
+
+  // --- Formulario de noticia: texto enriquecido, slug automático y fechas con selector.
+  const { sql: q } = await import('@payloadcms/db-postgres');
+  const t = (text, format = 0) => ({ type: 'text', text, format, detail: 0, mode: 'normal', style: '', version: 1 });
+  const el = (type, children, extra = {}) => ({ type, children, direction: 'ltr', format: '', indent: 0, version: 1, ...extra });
+  const richBody = { root: el('root', [
+    el('paragraph', [t('Texto con '), t('negrita', 1), t(' y '), t('cursiva', 2), t(' y un '),
+      el('link', [t('enlace')], { fields: { url: 'https://example.org/fuente', newTab: true, linkType: 'custom' } }), t('.')]),
+    el('heading', [t('Un ladillo')], { tag: 'h2' }),
+    el('quote', [t('Una cita textual.')]),
+    el('list', [el('listitem', [t('Primer punto')], { value: 1 }), el('listitem', [t('Segundo punto')], { value: 2 })], { listType: 'bullet', tag: 'ul', start: 1 }),
+    el('paragraph', [el('link', [t('enlace peligroso')], { fields: { url: 'javascript:alert(1)', linkType: 'custom' } })]),
+  ]) };
+  const noDate = { ...base }; delete noDate.date;
+  const rich = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...noDate, title: 'Ñandú y cañadas: el texto enriquecido en Mieres', body: richBody } });
+  assert.equal(rich.slug, 'nandu-y-canadas-el-texto-enriquecido-en-mieres', 'slug generated from the title, without accents or ñ');
+  assert.equal(rich.date, '2026-11-02', 'day derived from the publication date (Madrid)');
+  const twin = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...noDate, title: 'Ñandú y cañadas: el texto enriquecido en Mieres', body: ['Otra.'] } });
+  assert.equal(twin.slug, 'nandu-y-canadas-el-texto-enriquecido-en-mieres-2', 'unique slug');
+  assert.equal(twin.body.root.children[0].children[0].text, 'Otra.', 'a list of paragraphs is accepted and stored as rich text');
+  const richHTML = await page(`${cms}/noticia/${rich.slug}`);
+  for (const html of ['<strong>negrita</strong>', '<em>cursiva</em>', 'href="https://example.org/fuente"', '>Un ladillo</h2>', 'Una cita textual.</blockquote>', '<li>Primer punto</li>'])
+    assert.ok(richHTML.includes(html), `rich text renders ${html}`);
+  assert.ok(!richHTML.includes('javascript:alert'), 'unsafe links are not rendered as links');
+  assert.ok((await page(`${cms}/buscar?q=ladillo`)).includes('Ñandú y cañadas'), 'search finds words of the rich text');
+  // Programada: sale sola a su hora; una fecha de publicación futura sin programar no se admite.
+  const later = new Date(Date.now() + 3600_000).toISOString();
+  const scheduled = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...noDate, publishedAt: undefined, title: 'Noticia programada para dentro de una hora', scheduledAt: later } });
+  assert.equal(scheduled.publishedAt, later, 'scheduled: the publication date is the scheduled one');
+  assert.equal((await fetch(`${cms}/noticia/${scheduled.slug}`)).status, 404, 'scheduled article hidden until its time');
+  assert.equal((await payload.find({ collection: 'articles', overrideAccess: false, where: { slug: { equals: scheduled.slug } } })).totalDocs, 0);
+  await assert.rejects(payload.create({ collection: 'articles', overrideAccess: true, data: { ...noDate, title: 'Fecha futura sin programar', publishedAt: later } }), /Publicación programada/);
+  await payload.update({ collection: 'articles', id: scheduled.id, overrideAccess: true, data: { scheduledAt: new Date(Date.now() - 1000).toISOString() } });
+  assert.equal((await fetch(`${cms}/noticia/${scheduled.slug}`)).status, 200, 'out once its time has come');
+  // Fecha de publicación vacía: se pone sola al publicar (no al abrir o guardar el borrador).
+  const noDates = { ...noDate }; delete noDates.publishedAt;
+  const undated = await payload.create({ collection: 'articles', overrideAccess: true, draft: true, data: { ...noDates, _status: 'draft', title: 'Borrador sin fecha de publicación' } });
+  assert.equal(undated.publishedAt ?? null, null, 'a draft keeps an empty publication date');
+  const publishTime = Date.now();
+  const publishedNow = await payload.update({ collection: 'articles', id: undated.id, overrideAccess: true, data: { _status: 'published' } });
+  assert.ok(new Date(publishedNow.publishedAt).getTime() >= publishTime - 1000, 'publishing fills it with the publication time');
+  // Quitar la programación de una noticia aún no publicada la deja sin fecha futura.
+  const unscheduled = await payload.create({ collection: 'articles', overrideAccess: true, data: { ...noDates, title: 'Programada y luego desprogramada', scheduledAt: later } });
+  const cleared = await payload.update({ collection: 'articles', id: unscheduled.id, overrideAccess: true, data: { scheduledAt: null } });
+  assert.equal(cleared.scheduledAt ?? null, null);
+  assert.ok(new Date(cleared.publishedAt).getTime() <= Date.now(), 'clearing the schedule publishes it now');
+  passed('article form: rich text (bold, italic, links, subheadings, quotes, lists) rendered on the web and searchable, unsafe links dropped; slug from the title (no accents, ñ → n, unique); scheduled articles stay hidden until their time; a future publication date requires «Publicación programada»; an empty publication date is filled when publishing; clearing a schedule publishes now');
+
+  // Migración: noticias existentes (texto como lista de párrafos, fechas en texto) → texto enriquecido y fecha y hora.
+  const formMigration = await import('../cms/migrations/20261103_121545_formulario_noticias.ts');
+  const ftx = fn => payload.db.drizzle.transaction(db => fn({ db, payload, req: {} }));
+  const colType = async () => (await payload.db.drizzle.execute(q`SELECT data_type FROM information_schema.columns WHERE table_name = 'articles' AND column_name = 'published_at'`)).rows[0].data_type;
+  assert.equal(await colType(), 'timestamp with time zone');
+  await ftx(formMigration.down);
+  assert.equal(await colType(), 'character varying', 'down: dates back to text');
+  const legacyBody = (await payload.db.drizzle.execute(q`SELECT body FROM articles WHERE id = ${rich.id}`)).rows[0].body;
+  assert.deepEqual(legacyBody, ['Texto con negrita y cursiva y un enlace.', 'Un ladillo', 'Una cita textual.', 'Primer punto', 'Segundo punto', 'enlace peligroso'], 'down: rich text back to paragraphs (plain text)');
+  // Como estaban antes: párrafos con espacios y vacíos, fechas sin hora, con hora local o en ISO, programadas y vacías.
+  const legacy = [
+    { id: shown.id, published: '2026-10-01', scheduled: '', date: '2026-10-01' },
+    { id: hidden.id, published: '2026-10-02T08:30', scheduled: null, date: '2026-10-02' },
+    { id: twin.id, published: '', scheduled: '2026-12-24T20:00', date: '2026-12-24' },
+    { id: draftArticle.id, published: null, scheduled: null, date: '2026-07-15' },
+  ];
+  for (const row of legacy) await payload.db.drizzle.execute(q`UPDATE articles SET published_at = ${row.published}, scheduled_at = ${row.scheduled}, date = ${row.date}, body = ${JSON.stringify(['  Primer párrafo «con» comillas. ', '', 'Segundo párrafo.'])}::jsonb WHERE id = ${row.id}`);
+  await ftx(formMigration.up);
+  assert.equal(await colType(), 'timestamp with time zone');
+  const after = Object.fromEntries((await payload.db.drizzle.execute(q`SELECT id, to_char(published_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI') AS p, to_char(scheduled_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI') AS s, date, body FROM articles`)).rows.map(r => [r.id, r]));
+  assert.deepEqual([after[shown.id].p, after[shown.id].s, after[shown.id].date], ['2026-10-01T07:00', null, '2026-10-01'], 'date without time → 09:00 Madrid');
+  assert.deepEqual([after[hidden.id].p, after[hidden.id].date], ['2026-10-02T06:30', '2026-10-02'], 'local time → Madrid');
+  assert.deepEqual([after[twin.id].p, after[twin.id].s, after[twin.id].date], ['2026-12-24T19:00', '2026-12-24T19:00', '2026-12-24'], 'scheduled → publication date is the scheduled one');
+  assert.deepEqual([after[draftArticle.id].p, after[draftArticle.id].date], ['2026-07-15T07:00', '2026-07-15'], 'no publication date → taken from the day');
+  assert.deepEqual(after[rich.id].p, '2026-11-02T10:00', 'ISO dates unchanged');
+  const { lexicalToParagraphs } = await import('../lib/rich-text.ts');
+  assert.deepEqual(lexicalToParagraphs(after[shown.id].body), ['Primer párrafo «con» comillas.', 'Segundo párrafo.'], 'up: each paragraph becomes a rich-text paragraph, text unchanged');
+  assert.deepEqual(lexicalToParagraphs(after[rich.id].body), legacyBody, 'down/up keeps the text');
+  assert.ok((await page(`${cms}/noticia/${(await payload.findByID({ collection: 'articles', id: shown.id, depth: 0, overrideAccess: true })).slug}`)).includes('<p>Primer párrafo «con» comillas.</p>'));
+  passed('migration 20261103_121545_formulario_noticias: existing bodies (lists of paragraphs) become rich text without losing text; text dates become date and time (date only → 09:00 Madrid, local → Madrid, ISO as is; scheduled → publication date; missing → from the day); down/up is reversible');
+  // La firma vinculada del usuario se pone por defecto como autor.
+  await payload.update({ collection: 'users', id: editor.id, overrideAccess: true, data: { author: author.id } });
+  const authorField = payload.collections.articles.config.flattenedFields.find(f => f.name === 'author');
+  assert.equal(await authorField.defaultValue({ user: { ...editor, author: author.id } }), author.id, 'author defaults to the linked author');
+  assert.equal(await authorField.defaultValue({ user: { ...editor, author: { id: author.id } } }), author.id);
+  assert.equal(await authorField.defaultValue({ user: { ...editor, author: null } }), undefined);
+  passed('author defaults to the user\'s linked author');
 
   // --- Migración reversible.
   const migration = await import('../cms/migrations/20261102_174946_mostrar_en_concejo.ts');

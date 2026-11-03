@@ -3,6 +3,7 @@ import type { Article } from "@/lib/mock-data";
 import { formatDate, slugify } from "@/lib/utils";
 import { AdSlot } from "@/components/ad-slot";
 import { ArticleCard } from "@/components/article-card";
+import { RichText } from "@/components/rich-text";
 
 /** Cuerpo de una noticia con el diseño público. Lo usan la página pública y la vista previa del CMS. */
 export function ArticleView({ article, related }: { article: Article; related: Article[] }) {
@@ -30,7 +31,7 @@ export function ArticleView({ article, related }: { article: Article; related: A
         <img src={article.image} alt={article.imageAlt ?? ""} className="mt-6 aspect-[16/10] w-full object-cover" />
         {article.imageCredit ? <p className="mt-2 text-xs text-steel">Fotografía: {article.imageCredit}</p> : null}
         <div className="mx-auto mt-8 max-w-[640px] space-y-6 font-serif text-xl leading-9 text-coal-900">
-          {article.body.map((paragraph) => (
+          {article.bodyRich ? <RichText value={article.bodyRich} /> : article.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>

@@ -138,7 +138,7 @@ try {
   const editorActor = { ...(await payload.findByID({ collection: 'users', id: editorRes.json.doc.id, overrideAccess: true })), collection: 'users' };
   const lenaActor = { ...(await payload.findByID({ collection: 'users', id: lenaUser.id, overrideAccess: true })), collection: 'users' };
   const mieresActor = { ...(await payload.findByID({ collection: 'users', id: mieresUser.id, overrideAccess: true })), collection: 'users' };
-  const image = await payload.create({ collection: 'media', user: editorActor, overrideAccess: false, file: file('publicable.png'), data: { alt: 'Imagen publicable', credit: 'Planta 14 test', rightsHolder: 'Planta 14 test', rightsType: 'propia', rightsScope: 'publicable' } });
+  const image = await payload.create({ collection: 'media', user: editorActor, overrideAccess: false, file: file('publicable.png'), data: { alt: 'Imagen publicable', credit: 'Planta 14 test', rightsHolder: 'Planta 14 test', rightsType: 'propia', rightsScope: 'publicable', rightsConfirm: true } });
   const demoImage = await payload.create({ collection: 'media', user: editorActor, overrideAccess: false, file: file('demo.png'), data: { alt: 'Imagen demo', credit: 'Test', rightsHolder: 'Test', rightsType: 'propia', rightsScope: 'demo' } });
   const media = id => payload.findByID({ collection: 'media', id, overrideAccess: true });
   assert.equal((await media(image.id)).publicKey, null);

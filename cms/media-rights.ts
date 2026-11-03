@@ -23,7 +23,7 @@ export async function validatePublishedImages(data: Record<string, unknown>, req
     const id = relationID(value);
     if (!id) continue;
     const image = await req.payload.findByID({ collection: 'media', id, depth: 0, overrideAccess: true, req });
-    if (image.rightsScope !== 'publicable' || !image.rightsHolder || !image.rightsType) throw new APIError('La imagen no tiene derechos publicables completos', 400);
+    if (image.rightsScope !== 'publicable' || !image.rightsHolder || !image.rightsType) throw new APIError('La imagen no tiene derechos publicables completos: ábrela en Imágenes y marca la declaración de derechos (o sube otra)', 400);
   }
 }
 

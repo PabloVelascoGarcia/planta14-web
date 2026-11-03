@@ -7,6 +7,7 @@ import * as migration_20261102_174946_mostrar_en_concejo from './20261102_174946
 import * as migration_20261103_000335_identidad_espacios from './20261103_000335_identidad_espacios';
 import * as migration_20261103_001210_creado_por from './20261103_001210_creado_por';
 import * as migration_20261103_081533_lote_ensayo from './20261103_081533_lote_ensayo';
+import * as migration_20261103_121545_formulario_noticias from './20261103_121545_formulario_noticias';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20261103_081533_lote_ensayo.up,
     down: migration_20261103_081533_lote_ensayo.down,
-    name: '20261103_081533_lote_ensayo'
+    name: '20261103_081533_lote_ensayo',
+  },
+  {
+    up: migration_20261103_121545_formulario_noticias.up,
+    down: migration_20261103_121545_formulario_noticias.down,
+    name: '20261103_121545_formulario_noticias'
   },
 ];

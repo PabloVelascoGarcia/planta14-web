@@ -144,6 +144,10 @@ export interface User {
   name: string;
   role: 'admin' | 'editor' | 'municipal';
   /**
+   * Autor que se pondrá por defecto en las noticias de esta cuenta.
+   */
+  author?: (number | null) | Author;
+  /**
    * Obligatorio para cuentas municipales; prohibido para las demás.
    */
   municipalSpace?: (number | null) | MunicipalSpace;
@@ -166,6 +170,97 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  slug: string;
+  role?: string | null;
+  bio?: string | null;
+  email?: string | null;
+  avatar?: (number | null) | Media;
+  /**
+   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   */
+  lote?: ('ensayo' | 'definitivo') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Qué se ve en la foto, para quien no puede verla (lectores de pantalla y buscadores).
+   */
+  alt: string;
+  /**
+   * Autor o autora de la foto, tal como debe aparecer: «Foto: …».
+   */
+  credit: string;
+  sourceURL?: string | null;
+  rightsHolder?: string | null;
+  rightsType?: ('propia' | 'licencia' | 'autorización' | 'institucional') | null;
+  /**
+   * Se pone en «Publicable» al marcar la declaración de derechos. «Solo demostración» no se puede publicar.
+   */
+  rightsScope: 'demo' | 'publicable';
+  /**
+   * Obligatorio para poder publicar la foto. Queda registrado quién y cuándo lo declara.
+   */
+  rightsConfirm?: boolean | null;
+  uploadedBySpace?: (number | null) | MunicipalSpace;
+  publishedUses?: number | null;
+  publicKey?: string | null;
+  publicBucket?: string | null;
+  rightsDeclaration?: {
+    declared?: boolean | null;
+    statement?: string | null;
+    declaredBy?: (number | null) | User;
+    declaredAt?: string | null;
+  };
+  /**
+   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   */
+  lote?: ('ensayo' | 'definitivo') | null;
+  publicURL?: string | null;
+  prefix?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -273,96 +368,56 @@ export interface Town {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  credit: string;
-  sourceURL?: string | null;
-  rightsHolder?: string | null;
-  rightsType?: ('propia' | 'licencia' | 'autorización' | 'institucional') | null;
-  rightsScope: 'demo' | 'publicable';
-  uploadedBySpace?: (number | null) | MunicipalSpace;
-  publishedUses?: number | null;
-  publicKey?: string | null;
-  publicBucket?: string | null;
-  rightsDeclaration?: {
-    declared?: boolean | null;
-    statement?: string | null;
-    declaredBy?: (number | null) | User;
-    declaredAt?: string | null;
-  };
-  /**
-   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
-   */
-  lote?: ('ensayo' | 'definitivo') | null;
-  publicURL?: string | null;
-  prefix?: string | null;
-  _objectKey?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "articles".
  */
 export interface Article {
   id: number;
-  legacyID?: string | null;
-  slug: string;
+  /**
+   * El titular, claro y concreto. Aparece en la portada, en la noticia y en los buscadores.
+   */
   title: string;
+  /**
+   * Una o dos frases que resumen la noticia. Sale bajo el titular y en las tarjetas de la portada.
+   */
   excerpt: string;
-  body:
-    | {
+  /**
+   * Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas.
+   */
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
         [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Elige una foto de Imágenes o súbela aquí con «Crear nuevo»: pide autoría, titular de los derechos y la declaración de derechos.
+   */
   image?: (number | null) | Media;
+  /**
+   * La firma de la noticia. Si tu cuenta tiene una firma vinculada, ya viene puesta.
+   */
   author: number | Author;
+  /**
+   * El concejo del que trata. Decide en qué página de concejo puede salir.
+   */
   town: number | Town;
+  /**
+   * Sección de la web (Sociedad, Deportes, Opinión, Agenda…).
+   */
   section: number | Section;
-  date: string;
-  publishedAt?: string | null;
-  scheduledAt?: string | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
-  seoImage?: (number | null) | Media;
-  featured?: boolean | null;
-  main?: boolean | null;
+  /**
+   * Márcalo en columnas y tribunas: se presentan como opinión, no como información.
+   */
   opinion?: boolean | null;
-  showInTown?: boolean | null;
   /**
    * Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.
    */
@@ -371,36 +426,61 @@ export interface Article {
     place?: string | null;
   };
   /**
-   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   * La noticia grande de la portada. Si hay varias marcadas, sale la más reciente.
    */
-  lote?: ('ensayo' | 'definitivo') | null;
+  main?: boolean | null;
+  /**
+   * Entra en el bloque de noticias destacadas de la portada.
+   */
+  featured?: boolean | null;
+  /**
+   * Desmárcala si la noticia no debe aparecer en la página de su concejo (sigue en portada, sección y buscador).
+   */
+  showInTown?: boolean | null;
+  /**
+   * La fecha y hora que se muestran en la noticia. Por defecto, ahora. No puede ser futura: para eso está la publicación programada.
+   */
+  publishedAt?: string | null;
+  /**
+   * Si pones una fecha y hora futuras y pulsas «Publicar», la noticia no se ve hasta ese momento y entonces sale sola, con esa fecha. Déjalo vacío para publicar ya.
+   */
+  scheduledAt?: string | null;
+  /**
+   * Si lo dejas vacío, se usa el título.
+   */
+  seoTitle?: string | null;
+  /**
+   * Si la dejas vacía, se usa la entradilla.
+   */
+  seoDescription?: string | null;
+  /**
+   * Si la dejas vacía, se usa la foto principal.
+   */
+  seoImage?: (number | null) | Media;
+  /**
+   * Por ejemplo, el medio original o la entidad que emitió la nota.
+   */
   sourceName?: string | null;
-  sourceAuthor?: string | null;
-  provenance?: string | null;
+  /**
+   * Dirección completa, empezando por https://
+   */
   sourceUrl?: string | null;
-  createdBy?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
- */
-export interface Author {
-  id: number;
-  name: string;
-  slug: string;
-  role?: string | null;
-  bio?: string | null;
-  email?: string | null;
-  avatar?: (number | null) | Media;
+  sourceAuthor?: string | null;
+  /**
+   * Se crea sola a partir del título. Puedes cambiarla; se quitan tildes, eñes y espacios, y no se repite.
+   */
+  slug?: string | null;
+  date?: string | null;
+  legacyID?: string | null;
+  provenance?: string | null;
   /**
    * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
    */
   lote?: ('ensayo' | 'definitivo') | null;
+  createdBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -634,6 +714,7 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  author?: T;
   municipalSpace?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -664,6 +745,7 @@ export interface MediaSelect<T extends boolean = true> {
   rightsHolder?: T;
   rightsType?: T;
   rightsScope?: T;
+  rightsConfirm?: T;
   uploadedBySpace?: T;
   publishedUses?: T;
   publicKey?: T;
@@ -721,8 +803,6 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "articles_select".
  */
 export interface ArticlesSelect<T extends boolean = true> {
-  legacyID?: T;
-  slug?: T;
   title?: T;
   excerpt?: T;
   body?: T;
@@ -730,27 +810,29 @@ export interface ArticlesSelect<T extends boolean = true> {
   author?: T;
   town?: T;
   section?: T;
-  date?: T;
-  publishedAt?: T;
-  scheduledAt?: T;
-  seoTitle?: T;
-  seoDescription?: T;
-  seoImage?: T;
-  featured?: T;
-  main?: T;
   opinion?: T;
-  showInTown?: T;
   agenda?:
     | T
     | {
         eventAt?: T;
         place?: T;
       };
-  lote?: T;
+  main?: T;
+  featured?: T;
+  showInTown?: T;
+  publishedAt?: T;
+  scheduledAt?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  seoImage?: T;
   sourceName?: T;
-  sourceAuthor?: T;
-  provenance?: T;
   sourceUrl?: T;
+  sourceAuthor?: T;
+  slug?: T;
+  date?: T;
+  legacyID?: T;
+  provenance?: T;
+  lote?: T;
   createdBy?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -24,7 +24,7 @@ export async function testPublicStorageFailures({ payload, actor, article, image
   const stored = id => payload.findByID({ collection: 'media', id, overrideAccess: true });
   try {
     const extra = await payload.create({ collection: 'media', user: actor, overrideAccess: false, file: file('storage-fault.png'),
-      data: { alt: 'Original sintético', credit: 'Prueba', rightsHolder: 'Prueba propia', rightsType: 'propia', rightsScope: 'publicable' } });
+      data: { alt: 'Original sintético', credit: 'Prueba', rightsHolder: 'Prueba propia', rightsType: 'propia', rightsScope: 'publicable', rightsConfirm: true } });
     const before = await keys();
     fault = 'put';
     await assert.rejects(payload.update({ collection: 'articles', id: article.id, user: actor, overrideAccess: false, data: { image: extra.id } }));
