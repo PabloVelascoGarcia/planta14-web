@@ -1,18 +1,34 @@
 {
   "version": 1,
-  "estadoFase1": "En curso: solo carta del director. Borrador solicitado por Pablo; resto de piezas pendiente.",
+  "estadoFase1": "textos_completos_borradores",
   "notasModelo": [
     "Los nombres ingleses title, excerpt, body, section, town, showInTown, opinion, author, publishedAt y _status corresponden al CMS real.",
     "id, tipo, lote, estadoEditorial, concejosEtiquetados y fotoNecesaria son metadatos del conjunto; no son campos nuevos del CMS.",
     "Las relaciones se expresan por slug para resolver sus identificadores al preparar una importación. Este archivo no se ha importado.",
-    "El CMS admite un solo town por artículo; concejosEtiquetados conserva el alcance comarcal solicitado. showInTown=false evita asignar esta carta a una sola página municipal.",
-    "La fecha es una propuesta para la maqueta, no una programación ni una publicación efectiva."
+    "El CMS admite un solo town por artículo; concejosEtiquetados conserva las etiquetas adicionales como metadatos, sin inventar relaciones múltiples. La carta comarcal mantiene showInTown=false.",
+    "La fecha es una propuesta para la maqueta, no una programación ni una publicación efectiva.",
+    "Articles.body es una lista de párrafos; municipal-content.body es texto con párrafos separados por dos saltos de línea.",
+    "Los campos author, section, town, opinion y showInTown de las piezas municipales son metadatos editoriales de este conjunto: la colección municipal usa space y type.",
+    "La agenda general se prepara en articles, sección agenda, con eventoGeneral como metadatos. /agenda actualmente lee eventos municipales y muestra un máximo de cuatro; no consume estos artículos de agenda general. No se cambia código ni se atribuyen actividades editoriales a un ayuntamiento.",
+    "lote, tipo, estadoEditorial, concejosEtiquetados, eventoGeneral, fotoNecesaria, fuentes, esFicticio y avisoEnsayo son metadatos del conjunto, no campos nuevos de Payload. No pasar el documento completo directamente a la API.",
+    "Todo permanece en _status=draft. lote=definitivo significa conservar al retirar el ensayo, no publicar automáticamente. La carta sigue en ensayo por corrección expresa de Pablo.",
+    "Las relaciones por slug necesitan resolver IDs reales. El manifiesto usa IDs lógicos y legacyID; el CMS no dispone de campo lote ni de borrado por lote automático. No se ha escrito ni ejecutado importación o borrado."
   ],
   "autores": [
     {
       "slug": "pablo-velasco",
       "name": "Pablo Velasco",
       "role": "director"
+    },
+    {
+      "slug": "redaccion-planta-14",
+      "name": "Redacción Planta 14",
+      "role": "Redacción"
+    },
+    {
+      "slug": "firma-invitada",
+      "name": "Firma invitada",
+      "role": "Colaboración de ensayo"
     }
   ],
   "piezas": [
@@ -63,6 +79,2632 @@
       "fuentes": [],
       "notaEditorial": "Texto original redactado a partir de las ideas facilitadas por Pablo. No aprobado ni definitivo. Se mantiene en el lote ensayo por su corrección expresa; no publicar ni conservar como definitivo sin su indicación.",
       "palabrasCuerpo": 607
+    },
+    {
+      "id": "p14-noticia-01",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-01",
+      "slug": "un-grupo-de-senderismo-regresa-acompanado-tras-perder-la-orientacion-en-turon",
+      "title": "Un grupo de senderismo regresa acompañado tras perder la orientación en Turón",
+      "excerpt": "La intervención concluye sin lesiones y recuerda la importancia de planificar las salidas.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Un grupo de senderistas pudo regresar al punto de partida después de desorientarse en una salida por el entorno del valle de Turón. La colaboración entre quienes participaron en el recorrido y los servicios de ayuda permitió resolver la incidencia con tranquilidad y sin lesiones.",
+        "El episodio sirve para recordar que una ruta sencilla también exige preparación. Consultar el tiempo, llevar el teléfono cargado y comunicar el itinerario son precauciones útiles. Ante una duda, detenerse y pedir ayuda resulta más prudente que avanzar por un paso desconocido."
+      ],
+      "section": "sucesos",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Panorámica del valle de Turón. No mostrar un rescate ni vehículos de una intervención real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-02",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-02",
+      "slug": "las-compras-de-proximidad-encuentran-espacio-en-un-paseo-por-mieres",
+      "title": "Las compras de proximidad encuentran espacio en un paseo por Mieres",
+      "excerpt": "El comercio local propone recuperar la compra a pie y el trato cercano.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de recorrido comercial enlaza establecimientos del centro de Mieres para facilitar las compras de cercanía. La idea combina escaparates, conversación y un paseo que permite resolver varios encargos sin desplazarse fuera del concejo.",
+        "La iniciativa pone el acento en servicios cotidianos: orientar una compra, reparar un artículo o ayudar a elegir un regalo. Frente a las prisas de diciembre, el pequeño comercio puede ofrecer tiempo y conocimiento del barrio. La participación se plantea abierta a negocios de distintas calles, sin convertir el recorrido en una competición entre zonas."
+      ],
+      "section": "economia",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Calle o vista urbana de Mieres sin presentar un comercio como participante real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-03",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-03",
+      "slug": "turon-reune-recuerdos-del-valle-en-una-tarde-de-relatos-compartidos",
+      "title": "Turón reúne recuerdos del valle en una tarde de relatos compartidos",
+      "excerpt": "La propuesta combina lectura y memoria cotidiana sin exigir experiencia previa.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Los recuerdos de escuela, trabajo y vida familiar sirven de punto de partida para una tarde de relatos en Turón. La actividad invita a llevar un texto breve o a escuchar, con la intención de que distintas generaciones puedan encontrarse alrededor de experiencias cercanas.",
+        "La lectura en voz alta permite recuperar palabras y escenas que suelen quedar fuera de los archivos. La propuesta reserva espacio tanto a quienes escriben habitualmente como a quienes se acercan por primera vez. Los materiales personales se compartirían únicamente con autorización, respetando la intimidad de las familias."
+      ],
+      "section": "cultura",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Turón o de su patrimonio industrial como contexto cultural. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-04",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-04",
+      "slug": "bustiello-inspira-un-recorrido-para-aprender-a-mirar-el-patrimonio-cercano",
+      "title": "Bustiello inspira un recorrido para aprender a mirar el patrimonio cercano",
+      "excerpt": "Un paseo de observación propone relacionar edificios, paisaje y vida cotidiana.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de paseo por Bustiello invita a detenerse en elementos que a menudo pasan inadvertidos: la relación entre las viviendas, los espacios comunes y el paisaje. El recorrido se plantea como una actividad de observación del exterior, sin dar por supuesto el acceso a edificios.",
+        "La intención es ayudar a que el patrimonio forme parte de la conversación cotidiana. Un cuaderno con dibujos, preguntas y fotografías de contexto permitiría comparar miradas entre generaciones. Las explicaciones históricas deberían apoyarse en documentación contrastada y cualquier visita interior dependería de las condiciones del equipamiento correspondiente."
+      ],
+      "section": "patrimonio",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Exterior del poblado minero de Bustiello. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-05",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-05",
+      "slug": "resuelta-una-incidencia-de-paso-en-el-entorno-de-campomanes",
+      "title": "Resuelta una incidencia de paso en el entorno de Campomanes",
+      "excerpt": "La atención al aviso permite recuperar el tránsito con normalidad.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una incidencia localizada en un paso peatonal del entorno de Campomanes quedó resuelta después de que se señalizara el punto y se organizara una alternativa temporal. La actuación permitió recuperar el tránsito sin que se produjeran daños personales.",
+        "La resolución destaca la utilidad de comunicar con claridad dónde aparece un problema y evitar que otras personas entren en una zona afectada. En un concejo con desplazamientos cotidianos entre pueblos, mantener accesos comprensibles y seguros facilita la vida de quienes caminan, acompañan a menores o utilizan ayudas de movilidad."
+      ],
+      "section": "sucesos",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Campomanes o paisaje de Lena; no una fotografía de obras reales. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-06",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-06",
+      "slug": "pequenos-negocios-de-la-pola-comparten-ideas-para-mejorar-su-presencia-digital",
+      "title": "Pequeños negocios de La Pola comparten ideas para mejorar su presencia digital",
+      "excerpt": "Un encuentro práctico plantea aprender desde las necesidades de cada establecimiento.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Comercios y pequeños negocios de La Pola protagonizan una propuesta de intercambio sobre herramientas digitales sencillas. El encuentro se centra en cuestiones prácticas: explicar bien un servicio, mantener la información al día y responder de forma ordenada a las consultas.",
+        "El planteamiento parte de que cada actividad necesita soluciones diferentes. Un catálogo claro o un horario actualizado pueden ser más útiles que abrir muchos canales a la vez. La propuesta también reserva espacio para compartir dificultades, evitar gastos innecesarios y localizar recursos de aprendizaje que puedan utilizarse con autonomía."
+      ],
+      "section": "empresas",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista urbana de La Pola de Lena, sin vincular un negocio concreto al encuentro. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-07",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-07",
+      "slug": "una-red-de-pequenos-apoyos-acerca-la-vida-vecinal-en-campomanes",
+      "title": "Una red de pequeños apoyos acerca la vida vecinal en Campomanes",
+      "excerpt": "El acompañamiento cotidiano se plantea desde la participación voluntaria y el respeto a la intimidad.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Compartir un paseo, orientar un trámite o acompañar una compra son algunas de las tareas que inspiran una propuesta de apoyo vecinal en Campomanes. El objetivo es facilitar contactos de confianza sin sustituir los servicios profesionales ni atribuir obligaciones a las familias.",
+        "La iniciativa da prioridad a la voluntad de cada persona y al cuidado de sus datos. Las necesidades se atenderían mediante un contacto organizado, evitando publicar situaciones personales. También se propone revisar periódicamente lo que funciona, de modo que la ayuda pueda sostenerse sin sobrecargar a quienes participan."
+      ],
+      "section": "sociedad",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje habitado del entorno de Campomanes, sin retratos. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-08",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-08",
+      "slug": "lena-plantea-un-encuentro-de-marcha-para-disfrutar-del-paisaje-sin-competir",
+      "title": "Lena plantea un encuentro de marcha para disfrutar del paisaje sin competir",
+      "excerpt": "La actividad propone un recorrido adaptable y un ritmo que permita conversar.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una jornada de marcha recreativa en Lena propone acercarse al paisaje con un recorrido sencillo y sin clasificación. La idea es que puedan participar personas con hábitos deportivos distintos, ajustando el itinerario y la duración a las condiciones de la jornada.",
+        "La preparación incluye revisar el tiempo y explicar el trazado antes de salir. Cada participante debería valorar su capacidad y utilizar material adecuado. El interés del encuentro reside en compartir una actividad y aprender a reconocer el entorno, con alternativas para quienes prefieran un paseo más corto."
+      ],
+      "section": "deportes",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Valle o paisaje montañoso de Lena; no una marcha real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-09",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-09",
+      "slug": "una-salida-acompanada-resuelve-un-contratiempo-de-montana-en-aller",
+      "title": "Una salida acompañada resuelve un contratiempo de montaña en Aller",
+      "excerpt": "El regreso seguro pone el foco en la prevención y en pedir ayuda a tiempo.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una salida por un entorno de montaña de Aller terminó con el regreso acompañado de sus participantes después de que un contratiempo aconsejara interrumpir la ruta. La decisión de detenerse y comunicar la situación evitó que la dificultad fuera a más.",
+        "El caso permite insistir en una práctica sencilla: adaptar los planes al tiempo y al estado del grupo. La montaña seguirá disponible para otra jornada. Conocer una alternativa de regreso, llevar abrigo y no depender únicamente del teléfono son medidas que ayudan a disfrutar de las rutas con mayor tranquilidad."
+      ],
+      "section": "sucesos",
+      "town": "aller",
+      "concejosEtiquetados": [
+        "aller"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Montaña o valle de Aller sin personas ni una intervención concreta. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-10",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-10",
+      "slug": "cabanaquinta-ensaya-una-conversacion-abierta-sobre-el-uso-de-los-espacios-comunes",
+      "title": "Cabanaquinta ensaya una conversación abierta sobre el uso de los espacios comunes",
+      "excerpt": "La propuesta busca recoger prioridades vecinales de forma clara y ordenada.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una sesión abierta en Cabanaquinta plantea conversar sobre el cuidado y el uso de los espacios compartidos. La dinámica propone agrupar las aportaciones por temas y distinguir entre necesidades inmediatas y cuestiones que requieren un estudio más amplio.",
+        "El interés de la reunión está en facilitar que se escuchen perspectivas diferentes. Explicar qué puede hacerse, qué información falta y cómo se dará respuesta ayudaría a que la participación no se agote en una lista de peticiones. La propuesta no anticipa decisiones, presupuestos ni compromisos del Ayuntamiento."
+      ],
+      "section": "politica",
+      "town": "aller",
+      "concejosEtiquetados": [
+        "aller"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Cabanaquinta o del valle de Aller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-11",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-11",
+      "slug": "moreda-propone-una-jornada-de-juegos-deportivos-para-compartir-generaciones",
+      "title": "Moreda propone una jornada de juegos deportivos para compartir generaciones",
+      "excerpt": "El encuentro prima la participación y las actividades adaptables sobre los resultados.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta deportiva en Moreda reúne juegos de cooperación, ejercicios suaves y actividades que pueden adaptarse a distintas edades. La jornada evita las clasificaciones para dar protagonismo a la participación y al encuentro entre personas que no suelen entrenar juntas.",
+        "La organización del espacio permitiría ofrecer alternativas de intensidad y descansos suficientes. También se plantea utilizar materiales sencillos y explicar cada actividad antes de empezar. El deporte aparece así como una ocasión para conocerse y mantener hábitos activos, con respeto al ritmo de cada participante."
+      ],
+      "section": "deportes",
+      "town": "aller",
+      "concejosEtiquetados": [
+        "aller"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Moreda o paisaje de Aller, sin deportistas identificables. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-12",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-12",
+      "slug": "los-caminos-de-aller-abren-una-conversacion-sobre-la-memoria-del-territorio",
+      "title": "Los caminos de Aller abren una conversación sobre la memoria del territorio",
+      "excerpt": "Una propuesta de observación vincula paisaje, desplazamientos y recuerdos familiares.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Los caminos y las conexiones entre pueblos sirven de hilo para una propuesta de lectura del paisaje de Aller. El paseo invita a observar cómo se relacionan los núcleos habitados con sus accesos y a recoger preguntas sobre los usos que han tenido a lo largo del tiempo.",
+        "Los recuerdos familiares pueden enriquecer ese trabajo siempre que se distingan de los datos documentados. La propuesta anima a anotar el origen de cada información y a contrastarla antes de incorporarla a un relato público. El resultado sería un punto de partida para seguir investigando el patrimonio cercano."
+      ],
+      "section": "patrimonio",
+      "town": "aller",
+      "concejosEtiquetados": [
+        "aller"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje de Aller con un camino o núcleo rural visible. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-13",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-13",
+      "slug": "la-compra-cercana-gana-protagonismo-en-un-recorrido-por-morcin",
+      "title": "La compra cercana gana protagonismo en un recorrido por Morcín",
+      "excerpt": "El consumo cotidiano se vincula al conocimiento de los servicios del concejo.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de recorrido por los servicios de Morcín invita a reconocer qué compras y gestiones pueden resolverse cerca de casa. El planteamiento incluye conversar con los establecimientos y mejorar la información disponible sobre lo que ofrece cada actividad.",
+        "La cercanía aporta algo más que una distancia corta. Facilita preguntar, encargar y conocer las necesidades de cada zona. La iniciativa pretende mostrar esa relación sin prometer resultados económicos ni atribuir adhesiones a negocios concretos, y deja abierta la participación de distintas localidades del concejo."
+      ],
+      "section": "economia",
+      "town": "morcin",
+      "concejosEtiquetados": [
+        "morcin"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Santa Eulalia de Morcín o panorámica del concejo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-14",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-14",
+      "slug": "oficios-y-servicios-de-morcin-comparten-una-mesa-de-trabajo-sobre-colaboracion",
+      "title": "Oficios y servicios de Morcín comparten una mesa de trabajo sobre colaboración",
+      "excerpt": "La propuesta busca facilitar contactos sin sustituir la autonomía de cada negocio.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Pequeñas actividades profesionales de Morcín protagonizan una propuesta para compartir necesidades y explorar colaboraciones. La mesa de trabajo se organiza alrededor de situaciones cotidianas, como localizar un servicio complementario o coordinar una recomendación entre negocios.",
+        "El intercambio no exige acuerdos comerciales ni plantea una marca conjunta. Su utilidad estaría en conocer mejor los recursos del entorno y detectar problemas que puedan abordarse entre varias personas. La información de contacto se compartiría con consentimiento, evitando publicar datos personales que no sean necesarios."
+      ],
+      "section": "empresas",
+      "town": "morcin",
+      "concejosEtiquetados": [
+        "morcin"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Panorámica de Morcín, sin presentar talleres o empresas como participantes reales. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-15",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-15",
+      "slug": "morcin-propone-ordenar-las-ideas-vecinales-antes-de-decidir-nuevas-actuaciones",
+      "title": "Morcín propone ordenar las ideas vecinales antes de decidir nuevas actuaciones",
+      "excerpt": "La participación se plantea con información comprensible y seguimiento de las propuestas.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de encuentro ciudadano en Morcín plantea reunir observaciones sobre la vida diaria del concejo y ordenarlas antes de debatir posibles actuaciones. La sesión separaría las preguntas de información, las sugerencias de mejora y las cuestiones que dependen de otras administraciones.",
+        "El seguimiento sería una parte central del proceso. Explicar el estado de cada idea permitiría entender por qué algunas pueden avanzar y otras requieren más trabajo. El ejercicio no anuncia obras ni asigna recursos: propone una manera de hacer más comprensible la conversación pública."
+      ],
+      "section": "politica",
+      "town": "morcin",
+      "concejosEtiquetados": [
+        "morcin"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje de Morcín con un núcleo habitado, sin una fotografía de un pleno real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-16",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-16",
+      "slug": "la-foz-acerca-la-lectura-a-una-tarde-de-encuentro-entre-vecinos",
+      "title": "La Foz acerca la lectura a una tarde de encuentro entre vecinos",
+      "excerpt": "La propuesta cultural combina textos breves y participación abierta.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una tarde de lectura compartida en La Foz propone reunirse alrededor de relatos breves y recuerdos del entorno. Se podrá participar leyendo, escuchando o aportando una sugerencia para próximos encuentros, sin necesidad de pertenecer a un grupo previo.",
+        "El formato busca que la cultura encuentre un espacio cómodo en la vida cotidiana. Elegir textos de distinta extensión y reservar tiempo para conversar ayudaría a que más personas se sumen. Cualquier material protegido que se utilice deberá contar con el permiso o la cobertura legal correspondiente."
+      ],
+      "section": "cultura",
+      "town": "morcin",
+      "concejosEtiquetados": [
+        "morcin"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de La Foz de Morcín o del paisaje próximo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-17",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-17",
+      "slug": "riosa-plantea-un-mapa-sencillo-de-servicios-para-facilitar-las-compras-cotidianas",
+      "title": "Riosa plantea un mapa sencillo de servicios para facilitar las compras cotidianas",
+      "excerpt": "La información de proximidad puede ayudar a reducir desplazamientos innecesarios.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de directorio local en Riosa busca reunir información útil sobre servicios y actividades del concejo. El objetivo es que resulte más sencillo saber qué puede resolverse cerca de casa y dónde consultar los detalles antes de desplazarse.",
+        "El directorio se plantea como una herramienta de actualización compartida, con datos autorizados por cada establecimiento. La utilidad dependerá de que la información sea clara y se revise con regularidad. La propuesta no incluye cifras de ventas ni presenta un listado cerrado de negocios participantes."
+      ],
+      "section": "economia",
+      "town": "riosa",
+      "concejosEtiquetados": [
+        "riosa"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Panorámica de La Vega o La Ará, en Riosa. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-18",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-18",
+      "slug": "la-ara-prepara-un-espacio-de-conversacion-para-compartir-recuerdos-del-concejo",
+      "title": "La Ará prepara un espacio de conversación para compartir recuerdos del concejo",
+      "excerpt": "La propuesta une memoria cotidiana y encuentro entre generaciones.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una actividad de conversación en La Ará invita a compartir recuerdos de la vida en Riosa: los recorridos a la escuela, las fiestas y los cambios del paisaje. La propuesta reserva el mismo espacio a quienes quieran intervenir y a quienes prefieran escuchar.",
+        "El cuidado de los relatos forma parte del encuentro. Nadie tendría que aportar fotografías o datos familiares para participar, y cualquier uso posterior de los materiales requeriría autorización. La actividad busca reforzar los vínculos cotidianos y reconocer que la memoria del concejo se construye desde experiencias distintas."
+      ],
+      "section": "sociedad",
+      "town": "riosa",
+      "concejosEtiquetados": [
+        "riosa"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de La Ará o de un núcleo de Riosa, sin retratos. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-19",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-19",
+      "slug": "riosa-propone-descubrir-sus-pendientes-con-una-actividad-de-iniciacion-al-paseo",
+      "title": "Riosa propone descubrir sus pendientes con una actividad de iniciación al paseo",
+      "excerpt": "La jornada plantea elegir el recorrido según las condiciones y la capacidad del grupo.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de paseo recreativo en Riosa pone el acento en disfrutar del entorno y aprender a planificar una salida. La actividad contempla itinerarios de diferente exigencia y una explicación previa sobre material, tiempo y alternativas de regreso.",
+        "El paisaje del concejo permite hablar de esfuerzo sin convertir cada salida en una competición. La jornada se plantea con un ritmo compartido y descansos, de manera que cada persona pueda reconocer sus límites. Si las condiciones no acompañan, se optaría por un recorrido más sencillo o por aplazar la actividad."
+      ],
+      "section": "deportes",
+      "town": "riosa",
+      "concejosEtiquetados": [
+        "riosa"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje de Riosa o del entorno del Angliru, sin identificar una prueba deportiva. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-20",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-20",
+      "slug": "llamo-inspira-una-propuesta-para-reconocer-las-huellas-del-trabajo-minero",
+      "title": "Llamo inspira una propuesta para reconocer las huellas del trabajo minero",
+      "excerpt": "El recorrido de observación distinguiría los testimonios de la información documentada.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de acercamiento al entorno de Llamo, en Riosa, invita a relacionar paisaje y memoria del trabajo. El planteamiento parte de observar desde lugares de acceso permitido, sin entrar en instalaciones ni dar por autorizada una visita a espacios mineros.",
+        "El recorrido se completaría con una conversación sobre la importancia de conservar y documentar lo que queda. Las historias orales se recogerían con permiso y señalando su procedencia. Cualquier explicación histórica debería contrastarse antes de difundirse, para que el interés por el pasado no se apoye en datos dudosos."
+      ],
+      "section": "patrimonio",
+      "town": "riosa",
+      "concejosEtiquetados": [
+        "riosa"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje de Llamo o patrimonio minero de Riosa desde el exterior. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-21",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-21",
+      "slug": "los-pequenos-servicios-de-ribera-de-arriba-exploran-nuevas-formas-de-darse-a-conocer",
+      "title": "Los pequeños servicios de Ribera de Arriba exploran nuevas formas de darse a conocer",
+      "excerpt": "La propuesta se centra en información clara y colaboración de proximidad.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una mesa de intercambio en Ribera de Arriba propone ayudar a las pequeñas actividades a explicar mejor lo que ofrecen. El trabajo se centra en revisar información básica, localizar canales adecuados y facilitar que la ciudadanía pueda encontrar los servicios que necesita.",
+        "La colaboración se plantea desde la autonomía de cada negocio. Compartir una experiencia puede evitar errores y abrir contactos, sin exigir inversiones ni compromisos comerciales. La propuesta también incluye revisar la accesibilidad de la información, para que no dependa exclusivamente de manejar herramientas digitales."
+      ],
+      "section": "empresas",
+      "town": "ribera-de-arriba",
+      "concejosEtiquetados": [
+        "ribera-de-arriba"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Soto de Ribera o de un núcleo del concejo, sin vincular empresas concretas. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-22",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-22",
+      "slug": "ribera-de-arriba-propone-escuchar-a-sus-pueblos-en-una-conversacion-sobre-servicios",
+      "title": "Ribera de Arriba propone escuchar a sus pueblos en una conversación sobre servicios",
+      "excerpt": "La iniciativa de ensayo busca reunir necesidades y explicar los pasos de cada propuesta.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de participación en Ribera de Arriba plantea recoger observaciones desde distintos núcleos del concejo. El formato se centra en servicios cotidianos y en las dificultades que aparecen al utilizarlos, con un lenguaje que permita participar sin conocimientos administrativos.",
+        "La conversación distinguiría las mejoras de organización de aquellas que necesitan un estudio técnico. El objetivo es que las ideas puedan seguirse y que cada respuesta explique sus motivos. El ejercicio no anticipa acuerdos, nuevas infraestructuras ni decisiones presupuestarias del Ayuntamiento."
+      ],
+      "section": "politica",
+      "town": "ribera-de-arriba",
+      "concejosEtiquetados": [
+        "ribera-de-arriba"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Soto de Ribera o Soto de Rey como contexto del concejo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-23",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-23",
+      "slug": "un-paseo-por-ribera-de-arriba-propone-recuperar-el-encuentro-a-pie",
+      "title": "Un paseo por Ribera de Arriba propone recuperar el encuentro a pie",
+      "excerpt": "La actividad plantea recorridos cortos y conversación entre personas de distintas edades.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de paseo vecinal en Ribera de Arriba busca ofrecer una ocasión sencilla para encontrarse fuera de las obligaciones diarias. Los recorridos se adaptarían a las posibilidades del grupo y contarían con una alternativa breve para quienes no puedan caminar durante mucho tiempo.",
+        "La actividad da importancia a los detalles que hacen accesible un encuentro: explicar el punto de salida, prever descansos y evitar un ritmo que deje a alguien atrás. El paseo se plantea como un espacio de relación, con participación voluntaria y sin recoger datos personales innecesarios."
+      ],
+      "section": "sociedad",
+      "town": "ribera-de-arriba",
+      "concejosEtiquetados": [
+        "ribera-de-arriba"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje habitado de Ribera de Arriba, sin caminantes identificables. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-noticia-24",
+      "tipo": "noticia",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-noticia-24",
+      "slug": "bueno-invita-a-dibujar-sus-formas-en-una-propuesta-de-cuaderno-de-pueblo",
+      "title": "Bueño invita a dibujar sus formas en una propuesta de cuaderno de pueblo",
+      "excerpt": "La actividad cultural plantea mirar despacio y compartir distintas maneras de representar el entorno.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una propuesta de dibujo en Bueño invita a llevar un cuaderno y detenerse ante las formas del pueblo. La actividad se plantea para participantes con experiencia diversa y permite trabajar con trazos sencillos, sin convertir la sesión en una clase técnica.",
+        "El interés está en observar cómo una misma escena puede leerse de maneras diferentes. Antes de compartir los resultados se pediría permiso a sus autores, y cualquier representación de espacios privados respetaría la intimidad de quienes viven allí. La conversación final serviría para poner en común lo que cada persona ha descubierto al mirar."
+      ],
+      "section": "cultura",
+      "town": "ribera-de-arriba",
+      "concejosEtiquetados": [
+        "ribera-de-arriba"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Hórreos o vista general de Bueño, en Ribera de Arriba. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-opinion-01",
+      "tipo": "opinion",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-opinion-01",
+      "slug": "el-valor-de-lo-que-queda-a-mano",
+      "title": "El valor de lo que queda a mano",
+      "excerpt": "La proximidad se construye con decisiones pequeñas y con tiempo para reconocer lo que ya tenemos.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Una comarca también se mide por las cosas que permite hacer sin alejarse demasiado: comprar lo necesario, encontrarse con alguien, acudir a una actividad o pedir orientación. Esa proximidad se pierde cuando dejamos de verla y se refuerza cuando conocemos mejor los recursos que nos rodean.",
+        "El debate sobre el futuro suele buscar anuncios grandes. Sin embargo, la vida cotidiana necesita también relaciones estables, información útil y servicios que se entiendan. Conviene prestar atención a la tienda que escucha, al espacio que abre sus puertas y a la asociación que mantiene una actividad cuando resulta más fácil dejarla.",
+        "Comprar cerca no resuelve por sí solo todos los problemas. Puede ser, aun así, una decisión razonada cuando encontramos lo que necesitamos. Para que esa opción exista hacen falta servicios cuidados y ciudadanía informada, con espacio para preguntar y señalar lo que puede mejorar.",
+        "Mirar el territorio desde lo cotidiano ayuda a reconocer oportunidades concretas. Un servicio que se conoce mejor o una actividad que llega a otra generación pueden abrir una conversación nueva. El futuro también se trabaja así, con decisiones que caben en una tarde."
+      ],
+      "section": "opinion",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres",
+        "lena",
+        "aller",
+        "morcin",
+        "riosa",
+        "ribera-de-arriba"
+      ],
+      "showInTown": false,
+      "opinion": true,
+      "author": "firma-invitada",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje del Caudal relacionado con Mieres, como imagen de contexto. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-opinion-02",
+      "tipo": "opinion",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-opinion-02",
+      "slug": "el-tiempo-de-escuchar-tambien-cuenta",
+      "title": "El tiempo de escuchar también cuenta",
+      "excerpt": "La participación necesita espacios comprensibles y respuestas que permitan seguir la conversación.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Escuchar lleva tiempo. Supone aceptar que una necesidad puede estar contada con palabras distintas de las que utiliza un expediente y que una misma decisión tiene efectos diferentes según el lugar desde el que se mire.",
+        "En la vida local, esa distancia se nota enseguida. Hay quien conoce bien un procedimiento y quien solo sabe que lleva días intentando resolver algo. Un espacio de participación útil debería ayudar a que ambas formas de hablar se encuentren, con información comprensible y una explicación de lo que puede hacerse.",
+        "La conversación mejora cuando las respuestas permiten seguir el recorrido de una propuesta. Una idea puede necesitar cambios, depender de otra administración o resultar inviable. Explicar esas razones también es una manera de tomarse en serio a quien la planteó.",
+        "Conviene cuidar los encuentros pequeños, las preguntas a tiempo y las formas de devolver información. La confianza se construye con esa continuidad. Nadie necesita una ceremonia para expresar una dificultad; necesita saber que ha sido escuchado y que podrá entender la respuesta."
+      ],
+      "section": "opinion",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "mieres",
+        "lena",
+        "aller",
+        "morcin",
+        "riosa",
+        "ribera-de-arriba"
+      ],
+      "showInTown": false,
+      "opinion": true,
+      "author": "firma-invitada",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje del Caudal relacionado con Lena, como imagen de contexto. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-opinion-03",
+      "tipo": "opinion",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-opinion-03",
+      "slug": "la-memoria-necesita-uso-y-cuidado",
+      "title": "La memoria necesita uso y cuidado",
+      "excerpt": "El patrimonio puede formar parte de la vida compartida si se explica con rigor y se conserva con criterio.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Un edificio antiguo puede ser un lugar al que volvemos o una imagen que apenas miramos al pasar. La diferencia suele estar en las relaciones que somos capaces de mantener con él: conocer su historia, comprender lo que conserva y encontrar maneras respetuosas de acercarnos.",
+        "La memoria del trabajo tiene un valor especial en el Caudal. Ayuda a explicar cómo se organizaron los pueblos y por qué algunas experiencias siguen formando parte de las conversaciones familiares. Merece una atención que incluya también las preguntas difíciles y las voces menos visibles.",
+        "Dar nuevos usos al patrimonio exige cuidado. La actividad cultural o educativa debe convivir con la conservación y con el respeto a quienes habitan el entorno. Una propuesta será más valiosa si ayuda a entender el lugar y deja claras sus fuentes, sus límites y sus condiciones de acceso.",
+        "El entusiasmo es un buen comienzo para investigar, pero necesita documentación y trabajo sostenido. Un territorio que conoce mejor sus huellas puede compartirlas con mayor honestidad. Ese esfuerzo tiene sentido aunque el resultado empiece por una explicación sencilla junto a un camino."
+      ],
+      "section": "opinion",
+      "town": "aller",
+      "concejosEtiquetados": [
+        "mieres",
+        "lena",
+        "aller",
+        "morcin",
+        "riosa",
+        "ribera-de-arriba"
+      ],
+      "showInTown": false,
+      "opinion": true,
+      "author": "firma-invitada",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Paisaje del Caudal relacionado con Aller, como imagen de contexto. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real."
+    },
+    {
+      "id": "p14-agenda-01",
+      "tipo": "agenda_general",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-agenda-01",
+      "slug": "tarde-de-lectura-compartida-en-mieres",
+      "title": "Tarde de lectura compartida en Mieres",
+      "excerpt": "Una propuesta de lectura en voz alta para compartir relatos breves y conversar sobre ellos.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Esta actividad ficticia se sitúa el 2026-12-12 únicamente para probar las tarjetas y el calendario de la web. No existe una convocatoria confirmada ni un recinto reservado.",
+        "Una propuesta de lectura en voz alta para compartir relatos breves y conversar sobre ellos. La propuesta contempla participación abierta, explicaciones sencillas y un cierre de conversación. Las condiciones reales de acceso, organización, horario y eventual inscripción tendrían que confirmarse antes de anunciar una actividad equivalente."
+      ],
+      "section": "agenda",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Mieres, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "eventoGeneral": {
+        "eventAt": "2026-12-12",
+        "place": "Mieres, espacio de encuentro por concretar",
+        "hora": null,
+        "organizador": null,
+        "confirmado": false
+      }
+    },
+    {
+      "id": "p14-agenda-02",
+      "tipo": "agenda_general",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-agenda-02",
+      "slug": "paseo-de-observacion-del-paisaje-de-lena",
+      "title": "Paseo de observación del paisaje de Lena",
+      "excerpt": "Un recorrido sencillo para observar el paisaje habitado y comentar cómo lo vemos.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Esta actividad ficticia se sitúa el 2026-12-19 únicamente para probar las tarjetas y el calendario de la web. No existe una convocatoria confirmada ni un recinto reservado.",
+        "Un recorrido sencillo para observar el paisaje habitado y comentar cómo lo vemos. La propuesta contempla participación abierta, explicaciones sencillas y un cierre de conversación. Las condiciones reales de acceso, organización, horario y eventual inscripción tendrían que confirmarse antes de anunciar una actividad equivalente."
+      ],
+      "section": "agenda",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Lena, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "eventoGeneral": {
+        "eventAt": "2026-12-19",
+        "place": "Lena, punto de encuentro por concretar",
+        "hora": null,
+        "organizador": null,
+        "confirmado": false
+      }
+    },
+    {
+      "id": "p14-agenda-03",
+      "tipo": "agenda_general",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-agenda-03",
+      "slug": "cuaderno-de-invierno-en-aller",
+      "title": "Cuaderno de invierno en Aller",
+      "excerpt": "Un encuentro de dibujo y escritura que toma el entorno cercano como punto de partida.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Esta actividad ficticia se sitúa el 2026-12-27 únicamente para probar las tarjetas y el calendario de la web. No existe una convocatoria confirmada ni un recinto reservado.",
+        "Un encuentro de dibujo y escritura que toma el entorno cercano como punto de partida. La propuesta contempla participación abierta, explicaciones sencillas y un cierre de conversación. Las condiciones reales de acceso, organización, horario y eventual inscripción tendrían que confirmarse antes de anunciar una actividad equivalente."
+      ],
+      "section": "agenda",
+      "town": "aller",
+      "concejosEtiquetados": [
+        "aller"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Aller, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "eventoGeneral": {
+        "eventAt": "2026-12-27",
+        "place": "Aller, espacio cultural por concretar",
+        "hora": null,
+        "organizador": null,
+        "confirmado": false
+      }
+    },
+    {
+      "id": "p14-agenda-04",
+      "tipo": "agenda_general",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-agenda-04",
+      "slug": "conversaciones-sobre-la-memoria-de-morcin",
+      "title": "Conversaciones sobre la memoria de Morcín",
+      "excerpt": "Una propuesta para escuchar recuerdos, hacer preguntas y aprender a documentar historias.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Esta actividad ficticia se sitúa el 2027-01-09 únicamente para probar las tarjetas y el calendario de la web. No existe una convocatoria confirmada ni un recinto reservado.",
+        "Una propuesta para escuchar recuerdos, hacer preguntas y aprender a documentar historias. La propuesta contempla participación abierta, explicaciones sencillas y un cierre de conversación. Las condiciones reales de acceso, organización, horario y eventual inscripción tendrían que confirmarse antes de anunciar una actividad equivalente."
+      ],
+      "section": "agenda",
+      "town": "morcin",
+      "concejosEtiquetados": [
+        "morcin"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Morcín, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "eventoGeneral": {
+        "eventAt": "2027-01-09",
+        "place": "Morcín, espacio vecinal por concretar",
+        "hora": null,
+        "organizador": null,
+        "confirmado": false
+      }
+    },
+    {
+      "id": "p14-agenda-05",
+      "tipo": "agenda_general",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-agenda-05",
+      "slug": "paseo-recreativo-de-comienzo-de-ano-en-riosa",
+      "title": "Paseo recreativo de comienzo de año en Riosa",
+      "excerpt": "Una actividad de marcha sin competición, adaptable al tiempo y a las capacidades del grupo.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Esta actividad ficticia se sitúa el 2027-01-16 únicamente para probar las tarjetas y el calendario de la web. No existe una convocatoria confirmada ni un recinto reservado.",
+        "Una actividad de marcha sin competición, adaptable al tiempo y a las capacidades del grupo. La propuesta contempla participación abierta, explicaciones sencillas y un cierre de conversación. Las condiciones reales de acceso, organización, horario y eventual inscripción tendrían que confirmarse antes de anunciar una actividad equivalente."
+      ],
+      "section": "agenda",
+      "town": "riosa",
+      "concejosEtiquetados": [
+        "riosa"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Riosa, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "eventoGeneral": {
+        "eventAt": "2027-01-16",
+        "place": "Riosa, salida por concretar",
+        "hora": null,
+        "organizador": null,
+        "confirmado": false
+      }
+    },
+    {
+      "id": "p14-agenda-06",
+      "tipo": "agenda_general",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-agenda-06",
+      "slug": "dibujar-el-pueblo-encuentro-en-bueno",
+      "title": "Dibujar el pueblo: encuentro en Bueño",
+      "excerpt": "Una sesión de cuaderno abierto para mirar el pueblo, dibujar y compartir impresiones.",
+      "body": [
+        "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+        "Esta actividad ficticia se sitúa el 2027-01-23 únicamente para probar las tarjetas y el calendario de la web. No existe una convocatoria confirmada ni un recinto reservado.",
+        "Una sesión de cuaderno abierto para mirar el pueblo, dibujar y compartir impresiones. La propuesta contempla participación abierta, explicaciones sencillas y un cierre de conversación. Las condiciones reales de acceso, organización, horario y eventual inscripción tendrían que confirmarse antes de anunciar una actividad equivalente."
+      ],
+      "section": "agenda",
+      "town": "ribera-de-arriba",
+      "concejosEtiquetados": [
+        "ribera-de-arriba"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista de Ribera de Arriba, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "eventoGeneral": {
+        "eventAt": "2027-01-23",
+        "place": "Bueño, espacio exterior por concretar",
+        "hora": null,
+        "organizador": null,
+        "confirmado": false
+      }
+    },
+    {
+      "id": "p14-reportaje-01",
+      "tipo": "reportaje",
+      "lote": "definitivo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-reportaje-01",
+      "slug": "bustiello-la-vida-alrededor-de-la-mina",
+      "title": "Bustiello: la vida alrededor de la mina",
+      "excerpt": "El poblado de Mieres permite leer en un mismo conjunto las viviendas, los servicios y la organización de una comunidad minera.",
+      "body": [
+        "Para entender la historia minera del Caudal conviene mirar también fuera de los pozos. Las viviendas, las escuelas y los espacios de relación ayudan a reconocer cómo se organizaba la vida alrededor del trabajo. Bustiello, en el concejo de Mieres, ofrece una ocasión especialmente clara para hacer esa lectura del territorio.",
+        "La documentación municipal sitúa la construcción del conjunto entre 1890 y 1925 y la vincula a la Sociedad Hullera Española. El proyecto reunía alojamientos y equipamientos dentro de una misma organización espacial. Ese vínculo entre la actividad industrial y la vida cotidiana forma parte de su interés patrimonial.",
+        "El conjunto conserva referencias a funciones distintas: viviendas para trabajadores e ingenieros, iglesia, escuela, casino y servicios sanitarios. Mirarlas en relación permite comprender que un poblado minero era también un espacio de educación, convivencia y atención a necesidades diarias. El patrimonio industrial incluye esas formas de habitar, además de máquinas e instalaciones.",
+        "La información del Centro de Interpretación propone acercarse al poblado desde la idea de paternalismo industrial. El término ayuda a estudiar cómo las empresas intervenían en ámbitos de la vida que iban más allá de la jornada laboral. La organización de los servicios y las diferencias entre alojamientos permiten formular preguntas sobre esa relación.",
+        "El valor de Bustiello reside, en buena medida, en que esos elementos pueden leerse como partes de un conjunto. Consultar la documentación municipal y la información del centro de interpretación ayuda a situar las construcciones en su contexto y a distinguir los datos históricos de los recuerdos o interpretaciones personales.",
+        "Un recorrido atento por el exterior puede comenzar con preguntas sencillas: cómo se distribuyen las viviendas, dónde aparecen los servicios y qué relación guarda todo ello con el paisaje. Para entrar en equipamientos deben consultarse las condiciones oficiales vigentes. Los horarios y las modalidades de visita pueden cambiar; por eso no se fijan aquí.",
+        "Conservar el lugar permite seguir investigando una experiencia que forma parte de la historia social del Caudal. Acercarse a ella con documentación y respeto ayuda a comprender mejor el territorio que habitamos."
+      ],
+      "section": "patrimonio",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general del poblado minero de Bustiello, con viviendas y equipamientos reconocibles. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [
+        {
+          "titulo": "Poblado Minero de Bustiello",
+          "entidad": "Ayuntamiento de Mieres",
+          "url": "https://www.mieres.es/turismo/patrimonio/patrimonio-industrial/poblado-minero-de-bustiello/",
+          "consulta": "2026-11-03",
+          "apoya": "Identificación y lectura del conjunto industrial y residencial."
+        },
+        {
+          "titulo": "Centro de Interpretación del Poblado Minero de Bustiello",
+          "entidad": "Ayuntamiento de Mieres",
+          "url": "https://www.mieres.es/turismo/patrimonio/museos-y-centros-de-interpretacion/centro-de-interpretacion-del-poblado-minero-de-bustiello/",
+          "consulta": "2026-11-03",
+          "apoya": "Cronología 1890-1925, Sociedad Hullera Española, equipamientos y paternalismo industrial."
+        }
+      ],
+      "esFicticio": false,
+      "provenance": "planta14-contenido-ensayo-2026-11"
+    },
+    {
+      "id": "p14-reportaje-02",
+      "tipo": "reportaje",
+      "lote": "definitivo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "articles",
+      "legacyID": "p14-reportaje-02",
+      "slug": "santa-cristina-de-lena-una-forma-de-mirar-el-siglo-ix",
+      "title": "Santa Cristina de Lena: una forma de mirar el siglo IX",
+      "excerpt": "La iglesia prerrománica forma parte del patrimonio mundial y permite acercarse a la arquitectura del reino de Asturias desde un paisaje habitado.",
+      "body": [
+        "La iglesia de Santa Cristina de Lena ocupa un lugar destacado dentro del prerrománico asturiano. Su presencia en el concejo permite acercarse a una etapa de la historia a través de un edificio que sigue formando parte del paisaje. La escala del templo invita a observarlo con atención y a relacionar sus formas con el entorno.",
+        "Las fuentes institucionales sitúan su construcción en el siglo IX. La información especializada la vincula a la arquitectura de la etapa ramirense y advierte de que no se conoce una fecha de fundación documentada. Esa cautela importa: una aproximación histórica puede explicar lo que se sabe sin convertir una atribución de estilo en una certeza sobre cada detalle de su origen.",
+        "Santa Cristina está incluida en el bien del Patrimonio Mundial denominado Monumentos de Oviedo y del reino de Asturias. Su reconocimiento se remonta a 1985. La ficha de la UNESCO sitúa este conjunto dentro de la aportación de la arquitectura asturiana del siglo IX y de su relación con el desarrollo posterior de la arquitectura religiosa.",
+        "El templo tiene una nave y varios espacios adosados que producen una silueta singular. La relación entre volúmenes, huecos y apoyos puede apreciarse desde el exterior. Dentro, la organización de los espacios y los elementos que los separan ayudan a entender que la arquitectura también ordena usos y recorridos.",
+        "La imagen que vemos es, además, el resultado de una historia de conservación. La información de Prerrománico Asturias recoge intervenciones en distintas etapas, entre ellas la restauración de 1893 y la reconstrucción posterior a los daños de 1934. Tener presente ese recorrido evita imaginar que un monumento ha llegado hasta nosotros sin cambios.",
+        "El valor del lugar reúne edificio y paisaje. Observarlo despacio, respetar el entorno y consultar información contrastada permite disfrutar de esa relación sin necesidad de una explicación complicada. Para acceder al interior conviene acudir a los canales oficiales: este reportaje no establece horarios, precios ni condiciones de visita.",
+        "Santa Cristina forma parte del patrimonio cercano de Lena y, al mismo tiempo, de una historia más amplia. Mantener accesible el conocimiento de sus características es otra manera de cuidar el vínculo entre la población y el monumento."
+      ],
+      "section": "patrimonio",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Exterior de Santa Cristina de Lena con el templo completo y su entorno inmediato. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [
+        {
+          "titulo": "Monuments of Oviedo and the Kingdom of the Asturias",
+          "entidad": "UNESCO World Heritage Centre",
+          "url": "https://whc.unesco.org/en/list/312/",
+          "consulta": "2026-11-03",
+          "apoya": "Inscripción, denominación del bien, Santa Cristina y arquitectura del siglo IX."
+        },
+        {
+          "titulo": "Santa Cristina de Lena",
+          "entidad": "Prerrománico Asturias",
+          "url": "https://prerromanicoasturias.es/santa-cristina-de-lena/",
+          "consulta": "2026-11-03",
+          "apoya": "Atribución cronológica, ausencia de fecha fundacional documentada y configuración arquitectónica. También intervenciones de conservación de 1893 y reconstrucción de 1935 tras los daños de 1934."
+        }
+      ],
+      "esFicticio": false,
+      "provenance": "planta14-contenido-ensayo-2026-11"
+    },
+    {
+      "id": "p14-municipal-mieres-aviso-01",
+      "tipo": "municipal_aviso",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-aviso-01",
+      "slug": "informacion-de-atencion-ciudadana-antes-de-acudir-al-ayuntamiento-mieres",
+      "title": "Información de atención ciudadana antes de acudir al Ayuntamiento · Mieres",
+      "excerpt": "Ensayo: Un recordatorio para comprobar el canal adecuado y preparar una consulta.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de desplazarte para una gestión, comprueba en los canales oficiales qué servicio puede orientarte y qué documentación necesitas. Una consulta previa puede evitar viajes innecesarios.\n\nEste aviso de muestra no modifica horarios ni establece una cita obligatoria. Los datos vigentes deben consultarse directamente con el servicio municipal correspondiente.",
+      "section": "sociedad",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "notice",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-mieres-aviso-02",
+      "tipo": "municipal_aviso",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-aviso-02",
+      "slug": "recomendaciones-para-comunicar-una-incidencia-en-un-espacio-publico-mieres",
+      "title": "Recomendaciones para comunicar una incidencia en un espacio público · Mieres",
+      "excerpt": "Ensayo: Describir el lugar y el problema facilita que el aviso llegue al servicio adecuado.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nSi observas una incidencia, procura explicar dónde se encuentra y qué ocurre, sin difundir datos de otras personas. Cuando sea seguro hacerlo, una referencia clara del lugar puede ayudar a localizar el punto.\n\nEl aviso ordinario no sustituye los canales de emergencia. Esta pieza no anuncia una incidencia concreta ni habilita un formulario de recogida de datos.",
+      "section": "sociedad",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "notice",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-mieres-aviso-03",
+      "tipo": "municipal_aviso",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-aviso-03",
+      "slug": "uso-compartido-de-espacios-municipales-informacion-previa-mieres",
+      "title": "Uso compartido de espacios municipales: información previa · Mieres",
+      "excerpt": "Ensayo: Una propuesta de aviso para recordar la consulta de condiciones de acceso y convivencia.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de utilizar un espacio municipal para una actividad, consulta las condiciones que le sean aplicables y respeta las indicaciones de uso. El cuidado del lugar facilita que pueda seguir siendo utilizado por otras personas.\n\nEste texto de ensayo no concede autorizaciones, no reserva instalaciones y no modifica ninguna norma vigente.",
+      "section": "sociedad",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "notice",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-mieres-evento-01",
+      "tipo": "municipal_evento",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-evento-01",
+      "slug": "encuentro-de-lectura-y-conversacion-mieres",
+      "title": "Encuentro de lectura y conversación · Mieres",
+      "excerpt": "Ensayo: Una actividad ficticia para compartir textos y escuchar otras miradas.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta reúne lectura en voz alta y un tiempo de conversación. Se plantea un formato abierto que permita intervenir o escuchar con tranquilidad.\n\nLa fecha y el lugar son ejemplos de maqueta; no hay convocatoria confirmada, recinto reservado ni inscripción abierta.",
+      "section": "agenda",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "event",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": "2026-12-10",
+      "place": "Mieres, espacio municipal por concretar"
+    },
+    {
+      "id": "p14-municipal-mieres-evento-02",
+      "tipo": "municipal_evento",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-evento-02",
+      "slug": "taller-de-recuerdos-y-cuaderno-del-concejo-mieres",
+      "title": "Taller de recuerdos y cuaderno del concejo · Mieres",
+      "excerpt": "Ensayo: Una propuesta ficticia para trabajar la memoria cotidiana con respeto a la intimidad.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl encuentro propone escribir o dibujar a partir de recuerdos del entorno. Cada participante podría elegir qué compartir, sin necesidad de aportar fotografías ni documentos personales.\n\nLos materiales no se publicarían sin autorización. Esta actividad es de ensayo y no anuncia un taller real.",
+      "section": "agenda",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "event",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": "2026-12-17",
+      "place": "Mieres, espacio municipal por concretar"
+    },
+    {
+      "id": "p14-municipal-mieres-evento-03",
+      "tipo": "municipal_evento",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-evento-03",
+      "slug": "paseo-de-observacion-del-entorno-cercano-mieres",
+      "title": "Paseo de observación del entorno cercano · Mieres",
+      "excerpt": "Ensayo: Una actividad de muestra que combina caminar y conversar sobre el paisaje.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta contempla un recorrido sencillo, explicaciones previas y alternativas de duración. El itinerario se adaptaría a la meteorología y a las capacidades del grupo.\n\nNo existe una salida convocada ni un trazado validado. La fecha se utiliza únicamente para comprobar la agenda.",
+      "section": "agenda",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "event",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": "2027-01-14",
+      "place": "Mieres, espacio municipal por concretar"
+    },
+    {
+      "id": "p14-municipal-mieres-ayuda-01",
+      "tipo": "municipal_ayuda",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-ayuda-01",
+      "slug": "orientacion-sobre-apoyos-sociales-disponibles-mieres",
+      "title": "Orientación sobre apoyos sociales disponibles · Mieres",
+      "excerpt": "Ensayo: Información genérica de ensayo para aprender a localizar recursos y consultar requisitos.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas personas que necesiten orientación pueden consultar los canales oficiales de servicios sociales para conocer los recursos que pudieran corresponder a su situación. La atención debe realizarse por las vías habilitadas y con respeto a la confidencialidad.\n\nNo se anuncia una ayuda nueva ni se fijan importes, requisitos o plazos. Cualquier solicitud real depende de las bases y de la administración competente.",
+      "section": "sociedad",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "grant",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-mieres-ayuda-02",
+      "tipo": "municipal_ayuda",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-ayuda-02",
+      "slug": "como-consultar-posibles-ayudas-para-actividades-comunitarias-mieres",
+      "title": "Cómo consultar posibles ayudas para actividades comunitarias · Mieres",
+      "excerpt": "Ensayo: Una ficha de muestra para recordar la importancia de revisar las bases oficiales.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones interesadas en apoyos para sus actividades deben comprobar si existe una convocatoria vigente y leer sus bases completas antes de preparar una solicitud. Conviene identificar qué administración la gestiona y qué canal ofrece información actualizada.\n\nEsta ficha no abre una subvención ni garantiza financiación. No establece cuantías ni fechas de solicitud y no debe utilizarse como base administrativa.",
+      "section": "sociedad",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "grant",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-mieres-tablon-01",
+      "tipo": "municipal_tablon",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-tablon-01",
+      "slug": "consulta-de-anuncios-y-documentos-oficiales-mieres",
+      "title": "Consulta de anuncios y documentos oficiales · Mieres",
+      "excerpt": "Ensayo: Un recordatorio de ensayo para distinguir la información resumida de la publicación administrativa.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos anuncios administrativos deben consultarse en el tablón o en la sede oficial que corresponda. Cuando una publicación incluya documentación, es importante comprobar que se trata de la versión vigente y conocer el procedimiento al que pertenece.\n\nEsta pieza no abre un trámite ni sustituye una notificación. No contiene un expediente real ni fija un plazo de alegaciones.",
+      "section": "politica",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "announcement",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-mieres-tablon-02",
+      "tipo": "municipal_tablon",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-mieres-tablon-02",
+      "slug": "informacion-para-preparar-una-consulta-sobre-un-tramite-mieres",
+      "title": "Información para preparar una consulta sobre un trámite · Mieres",
+      "excerpt": "Ensayo: Una ficha ficticia para orientar la búsqueda de información sin recoger datos personales.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de plantear una consulta, puede ser útil anotar qué procedimiento necesitas conocer y revisar los documentos oficiales disponibles. Los datos personales o la documentación privada deben facilitarse solo por los canales habilitados.\n\nEl texto no convoca un procedimiento ni introduce obligaciones. Su función es servir como muestra del tablón durante el ensayo de la web.",
+      "section": "politica",
+      "town": "mieres",
+      "concejosEtiquetados": [
+        "mieres"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "mieres",
+      "type": "announcement",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Mieres (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-aviso-01",
+      "tipo": "municipal_aviso",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-aviso-01",
+      "slug": "informacion-de-atencion-ciudadana-antes-de-acudir-al-ayuntamiento-lena",
+      "title": "Información de atención ciudadana antes de acudir al Ayuntamiento · Lena",
+      "excerpt": "Ensayo: Un recordatorio para comprobar el canal adecuado y preparar una consulta.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de desplazarte para una gestión, comprueba en los canales oficiales qué servicio puede orientarte y qué documentación necesitas. Una consulta previa puede evitar viajes innecesarios.\n\nEste aviso de muestra no modifica horarios ni establece una cita obligatoria. Los datos vigentes deben consultarse directamente con el servicio municipal correspondiente.",
+      "section": "sociedad",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "notice",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-aviso-02",
+      "tipo": "municipal_aviso",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-aviso-02",
+      "slug": "recomendaciones-para-comunicar-una-incidencia-en-un-espacio-publico-lena",
+      "title": "Recomendaciones para comunicar una incidencia en un espacio público · Lena",
+      "excerpt": "Ensayo: Describir el lugar y el problema facilita que el aviso llegue al servicio adecuado.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nSi observas una incidencia, procura explicar dónde se encuentra y qué ocurre, sin difundir datos de otras personas. Cuando sea seguro hacerlo, una referencia clara del lugar puede ayudar a localizar el punto.\n\nEl aviso ordinario no sustituye los canales de emergencia. Esta pieza no anuncia una incidencia concreta ni habilita un formulario de recogida de datos.",
+      "section": "sociedad",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "notice",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-aviso-03",
+      "tipo": "municipal_aviso",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-aviso-03",
+      "slug": "uso-compartido-de-espacios-municipales-informacion-previa-lena",
+      "title": "Uso compartido de espacios municipales: información previa · Lena",
+      "excerpt": "Ensayo: Una propuesta de aviso para recordar la consulta de condiciones de acceso y convivencia.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de utilizar un espacio municipal para una actividad, consulta las condiciones que le sean aplicables y respeta las indicaciones de uso. El cuidado del lugar facilita que pueda seguir siendo utilizado por otras personas.\n\nEste texto de ensayo no concede autorizaciones, no reserva instalaciones y no modifica ninguna norma vigente.",
+      "section": "sociedad",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "notice",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-evento-01",
+      "tipo": "municipal_evento",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-evento-01",
+      "slug": "encuentro-de-lectura-y-conversacion-lena",
+      "title": "Encuentro de lectura y conversación · Lena",
+      "excerpt": "Ensayo: Una actividad ficticia para compartir textos y escuchar otras miradas.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta reúne lectura en voz alta y un tiempo de conversación. Se plantea un formato abierto que permita intervenir o escuchar con tranquilidad.\n\nLa fecha y el lugar son ejemplos de maqueta; no hay convocatoria confirmada, recinto reservado ni inscripción abierta.",
+      "section": "agenda",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "event",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": "2026-12-11",
+      "place": "Lena, espacio municipal por concretar"
+    },
+    {
+      "id": "p14-municipal-lena-evento-02",
+      "tipo": "municipal_evento",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-evento-02",
+      "slug": "taller-de-recuerdos-y-cuaderno-del-concejo-lena",
+      "title": "Taller de recuerdos y cuaderno del concejo · Lena",
+      "excerpt": "Ensayo: Una propuesta ficticia para trabajar la memoria cotidiana con respeto a la intimidad.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl encuentro propone escribir o dibujar a partir de recuerdos del entorno. Cada participante podría elegir qué compartir, sin necesidad de aportar fotografías ni documentos personales.\n\nLos materiales no se publicarían sin autorización. Esta actividad es de ensayo y no anuncia un taller real.",
+      "section": "agenda",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "event",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": "2026-12-18",
+      "place": "Lena, espacio municipal por concretar"
+    },
+    {
+      "id": "p14-municipal-lena-evento-03",
+      "tipo": "municipal_evento",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-evento-03",
+      "slug": "paseo-de-observacion-del-entorno-cercano-lena",
+      "title": "Paseo de observación del entorno cercano · Lena",
+      "excerpt": "Ensayo: Una actividad de muestra que combina caminar y conversar sobre el paisaje.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta contempla un recorrido sencillo, explicaciones previas y alternativas de duración. El itinerario se adaptaría a la meteorología y a las capacidades del grupo.\n\nNo existe una salida convocada ni un trazado validado. La fecha se utiliza únicamente para comprobar la agenda.",
+      "section": "agenda",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "event",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": "2027-01-15",
+      "place": "Lena, espacio municipal por concretar"
+    },
+    {
+      "id": "p14-municipal-lena-ayuda-01",
+      "tipo": "municipal_ayuda",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-ayuda-01",
+      "slug": "orientacion-sobre-apoyos-sociales-disponibles-lena",
+      "title": "Orientación sobre apoyos sociales disponibles · Lena",
+      "excerpt": "Ensayo: Información genérica de ensayo para aprender a localizar recursos y consultar requisitos.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas personas que necesiten orientación pueden consultar los canales oficiales de servicios sociales para conocer los recursos que pudieran corresponder a su situación. La atención debe realizarse por las vías habilitadas y con respeto a la confidencialidad.\n\nNo se anuncia una ayuda nueva ni se fijan importes, requisitos o plazos. Cualquier solicitud real depende de las bases y de la administración competente.",
+      "section": "sociedad",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-01",
+      "publishedAt": "2026-12-01",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "grant",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-ayuda-02",
+      "tipo": "municipal_ayuda",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-ayuda-02",
+      "slug": "como-consultar-posibles-ayudas-para-actividades-comunitarias-lena",
+      "title": "Cómo consultar posibles ayudas para actividades comunitarias · Lena",
+      "excerpt": "Ensayo: Una ficha de muestra para recordar la importancia de revisar las bases oficiales.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones interesadas en apoyos para sus actividades deben comprobar si existe una convocatoria vigente y leer sus bases completas antes de preparar una solicitud. Conviene identificar qué administración la gestiona y qué canal ofrece información actualizada.\n\nEsta ficha no abre una subvención ni garantiza financiación. No establece cuantías ni fechas de solicitud y no debe utilizarse como base administrativa.",
+      "section": "sociedad",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-02",
+      "publishedAt": "2026-12-02",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "grant",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-tablon-01",
+      "tipo": "municipal_tablon",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-tablon-01",
+      "slug": "consulta-de-anuncios-y-documentos-oficiales-lena",
+      "title": "Consulta de anuncios y documentos oficiales · Lena",
+      "excerpt": "Ensayo: Un recordatorio de ensayo para distinguir la información resumida de la publicación administrativa.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos anuncios administrativos deben consultarse en el tablón o en la sede oficial que corresponda. Cuando una publicación incluya documentación, es importante comprobar que se trata de la versión vigente y conocer el procedimiento al que pertenece.\n\nEsta pieza no abre un trámite ni sustituye una notificación. No contiene un expediente real ni fija un plazo de alegaciones.",
+      "section": "politica",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-03",
+      "publishedAt": "2026-12-03",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "announcement",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
+    },
+    {
+      "id": "p14-municipal-lena-tablon-02",
+      "tipo": "municipal_tablon",
+      "lote": "ensayo",
+      "estadoEditorial": "borrador",
+      "coleccionCMS": "municipal-content",
+      "legacyID": "p14-municipal-lena-tablon-02",
+      "slug": "informacion-para-preparar-una-consulta-sobre-un-tramite-lena",
+      "title": "Información para preparar una consulta sobre un trámite · Lena",
+      "excerpt": "Ensayo: Una ficha ficticia para orientar la búsqueda de información sin recoger datos personales.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de plantear una consulta, puede ser útil anotar qué procedimiento necesitas conocer y revisar los documentos oficiales disponibles. Los datos personales o la documentación privada deben facilitarse solo por los canales habilitados.\n\nEl texto no convoca un procedimiento ni introduce obligaciones. Su función es servir como muestra del tablón durante el ensayo de la web.",
+      "section": "politica",
+      "town": "lena",
+      "concejosEtiquetados": [
+        "lena"
+      ],
+      "showInTown": true,
+      "opinion": false,
+      "author": "redaccion-planta-14",
+      "date": "2026-12-04",
+      "publishedAt": "2026-12-04",
+      "_status": "draft",
+      "fotoNecesaria": {
+        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "estado": "pendiente_fase_2",
+        "imagen": null
+      },
+      "fuentes": [],
+      "esFicticio": true,
+      "provenance": "planta14-contenido-ensayo-2026-11",
+      "avisoEnsayo": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.",
+      "space": "lena",
+      "type": "announcement",
+      "origin": "municipality",
+      "demo": true,
+      "expiresAt": null,
+      "deadline": null,
+      "attachments": [],
+      "autorInstitucional": "Ayuntamiento de Lena (cuenta de ensayo; no emisor de un comunicado real)",
+      "eventAt": null,
+      "place": null
     }
-  ]
+  ],
+  "catalogos": {
+    "secciones": [
+      {
+        "name": "Sucesos",
+        "slug": "sucesos"
+      },
+      {
+        "name": "Economía",
+        "slug": "economia"
+      },
+      {
+        "name": "Empresas",
+        "slug": "empresas"
+      },
+      {
+        "name": "Política",
+        "slug": "politica"
+      },
+      {
+        "name": "Sociedad",
+        "slug": "sociedad"
+      },
+      {
+        "name": "Deportes",
+        "slug": "deportes"
+      },
+      {
+        "name": "Cultura",
+        "slug": "cultura"
+      },
+      {
+        "name": "Patrimonio",
+        "slug": "patrimonio"
+      },
+      {
+        "name": "Opinión",
+        "slug": "opinion"
+      },
+      {
+        "name": "Agenda",
+        "slug": "agenda"
+      }
+    ],
+    "concejos": [
+      {
+        "slug": "mieres",
+        "name": "Mieres",
+        "comarca": "Caudal"
+      },
+      {
+        "slug": "lena",
+        "name": "Lena",
+        "comarca": "Caudal"
+      },
+      {
+        "slug": "aller",
+        "name": "Aller",
+        "comarca": "Caudal"
+      },
+      {
+        "slug": "morcin",
+        "name": "Morcín",
+        "comarca": "Caudal"
+      },
+      {
+        "slug": "riosa",
+        "name": "Riosa",
+        "comarca": "Caudal"
+      },
+      {
+        "slug": "ribera-de-arriba",
+        "name": "Ribera de Arriba",
+        "comarca": "Caudal"
+      }
+    ],
+    "tiposMunicipales": [
+      "news",
+      "notice",
+      "event",
+      "grant",
+      "announcement"
+    ]
+  },
+  "advertenciaGeneral": "Material original de ensayo. Salvo los dos reportajes documentados y la carta basada en las ideas de Pablo, los hechos, convocatorias y actividades son ficticios. No son noticias verificadas ni comunicaciones oficiales. Ninguna pieza se ha publicado.",
+  "resumen": {
+    "total": 56,
+    "porTipo": {
+      "carta_director": 1,
+      "noticia": 24,
+      "opinion": 3,
+      "agenda_general": 6,
+      "reportaje": 2,
+      "municipal_aviso": 6,
+      "municipal_evento": 6,
+      "municipal_ayuda": 4,
+      "municipal_tablon": 4
+    },
+    "porConcejoPrincipal": {
+      "mieres": 18,
+      "lena": 17,
+      "aller": 6,
+      "morcin": 5,
+      "riosa": 5,
+      "ribera-de-arriba": 5
+    },
+    "porSeccion": {
+      "opinion": 4,
+      "sucesos": 3,
+      "economia": 3,
+      "cultura": 3,
+      "patrimonio": 5,
+      "empresas": 3,
+      "sociedad": 13,
+      "deportes": 3,
+      "politica": 7,
+      "agenda": 12
+    },
+    "noticiasPorConcejo": {
+      "mieres": 4,
+      "lena": 4,
+      "aller": 4,
+      "morcin": 4,
+      "riosa": 4,
+      "ribera-de-arriba": 4
+    },
+    "noticiasPorSeccion": {
+      "sucesos": 3,
+      "economia": 3,
+      "cultura": 3,
+      "patrimonio": 3,
+      "empresas": 3,
+      "sociedad": 3,
+      "deportes": 3,
+      "politica": 3
+    },
+    "porLote": {
+      "ensayo": 54,
+      "definitivo": 2
+    }
+  },
+  "retiradaEnsayo": {
+    "advertencia": "Manifiesto de datos, no ejecuta borrados. Resolver los IDs del CMS y revisar relaciones antes de retirar. No borrar imágenes reutilizadas por piezas conservadas.",
+    "retirar": [
+      {
+        "id": "p14-carta-director-001",
+        "legacyID": "p14-carta-director-001",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-01",
+        "legacyID": "p14-noticia-01",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-02",
+        "legacyID": "p14-noticia-02",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-03",
+        "legacyID": "p14-noticia-03",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-04",
+        "legacyID": "p14-noticia-04",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-05",
+        "legacyID": "p14-noticia-05",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-06",
+        "legacyID": "p14-noticia-06",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-07",
+        "legacyID": "p14-noticia-07",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-08",
+        "legacyID": "p14-noticia-08",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-09",
+        "legacyID": "p14-noticia-09",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-10",
+        "legacyID": "p14-noticia-10",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-11",
+        "legacyID": "p14-noticia-11",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-12",
+        "legacyID": "p14-noticia-12",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-13",
+        "legacyID": "p14-noticia-13",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-14",
+        "legacyID": "p14-noticia-14",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-15",
+        "legacyID": "p14-noticia-15",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-16",
+        "legacyID": "p14-noticia-16",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-17",
+        "legacyID": "p14-noticia-17",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-18",
+        "legacyID": "p14-noticia-18",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-19",
+        "legacyID": "p14-noticia-19",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-20",
+        "legacyID": "p14-noticia-20",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-21",
+        "legacyID": "p14-noticia-21",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-22",
+        "legacyID": "p14-noticia-22",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-23",
+        "legacyID": "p14-noticia-23",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-noticia-24",
+        "legacyID": "p14-noticia-24",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-opinion-01",
+        "legacyID": "p14-opinion-01",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-opinion-02",
+        "legacyID": "p14-opinion-02",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-opinion-03",
+        "legacyID": "p14-opinion-03",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-agenda-01",
+        "legacyID": "p14-agenda-01",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-agenda-02",
+        "legacyID": "p14-agenda-02",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-agenda-03",
+        "legacyID": "p14-agenda-03",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-agenda-04",
+        "legacyID": "p14-agenda-04",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-agenda-05",
+        "legacyID": "p14-agenda-05",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-agenda-06",
+        "legacyID": "p14-agenda-06",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-municipal-mieres-aviso-01",
+        "legacyID": "p14-municipal-mieres-aviso-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-aviso-02",
+        "legacyID": "p14-municipal-mieres-aviso-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-aviso-03",
+        "legacyID": "p14-municipal-mieres-aviso-03",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-evento-01",
+        "legacyID": "p14-municipal-mieres-evento-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-evento-02",
+        "legacyID": "p14-municipal-mieres-evento-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-evento-03",
+        "legacyID": "p14-municipal-mieres-evento-03",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-ayuda-01",
+        "legacyID": "p14-municipal-mieres-ayuda-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-ayuda-02",
+        "legacyID": "p14-municipal-mieres-ayuda-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-tablon-01",
+        "legacyID": "p14-municipal-mieres-tablon-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-mieres-tablon-02",
+        "legacyID": "p14-municipal-mieres-tablon-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-aviso-01",
+        "legacyID": "p14-municipal-lena-aviso-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-aviso-02",
+        "legacyID": "p14-municipal-lena-aviso-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-aviso-03",
+        "legacyID": "p14-municipal-lena-aviso-03",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-evento-01",
+        "legacyID": "p14-municipal-lena-evento-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-evento-02",
+        "legacyID": "p14-municipal-lena-evento-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-evento-03",
+        "legacyID": "p14-municipal-lena-evento-03",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-ayuda-01",
+        "legacyID": "p14-municipal-lena-ayuda-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-ayuda-02",
+        "legacyID": "p14-municipal-lena-ayuda-02",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-tablon-01",
+        "legacyID": "p14-municipal-lena-tablon-01",
+        "coleccionCMS": "municipal-content"
+      },
+      {
+        "id": "p14-municipal-lena-tablon-02",
+        "legacyID": "p14-municipal-lena-tablon-02",
+        "coleccionCMS": "municipal-content"
+      }
+    ],
+    "conservar": [
+      {
+        "id": "p14-reportaje-01",
+        "legacyID": "p14-reportaje-01",
+        "coleccionCMS": "articles"
+      },
+      {
+        "id": "p14-reportaje-02",
+        "legacyID": "p14-reportaje-02",
+        "coleccionCMS": "articles"
+      }
+    ]
+  }
 }
