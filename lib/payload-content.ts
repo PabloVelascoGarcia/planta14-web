@@ -44,6 +44,7 @@ export function articleContract(doc: PayloadArticle): Article {
     ...(shareImage(doc.seoImage || doc.image) ? { shareImage: shareImage(doc.seoImage || doc.image) } : {}),
     sourceName: doc.sourceName || undefined, sourceUrl: doc.sourceUrl || undefined, sourceAuthor: doc.sourceAuthor || undefined,
     ...(doc.showInTown === false ? { showInTown: false } : {}),
+    ...(doc.agenda?.eventAt ? { eventAt: doc.agenda.eventAt, ...(doc.agenda.place ? { eventPlace: doc.agenda.place } : {}) } : {}),
   };
 }
 export async function payloadArticles(): Promise<Article[]> {

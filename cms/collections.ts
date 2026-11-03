@@ -4,6 +4,7 @@ import { auditAfterChange, auditAfterDelete } from './activity';
 import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
 import { withPublicMediaLock } from './public-media-lock';
+import { loteField } from './lote';
 
 /** Text stored with each municipal upload (versioned so the evidence says what was declared). */
 export const municipalRightsStatement = (municipality: string) =>
@@ -78,6 +79,13 @@ export const Media: CollectionConfig = {
           data.rightsDeclaration = { declared: true, statement: municipalRightsStatement(owner.name), declaredBy: req.user!.id, declaredAt: new Date().toISOString() };
         }
       }
+      // Declaración de la administración al subir desde el servidor (p. ej. la carga de ensayo citando la fuente de
+      // Commons). Solo llega por el contexto de la API local, nunca como dato del cliente.
+      const adminDeclaration = req.context.adminRightsDeclaration as { statement?: string } | undefined;
+      if (space === null && adminDeclaration?.statement && (operation === 'create' || req.file)) {
+        if (req.user?.collection !== 'users' || req.user.role !== 'admin') throw new APIError('Solo la administración puede declarar los derechos de esta imagen', 403);
+        data.rightsDeclaration = { declared: true, statement: adminDeclaration.statement, declaredBy: req.user.id, declaredAt: new Date().toISOString() };
+      }
       const next = { ...originalDoc, ...data };
       if (!next.rightsHolder || !next.rightsType) throw new APIError('Indica titular y tipo de derechos de la imagen', 400);
       if (next.rightsScope !== 'publicable' && (originalDoc?.publishedUses ?? 0) > 0) throw new APIError('Despublica el contenido antes de retirar los derechos', 400);
@@ -118,6 +126,7 @@ export const Media: CollectionConfig = {
       { name: 'declaredBy', type: 'relationship', relationTo: 'users' },
       { name: 'declaredAt', type: 'date' },
     ] },
+    loteField,
     { name: 'publicURL', type: 'text', virtual: true, admin: { readOnly: true }, access: { create: () => false, update: () => false },
       hooks: { afterRead: [({ siblingData }) => publicURL(siblingData)] } },
   ],

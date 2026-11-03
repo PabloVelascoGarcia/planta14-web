@@ -19,7 +19,7 @@ export default function AgendaPage() {
           </p>
         </header>
         <div className="mt-8">
-          <AgendaList />
+          <AgendaList limit={40} />
         </div>
       </section>
       <AdSlot tall />

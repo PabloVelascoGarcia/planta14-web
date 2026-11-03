@@ -18,11 +18,14 @@
     "test:cms:integration": "payload run scripts/cms-integration.mjs",
     "cms:import:municipal": "payload run scripts/import-municipal.ts",
     "cms:structure": "payload run scripts/load-structure.ts",
+    "cms:ensayo:cargar": "node scripts/ensayo-run.mjs cargar",
+    "cms:ensayo:retirar": "node scripts/ensayo-run.mjs retirar",
     "test:block2": "payload run scripts/block2-integration.mjs",
     "cms:media:sync-public": "payload run scripts/sync-public-media.ts",
     "test:block3": "payload run scripts/block3-integration.mjs",
     "test:launch": "payload run scripts/launch-integration.mjs",
-    "test:instalacion": "payload run scripts/instalacion-integration.mjs"
+    "test:instalacion": "payload run scripts/instalacion-integration.mjs",
+    "test:ensayo": "payload run scripts/ensayo-integration.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1161.0",

@@ -6,6 +6,7 @@ import * as migration_20261102_121412_integracion from './20261102_121412_integr
 import * as migration_20261102_174946_mostrar_en_concejo from './20261102_174946_mostrar_en_concejo';
 import * as migration_20261103_000335_identidad_espacios from './20261103_000335_identidad_espacios';
 import * as migration_20261103_001210_creado_por from './20261103_001210_creado_por';
+import * as migration_20261103_081533_lote_ensayo from './20261103_081533_lote_ensayo';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20261103_001210_creado_por.up,
     down: migration_20261103_001210_creado_por.down,
-    name: '20261103_001210_creado_por'
+    name: '20261103_001210_creado_por',
+  },
+  {
+    up: migration_20261103_081533_lote_ensayo.up,
+    down: migration_20261103_081533_lote_ensayo.down,
+    name: '20261103_081533_lote_ensayo'
   },
 ];

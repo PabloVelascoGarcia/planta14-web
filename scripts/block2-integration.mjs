@@ -149,7 +149,10 @@ try {
   for (const route of ['/', '/lena', '/mieres', '/aller', '/morcin', '/riosa', '/ribera-de-arriba', '/agenda', '/noticia/historia-original-prueba']) {
     const [demo, cms] = await Promise.all([fetch(`http://127.0.0.1:3040${route}`), fetch(`http://127.0.0.1:3041${route}`)]);
     assert.equal(demo.status, 200, `demo ${route}`); assert.equal(cms.status, 200, `payload ${route}`);
-    let expected = mainContent(withoutDemoOnly(await demo.text())); const actual = mainContent(await cms.text());
+    // The agenda list is compared elsewhere: with real content it shows upcoming events sorted by date (and the
+    // general agenda), while the demo keeps its fixed sample order (scripts/ensayo-integration.mjs).
+    const withoutAgenda = html => html.replace(/<div class="divide-y divide-coal-900\/15 border-y border-coal-900\/15">[\s\S]*?<\/article><\/div>/, '<div class="agenda"></div>');
+    let expected = mainContent(withoutAgenda(withoutDemoOnly(await demo.text()))); const actual = mainContent(withoutAgenda(await cms.text()));
     // The concejo page's «Contenido de ejemplo» label belongs to the demo only (CONTENT_SOURCE=demo).
     const label = '<span class="municipal-example">Contenido de ejemplo</span>';
     if (/^\/(lena|mieres|aller|morcin|riosa|ribera-de-arriba)$/.test(route)) {
@@ -163,7 +166,7 @@ try {
   assert.equal((await fetch('http://127.0.0.1:3041/noticia/borrador-prueba')).status, 404);
   assert.equal((await fetch('http://127.0.0.1:3041/niebla/adrian-barbon')).status, 404);
   assert.doesNotMatch(await (await fetch('http://127.0.0.1:3041/niebla')).text(), /agendapublica|sobrevia\.net/);
-  passed('identical rendered body for demo/payload on nine public pages except demo-only pieces; /edicion, /niebla and /admin 404 in payload; HTTP draft 404 and magazine demo isolation');
+  passed('identical rendered body for demo/payload on nine public pages except demo-only pieces and the agenda list; /edicion, /niebla and /admin 404 in payload; HTTP draft 404 and magazine demo isolation');
 
   // Exercise downgrade/up inside real transactions after testing the protective editor guard.
   const migration = await import('../cms/migrations/20261102_094653_bloque2.ts');

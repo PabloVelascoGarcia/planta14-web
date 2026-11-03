@@ -242,6 +242,15 @@ export interface MunicipalSpace {
   };
   provenance?: string | null;
   sourceUrl?: string | null;
+  ensayoPrevio?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -284,6 +293,10 @@ export interface Media {
     declaredBy?: (number | null) | User;
     declaredAt?: string | null;
   };
+  /**
+   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   */
+  lote?: ('ensayo' | 'definitivo') | null;
   publicURL?: string | null;
   prefix?: string | null;
   _objectKey?: string | null;
@@ -350,6 +363,17 @@ export interface Article {
   main?: boolean | null;
   opinion?: boolean | null;
   showInTown?: boolean | null;
+  /**
+   * Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.
+   */
+  agenda?: {
+    eventAt?: string | null;
+    place?: string | null;
+  };
+  /**
+   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   */
+  lote?: ('ensayo' | 'definitivo') | null;
   sourceName?: string | null;
   sourceAuthor?: string | null;
   provenance?: string | null;
@@ -371,6 +395,10 @@ export interface Author {
   bio?: string | null;
   email?: string | null;
   avatar?: (number | null) | Media;
+  /**
+   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   */
+  lote?: ('ensayo' | 'definitivo') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -413,6 +441,10 @@ export interface MunicipalContent {
     | null;
   image?: (number | null) | Media;
   demo?: boolean | null;
+  /**
+   * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
+   */
+  lote?: ('ensayo' | 'definitivo') | null;
   provenance?: string | null;
   sourceUrl?: string | null;
   withdrawal?: {
@@ -644,6 +676,7 @@ export interface MediaSelect<T extends boolean = true> {
         declaredBy?: T;
         declaredAt?: T;
       };
+  lote?: T;
   publicURL?: T;
   prefix?: T;
   _objectKey?: T;
@@ -707,6 +740,13 @@ export interface ArticlesSelect<T extends boolean = true> {
   main?: T;
   opinion?: T;
   showInTown?: T;
+  agenda?:
+    | T
+    | {
+        eventAt?: T;
+        place?: T;
+      };
+  lote?: T;
   sourceName?: T;
   sourceAuthor?: T;
   provenance?: T;
@@ -727,6 +767,7 @@ export interface AuthorsSelect<T extends boolean = true> {
   bio?: T;
   email?: T;
   avatar?: T;
+  lote?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -817,6 +858,7 @@ export interface MunicipalSpacesSelect<T extends boolean = true> {
       };
   provenance?: T;
   sourceUrl?: T;
+  ensayoPrevio?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -847,6 +889,7 @@ export interface MunicipalContentSelect<T extends boolean = true> {
       };
   image?: T;
   demo?: T;
+  lote?: T;
   provenance?: T;
   sourceUrl?: T;
   withdrawal?:

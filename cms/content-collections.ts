@@ -3,6 +3,7 @@ import { adminOnly, editorialContentRead, editorialUser, editorialVersions, muni
   municipalContentVersions, municipalSpaceOf, municipalSpaceRead, notMunicipal, relationID } from './access';
 import { auditAfterChange, auditAfterDelete, rememberMainState } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
+import { loteField } from './lote';
 
 const text = (name: string, required = false): Field => ({ name, type: 'text', required });
 const key: Field = { name: 'legacyID', type: 'text', unique: true, index: true };
@@ -98,7 +99,7 @@ export const Authors: CollectionConfig = {
   slug: 'authors', admin: { useAsTitle: 'name' },
   access: { read: notMunicipal, create: editorialUser, update: editorialUser, delete: editorialUser },
   fields: [text('name', true), { name: 'slug', type: 'text', unique: true, required: true }, text('role'), { name: 'bio', type: 'textarea' },
-    { name: 'email', type: 'email', access: { read: editorialUser } }, { name: 'avatar', type: 'relationship', relationTo: 'media' }],
+    { name: 'email', type: 'email', access: { read: editorialUser } }, { name: 'avatar', type: 'relationship', relationTo: 'media' }, loteField],
 };
 
 // Vista previa en vivo con el diseño público (app/(frontend)/vista-previa/noticia/[id]).
@@ -122,6 +123,13 @@ export const Articles: CollectionConfig = {
     { name: 'featured', type: 'checkbox' }, { name: 'main', type: 'checkbox' }, { name: 'opinion', type: 'checkbox' },
     // Si se desmarca, la noticia sigue publicada (portada, sección, buscador) pero no sale en la página del concejo.
     { name: 'showInTown', label: 'Mostrar en la página del concejo', type: 'checkbox', defaultValue: true, admin: { position: 'sidebar' } },
+    // Agenda general (sección Agenda): con fecha, la noticia aparece en la agenda de la portada y de /agenda.
+    { name: 'agenda', label: 'Agenda', type: 'group', admin: { description: 'Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.' }, fields: [
+      { name: 'eventAt', label: 'Fecha y hora (AAAA-MM-DDTHH:MM)', type: 'text',
+        validate: (value: unknown) => !value || /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(String(value)) || 'Usa AAAA-MM-DD o AAAA-MM-DDTHH:MM' },
+      { name: 'place', label: 'Lugar', type: 'text' },
+    ] },
+    loteField,
     text('sourceName'), text('sourceAuthor'), ...provenance,
     // Quién creó la noticia en el CMS (para «Mis borradores» del panel de inicio). Lo pone el servidor.
     { name: 'createdBy', label: 'Creada por', type: 'relationship', relationTo: 'users', index: true,
@@ -186,7 +194,9 @@ export const MunicipalSpaces: CollectionConfig = {
     text('medium', true),
     { name: 'subscription', type: 'group', fields: [
       { name: 'status', type: 'select', required: true, options: ['demo', 'active', 'inactive'] }, text('startsAt'), text('endsAt')] },
-    { name: 'contact', type: 'group', fields: [text('place'), text('hours'), { name: 'note', type: 'textarea' }] }, identity, ...provenance],
+    { name: 'contact', type: 'group', fields: [text('place'), text('hours'), { name: 'note', type: 'textarea' }] }, identity, ...provenance,
+    // Estado de la suscripción antes de activar el espacio para el ensayo; lo restaura cms:ensayo:retirar.
+    { name: 'ensayoPrevio', label: 'Estado previo al ensayo', type: 'json', access: { read: adminOnly, create: adminOnly, update: adminOnly }, admin: { hidden: true } }],
 };
 
 export const MunicipalContent: CollectionConfig = {
@@ -200,7 +210,7 @@ export const MunicipalContent: CollectionConfig = {
     text('publishedAt', true), text('expiresAt'), text('eventAt'), text('place'), text('deadline'),
     { name: 'attachments', type: 'array', fields: [text('url', true), text('title', true)] },
     { name: 'image', type: 'relationship', relationTo: 'media' },
-    { name: 'demo', type: 'checkbox', defaultValue: true }, ...provenance,
+    { name: 'demo', type: 'checkbox', defaultValue: true }, loteField, ...provenance,
     // Withdrawal by Planta 14. Only editors and administrators change it; the municipality reads the reason in its panel.
     { name: 'withdrawal', label: 'Retirada por Planta 14', type: 'group', access: { create: editorialUser, update: editorialUser }, fields: [
       { name: 'withdrawn', label: 'Retirado', type: 'checkbox', defaultValue: false, index: true },

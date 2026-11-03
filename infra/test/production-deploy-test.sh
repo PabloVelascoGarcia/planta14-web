@@ -38,6 +38,7 @@ cleanup() {
     --env-file "$ws/production.env" down -v --remove-orphans >/dev/null 2>&1) || true
   local tag; for tag in "${built_tags[@]}"; do docker image rm "$tag" >/dev/null 2>&1 || true; done
   docker network rm planta14-backup-egress-prodtest >/dev/null 2>&1 || true
+  docker rm -f -v "$project-commons" >/dev/null 2>&1 || true
   rm -rf -- "$ws"
 }
 trap cleanup EXIT
@@ -314,6 +315,40 @@ infra/deploy/aplicar-caddy.sh --env-file "$ws/production.env" > "$ws/preproducci
 check "aplicar-caddy.sh quita la contraseña y lo comprueba" grep -q 'Contraseña de preproducción QUITADA' "$ws/preproduccion-off.log"
 check "sin preproducción: portada pública → 200" test "$(status_of "https://$domain/")" = 200
 check "quitarla no reconstruye ni reinicia la web (mismo contenedor de la app)" test "$(docker inspect -f '{{.Id}}' "$project-app-1")" = "$app_id"
+
+log "== 3d. Contenido de ensayo con infra/deploy/ensayo.sh (carga, repetición y retirada con copia previa)"
+# Sustituto de Commons en la red de la web: imágenes sintéticas con la ruta y la resolución de fotos.json.
+mkdir -p "$ws/commons"
+(cd "$root" && node --input-type=module -e "
+import sharp from 'sharp'; import { readFileSync, mkdirSync } from 'node:fs'; import path from 'node:path';
+const fotos = JSON.parse(readFileSync('contenido-ensayo/fotos.json', 'utf8'));
+for (const f of fotos.catalogo) {
+  const file = path.join(process.argv[1], decodeURIComponent(new URL(f.archivoOriginal).pathname));
+  mkdirSync(path.dirname(file), { recursive: true });
+  await sharp({ create: { width: f.resolucion.ancho, height: f.resolucion.alto, channels: 3, background: '#557766' } }).jpeg({ quality: 30 }).toFile(file);
+}" "$ws/commons")
+chmod -R a+rX "$ws/commons"
+docker run -d --name "$project-commons" --network "${project}_edge" --network-alias commons -v "$ws/commons:/data:ro" "$(sed -n 's/^RCLONE_IMAGE=//p' "$ws/production.env")" serve http /data --addr :8080 >/dev/null
+export ENSAYO_FOTOS_BASE=http://commons:8080
+sql() { docker exec "$project-postgres-1" psql -U planta14 -d planta14 -XAtc "$1"; }
+before_ensayo=$(sql "SELECT (SELECT count(*) FROM articles)||'/'||(SELECT count(*) FROM municipal_content)||'/'||(SELECT count(*) FROM media)")
+spaces_before=$(sql "SELECT string_agg(legacy_i_d||':'||subscription_status, ',' ORDER BY legacy_i_d) FROM municipal_spaces")
+check "ensayo.sh cargar --solo-comprobar no escribe" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' cargar --solo-comprobar > '$ws/ensayo-comprobar.log' 2>&1 && grep -q 'COMPROBACIÓN TERMINADA' '$ws/ensayo-comprobar.log' && [[ \$(docker exec '$project-postgres-1' psql -U planta14 -d planta14 -XAtc \"SELECT (SELECT count(*) FROM articles)||'/'||(SELECT count(*) FROM municipal_content)||'/'||(SELECT count(*) FROM media)\") == '$before_ensayo' ]]"
+check "ensayo.sh cargar (contenedor de migraciones de producción, Commons sustituto)" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' cargar > '$ws/ensayo-cargar.log' 2>&1 && grep -q 'CARGA TERMINADA' '$ws/ensayo-cargar.log'"
+check "cargado: 34 piezas de ensayo y 2 definitivas, 20 municipales, 19 imágenes" test "$(sql "SELECT (SELECT count(*) FROM articles WHERE lote='ensayo')||'/'||(SELECT count(*) FROM articles WHERE lote='definitivo')||'/'||(SELECT count(*) FROM municipal_content WHERE lote='ensayo')||'/'||(SELECT count(*) FROM media WHERE lote IS NOT NULL)")" = "34/2/20/19"
+check "cargado: todo publicado y fotos con copia pública" test "$(sql "SELECT (SELECT count(*) FROM articles WHERE lote IS NOT NULL AND _status<>'published')+(SELECT count(*) FROM media WHERE lote IS NOT NULL AND published_uses>0 AND public_key IS NULL)")" = 0
+check "cargado: Mieres y Lena activos, el resto igual" test "$(sql "SELECT string_agg(legacy_i_d||':'||subscription_status, ',' ORDER BY legacy_i_d) FROM municipal_spaces")" = "$(sed -E 's/(lena|mieres):[a-z]+/\1:active/g' <<< "$spaces_before")"
+check "web: la carta del director publicada" test "$(status_of "https://$domain/noticia/darle-al-hierro")" = 200
+check "segunda carga: no duplica" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' cargar > '$ws/ensayo-cargar2.log' 2>&1 && grep -q 'Creados: nada' '$ws/ensayo-cargar2.log'"
+storage_before=$(find "$ws/backups/storage" -name '*.tar.gz*' 2>/dev/null | wc -l)
+check "ensayo.sh retirar --solo-comprobar no borra" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' retirar --solo-comprobar > '$ws/ensayo-retirar-comprobar.log' 2>&1 && grep -q 'Se borraría: 34 articles, 20 municipal-content' '$ws/ensayo-retirar-comprobar.log' && [[ \$(docker exec '$project-postgres-1' psql -U planta14 -d planta14 -XAtc \"SELECT count(*) FROM articles WHERE lote='ensayo'\") == 34 ]]"
+check "ensayo.sh retirar: hace antes la copia de PostgreSQL y del almacenamiento" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' retirar > '$ws/ensayo-retirar.log' 2>&1 && grep -q 'Copias previas: .*planta14-postgres-.*planta14-storage-' '$ws/ensayo-retirar.log' && grep -q 'RETIRADA TERMINADA' '$ws/ensayo-retirar.log'"
+check "copia del almacenamiento nueva antes de borrar" test "$(find "$ws/backups/storage" -name '*.tar.gz*' ! -name '*.sha256' | wc -l)" -gt "$storage_before"
+check "retirado: solo quedan los 2 reportajes definitivos y lo que no era del ensayo" test "$(sql "SELECT (SELECT count(*) FROM articles WHERE lote='ensayo')||'/'||(SELECT count(*) FROM articles WHERE lote='definitivo')||'/'||(SELECT count(*) FROM municipal_content WHERE lote='ensayo')||'/'||(SELECT count(*) FROM articles)||'/'||(SELECT count(*) FROM municipal_content)")" = "0/2/0/$(( $(cut -d/ -f1 <<< "$before_ensayo") + 2 ))/$(cut -d/ -f2 <<< "$before_ensayo")"
+check "retirado: espacios como antes" test "$(sql "SELECT string_agg(legacy_i_d||':'||subscription_status, ',' ORDER BY legacy_i_d) FROM municipal_spaces")" = "$spaces_before"
+check "retirado: auditoría con la copia previa" test "$(sql "SELECT count(*) FROM audit_log WHERE target_collection='ensayo' AND action='delete' AND reason LIKE '%planta14-postgres-%'")" = 1
+check "historial del servidor con la carga y la retirada" bash -c "grep -q 'ensayo-cargar' '$ws/state/historial.log' && grep -q 'ensayo-retirar (copia previa:' '$ws/state/historial.log'"
+unset ENSAYO_FOTOS_BASE
 
 code=0; deploy "$good" repetida || code=$?
 check "redesplegar la versión actual no hace nada" bash -c "[[ $code == 0 ]] && grep -q 'ya está desplegada' '$ws/deploy-repetida.log'"
