@@ -9,7 +9,7 @@ Salida pública: **4 de diciembre de 2026**. Rama de instalación: **desarrollo/
 | VPS IONOS M+ (Ubuntu 24.04, IP **87.106.30.18**) | Contratado |
 | Preparación del servidor (apartado 2) | **Hecha.** `check-server.sh` en verde, código en `/srv/planta14/app` en el commit `86aed41`. Detalle en `docs/SERVIDOR-PREPARADO.md` |
 | Object Storage: tres buckets y una clave (apartado 3) | **Creados** por Pablo |
-| La web | **No instalada** |
+| La web | Instalada en pruebas.planta14.com con `c29e024`. La versión siguiente, `desarrollo/planta14-v2-ajustes-preproduccion`, se despliega como cualquier actualización (`docs/MANUAL-OPERACION.md`, apartado 8): `deploy.sh` aplica sus migraciones. Pasos y commit exacto en `docs/V2-AJUSTES-PREPRODUCCION.md` |
 | Siguiente | **Preproducción** de dos semanas en **pruebas.planta14.com** (apartado 5): sin indexar, con una contraseña común para toda la web y contenido real cargado **solo por periodistas**. El día de la salida se queda tal cual y pasa a planta14.com (apartado 6). Los ayuntamientos tendrán cuenta después de la salida |
 
 No repitas el apartado 2: empieza en el 4 y sigue el 5 en orden.

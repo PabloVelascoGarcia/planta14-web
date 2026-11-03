@@ -227,3 +227,47 @@ bash infra/deploy/mantenimiento.sh --env-file infra/.env.production desactivar
 
 `activar` comprueba que las escrituras se rechazan de verdad. Si hay una restauración asistida pendiente, `desactivar` se niega: primero hay que restaurar (apartado 9). Solo la persona técnica, y por una razón clara, puede renunciar a esa restauración con `desactivar --forzar`, porque entonces la base se queda como la dejó la versión que falló.
 
+
+## 11. Cambiar la foto, el lema o los colores de un concejo
+
+Cada concejo tiene su **identidad visual**: la foto grande de cabecera, el lema, el escudo, los colores, los enlaces a la web oficial y de turismo, y tres «historias destacadas». Se cambia desde el CMS, sin tocar el código. **Solo la administración** puede hacerlo. Las cuentas municipales la ven, pero no pueden cambiarla.
+
+**Cambiar la foto de cabecera**
+
+1. **Sube la foto.** En `/cms` → **Imágenes** → **Crear**, sube la foto (JPEG, PNG o WebP; mejor apaisada y de al menos 1800 px de ancho). Rellena:
+   - **Texto alternativo:** qué se ve, para quien no puede verla;
+   - **Autoría o crédito;**
+   - **Titular de los derechos** y **Tipo de derechos;**
+   - **Ámbito:** `Publicable`.
+
+   Guarda. Sin ámbito «Publicable» y derechos completos, la foto no se puede usar.
+2. **Asígnala al concejo.** Ve a **Espacios municipales** y abre el del concejo, por ejemplo «Ayuntamiento de Lena». En **Identidad visual** → **Foto de cabecera**, elige la imagen que acabas de subir.
+3. **Completa los créditos** de la foto: **Descripción de la foto**, **Autor y licencia de la foto (texto visible)**, **Enlace al original de la foto** y **Enlace a la licencia de la foto** (si es de Wikimedia o tiene licencia Creative Commons).
+4. Pulsa **Publicar cambios**. La foto aparece en la página del concejo cuando el espacio está **activo**; con el espacio inactivo la página no muestra foto de cabecera.
+
+La foto que elijas en Imágenes sustituye a la que venía con la web («Foto actual (archivo de la web)»). Si quitas la de Imágenes, vuelve a verse la del archivo.
+
+**Cambiar el lema o el subtítulo:** en el mismo espacio, **Identidad visual** → **Lema** (la frase grande sobre la foto, por ejemplo «Lena, un lugar para quedarse.») y **Subtítulo**. Pulsa **Publicar cambios**.
+
+**Escudo, colores, enlaces e historias**
+- **Escudo:** igual que la foto: súbelo a Imágenes con sus derechos, elígelo en **Escudo** y rellena su autor, su licencia y sus enlaces.
+- **Colores:** formato `#RRGGBB`, por ejemplo `#456477`. Hacen falta los cuatro (principal, oscuro, suave y bordes) para que se aplique el diseño propio del concejo. Si falta alguno, la página usa los colores neutros de Planta 14.
+- **Web oficial** y **Web de turismo:** direcciones que empiezan por `https://`.
+- **Historias destacadas:** hasta tres, cada una con etiqueta, título, texto y enlace.
+
+**Si dejas un campo vacío**, esa parte no se muestra y la página sigue funcionando con el diseño neutro: sin foto, sin escudo (aparece el marcador «Escudo municipal»), sin créditos o sin historias. Antes de guardar, revisa la página del concejo en una ventana privada.
+
+## 12. Escribir noticias en el CMS (redacción)
+
+Al entrar en `/cms`, el **inicio** muestra tres accesos:
+- **Nueva noticia:** abre el formulario vacío;
+- **Mis borradores:** las noticias que has creado tú y aún no están publicadas, con su número;
+- **Publicadas hoy:** las noticias publicadas con la fecha de hoy.
+
+La administración ve además los **avisos municipales sin revisar**, los **espacios municipales** y los **usuarios**.
+
+**Vista previa en vivo.** Con una noticia abierta, guárdala una vez con **Guardar borrador** y pulsa **Previsualizar** (arriba). Se abre a un lado la noticia con el diseño de la web, y cambia mientras escribes. Puedes elegir **Móvil**, **Tableta** o **Escritorio**. Solo la ve quien tiene sesión en el CMS: no es pública hasta que pulses **Publicar**. Las imágenes que aún no se han publicado se ven en la vista previa, pero no en la web.
+
+**Mostrar en la página del concejo.** En la barra lateral de cada noticia. Viene marcada; si la desmarcas, la noticia se publica (portada, sección, buscador), pero no aparece en la página del concejo.
+
+**Creada por.** Lo pone el CMS solo, con la cuenta que creó la noticia; sirve para «Mis borradores» y no se puede cambiar.
