@@ -12,7 +12,8 @@
     "La agenda general se prepara en articles, sección agenda, con eventoGeneral como metadatos. /agenda actualmente lee eventos municipales y muestra un máximo de cuatro; no consume estos artículos de agenda general. No se cambia código ni se atribuyen actividades editoriales a un ayuntamiento.",
     "lote, tipo, estadoEditorial, concejosEtiquetados, eventoGeneral, fotoNecesaria, fuentes, esFicticio y avisoEnsayo son metadatos del conjunto, no campos nuevos de Payload. No pasar el documento completo directamente a la API.",
     "Todo permanece en _status=draft. lote=definitivo significa conservar al retirar el ensayo, no publicar automáticamente. La carta sigue en ensayo por corrección expresa de Pablo.",
-    "Las relaciones por slug necesitan resolver IDs reales. El manifiesto usa IDs lógicos y legacyID; el CMS no dispone de campo lote ni de borrado por lote automático. No se ha escrito ni ejecutado importación o borrado."
+    "Las relaciones por slug necesitan resolver IDs reales. El manifiesto usa IDs lógicos y legacyID; el CMS no dispone de campo lote ni de borrado por lote automático. No se ha escrito ni ejecutado importación o borrado.",
+    "space=mieres o lena es una clave lógica del conjunto: municipal-spaces no tiene slug. Resolver el espacio por su relación town con el concejo correspondiente, como hace cms/structure.ts."
   ],
   "autores": [
     {
@@ -73,8 +74,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje horizontal del Caudal con un núcleo habitado y montañas al fondo, sin personas reconocibles en primer plano. Imagen de contexto; no sustituir por el retrato de otra persona. Mínimo 1600 píxeles de ancho.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-carta-director-001",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "notaEditorial": "Texto original redactado a partir de las ideas facilitadas por Pablo. No aprobado ni definitivo. Se mantiene en el lote ensayo por su corrección expresa; no publicar ni conservar como definitivo sin su indicación.",
@@ -108,8 +110,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Panorámica del valle de Turón. No mostrar un rescate ni vehículos de una intervención real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -144,8 +147,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Calle o vista urbana de Mieres sin presentar un comercio como participante real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -180,8 +184,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Turón o de su patrimonio industrial como contexto cultural. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -216,8 +221,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Exterior del poblado minero de Bustiello. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-04",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -252,8 +258,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Campomanes o paisaje de Lena; no una fotografía de obras reales. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-05",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -288,8 +295,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista urbana de La Pola de Lena, sin vincular un negocio concreto al encuentro. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-06",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -324,8 +332,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje habitado del entorno de Campomanes, sin retratos. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-07",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -360,8 +369,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Valle o paisaje montañoso de Lena; no una marcha real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-08",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -396,8 +406,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Montaña o valle de Aller sin personas ni una intervención concreta. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-09",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -432,8 +443,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Cabanaquinta o del valle de Aller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-10",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -468,8 +480,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Moreda o paisaje de Aller, sin deportistas identificables. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-11",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -504,8 +517,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje de Aller con un camino o núcleo rural visible. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-12",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -540,8 +554,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Santa Eulalia de Morcín o panorámica del concejo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-13",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -576,8 +591,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Panorámica de Morcín, sin presentar talleres o empresas como participantes reales. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-14",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -612,8 +628,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje de Morcín con un núcleo habitado, sin una fotografía de un pleno real. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-15",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -648,8 +665,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de La Foz de Morcín o del paisaje próximo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-16",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -684,8 +702,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Panorámica de La Vega o La Ará, en Riosa. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-17",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -720,8 +739,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de La Ará o de un núcleo de Riosa, sin retratos. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-18",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -756,8 +776,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje de Riosa o del entorno del Angliru, sin identificar una prueba deportiva. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-19",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -792,8 +813,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje de Llamo o patrimonio minero de Riosa desde el exterior. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "sin_foto_valida",
+        "imagen": null,
+        "motivo": "Se necesita una imagen del entorno minero de Llamo. La candidata de Texeo/Rioseco localizada tiene autoría supuesta según su ficha; no se asigna mientras no se aclare."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -828,8 +850,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Soto de Ribera o de un núcleo del concejo, sin vincular empresas concretas. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-21",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -864,8 +887,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Soto de Ribera o Soto de Rey como contexto del concejo. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-22",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -900,8 +924,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje habitado de Ribera de Arriba, sin caminantes identificables. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-noticia-23",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -936,8 +961,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Hórreos o vista general de Bueño, en Ribera de Arriba. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "sin_foto_valida",
+        "imagen": null,
+        "motivo": "Se necesita una foto de Bueño y sus hórreos. La candidata localizada en Commons es de 860 × 616 y no cumple 1600 px. No se sustituye por una imagen de otro pueblo."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -979,8 +1005,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje del Caudal relacionado con Mieres, como imagen de contexto. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-opinion-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1022,8 +1049,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje del Caudal relacionado con Lena, como imagen de contexto. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-opinion-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1065,8 +1093,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Paisaje del Caudal relacionado con Aller, como imagen de contexto. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-opinion-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1101,8 +1130,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Mieres, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-agenda-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1144,8 +1174,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Lena, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-agenda-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1187,8 +1218,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Aller, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-agenda-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1230,8 +1262,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Morcín, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-agenda-04",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1273,8 +1306,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Riosa, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-agenda-05",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1316,8 +1350,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista de Ribera de Arriba, sin presentar la imagen como registro del evento. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "sin_foto_valida",
+        "imagen": null,
+        "motivo": "Se necesita una imagen de Bueño. La candidata localizada no alcanza el ancho mínimo."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1363,8 +1398,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general del poblado minero de Bustiello, con viviendas y equipamientos reconocibles. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-reportaje-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [
         {
@@ -1417,8 +1453,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Exterior de Santa Cristina de Lena con el templo completo y su entorno inmediato. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-reportaje-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [
         {
@@ -1463,8 +1500,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-aviso-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1505,8 +1543,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-aviso-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1547,8 +1586,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-aviso-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1589,8 +1629,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-evento-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1631,8 +1672,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-evento-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1673,8 +1715,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-evento-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1715,8 +1758,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-ayuda-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1757,8 +1801,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-ayuda-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1799,8 +1844,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-tablon-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1841,8 +1887,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-mieres-tablon-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1883,8 +1930,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-aviso-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1925,8 +1973,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-aviso-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -1967,8 +2016,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-aviso-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2009,8 +2059,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-evento-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2051,8 +2102,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-evento-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2093,8 +2145,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-evento-03",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2135,8 +2188,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-ayuda-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2177,8 +2231,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-ayuda-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2219,8 +2274,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-tablon-01",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2261,8 +2317,9 @@
       "_status": "draft",
       "fotoNecesaria": {
         "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
-        "estado": "pendiente_fase_2",
-        "imagen": null
+        "estado": "enlace_verificado",
+        "imagen": "foto-p14-municipal-lena-tablon-02",
+        "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
       "esFicticio": true,
@@ -2418,6 +2475,16 @@
     "porLote": {
       "ensayo": 54,
       "definitivo": 2
+    },
+    "fotografias": {
+      "originales": 19,
+      "piezasConFoto": 53,
+      "candidatasCabecera": 18,
+      "piezasSinFoto": [
+        "p14-noticia-24",
+        "p14-agenda-06",
+        "p14-noticia-20"
+      ]
     }
   },
   "retiradaEnsayo": {
@@ -2706,5 +2773,6 @@
         "coleccionCMS": "articles"
       }
     ]
-  }
+  },
+  "estadoFase2": "seleccion_completada_con_tres_pendientes"
 }
