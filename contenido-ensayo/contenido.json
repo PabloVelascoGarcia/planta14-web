@@ -1568,9 +1568,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-aviso-01",
       "slug": "informacion-de-atencion-ciudadana-antes-de-acudir-al-ayuntamiento-mieres",
-      "title": "Información de atención ciudadana antes de acudir al Ayuntamiento · Mieres",
-      "excerpt": "Ensayo: Un recordatorio para comprobar el canal adecuado y preparar una consulta.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de desplazarte para una gestión, comprueba en los canales oficiales qué servicio puede orientarte y qué documentación necesitas. Una consulta previa puede evitar viajes innecesarios.\n\nEste aviso de muestra no modifica horarios ni establece una cita obligatoria. Los datos vigentes deben consultarse directamente con el servicio municipal correspondiente.",
+      "title": "La biblioteca de Ujo abrirá por la tarde el 7 de diciembre",
+      "excerpt": "La atención de mañana se suspende por la ordenación de fondos. Los préstamos que venzan ese día podrán devolverse en la siguiente apertura sin penalización.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa biblioteca de Ujo permanecerá cerrada durante la mañana del 7 de diciembre por trabajos de ordenación de fondos. La atención se reanudará a las 16.00 horas y finalizará a las 19.00 horas. Durante ese periodo se prestarán los servicios habituales de consulta, préstamo y devolución.\n\nNo es necesario desplazarse para renovar un préstamo que venza durante el cierre. La devolución podrá realizarse en la siguiente apertura sin penalización por ese día. Quienes tengan una reserva preparada deberán esperar a recibir la confirmación de disponibilidad antes de acudir.\n\nPara otras consultas, utilice los canales de información de la red municipal de bibliotecas. El cambio afecta únicamente a Ujo y no modifica el funcionamiento de las demás bibliotecas del concejo.",
       "section": "sociedad",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1583,9 +1583,9 @@
       "publishedAt": "2026-12-01",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Edificio religioso de Ujo como contexto del núcleo; no es una fotografía de la biblioteca. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-aviso-01",
+        "imagen": "foto-p14-noticia-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1611,9 +1611,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-aviso-02",
       "slug": "recomendaciones-para-comunicar-una-incidencia-en-un-espacio-publico-mieres",
-      "title": "Recomendaciones para comunicar una incidencia en un espacio público · Mieres",
-      "excerpt": "Ensayo: Describir el lugar y el problema facilita que el aviso llegue al servicio adecuado.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nSi observas una incidencia, procura explicar dónde se encuentra y qué ocurre, sin difundir datos de otras personas. Cuando sea seguro hacerlo, una referencia clara del lugar puede ayudar a localizar el punto.\n\nEl aviso ordinario no sustituye los canales de emergencia. Esta pieza no anuncia una incidencia concreta ni habilita un formulario de recogida de datos.",
+      "title": "Turón recogerá los enseres concertados el 8 de diciembre",
+      "excerpt": "Los muebles y objetos voluminosos deberán comunicarse antes al servicio municipal. No se recogerán materiales de obra ni residuos que requieran un tratamiento específico.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa próxima recogida concertada de enseres en Turón se realizará el 8 de diciembre. Antes de sacar muebles u otros objetos voluminosos, solicite la recogida a través del servicio municipal de limpieza e indique el tipo de material, el punto de depósito y una forma de contacto.\n\nEl servicio confirmará la ubicación y el momento en que pueden dejarse los objetos. No los deposite junto a un contenedor por iniciativa propia ni ocupe aceras, accesos a viviendas o paradas. Los materiales de obra y los residuos que exijan tratamiento específico no entran en esta recogida.\n\nSi necesita cambiar o cancelar el aviso, comuníquelo por el mismo canal. La confirmación permite organizar el recorrido y evita que los enseres permanezcan en la calle más tiempo del necesario.",
       "section": "sociedad",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1626,9 +1626,9 @@
       "publishedAt": "2026-12-02",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Pozo Santa Bárbara, en Turón, como contexto territorial; no muestra la recogida de enseres. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-aviso-02",
+        "imagen": "foto-p14-noticia-03",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1654,9 +1654,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-aviso-03",
       "slug": "uso-compartido-de-espacios-municipales-informacion-previa-mieres",
-      "title": "Uso compartido de espacios municipales: información previa · Mieres",
-      "excerpt": "Ensayo: Una propuesta de aviso para recordar la consulta de condiciones de acceso y convivencia.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de utilizar un espacio municipal para una actividad, consulta las condiciones que le sean aplicables y respeta las indicaciones de uso. El cuidado del lugar facilita que pueda seguir siendo utilizado por otras personas.\n\nEste texto de ensayo no concede autorizaciones, no reserva instalaciones y no modifica ninguna norma vigente.",
+      "title": "Bustiello mantendrá un paso señalizado durante la limpieza del 9 de diciembre",
+      "excerpt": "Los trabajos se realizarán por tramos entre las 9.00 y las 12.00 horas. Se pide no estacionar sobre los puntos marcados y respetar los accesos a las viviendas.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl servicio municipal realizará el 9 de diciembre una limpieza por tramos en los espacios de paso de Bustiello, entre las 9.00 y las 12.00 horas. Se mantendrá un recorrido peatonal señalizado mientras se retire el material acumulado en los bordes. No se prevé cortar todos los accesos al mismo tiempo.\n\nRespete las marcas provisionales y evite estacionar en los puntos señalados. Si utiliza ayudas para caminar o necesita acceder con un carrito, siga el itinerario indicado y consulte al personal antes de atravesar una zona en la que se esté trabajando.\n\nLas entradas a las viviendas deberán permanecer libres. Una vez terminada cada parte, se retirará su señalización para recuperar el uso habitual. Cualquier cambio motivado por la lluvia se comunicará en los avisos municipales.",
       "section": "sociedad",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1669,9 +1669,9 @@
       "publishedAt": "2026-12-03",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Panorámica del poblado de Bustiello; no representa los trabajos anunciados. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-aviso-03",
+        "imagen": "foto-p14-noticia-04",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1697,9 +1697,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-evento-01",
       "slug": "encuentro-de-lectura-y-conversacion-mieres",
-      "title": "Encuentro de lectura y conversación · Mieres",
-      "excerpt": "Ensayo: Una actividad ficticia para compartir textos y escuchar otras miradas.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta reúne lectura en voz alta y un tiempo de conversación. Se plantea un formato abierto que permita intervenir o escuchar con tranquilidad.\n\nLa fecha y el lugar son ejemplos de maqueta; no hay convocatoria confirmada, recinto reservado ni inscripción abierta.",
+      "title": "Mieres celebra el 10 de diciembre un taller familiar de lectura",
+      "excerpt": "La sesión comenzará a las 17.30 horas en la Casa de Cultura Teodoro Cuesta. Está dirigida a menores acompañados y combinará cuentos y creación de pequeñas historias.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa Casa de Cultura Teodoro Cuesta acogerá el 10 de diciembre, de 17.30 a 18.30 horas, un taller familiar de lectura. La actividad está dirigida a menores acompañados por una persona adulta y combinará narración de cuentos, elección de libros y creación de una historia breve.\n\nLa participación será gratuita hasta completar el espacio disponible. Solicite información e inscripción en la propia Casa de Cultura. No hace falta llevar material ni preparar una lectura: el equipo facilitará los textos y los útiles necesarios.\n\nAcuda unos minutos antes para organizar los grupos y comunique al inscribirse cualquier necesidad de apoyo. Las personas adultas permanecerán con los menores durante la sesión. La actividad terminará con una lectura voluntaria de las historias creadas.",
       "section": "agenda",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1712,9 +1712,9 @@
       "publishedAt": "2026-12-04",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Paisaje de Gallegos como contexto del concejo de Mieres, no como imagen de la Casa de Cultura o del taller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-evento-01",
+        "imagen": "foto-p14-carta-director-001",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1740,9 +1740,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-evento-02",
       "slug": "taller-de-recuerdos-y-cuaderno-del-concejo-mieres",
-      "title": "Taller de recuerdos y cuaderno del concejo · Mieres",
-      "excerpt": "Ensayo: Una propuesta ficticia para trabajar la memoria cotidiana con respeto a la intimidad.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl encuentro propone escribir o dibujar a partir de recuerdos del entorno. Cada participante podría elegir qué compartir, sin necesidad de aportar fotografías ni documentos personales.\n\nLos materiales no se publicarían sin autorización. Esta actividad es de ensayo y no anuncia un taller real.",
+      "title": "El Atenéu de Turón enseña el 17 de diciembre a conservar fotografías familiares",
+      "excerpt": "El taller se celebrará de 18.00 a 19.30 horas. Cada participante podrá llevar una selección de imágenes propias; los originales no quedarán depositados.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl Atenéu de Turón acogerá el 17 de diciembre, de 18.00 a 19.30 horas, un taller de organización y conservación de fotografías familiares. Se trabajará sobre cómo identificar fechas aproximadas, ordenar copias y anotar la procedencia sin escribir sobre las imágenes.\n\nLas personas interesadas podrán informarse e inscribirse en el equipamiento. Se recomienda llevar una selección pequeña de fotografías propias, con sus sobres o álbumes. No es necesario aportar documentos privados ni imágenes que no se quieran mostrar al grupo.\n\nLos originales se devolverán al terminar y no se publicará ninguna fotografía por el hecho de participar. Cualquier copia o uso posterior requerirá autorización. Quienes prefieran acudir sin material podrán seguir los ejercicios con las muestras preparadas para la sesión.",
       "section": "agenda",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1755,9 +1755,9 @@
       "publishedAt": "2026-12-01",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Pozo Santa Bárbara como contexto de Turón; no es el Atenéu ni una imagen del taller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-evento-02",
+        "imagen": "foto-p14-noticia-03",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1783,9 +1783,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-evento-03",
       "slug": "paseo-de-observacion-del-entorno-cercano-mieres",
-      "title": "Paseo de observación del entorno cercano · Mieres",
-      "excerpt": "Ensayo: Una actividad de muestra que combina caminar y conversar sobre el paisaje.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta contempla un recorrido sencillo, explicaciones previas y alternativas de duración. El itinerario se adaptaría a la meteorología y a las capacidades del grupo.\n\nNo existe una salida convocada ni un trazado validado. La fecha se utiliza únicamente para comprobar la agenda.",
+      "title": "Ujo abre el 14 de enero un encuentro de lectura sobre la vida en los pueblos",
+      "excerpt": "La biblioteca recibirá a los participantes a las 18.00 horas. Se podrá intervenir con un texto propio o escuchar sin necesidad de preparar una lectura.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa biblioteca de Ujo celebrará el 14 de enero de 2027, de 18.00 a 19.00 horas, un encuentro de lectura sobre la vida cotidiana en los pueblos. La sesión está dirigida a público adulto y reunirá textos breves sobre viajes, oficios, compras y relaciones vecinales.\n\nPuede llevar una página propia o consultar antes en la biblioteca los textos disponibles para leer en voz alta. También se podrá asistir únicamente como oyente. La participación será gratuita hasta completar el espacio, con información e inscripción en el propio centro.\n\nCada intervención tendrá un turno breve para que puedan participar varias personas. No se grabarán ni difundirán las lecturas sin permiso. Al finalizar se recogerán propuestas de temas para las siguientes reuniones del invierno.",
       "section": "agenda",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1798,9 +1798,9 @@
       "publishedAt": "2026-12-02",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Edificio religioso de Ujo como contexto del pueblo; no representa la biblioteca ni sus usuarios. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-evento-03",
+        "imagen": "foto-p14-noticia-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1826,9 +1826,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-ayuda-01",
       "slug": "orientacion-sobre-apoyos-sociales-disponibles-mieres",
-      "title": "Orientación sobre apoyos sociales disponibles · Mieres",
-      "excerpt": "Ensayo: Información genérica de ensayo para aprender a localizar recursos y consultar requisitos.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas personas que necesiten orientación pueden consultar los canales oficiales de servicios sociales para conocer los recursos que pudieran corresponder a su situación. La atención debe realizarse por las vías habilitadas y con respeto a la confidencialidad.\n\nNo se anuncia una ayuda nueva ni se fijan importes, requisitos o plazos. Cualquier solicitud real depende de las bases y de la administración competente.",
+      "title": "Mieres informa a los hogares sobre apoyos para gastos básicos de invierno",
+      "excerpt": "La orientación está dirigida a familias con dificultades para afrontar necesidades esenciales. La atención permite revisar cada caso y conocer los recursos que puedan corresponder.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos hogares de Mieres que tengan dificultades para afrontar gastos básicos durante el invierno pueden solicitar orientación en los servicios sociales municipales. La información está dirigida a personas y familias que necesiten revisar su situación, incluidas las que residen en Turón, Ujo y otros núcleos del concejo.\n\nSolicite una primera consulta por los canales municipales de atención e indique si tiene dificultades para desplazarse. El personal explicará qué información conviene aportar y qué recursos pueden valorarse. No entregue documentación económica o personal en comentarios públicos ni a través de intermediarios.\n\nEsta ficha no abre una convocatoria ni fija cuantías o plazos. La posible concesión de una ayuda dependerá de la regulación aplicable y de la valoración correspondiente. Consulte siempre la información oficial antes de preparar una solicitud.",
       "section": "sociedad",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1841,9 +1841,9 @@
       "publishedAt": "2026-12-03",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Vista de Ujo como contexto territorial; sin personas presentadas como solicitantes de ayudas. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-ayuda-01",
+        "imagen": "foto-p14-noticia-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1869,9 +1869,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-ayuda-02",
       "slug": "como-consultar-posibles-ayudas-para-actividades-comunitarias-mieres",
-      "title": "Cómo consultar posibles ayudas para actividades comunitarias · Mieres",
-      "excerpt": "Ensayo: Una ficha de muestra para recordar la importancia de revisar las bases oficiales.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones interesadas en apoyos para sus actividades deben comprobar si existe una convocatoria vigente y leer sus bases completas antes de preparar una solicitud. Conviene identificar qué administración la gestiona y qué canal ofrece información actualizada.\n\nEsta ficha no abre una subvención ni garantiza financiación. No establece cuantías ni fechas de solicitud y no debe utilizarse como base administrativa.",
+      "title": "Las asociaciones de Mieres pueden consultar apoyos para actividades en los pueblos",
+      "excerpt": "La atención orientará sobre preparación de proyectos, documentación y convocatorias. Está dirigida a entidades que organizan iniciativas culturales y comunitarias.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones de Mieres que preparen actividades culturales o comunitarias en los pueblos pueden consultar los recursos de apoyo y las convocatorias que resulten aplicables. La orientación está pensada para entidades que necesitan ordenar un proyecto, identificar gastos y conocer la documentación requerida.\n\nAntes de solicitar atención, prepare una descripción breve de la actividad, el lugar previsto y la entidad responsable. Puede incluir iniciativas en Santa Cruz, Ujo, Turón u otros núcleos, sin comprometer contrataciones ni gastos por el mero hecho de pedir información. Consulte a través de los canales municipales dirigidos a asociaciones.\n\nEsta ficha no anuncia una subvención abierta ni garantiza financiación. No establece importes o fechas de solicitud. Las bases oficiales de cada convocatoria serán las que determinen las entidades admitidas, los gastos posibles y la forma de justificar la actividad.",
       "section": "sociedad",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1884,9 +1884,9 @@
       "publishedAt": "2026-12-04",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Panorámica de Bustiello como contexto de la vida en los pueblos de Mieres; sin colectivos identificables. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-ayuda-02",
+        "imagen": "foto-p14-noticia-04",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1912,9 +1912,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-tablon-01",
       "slug": "consulta-de-anuncios-y-documentos-oficiales-mieres",
-      "title": "Consulta de anuncios y documentos oficiales · Mieres",
-      "excerpt": "Ensayo: Un recordatorio de ensayo para distinguir la información resumida de la publicación administrativa.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos anuncios administrativos deben consultarse en el tablón o en la sede oficial que corresponda. Cuando una publicación incluya documentación, es importante comprobar que se trata de la versión vigente y conocer el procedimiento al que pertenece.\n\nEsta pieza no abre un trámite ni sustituye una notificación. No contiene un expediente real ni fija un plazo de alegaciones.",
+      "title": "Mieres recoge necesidades de uso de espacios para asociaciones vecinales",
+      "excerpt": "Las entidades podrán registrar una relación de actividades y horarios solicitados. La presentación servirá para ordenar necesidades, sin adjudicar automáticamente un local.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones vecinales de Mieres pueden presentar por registro sus necesidades de uso de espacios municipales para las actividades del invierno. El escrito debe identificar a la entidad, describir la actividad y señalar el núcleo en el que se quiere desarrollar.\n\nIndique la frecuencia prevista, la duración de las sesiones y si necesita guardar material. Distinga entre una petición de horario y una necesidad de accesibilidad o mantenimiento, para facilitar su revisión. No incluya datos personales de asistentes ni relaciones de menores.\n\nLa presentación no reserva una sala ni autoriza su ocupación. La disponibilidad y las condiciones se comunicarán por el procedimiento correspondiente. Para conocer el estado del escrito, conserve el justificante del registro y su referencia.",
       "section": "politica",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1927,9 +1927,9 @@
       "publishedAt": "2026-12-01",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Paisaje habitado de Gallegos como contexto de las entidades vecinales de Mieres. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-tablon-01",
+        "imagen": "foto-p14-carta-director-001",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1955,9 +1955,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-mieres-tablon-02",
       "slug": "informacion-para-preparar-una-consulta-sobre-un-tramite-mieres",
-      "title": "Información para preparar una consulta sobre un trámite · Mieres",
-      "excerpt": "Ensayo: Una ficha ficticia para orientar la búsqueda de información sin recoger datos personales.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de plantear una consulta, puede ser útil anotar qué procedimiento necesitas conocer y revisar los documentos oficiales disponibles. Los datos personales o la documentación privada deben facilitarse solo por los canales habilitados.\n\nEl texto no convoca un procedimiento ni introduce obligaciones. Su función es servir como muestra del tablón durante el ensayo de la web.",
+      "title": "El tablón de Mieres recibe documentación para corregir nombres de caminos",
+      "excerpt": "Los vecinos podrán aportar referencias sobre caminos y lugares del concejo. La información se revisará antes de incorporarla a los documentos municipales.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos vecinos de Mieres pueden presentar referencias documentales para revisar nombres de caminos y lugares del concejo. La aportación deberá indicar el punto al que se refiere y explicar si el nombre procede de un documento, un plano o un uso vecinal conocido.\n\nSi existen varias denominaciones en el entorno de Cenera, Turón u otros núcleos, pueden señalarse todas sin dar por oficial ninguna de ellas. Entregue copias legibles y conserve los originales. Las fotografías o testimonios de otras personas requieren aclarar su procedencia antes de incorporarlos al expediente.\n\nLa documentación se dirigirá al Ayuntamiento por registro. Su presentación no modifica por sí sola una denominación ni reconoce derechos de paso. La revisión municipal distinguirá las referencias comprobadas de las cuestiones que necesiten más información.",
       "section": "politica",
       "town": "mieres",
       "concejosEtiquetados": [
@@ -1970,9 +1970,9 @@
       "publishedAt": "2026-12-02",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Mieres o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Paisaje de Gallegos como contexto de los nombres de lugar; no representa un camino declarado ni sus derechos de paso. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-mieres-tablon-02",
+        "imagen": "foto-p14-carta-director-001",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -1998,9 +1998,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-aviso-01",
       "slug": "informacion-de-atencion-ciudadana-antes-de-acudir-al-ayuntamiento-lena",
-      "title": "Información de atención ciudadana antes de acudir al Ayuntamiento · Lena",
-      "excerpt": "Ensayo: Un recordatorio para comprobar el canal adecuado y preparar una consulta.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de desplazarte para una gestión, comprueba en los canales oficiales qué servicio puede orientarte y qué documentación necesitas. Una consulta previa puede evitar viajes innecesarios.\n\nEste aviso de muestra no modifica horarios ni establece una cita obligatoria. Los datos vigentes deben consultarse directamente con el servicio municipal correspondiente.",
+      "title": "Campomanes atenderá el 9 de diciembre las reservas de libros por la tarde",
+      "excerpt": "El centro de lectura atenderá las devoluciones de 16.30 a 19.00 horas. Las personas que no puedan acudir podrán solicitar información antes de desplazarse.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl Centro Cultural y de Lectura de Campomanes atenderá el 9 de diciembre las devoluciones y recogidas pendientes de libros reservados, de 16.30 a 19.00 horas. La organización del servicio permitirá revisar los préstamos antes de preparar las actividades de lectura del invierno.\n\nSi tiene un ejemplar reservado, espere a recibir la confirmación antes de acudir. Quienes no puedan desplazarse podrán consultar con el centro la forma de gestionar su préstamo. No entregue los libros en establecimientos ajenos al servicio ni los deje en el exterior del edificio.\n\nEl aviso afecta al centro de Campomanes. Para conocer la atención de la biblioteca de La Pola o de otros puntos de lectura del concejo, consulte sus canales habituales.",
       "section": "sociedad",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2013,9 +2013,9 @@
       "publishedAt": "2026-12-03",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Vista de Campomanes como contexto; no es una fotografía del centro de lectura. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-aviso-01",
+        "imagen": "foto-p14-noticia-05",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2041,9 +2041,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-aviso-02",
       "slug": "recomendaciones-para-comunicar-una-incidencia-en-un-espacio-publico-lena",
-      "title": "Recomendaciones para comunicar una incidencia en un espacio público · Lena",
-      "excerpt": "Ensayo: Describir el lugar y el problema facilita que el aviso llegue al servicio adecuado.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nSi observas una incidencia, procura explicar dónde se encuentra y qué ocurre, sin difundir datos de otras personas. Cuando sea seguro hacerlo, una referencia clara del lugar puede ayudar a localizar el punto.\n\nEl aviso ordinario no sustituye los canales de emergencia. Esta pieza no anuncia una incidencia concreta ni habilita un formulario de recogida de datos.",
+      "title": "Lena pide mantener libres los puntos de giro en los pueblos de montaña",
+      "excerpt": "La medida facilita el acceso de los servicios durante el invierno. Se recuerda la importancia de no dejar vehículos ni materiales en las zonas señaladas.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl Ayuntamiento recuerda a los residentes de Pajares y de otros pueblos de montaña la necesidad de dejar libres los puntos de giro y las zonas de maniobra de los vehículos de servicio durante el invierno. Evite aparcar en los espacios señalados o depositar leña y otros materiales junto a accesos estrechos.\n\nSi observa un obstáculo que impide el paso, comunique el lugar con una referencia precisa a través de los canales municipales. No retire por su cuenta elementos inestables ni se acerque a maquinaria en funcionamiento para dar indicaciones.\n\nEste aviso tiene carácter preventivo y no anuncia un corte de carretera ni un episodio meteorológico concreto. Antes de desplazarse, consulte la información oficial sobre el estado de las vías.",
       "section": "sociedad",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2056,9 +2056,9 @@
       "publishedAt": "2026-12-04",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Entorno de Castiello como contexto rural de Lena; no se presenta como Pajares ni como un punto con incidencias. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-aviso-02",
+        "imagen": "foto-p14-agenda-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2084,9 +2084,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-aviso-03",
       "slug": "uso-compartido-de-espacios-municipales-informacion-previa-lena",
-      "title": "Uso compartido de espacios municipales: información previa · Lena",
-      "excerpt": "Ensayo: Una propuesta de aviso para recordar la consulta de condiciones de acceso y convivencia.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de utilizar un espacio municipal para una actividad, consulta las condiciones que le sean aplicables y respeta las indicaciones de uso. El cuidado del lugar facilita que pueda seguir siendo utilizado por otras personas.\n\nEste texto de ensayo no concede autorizaciones, no reserva instalaciones y no modifica ninguna norma vigente.",
+      "title": "La Pola limpiará el 10 de diciembre los pasos junto a la Casa de Cultura",
+      "excerpt": "Los trabajos se realizarán de 8.30 a 10.30 horas. Se mantendrá una entrada señalizada y se pide evitar que bicicletas y bultos ocupen los accesos.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl servicio municipal limpiará el 10 de diciembre, de 8.30 a 10.30 horas, los pasos del entorno de la Casa de Cultura de La Pola. Durante la intervención se mantendrá una entrada señalizada para los usuarios, que deberán seguir las indicaciones del personal.\n\nNo deje bicicletas, paquetes u otros objetos apoyados en las zonas de acceso mientras duren los trabajos. Si necesita utilizar una ayuda para caminar o acceder con un carrito, consulte el itinerario disponible antes de cruzar el área de limpieza.\n\nLa actuación no modifica las actividades previstas en el interior del equipamiento. Si las condiciones del tiempo obligan a cambiar la intervención, el nuevo aviso se difundirá a través de la información municipal.",
       "section": "sociedad",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2099,9 +2099,9 @@
       "publishedAt": "2026-12-01",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Santa Cristina de Lena como contexto patrimonial del concejo; no representa la Casa de Cultura ni los trabajos de limpieza. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-aviso-03",
+        "imagen": "foto-p14-reportaje-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2127,9 +2127,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-evento-01",
       "slug": "encuentro-de-lectura-y-conversacion-lena",
-      "title": "Encuentro de lectura y conversación · Lena",
-      "excerpt": "Ensayo: Una actividad ficticia para compartir textos y escuchar otras miradas.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta reúne lectura en voz alta y un tiempo de conversación. Se plantea un formato abierto que permita intervenir o escuchar con tranquilidad.\n\nLa fecha y el lugar son ejemplos de maqueta; no hay convocatoria confirmada, recinto reservado ni inscripción abierta.",
+      "title": "Campomanes organiza el 11 de diciembre un taller de juegos entre generaciones",
+      "excerpt": "La actividad se celebrará a las 17.30 horas en el Centro Cultural y de Lectura. Mayores y menores compartirán juegos de mesa con acompañamiento familiar.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl Centro Cultural y de Lectura de Campomanes celebrará el 11 de diciembre, de 17.30 a 19.00 horas, un taller de juegos de mesa entre generaciones. La actividad está dirigida a personas mayores y a menores acompañados por una persona adulta.\n\nEl equipo preparará mesas con juegos sencillos y explicará las reglas antes de cada turno. No es necesario llevar material ni conocer los juegos de antemano. La participación será gratuita hasta completar el espacio, con información e inscripción en el propio centro.\n\nAl inscribirse, comunique si necesita algún apoyo para participar. Las personas adultas permanecerán con los menores durante la sesión. El encuentro terminará con una puesta en común sobre los juegos que los asistentes conocen de su infancia.",
       "section": "agenda",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2142,9 +2142,9 @@
       "publishedAt": "2026-12-02",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Vista de Campomanes como contexto del encuentro; no muestra el centro cultural, el taller o sus participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-evento-01",
+        "imagen": "foto-p14-noticia-05",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2170,9 +2170,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-evento-02",
       "slug": "taller-de-recuerdos-y-cuaderno-del-concejo-lena",
-      "title": "Taller de recuerdos y cuaderno del concejo · Lena",
-      "excerpt": "Ensayo: Una propuesta ficticia para trabajar la memoria cotidiana con respeto a la intimidad.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl encuentro propone escribir o dibujar a partir de recuerdos del entorno. Cada participante podría elegir qué compartir, sin necesidad de aportar fotografías ni documentos personales.\n\nLos materiales no se publicarían sin autorización. Esta actividad es de ensayo y no anuncia un taller real.",
+      "title": "El Teatro Vital Aza abre el 18 de diciembre una muestra de teatro aficionado",
+      "excerpt": "La sesión comenzará a las 19.00 horas en La Pola. Se representarán escenas breves y habrá un encuentro final con los grupos participantes.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nEl Teatro Vital Aza de La Pola acogerá el 18 de diciembre, de 19.00 a 20.15 horas, una muestra de teatro aficionado con escenas breves preparadas por grupos del concejo. La sesión terminará con un encuentro sobre cómo se organizan los ensayos y la incorporación de nuevos participantes.\n\nLa entrada será libre hasta completar el aforo disponible. Consulte la información de acceso en los canales municipales de cultura y acuda con antelación para facilitar la entrada. No será necesario formar parte de un grupo para asistir al encuentro final.\n\nLas personas que necesiten apoyo de acceso deberán comunicarlo previamente al equipamiento. No se permitirá grabar las escenas sin autorización. La muestra busca dar a conocer el trabajo de los grupos y sus actividades de invierno.",
       "section": "agenda",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2185,9 +2185,9 @@
       "publishedAt": "2026-12-03",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Santa Cristina de Lena como contexto cultural del concejo; no representa el Teatro Vital Aza ni su programación. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-evento-02",
+        "imagen": "foto-p14-reportaje-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2213,9 +2213,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-evento-03",
       "slug": "paseo-de-observacion-del-entorno-cercano-lena",
-      "title": "Paseo de observación del entorno cercano · Lena",
-      "excerpt": "Ensayo: Una actividad de muestra que combina caminar y conversar sobre el paisaje.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa propuesta contempla un recorrido sencillo, explicaciones previas y alternativas de duración. El itinerario se adaptaría a la meteorología y a las capacidades del grupo.\n\nNo existe una salida convocada ni un trazado validado. La fecha se utiliza únicamente para comprobar la agenda.",
+      "title": "La Pola celebra el 15 de enero un taller para preparar el primer currículo",
+      "excerpt": "La Casa de Cultura recibirá a los participantes a las 18.00 horas. La sesión está dirigida a jóvenes que empiezan a buscar empleo o formación.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLa Casa de Cultura de La Pola celebrará el 15 de enero de 2027, de 18.00 a 19.30 horas, un taller para preparar el primer currículo. Está dirigido a jóvenes del concejo que quieren ordenar su formación y experiencia antes de buscar empleo o solicitar información sobre prácticas.\n\nPuede llevar un borrador impreso o acudir sin documento previo. Se trabajará con modelos de ejemplo y no se pedirán claves de correo ni acceso a cuentas personales. La inscripción y la información sobre plazas se facilitarán a través del equipamiento.\n\nEl taller no es una oferta de trabajo ni garantiza una contratación. Cada participante se llevará una propuesta de estructura y una lista de aspectos que debe revisar antes de enviar sus datos.",
       "section": "agenda",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2228,9 +2228,9 @@
       "publishedAt": "2026-12-04",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Entorno de Castiello como contexto del concejo de Lena; no muestra la Casa de Cultura ni a participantes del taller. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-evento-03",
+        "imagen": "foto-p14-agenda-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2256,9 +2256,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-ayuda-01",
       "slug": "orientacion-sobre-apoyos-sociales-disponibles-lena",
-      "title": "Orientación sobre apoyos sociales disponibles · Lena",
-      "excerpt": "Ensayo: Información genérica de ensayo para aprender a localizar recursos y consultar requisitos.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas personas que necesiten orientación pueden consultar los canales oficiales de servicios sociales para conocer los recursos que pudieran corresponder a su situación. La atención debe realizarse por las vías habilitadas y con respeto a la confidencialidad.\n\nNo se anuncia una ayuda nueva ni se fijan importes, requisitos o plazos. Cualquier solicitud real depende de las bases y de la administración competente.",
+      "title": "Lena orienta a jóvenes que buscan apoyos para acceder a una vivienda",
+      "excerpt": "La información está dirigida a quienes valoran alquilar o fijar su residencia en el concejo. Cada consulta permitirá identificar los requisitos de las convocatorias que puedan resultar aplicables.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos jóvenes que valoren alquilar una vivienda o fijar su residencia en Lena pueden solicitar información municipal sobre los recursos y las convocatorias que puedan resultar aplicables. La orientación atenderá también dudas de quienes buscan opciones en Campomanes o en otros núcleos fuera de La Pola.\n\nPara preparar la consulta, indique qué información necesita y si busca vivienda individual o compartida. El servicio explicará qué documentación puede requerir cada procedimiento. No facilite contratos, datos bancarios o documentos de identidad en espacios públicos.\n\nEsta ficha no abre una ayuda ni establece importes o plazos. Tampoco garantiza que una persona cumpla los requisitos. Consulte las bases oficiales y confirme las condiciones antes de asumir gastos contando con una posible subvención.",
       "section": "sociedad",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2271,9 +2271,9 @@
       "publishedAt": "2026-12-01",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Vista de Campomanes como contexto territorial; no identifica viviendas disponibles ni personas beneficiarias. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-ayuda-01",
+        "imagen": "foto-p14-noticia-05",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2299,9 +2299,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-ayuda-02",
       "slug": "como-consultar-posibles-ayudas-para-actividades-comunitarias-lena",
-      "title": "Cómo consultar posibles ayudas para actividades comunitarias · Lena",
-      "excerpt": "Ensayo: Una ficha de muestra para recordar la importancia de revisar las bases oficiales.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones interesadas en apoyos para sus actividades deben comprobar si existe una convocatoria vigente y leer sus bases completas antes de preparar una solicitud. Conviene identificar qué administración la gestiona y qué canal ofrece información actualizada.\n\nEsta ficha no abre una subvención ni garantiza financiación. No establece cuantías ni fechas de solicitud y no debe utilizarse como base administrativa.",
+      "title": "Lena informa sobre recursos de apoyo a personas cuidadoras en los pueblos",
+      "excerpt": "La orientación está dirigida a hogares que atienden a familiares y necesitan conocer servicios disponibles. Se podrá comunicar la dificultad de desplazamiento al pedir la primera consulta.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos hogares de Lena que atienden a una persona dependiente pueden consultar los recursos de apoyo disponibles a través de los servicios sociales municipales. La orientación está dirigida también a familias de Jomezana, Pajares y otros pueblos que encuentran dificultades para acudir presencialmente.\n\nAl solicitar información, indique una forma de contacto y si necesita organizar la atención por problemas de movilidad o de transporte. El personal explicará los servicios que pueden valorarse y qué documentación corresponde presentar. No es necesario describir la situación de salud de un familiar en una consulta pública.\n\nEste texto no concede prestaciones ni abre una convocatoria. No fija cuantías o plazos. La atención permitirá conocer los recursos y los procedimientos aplicables, cuya valoración corresponde a los servicios competentes.",
       "section": "sociedad",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2314,9 +2314,9 @@
       "publishedAt": "2026-12-02",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Entorno de Castiello como contexto rural de Lena; sin personas presentadas como cuidadoras o beneficiarias. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-ayuda-02",
+        "imagen": "foto-p14-agenda-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2342,9 +2342,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-tablon-01",
       "slug": "consulta-de-anuncios-y-documentos-oficiales-lena",
-      "title": "Consulta de anuncios y documentos oficiales · Lena",
-      "excerpt": "Ensayo: Un recordatorio de ensayo para distinguir la información resumida de la publicación administrativa.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLos anuncios administrativos deben consultarse en el tablón o en la sede oficial que corresponda. Cuando una publicación incluya documentación, es importante comprobar que se trata de la versión vigente y conocer el procedimiento al que pertenece.\n\nEsta pieza no abre un trámite ni sustituye una notificación. No contiene un expediente real ni fija un plazo de alegaciones.",
+      "title": "Lena recoge avisos para preparar el mantenimiento de caminos rurales",
+      "excerpt": "Las comunicaciones deben identificar el tramo y describir el obstáculo o desperfecto. El registro de un aviso no autoriza trabajos ni decide sobre la titularidad del camino.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas asociaciones y vecinos de Lena pueden comunicar necesidades de mantenimiento en caminos rurales para facilitar la revisión de los recorridos. El escrito deberá identificar el pueblo, el inicio y el final del tramo y el problema observado, sin limitarse a una referencia difícil de localizar.\n\nEn los accesos del entorno de Jomezana, Pajares u otros núcleos, puede aportarse un croquis o una fotografía tomada desde un lugar seguro. No entre en fincas ni mueva cierres para preparar la documentación.\n\nPresente la información por registro y conserve el justificante. El aviso no autoriza una intervención ni resuelve la titularidad o los derechos de paso. Antes de programar trabajos deberán realizarse las comprobaciones que correspondan.",
       "section": "politica",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2357,9 +2357,9 @@
       "publishedAt": "2026-12-03",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Entorno de Castiello como paisaje rural de Lena; no se identifica un camino objeto de intervención. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-tablon-01",
+        "imagen": "foto-p14-agenda-02",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
@@ -2385,9 +2385,9 @@
       "coleccionCMS": "municipal-content",
       "legacyID": "p14-municipal-lena-tablon-02",
       "slug": "informacion-para-preparar-una-consulta-sobre-un-tramite-lena",
-      "title": "Información para preparar una consulta sobre un trámite · Lena",
-      "excerpt": "Ensayo: Una ficha ficticia para orientar la búsqueda de información sin recoger datos personales.",
-      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nAntes de plantear una consulta, puede ser útil anotar qué procedimiento necesitas conocer y revisar los documentos oficiales disponibles. Los datos personales o la documentación privada deben facilitarse solo por los canales habilitados.\n\nEl texto no convoca un procedimiento ni introduce obligaciones. Su función es servir como muestra del tablón durante el ensayo de la web.",
+      "title": "Lena actualiza los contactos de las entidades que usan equipamientos culturales",
+      "excerpt": "Las asociaciones comunicarán una persona responsable y los canales de contacto de la entidad. No deben remitir listas de socios ni datos de asistentes a las actividades.",
+      "body": "Contenido ficticio de ensayo: no describe un hecho, convocatoria o comunicación oficial real.\n\nLas entidades que utilizan equipamientos culturales de Lena pueden actualizar sus datos de contacto para recibir información sobre reservas y organización de actividades. Indique el nombre de la asociación, el equipamiento utilizado y un canal de comunicación de la entidad.\n\nLa actualización permite ordenar las consultas de uso del Teatro Vital Aza, la Casa de Cultura de La Pola y el Centro Cultural y de Lectura de Campomanes. No envíe listas de socios, documentos de identidad ni relaciones de menores.\n\nLa comunicación deberá dirigirse al Ayuntamiento por registro. Actualizar los contactos no reserva fechas ni renueva una autorización de uso. Las solicitudes de actividad se tramitarán por separado, con las condiciones correspondientes a cada equipamiento.",
       "section": "politica",
       "town": "lena",
       "concejosEtiquetados": [
@@ -2400,9 +2400,9 @@
       "publishedAt": "2026-12-04",
       "_status": "draft",
       "fotoNecesaria": {
-        "descripcion": "Vista general de Lena o su entorno, sin presentar personas como solicitantes o participantes. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
+        "descripcion": "Vista de Campomanes como contexto; no se presenta como un equipamiento concreto ni como un acto de una asociación. Horizontal, mínimo 1600 px de ancho, sin personas reconocibles en primer plano.",
         "estado": "enlace_verificado",
-        "imagen": "foto-p14-municipal-lena-tablon-02",
+        "imagen": "foto-p14-noticia-05",
         "notaSeleccion": "Consultar fotos.json: imagen de contexto del concejo, lugar o patrimonio, no prueba de un hecho o actividad ficticios. El pie identifica el lugar fotografiado, que puede ser distinto del lugar concreto del relato."
       },
       "fuentes": [],
