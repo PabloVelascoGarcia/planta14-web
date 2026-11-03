@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { MunicipalIdentity } from "@/lib/municipal-identity";
 import { MunicipalMasthead } from "./municipal-masthead";
 import { sections, readBrowserContent, storageKey, type MunicipalSpace, type MunicipalContent } from "@/lib/demo/municipal";
 import type { Article } from "@/lib/mock-data";
 import { formatDate } from "@/lib/utils";
-import { getMunicipalIdentity, identityStyle } from "@/lib/demo/identities";
+import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 
 // Content published by a municipal account (not demo, no external reference) is labelled as such.
 // With real content (CONTENT_SOURCE=payload) the demo flag is ignored: there are no example items.
@@ -29,8 +30,19 @@ function ContentCard({ item, space, compact = false, demo }: { item: MunicipalCo
     </div>
   </article>;
 }
+// Créditos del escudo y de la foto: solo las piezas que existan (identidad editable en el CMS).
+function assetCredits(identity?: MunicipalIdentity) {
+  if (!identity) return null;
+  const parts = [
+    identity.crestCredit ? (identity.crestSource ? <a key="crest" href={identity.crestSource} target="_blank" rel="noopener noreferrer">Escudo: {identity.crestCredit}</a> : <span key="crest">Escudo: {identity.crestCredit}</span>) : null,
+    identity.crestLicenseUrl ? <a key="crest-license" href={identity.crestLicenseUrl} target="_blank" rel="noopener noreferrer">Licencia del escudo</a> : null,
+    identity.imageLicenseUrl ? <a key="image-license" href={identity.imageLicenseUrl} target="_blank" rel="noopener noreferrer">Licencia de la fotografía</a> : null,
+  ].filter(Boolean);
+  if (!parts.length) return null;
+  return <p className="aller-asset-credit">{parts.flatMap((part, i) => i ? [" · ", part] : [part])}. Fotografía de cabecera adaptada en tamaño y encuadre; colores de presentación inspirados en el paisaje.</p>;
+}
 export function MunicipalPage({ space, active, contents, articles, demo = false }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[]; demo?: boolean }) {
-  const identity = getMunicipalIdentity(space.id);
+  const identity = space.identity;
   const [section, setSection] = useState<string>("news");
   const [browserItems, setBrowserItems] = useState<MunicipalContent[]>([]);
   // Demo only: items published in this browser (localStorage) and a fixed date until hydration. With real content
@@ -46,9 +58,9 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
   const all = active ? [...(demo ? browserItems : []), ...contents].filter(c => c.status === "published" && (!demo || !c.expiresAt || c.expiresAt >= today)) : [];
   const notices = all.filter(c => c.type === "notice");
   const events = all.filter(c => c.type === "event").sort((a,b) => (a.eventAt ?? "").localeCompare(b.eventAt ?? ""));
-  return <div className={`municipal-shell ${identity ? "aller-theme" : ""}`} style={identityStyle(identity)}>
+  return <div className={`municipal-shell ${hasTheme(identity) ? "aller-theme" : ""}`} style={identityStyle(identity)}>
     <MunicipalMasthead space={space} />
-    {identity && active ? <figure className="aller-hero"><img src={identity.image} alt={identity.imageAlt} width={1800} height={715} fetchPriority="high" /><div className="aller-hero-shade" /><div className="container-p14 aller-hero-copy"><p className="municipal-kicker">Un concejo. Mil formas de vivirlo.</p><h2>{identity.title}</h2><p>{identity.subtitle}</p><a href="#vida-municipal">Descubre tu espacio municipal <span aria-hidden="true">↓</span></a></div><figcaption><a href={identity.imageSource} target="_blank" rel="noopener noreferrer">{identity.imageCredit}</a></figcaption></figure> : null}
+    {identity?.image && active ? <figure className="aller-hero"><img src={identity.image} alt={identity.imageAlt ?? ""} width={1800} height={715} fetchPriority="high" /><div className="aller-hero-shade" /><div className="container-p14 aller-hero-copy"><p className="municipal-kicker">Un concejo. Mil formas de vivirlo.</p>{identity.title ? <h2>{identity.title}</h2> : null}{identity.subtitle ? <p>{identity.subtitle}</p> : null}<a href="#vida-municipal">Descubre tu espacio municipal <span aria-hidden="true">↓</span></a></div>{identity.imageCredit ? <figcaption>{identity.imageSource ? <a href={identity.imageSource} target="_blank" rel="noopener noreferrer">{identity.imageCredit}</a> : identity.imageCredit}</figcaption> : null}</figure> : null}
     {active ? <nav className="municipal-section-nav" aria-label="Secciones municipales"><div className="container-p14">{sections.map(s => <button key={s.id} onClick={() => setSection(s.id)} aria-current={section === s.id ? "page" : undefined}>{s.label}</button>)}</div></nav> : null}
     <div id="vida-municipal" className="container-p14 municipal-page-body">
       <div className="municipal-introline"><p><span className="municipal-status-dot" />{active ? "Tu espacio de información municipal" : "El concejo en Planta 14"}</p>{demo ? <span className="municipal-example">Contenido de ejemplo</span> : null}</div>
@@ -56,10 +68,10 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
       <div className="municipal-columns">
         <div className="municipal-main-column">
           <div className="municipal-section-heading"><div><p className="municipal-kicker">{section === "news" ? "La vida del concejo" : "Información municipal"}</p><h2>{section === "news" ? "Noticias del concejo" : sections.find(s => s.id === section)?.label}</h2></div><span aria-hidden="true">{section === "news" ? "01" : "↗"}</span></div>
-          {section === "contact" && active ? <div className="municipal-contact"><h3>Estamos cerca</h3><p>{space.contact.place}</p><p>{space.contact.hours}</p><p className="municipal-detail-text">{space.contact.note}</p>{identity ? <p><a href={identity.official} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Web municipal de {identity.name} ↗</a><br /><a href={identity.tourism} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Información turística de {identity.name} ↗</a></p> : null}<p>Este espacio complementa la comunicación municipal. No es la web institucional ni la sede electrónica y no tramita solicitudes.</p></div> : null}
+          {section === "contact" && active ? <div className="municipal-contact"><h3>Estamos cerca</h3><p>{space.contact.place}</p><p>{space.contact.hours}</p><p className="municipal-detail-text">{space.contact.note}</p>{identity?.official || identity?.tourism ? <p>{identity.official ? <a href={identity.official} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Web municipal de {identity.name} ↗</a> : null}{identity.official && identity.tourism ? <br /> : null}{identity.tourism ? <a href={identity.tourism} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Información turística de {identity.name} ↗</a> : null}</p> : null}<p>Este espacio complementa la comunicación municipal. No es la web institucional ni la sede electrónica y no tramita solicitudes.</p></div> : null}
           {all.filter(c => c.type === section).map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} />)}
           {section === "news" ? <>
-            {identity ? <section className="aller-discover" aria-label={`Descubre ${identity.name}`}><p className="municipal-kicker">{identity.name}, todo el año</p><div>{identity.stories.map(story => <a key={story.id} href={story.href} target={story.href.startsWith("https:") ? "_blank" : undefined} rel={story.href.startsWith("https:") ? "noopener noreferrer" : undefined}><span className="aller-story-number">{story.number}</span><small>{story.label}</small><h3>{story.title}</h3><p>{story.text}</p><span className="municipal-read-link">Descubrir ↗</span></a>)}</div></section> : null}
+            {identity?.stories.length ? <section className="aller-discover" aria-label={`Descubre ${identity.name}`}><p className="municipal-kicker">{identity.name}, todo el año</p><div>{identity.stories.map(story => <a key={story.id} href={story.href} target={story.href.startsWith("https:") ? "_blank" : undefined} rel={story.href.startsWith("https:") ? "noopener noreferrer" : undefined}><span className="aller-story-number">{story.number}</span><small>{story.label}</small><h3>{story.title}</h3><p>{story.text}</p><span className="municipal-read-link">Descubrir ↗</span></a>)}</div></section> : null}
             {articles.length > 0 ? <div className="municipal-editorial-label"><span /> La mirada de Planta 14 <span /></div> : null}
             {articles.map(article => <article key={article.slug} className="municipal-editorial-card"><Link href={`/noticia/${article.slug}`} className="municipal-editorial-image"><img src={article.image} alt={article.imageAlt ?? ""} width={320} height={220} /></Link><div><p className="municipal-card-meta editorial-origin">Redacción Planta 14</p><h3><Link href={`/noticia/${article.slug}`}>{article.title}</Link></h3><p>{article.excerpt}</p><Link href={`/noticia/${article.slug}`} className="municipal-read-link">Leer la historia ↗</Link></div></article>)}
             {!active && !articles.length ? <p className="municipal-contact">El espacio municipal todavía no está activo. <Link href="/comarca/caudal">Explora las historias del Caudal ↗</Link></p> : null}
@@ -73,7 +85,7 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
         </aside>
       </div>
       <div className="municipal-bottom-note"><span>Información municipal y periodismo local, en un mismo lugar.</span><Link href="/">Volver al periódico ↗</Link></div>
-      {identity ? <p className="aller-asset-credit"><a href={identity.crestSource} target="_blank" rel="noopener noreferrer">Escudo: {identity.crestCredit}</a> · <a href={identity.crestLicenseUrl} target="_blank" rel="noopener noreferrer">Licencia del escudo</a> · <a href={identity.imageLicenseUrl} target="_blank" rel="noopener noreferrer">Licencia de la fotografía</a>. Fotografía de cabecera adaptada en tamaño y encuadre; colores de presentación inspirados en el paisaje.</p> : null}
+      {assetCredits(identity)}
     </div>
   </div>;
 }

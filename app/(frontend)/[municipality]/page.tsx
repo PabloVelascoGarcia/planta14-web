@@ -5,7 +5,6 @@ import { getMunicipalSpace, getMunicipalContents } from "@/lib/municipal-content
 import { getArticlesByConcejo } from "@/lib/cms";
 import { visibleTowns } from "@/lib/demo/territories";
 import { MunicipalPage } from "@/components/municipal-page";
-import { getMunicipalIdentity } from "@/lib/demo/identities";
 import { municipalMetadata } from "@/lib/seo";
 import { contentSource } from "@/lib/content-source";
 
@@ -16,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ municipal
   if (!space) return { title: "Concejo" };
   // Indexing follows SITE_INDEXABLE (layout); share previews use the latest public image of the space.
   const contents = spaceIsActive(space) ? (await getMunicipalContents()).filter(c => c.space === space.id && c.status === "published") : [];
-  const identity = getMunicipalIdentity(space.id);
-  return municipalMetadata(space, contents, identity ? { url: identity.image, alt: identity.imageAlt } : undefined);
+  const identity = space.identity;
+  return municipalMetadata(space, contents, identity?.image ? { url: identity.image, alt: identity.imageAlt ?? "" } : undefined);
 }
 export default async function Page({ params }: { params: Promise<{ municipality: string }> }) {
   const { municipality } = await params;

@@ -187,6 +187,59 @@ export interface MunicipalSpace {
     hours?: string | null;
     note?: string | null;
   };
+  /**
+   * Foto de cabecera, lema, escudo, colores y enlaces de la página del concejo. Solo la administración puede cambiarlos. Si un campo queda vacío, esa parte usa el diseño neutro.
+   */
+  identity?: {
+    /**
+     * Elige o sube una imagen en Imágenes, con su titular y tipo de derechos y el ámbito «Publicable». Sustituye a la foto actual del archivo de la web.
+     */
+    heroImage?: (number | null) | Media;
+    /**
+     * Foto que venía con la web. Se usa solo si no hay foto de cabecera elegida en Imágenes.
+     */
+    heroImagePath?: string | null;
+    heroImageAlt?: string | null;
+    heroImageCredit?: string | null;
+    heroImageSource?: string | null;
+    heroImageLicenseUrl?: string | null;
+    /**
+     * Frase grande sobre la foto, p. ej. «Lena, un lugar para quedarse.»
+     */
+    title?: string | null;
+    subtitle?: string | null;
+    /**
+     * Imagen del escudo en Imágenes (JPEG, PNG o WebP), con sus derechos. Sustituye al escudo actual del archivo de la web.
+     */
+    crestImage?: (number | null) | Media;
+    crestPath?: string | null;
+    crestCredit?: string | null;
+    crestSource?: string | null;
+    crestLicenseUrl?: string | null;
+    /**
+     * Formato #RRGGBB. Hacen falta los cuatro para aplicar el diseño propio del concejo.
+     */
+    colors?: {
+      accent?: string | null;
+      dark?: string | null;
+      soft?: string | null;
+      border?: string | null;
+    };
+    official?: string | null;
+    tourism?: string | null;
+    /**
+     * Hasta tres enlaces bajo las noticias («… todo el año»).
+     */
+    stories?:
+      | {
+          label: string;
+          title: string;
+          text: string;
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
   provenance?: string | null;
   sourceUrl?: string | null;
   updatedAt: string;
@@ -723,6 +776,42 @@ export interface MunicipalSpacesSelect<T extends boolean = true> {
         place?: T;
         hours?: T;
         note?: T;
+      };
+  identity?:
+    | T
+    | {
+        heroImage?: T;
+        heroImagePath?: T;
+        heroImageAlt?: T;
+        heroImageCredit?: T;
+        heroImageSource?: T;
+        heroImageLicenseUrl?: T;
+        title?: T;
+        subtitle?: T;
+        crestImage?: T;
+        crestPath?: T;
+        crestCredit?: T;
+        crestSource?: T;
+        crestLicenseUrl?: T;
+        colors?:
+          | T
+          | {
+              accent?: T;
+              dark?: T;
+              soft?: T;
+              border?: T;
+            };
+        official?: T;
+        tourism?: T;
+        stories?:
+          | T
+          | {
+              label?: T;
+              title?: T;
+              text?: T;
+              href?: T;
+              id?: T;
+            };
       };
   provenance?: T;
   sourceUrl?: T;

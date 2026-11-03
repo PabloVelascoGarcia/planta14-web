@@ -3,6 +3,7 @@ import type { Payload, CollectionSlug, RequiredDataFromCollectionSlug } from 'pa
 import towns from '../lib/demo/data/territories.json';
 import spaces from '../lib/demo/data/municipal-spaces.json';
 import contents from '../lib/demo/data/municipal-content.json';
+import { identitySeed } from './municipal-identity-seed';
 
 export const municipalSectionNames = ['Economía', 'Empresas', 'Deportes', 'Cultura', 'Patrimonio', 'Agenda'];
 const provenance = 'planta14-municipal-demo-reviewed-2026-11-02';
@@ -36,7 +37,7 @@ export async function importMunicipalDemo(payload: Payload) {
     const townDoc = await upsert('towns', 'slug', town.slug, { legacyID: town.id, slug: town.slug, name: town.name, comarca: 'Caudal', visible: true, provenance });
     const space = spaces.find(s => s.territory === town.id)!;
     const spaceDoc = await upsert('municipal-spaces', 'legacyID', space.id, { legacyID: space.id, town: townDoc.id, name: space.name, medium: space.medium,
-      subscription: { status: 'demo', startsAt: space.subscription.startsAt, endsAt: space.subscription.endsAt }, contact: space.contact, provenance, _status: 'published' });
+      subscription: { status: 'demo', startsAt: space.subscription.startsAt, endsAt: space.subscription.endsAt }, contact: space.contact, identity: identitySeed[space.id], provenance, _status: 'published' });
     for (const item of contents.filter(c => c.space === space.id)) {
       await upsert('municipal-content', 'legacyID', item.id, { legacyID: item.id, space: spaceDoc.id, type: item.type as 'news' | 'notice' | 'event' | 'grant' | 'announcement', title: item.title,
         excerpt: item.excerpt, body: item.body, origin: 'municipality', publishedAt: item.publishedAt, expiresAt: item.expiresAt, eventAt: item.eventAt, place: item.place,

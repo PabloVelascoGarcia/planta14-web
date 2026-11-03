@@ -118,15 +118,62 @@ export const Articles: CollectionConfig = {
     text('sourceName'), text('sourceAuthor'), ...provenance],
 };
 
+const hexColor = (value: unknown) => !value || /^#[0-9a-fA-F]{6}$/.test(String(value)) || 'Usa un color en formato #RRGGBB';
+const httpsURL = (value: unknown) => !value || /^https:\/\/\S+$/.test(String(value)) || 'Usa una dirección que empiece por https://';
+const sitePath = (value: unknown) => !value || /^\/[a-z0-9-]+\/[a-z0-9.-]+\.(webp|jpg|jpeg|png|svg)$/.test(String(value)) || 'Ruta de un archivo de la web, p. ej. /lena/panorama.webp';
+const adminField = { create: adminOnly, update: adminOnly };
+const desc = (description: string) => ({ admin: { description } });
+
+/** Identidad visual del espacio: la edita solo la administración; la cuenta municipal la ve en solo lectura. */
+const identity: Field = {
+  name: 'identity', label: 'Identidad visual', type: 'group', access: adminField,
+  admin: { description: 'Foto de cabecera, lema, escudo, colores y enlaces de la página del concejo. Solo la administración puede cambiarlos. Si un campo queda vacío, esa parte usa el diseño neutro.' },
+  fields: [
+    { name: 'heroImage', label: 'Foto de cabecera', type: 'upload', relationTo: 'media',
+      ...desc('Elige o sube una imagen en Imágenes, con su titular y tipo de derechos y el ámbito «Publicable». Sustituye a la foto actual del archivo de la web.') },
+    { name: 'heroImagePath', label: 'Foto actual (archivo de la web)', type: 'text', validate: sitePath,
+      ...desc('Foto que venía con la web. Se usa solo si no hay foto de cabecera elegida en Imágenes.') },
+    { name: 'heroImageAlt', label: 'Descripción de la foto (texto alternativo)', type: 'text' },
+    { name: 'heroImageCredit', label: 'Autor y licencia de la foto (texto visible)', type: 'text' },
+    { name: 'heroImageSource', label: 'Enlace al original de la foto', type: 'text', validate: httpsURL },
+    { name: 'heroImageLicenseUrl', label: 'Enlace a la licencia de la foto', type: 'text', validate: httpsURL },
+    { name: 'title', label: 'Lema', type: 'text', ...desc('Frase grande sobre la foto, p. ej. «Lena, un lugar para quedarse.»') },
+    { name: 'subtitle', label: 'Subtítulo', type: 'text' },
+    { name: 'crestImage', label: 'Escudo', type: 'upload', relationTo: 'media',
+      ...desc('Imagen del escudo en Imágenes (JPEG, PNG o WebP), con sus derechos. Sustituye al escudo actual del archivo de la web.') },
+    { name: 'crestPath', label: 'Escudo actual (archivo de la web)', type: 'text', validate: sitePath },
+    { name: 'crestCredit', label: 'Autor y licencia del escudo (texto visible)', type: 'text' },
+    { name: 'crestSource', label: 'Enlace al original del escudo', type: 'text', validate: httpsURL },
+    { name: 'crestLicenseUrl', label: 'Enlace a la licencia del escudo', type: 'text', validate: httpsURL },
+    { name: 'colors', label: 'Colores', type: 'group', ...desc('Formato #RRGGBB. Hacen falta los cuatro para aplicar el diseño propio del concejo.'), fields: [
+      { name: 'accent', label: 'Color principal', type: 'text', validate: hexColor },
+      { name: 'dark', label: 'Color oscuro', type: 'text', validate: hexColor },
+      { name: 'soft', label: 'Color suave (fondos)', type: 'text', validate: hexColor },
+      { name: 'border', label: 'Color de bordes', type: 'text', validate: hexColor },
+    ] },
+    { name: 'official', label: 'Web oficial del ayuntamiento', type: 'text', validate: httpsURL },
+    { name: 'tourism', label: 'Web de turismo', type: 'text', validate: httpsURL },
+    { name: 'stories', label: 'Historias destacadas', type: 'array', maxRows: 3, ...desc('Hasta tres enlaces bajo las noticias («… todo el año»).'), fields: [
+      { name: 'label', label: 'Etiqueta', type: 'text', required: true },
+      { name: 'title', label: 'Título', type: 'text', required: true },
+      { name: 'text', label: 'Texto', type: 'textarea', required: true },
+      { name: 'href', label: 'Enlace', type: 'text', required: true,
+        validate: (value: unknown) => /^(https:\/\/\S+|\/[^\s]*)$/.test(String(value ?? '')) || 'Usa https://… o una ruta de la web que empiece por /' },
+    ] },
+  ],
+};
+
 export const MunicipalSpaces: CollectionConfig = {
   slug: 'municipal-spaces', admin: { useAsTitle: 'name' },
   versions: { drafts: true },
   access: { read: municipalSpaceRead, readVersions: editorialVersions, create: adminOnly, update: adminOnly, delete: adminOnly },
+  // Las fotos de la identidad de un espacio publicado son públicas (copia pública, como las de las noticias).
+  hooks: { beforeChange: [validateImages], afterChange: [syncLinkedMedia], afterDelete: [syncLinkedMediaAfterDelete] },
   fields: [key, text('name', true), { name: 'town', type: 'relationship', relationTo: 'towns', required: true, unique: true },
     text('medium', true),
     { name: 'subscription', type: 'group', fields: [
       { name: 'status', type: 'select', required: true, options: ['demo', 'active', 'inactive'] }, text('startsAt'), text('endsAt')] },
-    { name: 'contact', type: 'group', fields: [text('place'), text('hours'), { name: 'note', type: 'textarea' }] }, ...provenance],
+    { name: 'contact', type: 'group', fields: [text('place'), text('hours'), { name: 'note', type: 'textarea' }] }, identity, ...provenance],
 };
 
 export const MunicipalContent: CollectionConfig = {

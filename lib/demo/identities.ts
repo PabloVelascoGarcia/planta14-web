@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import records from "./data/municipal-identities.json";
 import { allerIdentity } from "./aller";
+import type { MunicipalIdentity } from "../municipal-identity";
 
 type Identity = typeof allerIdentity & {
   name: string; accent: string; dark: string; soft: string; border: string;
@@ -11,6 +12,8 @@ const identities: Record<string, Identity> = {
   ...records
 };
 export function getMunicipalIdentity(slug: string): Identity | undefined { return identities[slug]; }
+/** Identidad de la demo con el formato común (lib/municipal-identity.ts). */
+export function demoIdentity(slug: string): MunicipalIdentity | undefined { return identities[slug]; }
 export function identityStyle(identity?: Identity): CSSProperties | undefined {
   return identity ? { "--municipal-copper": identity.accent, "--local-dark": identity.dark, "--local-soft": identity.soft, "--local-border": identity.border } as CSSProperties : undefined;
 }

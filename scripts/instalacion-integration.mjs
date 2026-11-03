@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import pg from 'pg';
+import os from 'node:os';
+import { mkdtemp, rm } from 'node:fs/promises';
+import S3rver from 's3rver';
+import sharp from 'sharp';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
@@ -18,6 +22,9 @@ await reset.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
 await reset.end();
 const passed = name => console.log(`PASS: ${name}`);
 let payload;
+const s3Directory = await mkdtemp(path.join(os.tmpdir(), 'planta14-instalacion-'));
+const s3 = new S3rver({ address: '127.0.0.1', port: 59007, directory: s3Directory, silent: true, configureBuckets: [{ name: 'planta14-instalacion-private' }, { name: 'planta14-instalacion-public' }] });
+await s3.run();
 const children = [];
 // Servidor Next ya compilado (npm run build) contra la base de prueba.
 async function start(port, env) {
@@ -32,7 +39,8 @@ async function start(port, env) {
   }
   throw new Error('next did not start');
 }
-const page = async url => { const response = await fetch(url); assert.equal(response.status, 200, url); return response.text(); };
+// Sin los separadores <!-- --> que React pone entre textos contiguos.
+const page = async url => { const response = await fetch(url); assert.equal(response.status, 200, url); return (await response.text()).replaceAll('<!-- -->', ''); };
 const exampleLabel = '<span class="municipal-example">Contenido de ejemplo</span>';
 try {
   const { getPayload } = await import('payload');
@@ -83,6 +91,78 @@ try {
     assert.ok((await page(`${demo}/${town}`)).includes(exampleLabel), `example label with CONTENT_SOURCE=demo: ${town}`);
   }
   passed('the «Contenido de ejemplo» label on concejo pages appears only with CONTENT_SOURCE=demo');
+
+  // --- Identidad visual del espacio municipal (CMS): valores iniciales, diseño neutro, permisos y foto de Imágenes.
+  const { identitySeed } = await import('../cms/municipal-identity-seed.ts');
+  const spaceBy = async legacyID => (await payload.find({ collection: 'municipal-spaces', overrideAccess: true, where: { legacyID: { equals: legacyID } }, depth: 0 })).docs[0];
+  const sameAsSeed = (doc, legacyID) => {
+    const seed = identitySeed[legacyID];
+    const { heroImage, crestImage, stories, ...rest } = doc.identity;
+    assert.equal(heroImage ?? null, null); assert.equal(crestImage ?? null, null);
+    assert.deepEqual({ ...rest, stories: stories.map(({ label, title, text, href }) => ({ label, title, text, href })) }, seed, `${legacyID} identity`);
+  };
+  for (const town of towns) sameAsSeed(await spaceBy(town.id), town.id);
+  // Instalación existente (la de c29e024): espacios sin identidad → la migración la carga en ellos y en su última versión.
+  const identityMigration = await import('../cms/migrations/20261103_000335_identidad_espacios.ts');
+  const migrationTx = fn => payload.db.drizzle.transaction(db => fn({ db, payload, req: {} }));
+  await migrationTx(identityMigration.down);
+  await migrationTx(identityMigration.up);
+  for (const town of towns) sameAsSeed(await spaceBy(town.id), town.id);
+  const { sql: rawSql } = await import('@payloadcms/db-postgres');
+  const latest = (await payload.db.drizzle.execute(rawSql`SELECT count(*)::int AS n FROM _municipal_spaces_v v JOIN municipal_spaces s ON s.id = v.parent_id WHERE v.latest AND v.version_identity_title = s.identity_title`)).rows[0].n;
+  assert.equal(latest, towns.length, 'the latest version (opened by the CMS) carries the same identity');
+  const lenaHTML = await page(`${cms}/lena`);
+  for (const piece of ['aller-theme', 'src="/lena/escudo.svg"', 'Escudo: Manuelfb55 · CC BY-SA 4.0', 'Licencia de la fotografía', 'Lena, todo el año', 'Santa Cristina de Lena']) assert.ok(lenaHTML.includes(piece), `inactive /lena keeps «${piece}»`);
+  assert.ok(!lenaHTML.includes('aller-hero'), 'inactive page without hero, as before');
+  passed('municipal identity in the CMS: the six Caudal spaces get the current values (new installs from the structure load; existing ones from the migration, latest version included); the inactive page keeps crest, colours, credits and stories');
+
+  // Campos vacíos → diseño neutro; parciales → solo lo que hay.
+  const riosa = await spaceBy('riosa');
+  await payload.update({ collection: 'municipal-spaces', id: riosa.id, overrideAccess: true, data: { identity: { heroImagePath: null, heroImageAlt: null, heroImageCredit: null, heroImageSource: null, heroImageLicenseUrl: null, title: null, subtitle: null, crestPath: null, crestCredit: null, crestSource: null, crestLicenseUrl: null, colors: { accent: null, dark: null, soft: null, border: null }, official: null, tourism: null, stories: [] } } });
+  const neutral = await page(`${cms}/riosa`);
+  assert.ok(!neutral.includes('aller-theme') && !neutral.includes('aller-crest') && !neutral.includes('aller-asset-credit') && !neutral.includes('aller-discover'), 'empty identity → neutral design');
+  assert.ok(neutral.includes('ESCUDO<br/>MUNICIPAL') || neutral.includes('Marcador para el escudo municipal'), 'neutral crest placeholder');
+  const morcin = await spaceBy('morcin');
+  await payload.update({ collection: 'municipal-spaces', id: morcin.id, overrideAccess: true, data: { identity: { colors: { accent: '#123456', dark: null, soft: null, border: null } } } });
+  const partial = await page(`${cms}/morcin`);
+  assert.ok(!partial.includes('aller-theme') && partial.includes('aller-crest') && partial.includes('Morcín, todo el año'), 'incomplete colours → neutral theme, other pieces kept');
+  passed('empty identity fields keep the page working with the neutral design (no theme, crest placeholder, no credits or stories); partial identity shows only what exists');
+
+  // Permisos: solo administración; la cuenta municipal lo ve en solo lectura; validaciones.
+  const lenaSpace = await spaceBy('lena');
+  const admin = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Administración', email: 'admin-identidad@planta14.example', password: randomUUID(), role: 'admin' } });
+  const editor = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Redacción', email: 'redaccion-identidad@planta14.example', password: randomUUID(), role: 'editor' } });
+  const municipal = await payload.create({ collection: 'users', overrideAccess: true, context: { cmsBootstrap: true }, data: { name: 'Ayto. Lena', email: 'lena-identidad@planta14.example', password: randomUUID(), role: 'municipal', municipalSpace: lenaSpace.id } });
+  await assert.rejects(payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, user: editor, overrideAccess: false, data: { identity: { title: 'Cambio de la redacción' } } }), /permiso|not allowed|Forbidden|prohibido/i);
+  await assert.rejects(payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, user: municipal, overrideAccess: false, data: { identity: { title: 'Cambio del ayuntamiento' } } }), /permiso|not allowed|Forbidden|prohibido/i);
+  const seenByMunicipal = await payload.findByID({ collection: 'municipal-spaces', id: lenaSpace.id, user: municipal, overrideAccess: false, depth: 0 });
+  assert.equal(seenByMunicipal.identity.title, identitySeed.lena.title, 'the municipal account reads its identity');
+  const fieldAccess = payload.collections['municipal-spaces'].config.fields.find(f => f.name === 'identity').access;
+  assert.equal(fieldAccess.update({ req: { user: municipal } }), false); assert.equal(fieldAccess.update({ req: { user: editor } }), false); assert.equal(fieldAccess.update({ req: { user: admin } }), true);
+  await payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, user: admin, overrideAccess: false, data: { identity: { title: 'Lena, un lugar para quedarse.' } } });
+  await assert.rejects(payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, overrideAccess: true, data: { identity: { colors: { accent: 'azul' } } } }), /Color principal/);
+  await assert.rejects(payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, overrideAccess: true, data: { identity: { official: 'http://inseguro.example' } } }), /Web oficial/);
+  passed('identity fields: only the administration edits them (editor and municipal account rejected, read-only for the municipality); colour and link validation');
+
+  // Foto de cabecera elegida en Imágenes (con derechos): copia pública mientras el espacio esté publicado.
+  const png = await sharp({ create: { width: 2000, height: 800, channels: 3, background: '#335577' } }).png().toBuffer();
+  const photo = await payload.create({ collection: 'media', overrideAccess: true, file: { data: png, mimetype: 'image/png', name: 'cabecera-mieres.png', size: png.length },
+    data: { alt: 'Paisaje de Mieres (prueba)', credit: 'Planta 14 (prueba)', rightsHolder: 'Planta 14', rightsType: 'propia', rightsScope: 'publicable' } });
+  const mieresSpace = await spaceBy('mieres');
+  await payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, user: admin, overrideAccess: false, data: { identity: { heroImage: photo.id, title: 'Mieres, nuevo lema de prueba' } } });
+  const published = await payload.findByID({ collection: 'media', id: photo.id, overrideAccess: true });
+  assert.equal(published.publishedUses, 1, 'the identity photo counts as a published use'); assert.ok(published.publicKey, 'public copy created');
+  const mieresHTML = await page(`${cms}/mieres`);
+  assert.ok(mieresHTML.includes(`planta14-instalacion-public/${published.publicKey}/`), 'active page shows the CMS photo from the public bucket');
+  assert.ok(mieresHTML.includes('Mieres, nuevo lema de prueba') && !mieresHTML.includes('/mieres/panorama.webp"'), 'the CMS photo and slogan replace the previous ones');
+  await payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, user: admin, overrideAccess: false, data: { identity: { heroImage: null } } });
+  const unlinked = await payload.findByID({ collection: 'media', id: photo.id, overrideAccess: true });
+  assert.equal(unlinked.publishedUses, 0); assert.equal(unlinked.publicKey ?? null, null, 'public copy removed when no longer used');
+  assert.ok((await page(`${cms}/mieres`)).includes('/mieres/panorama.webp'), 'back to the photo of the web files');
+  const draftPhoto = await payload.create({ collection: 'media', overrideAccess: true, file: { data: png, mimetype: 'image/png', name: 'sin-derechos.png', size: png.length },
+    data: { alt: 'Sin derechos', credit: 'Prueba', rightsHolder: 'Prueba', rightsType: 'propia', rightsScope: 'demo' } });
+  await assert.rejects(payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, user: admin, overrideAccess: false, data: { identity: { heroImage: draftPhoto.id } } }), /derechos publicables/);
+  passed('a header photo chosen in Imágenes gets a public copy while used by a published space and replaces the web file; removed when unlinked; images without publishable rights rejected');
 
   // --- CMS en español: idioma único y etiquetas de colecciones, campos, grupos y opciones.
   assert.deepEqual(Object.keys(payload.config.i18n.supportedLanguages), ['es']);
@@ -154,4 +234,6 @@ try {
 } finally {
   for (const child of children) child.kill('SIGTERM');
   await payload?.destroy();
+  await s3.close();
+  await rm(s3Directory, { recursive: true, force: true });
 }

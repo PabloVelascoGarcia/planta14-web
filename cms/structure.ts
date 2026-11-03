@@ -2,6 +2,7 @@ import type { Payload, CollectionSlug, RequiredDataFromCollectionSlug } from 'pa
 import towns from '../lib/demo/data/territories.json';
 import spaces from '../lib/demo/data/municipal-spaces.json';
 import { siteSections } from '../lib/site-sections';
+import { identitySeed } from './municipal-identity-seed';
 
 // Carga SOLO de estructura para producción (npm run cms:structure): las secciones de la navegación, los
 // concejos visibles del Caudal y un espacio municipal por concejo en estado INACTIVO. Ningún contenido de
@@ -29,7 +30,7 @@ export async function loadStructure(payload: Payload): Promise<StructureReport> 
     if (!space) throw new Error(`Falta el espacio municipal de ${town.name}`);
     // Un espacio por concejo (town es único): se busca por concejo, no por el identificador de la demo.
     await ensure('municipal-spaces', 'town', townDoc.id, { legacyID: space.id, town: townDoc.id, name: space.name, medium: space.medium,
-      subscription: { status: 'inactive', startsAt: null, endsAt: null }, contact: { place: '', hours: '', note: '' }, provenance: structureProvenance, _status: 'published' });
+      subscription: { status: 'inactive', startsAt: null, endsAt: null }, contact: { place: '', hours: '', note: '' }, identity: identitySeed[space.id], provenance: structureProvenance, _status: 'published' });
   }
   return report;
 }

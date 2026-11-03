@@ -18,7 +18,8 @@ export const readMedia: Access = (args) => {
 
 export async function validatePublishedImages(data: Record<string, unknown>, req: PayloadRequest) {
   if (data._status !== 'published') return;
-  for (const value of [data.image, data.seoImage]) {
+  const identity = data.identity as { heroImage?: unknown; crestImage?: unknown } | undefined;
+  for (const value of [data.image, data.seoImage, identity?.heroImage, identity?.crestImage]) {
     const id = relationID(value);
     if (!id) continue;
     const image = await req.payload.findByID({ collection: 'media', id, depth: 0, overrideAccess: true, req });
@@ -26,7 +27,11 @@ export async function validatePublishedImages(data: Record<string, unknown>, req
   }
 }
 
-const imageIDs = (doc?: Record<string, unknown> | null) => doc ? [doc.image, doc.seoImage].map(relationID).filter((id): id is number => id !== null) : [];
+const imageIDs = (doc?: Record<string, unknown> | null) => {
+  if (!doc) return [];
+  const identity = doc.identity as { heroImage?: unknown; crestImage?: unknown } | undefined;
+  return [doc.image, doc.seoImage, identity?.heroImage, identity?.crestImage].map(relationID).filter((id): id is number => id !== null);
+};
 
 /** Keeps Media.publishedUses and the public copies in step with publication, unpublication and deletion. */
 export const syncLinkedMedia: CollectionAfterChangeHook = async ({ doc, previousDoc, req }) => {

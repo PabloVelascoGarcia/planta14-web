@@ -162,11 +162,13 @@ async function publicCopyComplete(doc: MediaFile, key: string, bucket: string) {
 /** Published documents that reference the image. Indexed relationship columns, no full scan of content. */
 export async function countPublishedUses(payload: Payload, id: number, req?: PayloadRequest) {
   const published = { _status: { equals: 'published' } } as const;
-  const [articles, municipal] = await Promise.all([
+  const [articles, municipal, spaces] = await Promise.all([
     payload.count({ collection: 'articles', overrideAccess: true, req, where: { and: [published, { or: [{ image: { equals: id } }, { seoImage: { equals: id } }] }] } }),
     payload.count({ collection: 'municipal-content', overrideAccess: true, req, where: { and: [published, { 'withdrawal.withdrawn': { not_equals: true } }, { image: { equals: id } }] } }),
+    // Foto de cabecera y escudo de la identidad visual de un espacio municipal publicado.
+    payload.count({ collection: 'municipal-spaces', overrideAccess: true, req, where: { and: [published, { or: [{ 'identity.heroImage': { equals: id } }, { 'identity.crestImage': { equals: id } }] }] } }),
   ]);
-  return articles.totalDocs + municipal.totalDocs;
+  return articles.totalDocs + municipal.totalDocs + spaces.totalDocs;
 }
 
 /**

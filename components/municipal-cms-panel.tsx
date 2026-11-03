@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { getMunicipalIdentity, identityStyle } from "@/lib/demo/identities";
+import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 import { sections, type MunicipalSpace } from "@/lib/demo/municipal";
 import type { PanelItem, PanelState } from "@/lib/municipal-panel";
 import { MunicipalMasthead } from "./municipal-masthead";
@@ -46,7 +46,7 @@ function Login({ onDone }: { onDone: () => void }) {
 }
 
 export function MunicipalCmsPanel({ space, state, maintenance = null }: { space: MunicipalSpace; state: PanelState; maintenance?: string | null }) {
-  const identity = getMunicipalIdentity(space.id);
+  const identity = space.identity;
   const router = useRouter();
   const [draft, setDraft] = useState<Draft>(empty);
   const [file, setFile] = useState<File | null>(null);
@@ -104,7 +104,7 @@ export function MunicipalCmsPanel({ space, state, maintenance = null }: { space:
     finally { setBusy(false); }
   }
 
-  return <div className={`municipal-shell ${identity ? "aller-theme" : ""}`} style={identityStyle(identity)}>
+  return <div className={`municipal-shell ${hasTheme(identity) ? "aller-theme" : ""}`} style={identityStyle(identity)}>
     <MunicipalMasthead space={space} panel live />
     <div className="container-p14 municipal-panel-body">
       {maintenance ? <div className="municipal-demo-banner" role="status" data-maintenance="on"><span className="municipal-example">Mantenimiento</span><p>{maintenance}</p></div> : null}

@@ -1,5 +1,6 @@
 import type { Article, Author } from './mock-data';
 import type { MunicipalContent, MunicipalSpace } from './demo/municipal';
+import type { MunicipalIdentity } from './municipal-identity';
 import { publicURL } from '../cms/public-media';
 import type { Article as PayloadArticle, Author as PayloadAuthor, Media, MunicipalContent as PayloadMunicipalContent, MunicipalSpace as PayloadSpace, Town } from '../cms/payload-types';
 
@@ -59,9 +60,39 @@ export async function payloadAuthors(): Promise<Author[]> {
 }
 export function spaceContract(doc: PayloadSpace): MunicipalSpace {
   const town = populated<Town>(doc.town);
+  const identity = identityContract(doc.identity, town.name);
   return { id: doc.legacyID || town.slug, territory: town.slug, medium: doc.medium, name: doc.name, crest: null,
     subscription: { status: doc.subscription?.status || 'inactive', startsAt: doc.subscription?.startsAt || null, endsAt: doc.subscription?.endsAt || null },
-    contact: { place: doc.contact?.place || '', hours: doc.contact?.hours || '', note: doc.contact?.note || '' } };
+    contact: { place: doc.contact?.place || '', hours: doc.contact?.hours || '', note: doc.contact?.note || '' },
+    ...(identity ? { identity } : {}) };
+}
+/** Public URL of an identity image chosen in Imágenes (hero variant when it exists); null if not public. */
+function identityImageURL(value: unknown, variant?: 'hero') {
+  if (!value || typeof value !== 'object') return null;
+  const media = value as Media;
+  if (mediaURL(media) === '/images/placeholder.svg') return null;
+  const file = variant ? media.sizes?.[variant]?.filename : null;
+  return (file ? publicURL(media, file) : null) || mediaURL(media);
+}
+/** Identidad visual del espacio (CMS). Vacía → undefined: la página usa el diseño neutro. */
+export function identityContract(value: PayloadSpace['identity'], townName: string): MunicipalIdentity | undefined {
+  if (!value) return undefined;
+  const hero = identityImageURL(value.heroImage, 'hero');
+  const heroMedia = hero && typeof value.heroImage === 'object' ? value.heroImage as Media : null;
+  const crest = identityImageURL(value.crestImage);
+  const text = (v?: string | null) => v?.trim() || undefined;
+  const identity: MunicipalIdentity = {
+    name: townName,
+    image: hero || text(value.heroImagePath), imageAlt: text(value.heroImageAlt) ?? heroMedia?.alt ?? undefined,
+    imageCredit: text(value.heroImageCredit) ?? heroMedia?.credit ?? undefined, imageSource: text(value.heroImageSource), imageLicenseUrl: text(value.heroImageLicenseUrl),
+    title: text(value.title), subtitle: text(value.subtitle),
+    crest: crest || text(value.crestPath), crestCredit: text(value.crestCredit), crestSource: text(value.crestSource), crestLicenseUrl: text(value.crestLicenseUrl),
+    accent: text(value.colors?.accent), dark: text(value.colors?.dark), soft: text(value.colors?.soft), border: text(value.colors?.border),
+    official: text(value.official), tourism: text(value.tourism),
+    stories: (value.stories || []).map((story, i) => ({ id: String(i), number: String(i + 1).padStart(2, '0'), label: story.label, title: story.title, text: story.text, href: story.href })),
+  };
+  const filled = Object.entries(identity).some(([key, v]) => key !== 'name' && (Array.isArray(v) ? v.length > 0 : Boolean(v)));
+  return filled ? identity : undefined;
 }
 export async function payloadSpaces(): Promise<MunicipalSpace[]> {
   const payload = await contentClient();

@@ -1,6 +1,8 @@
 import spaceRecords from "./data/municipal-spaces.json";
 import contentRecords from "./data/municipal-content.json";
 import { visibleTowns } from "./territories";
+import { demoIdentity } from "./identities";
+import type { MunicipalIdentity } from "../municipal-identity";
 
 export type MunicipalType = "news" | "notice" | "event" | "grant" | "announcement";
 export type MunicipalContent = {
@@ -14,10 +16,13 @@ export type MunicipalContent = {
 };
 export type MunicipalSpace = Omit<typeof spaceRecords[number], 'subscription'> & {
   subscription: { status: string; startsAt: string | null; endsAt: string | null };
+  /** Identidad visual (CMS en payload; lib/demo/identities.ts en la demo). */
+  identity?: MunicipalIdentity;
 };
 export const municipalContents = contentRecords as MunicipalContent[];
-export function getMunicipalSpace(slug: string) {
-  return visibleTowns().some(t => t.slug === slug) ? spaceRecords.find(s => s.id === slug) : undefined;
+export function getMunicipalSpace(slug: string): MunicipalSpace | undefined {
+  const space = visibleTowns().some(t => t.slug === slug) ? spaceRecords.find(s => s.id === slug) : undefined;
+  return space ? { ...space, identity: demoIdentity(space.id) } : undefined;
 }
 export function spaceIsActive(space: MunicipalSpace, now = new Date()) {
   const subscription = space.subscription;

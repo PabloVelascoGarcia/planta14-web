@@ -4,6 +4,7 @@ import * as migration_20261102_094653_bloque2 from './20261102_094653_bloque2';
 import * as migration_20261102_105932_bloque3 from './20261102_105932_bloque3';
 import * as migration_20261102_121412_integracion from './20261102_121412_integracion';
 import * as migration_20261102_174946_mostrar_en_concejo from './20261102_174946_mostrar_en_concejo';
+import * as migration_20261103_000335_identidad_espacios from './20261103_000335_identidad_espacios';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261102_174946_mostrar_en_concejo.up,
     down: migration_20261102_174946_mostrar_en_concejo.down,
-    name: '20261102_174946_mostrar_en_concejo'
+    name: '20261102_174946_mostrar_en_concejo',
+  },
+  {
+    up: migration_20261103_000335_identidad_espacios.up,
+    down: migration_20261103_000335_identidad_espacios.down,
+    name: '20261103_000335_identidad_espacios'
   },
 ];
