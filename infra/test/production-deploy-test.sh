@@ -337,17 +337,33 @@ before_ensayo=$(sql "SELECT (SELECT count(*) FROM articles)||'/'||(SELECT count(
 spaces_before=$(sql "SELECT string_agg(legacy_i_d||':'||subscription_status, ',' ORDER BY legacy_i_d) FROM municipal_spaces")
 check "ensayo.sh cargar --solo-comprobar no escribe" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' cargar --solo-comprobar > '$ws/ensayo-comprobar.log' 2>&1 && grep -q 'COMPROBACIÓN TERMINADA' '$ws/ensayo-comprobar.log' && [[ \$(docker exec '$project-postgres-1' psql -U planta14 -d planta14 -XAtc \"SELECT (SELECT count(*) FROM articles)||'/'||(SELECT count(*) FROM municipal_content)||'/'||(SELECT count(*) FROM media)\") == '$before_ensayo' ]]"
 # Memoria del contenedor de migraciones durante la carga (muestras de docker stats).
+# Además, del cgroup del contenedor: memoria anónima (la que no se puede liberar) y pico total del núcleo
+# (memory.peak, exacto pero incluye la caché de archivos, que sí se libera).
 ( while [[ ! -f $ws/carga.fin ]]; do docker stats --no-stream --format '{{.Name}} {{.MemUsage}}' 2>/dev/null | grep -- '-migrate-run-' >> "$ws/memoria-carga.txt" || true; sleep 1; done ) &
 sampler=$!
+( while [[ ! -f $ws/carga.fin ]]; do
+    for c in $(docker ps -q --filter name=-migrate-run- 2>/dev/null); do
+      # cgroup v2 (memory.peak, anon) o v1 (max_usage_in_bytes, total_rss).
+      # shellcheck disable=SC2016
+      docker exec "$c" sh -c 'if [ -f /sys/fs/cgroup/memory.peak ]; then p=$(cat /sys/fs/cgroup/memory.peak); a=$(awk "\$1==\"anon\"{print \$2}" /sys/fs/cgroup/memory.stat); else p=$(cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes); a=$(awk "\$1==\"total_rss\"{print \$2}" /sys/fs/cgroup/memory/memory.stat); fi; echo "peak $p anon $a"' >> "$ws/memoria-cgroup.txt" 2>/dev/null || true
+    done; sleep 0.5; done ) &
+sampler_cgroup=$!
 check "ensayo.sh cargar (contenedor de migraciones de producción, Commons sustituto)" bash -c "infra/deploy/ensayo.sh --env-file '$ws/production.env' cargar > '$ws/ensayo-cargar.log' 2>&1 && grep -q 'CARGA TERMINADA' '$ws/ensayo-cargar.log'"
-touch "$ws/carga.fin"; wait "$sampler" || true
+touch "$ws/carga.fin"; wait "$sampler" "$sampler_cgroup" || true
 peak=$(python3 -c "
 import re,sys
 units={'B':1/1048576,'KiB':1/1024,'MiB':1,'GiB':1024}
 vals=[float(m.group(1))*units[m.group(2)] for line in open(sys.argv[1]) for m in [re.search(r' ([0-9.]+)(B|KiB|MiB|GiB) /',line)] if m]
 print(round(max(vals)) if vals else -1)" "$ws/memoria-carga.txt")
 log "MEDIDA: pico del contenedor de migraciones durante la carga: $peak MiB de 768 MiB ($(grep -c '' "$ws/memoria-carga.txt") muestras)"
+read -r anon_peak kernel_peak < <(python3 -c "
+import sys
+rows=[l.split() for l in open(sys.argv[1]) if l.startswith('peak ')]
+anon=[int(r[3]) for r in rows if len(r)>=4]; peak=[int(r[1]) for r in rows]
+print(round(max(anon)/1048576) if anon else -1, round(max(peak)/1048576) if peak else -1)" "$ws/memoria-cgroup.txt" 2>/dev/null || echo "-1 -1")
+log "MEDIDA: memoria anónima máxima del contenedor de migraciones: $anon_peak MiB; pico del núcleo con caché de archivos: $kernel_peak MiB ($(grep -c '' "$ws/memoria-cgroup.txt" 2>/dev/null || echo 0) muestras)"
 check "memoria holgada en el contenedor de migraciones (pico < 512 MiB de 768 MiB)" test "$peak" -gt 0 -a "$peak" -lt 512
+check "memoria anónima holgada en el contenedor de migraciones (< 512 MiB de 768 MiB)" test "$anon_peak" -gt 0 -a "$anon_peak" -lt 512
 check "cargado: 34 piezas de ensayo y 2 definitivas, 20 municipales, 19 imágenes" test "$(sql "SELECT (SELECT count(*) FROM articles WHERE lote='ensayo')||'/'||(SELECT count(*) FROM articles WHERE lote='definitivo')||'/'||(SELECT count(*) FROM municipal_content WHERE lote='ensayo')||'/'||(SELECT count(*) FROM media WHERE lote IS NOT NULL)")" = "34/2/20/19"
 check "cargado: todo publicado y fotos con copia pública" test "$(sql "SELECT (SELECT count(*) FROM articles WHERE lote IS NOT NULL AND _status<>'published')+(SELECT count(*) FROM media WHERE lote IS NOT NULL AND published_uses>0 AND public_key IS NULL)")" = 0
 check "cargado: Mieres y Lena activos, el resto igual" test "$(sql "SELECT string_agg(legacy_i_d||':'||subscription_status, ',' ORDER BY legacy_i_d) FROM municipal_spaces")" = "$(sed -E 's/(lena|mieres):[a-z]+/\1:active/g' <<< "$spaces_before")"
