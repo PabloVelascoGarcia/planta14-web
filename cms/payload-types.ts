@@ -204,13 +204,22 @@ export interface Media {
    * Autor o autora de la foto, tal como debe aparecer: «Foto: …».
    */
   credit: string;
+  /**
+   * Opcional: enlace a la foto original si viene de otra web (por ejemplo, su ficha en Wikimedia Commons).
+   */
   sourceURL?: string | null;
+  /**
+   * Obligatorio. Quién tiene los derechos: Planta 14, la persona que hizo la foto, una agencia, un ayuntamiento…
+   */
   rightsHolder?: string | null;
+  /**
+   * Obligatorio. Propia: hecha por Planta 14. Con licencia: p. ej. Creative Commons. Cedida: con permiso de su autor. Institucional: de una administración.
+   */
   rightsType?: ('propia' | 'licencia' | 'autorización' | 'institucional') | null;
   /**
    * Se pone en «Publicable» al marcar la declaración de derechos. «Solo demostración» no se puede publicar.
    */
-  rightsScope: 'demo' | 'publicable';
+  rightsScope?: ('demo' | 'publicable') | null;
   /**
    * Obligatorio para poder publicar la foto. Queda registrado quién y cuándo lo declara.
    */
@@ -399,7 +408,7 @@ export interface Article {
     [k: string]: unknown;
   };
   /**
-   * Elige una foto de Imágenes o súbela aquí con «Crear nuevo»: pide autoría, titular de los derechos y la declaración de derechos.
+   * Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos.
    */
   image?: (number | null) | Media;
   /**
@@ -422,7 +431,13 @@ export interface Article {
    * Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.
    */
   agenda?: {
+    /**
+     * Cuándo empieza la actividad.
+     */
     eventAt?: string | null;
+    /**
+     * Dónde es la actividad (local, calle, pueblo).
+     */
     place?: string | null;
   };
   /**
@@ -438,11 +453,11 @@ export interface Article {
    */
   showInTown?: boolean | null;
   /**
-   * La fecha y hora que se muestran en la noticia. Por defecto, ahora. No puede ser futura: para eso está la publicación programada.
+   * La fecha y hora que se muestran en la noticia. Déjala vacía y se pone sola la hora a la que publiques (ahora). Puedes cambiarla a mano, pero no a una hora futura: para eso está la publicación programada.
    */
   publishedAt?: string | null;
   /**
-   * Si pones una fecha y hora futuras y pulsas «Publicar», la noticia no se ve hasta ese momento y entonces sale sola, con esa fecha. Déjalo vacío para publicar ya.
+   * Si pones una fecha y hora futuras y pulsas «Publicar cambios», la noticia no se ve hasta ese momento y entonces sale sola, con esa fecha. Déjalo vacío para publicar ya.
    */
   scheduledAt?: string | null;
   /**
@@ -465,6 +480,9 @@ export interface Article {
    * Dirección completa, empezando por https://
    */
   sourceUrl?: string | null;
+  /**
+   * Quién firmaba la información original, si consta.
+   */
   sourceAuthor?: string | null;
   /**
    * Se crea sola a partir del título. Puedes cambiarla; se quitan tildes, eñes y espacios, y no se repite.
@@ -477,6 +495,9 @@ export interface Article {
    * Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.
    */
   lote?: ('ensayo' | 'definitivo') | null;
+  /**
+   * Lo pone el sistema al crear la noticia.
+   */
   createdBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
