@@ -84,6 +84,23 @@ try {
   }
   passed('the «Contenido de ejemplo» label on concejo pages appears only with CONTENT_SOURCE=demo');
 
+  // --- CMS en español: idioma único y etiquetas de colecciones, campos, grupos y opciones.
+  assert.deepEqual(Object.keys(payload.config.i18n.supportedLanguages), ['es']);
+  const labels = Object.fromEntries(payload.config.collections.map(c => [c.slug, c.labels.plural]));
+  for (const [slug, plural] of Object.entries({ users: 'Usuarios', media: 'Imágenes', articles: 'Noticias', authors: 'Autores', sections: 'Secciones', towns: 'Concejos', 'municipal-spaces': 'Espacios municipales', 'municipal-content': 'Contenidos municipales' })) assert.equal(labels[slug], plural, slug);
+  const field = (slug, ...path) => { let fields = payload.collections[slug].config.fields; let f; for (const name of path) { f = fields.find(x => x.name === name); fields = f?.fields; } return f; };
+  assert.equal(field('articles', 'title').label, 'Título'); assert.equal(field('articles', 'town').label, 'Concejo');
+  assert.equal(field('municipal-spaces', 'subscription').label, 'Suscripción'); assert.equal(field('municipal-spaces', 'subscription', 'status').label, 'Estado');
+  assert.deepEqual(field('municipal-spaces', 'subscription', 'status').options.map(o => o.label), ['Demostración', 'Activo', 'Inactivo']);
+  assert.deepEqual(field('users', 'role').options.map(o => [o.value, o.label]), [['admin', 'Administración'], ['editor', 'Redacción'], ['municipal', 'Ayuntamiento']]);
+  const unlabeled = [];
+  const walk = (slug, fields, prefix = '') => { for (const f of fields) { if (!f.name) continue; if (!f.label && !['id', 'createdAt', 'updatedAt', '_status', 'hash', 'salt', 'resetPasswordToken', 'resetPasswordExpiration', 'resetPasswordRequestedAt', 'loginAttempts', 'lockUntil', 'sessions', 'apiKey', 'enableAPIKey', 'apiKeyIndex', 'url', 'thumbnailURL', 'filename', 'mimeType', 'filesize', 'width', 'height', 'focalX', 'focalY', 'sizes', 'prefix'].includes(f.name)) unlabeled.push(`${slug}.${prefix}${f.name}`); if (f.fields && f.type !== 'group' ? false : f.fields) walk(slug, f.fields, `${prefix}${f.name}.`); } };
+  for (const c of payload.config.collections.filter(c => !c.slug.startsWith('payload-'))) walk(c.slug, c.fields);
+  assert.deepEqual(unlabeled, [], 'every visible field has a Spanish label');
+  const login = await page(`${cms}/cms/login`);
+  assert.match(login, /<html[^>]*lang="es"/); assert.match(login, /Iniciar sesión|Iniciar Sesión/);
+  passed('CMS in Spanish only: Payload i18n es, Spanish labels for every collection, field, group and list option');
+
   // --- Restos de la demo: ninguno con CONTENT_SOURCE=payload; la demo sigue igual.
   const demoTexts = ['Edición de demostración', 'Demo municipal', 'fines de demostración', 'Propuestas editoriales de demostración', 'Esta edición de demostración', 'ejemplos de integración', 'panel de demostración', 'Agenda de muestra'];
   const visible = html => html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
