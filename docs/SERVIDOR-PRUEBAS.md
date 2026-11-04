@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`9c19b9232a54357697e2787b06a44e50dbe59898`** (`9c19b92`, rama `desarrollo/planta14-v2-revision-portada`). Desplegada el **4 de noviembre de 2026 a las 19:38** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `c740cea`, y `deploy.sh` la conserva para poder volver a ella.
+**`af0924bf8fda3bfb66c971675969b39de6f9fe3f`** (`af0924b`, rama `desarrollo/planta14-v2-recuperacion-contrasena`). Desplegada el **4 de noviembre de 2026 a las 21:21** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `9c19b92`, y `deploy.sh` la conserva para poder volver a ella.
 
 ## Cuentas de la redacción en /cms
 
@@ -10,8 +10,9 @@
 |---|---|---|---|
 | Andrés | velascolne@gmail.com | `editor` | Redacción Planta 14 |
 | Juanfran Santos | juansantospolalena@gmail.com | `editor` | Redacción Planta 14 |
+| Pablo Velasco (redactor) | pvelasco@assa.as | `editor` | Redacción Planta 14 |
 
-Las contraseñas no están en el repositorio ni en el servidor: solo en `C:\Users\pvela\planta14-cuentas-periodistas.txt` (solo tu usuario), para entregarlas por otra vía.
+Las contraseñas no están en el repositorio ni en el servidor. Están en la carpeta `OneDrive - BLACKELEVEN CAPITAL S.L\EMPRESA\PROYECTOS\PLANTA14\Claves` de Pablo: `planta14-cuentas-periodistas.txt` (Andrés y Juanfran) y `planta14-cuenta-pablo-editor.txt`.
 
 **Cuenta municipal de prueba** (creada el 4 de noviembre de 2026):
 
@@ -19,19 +20,42 @@ Las contraseñas no están en el repositorio ni en el servidor: solo en `C:\User
 |---|---|---|---|
 | Prueba Ayuntamiento Mieres | pvelasco81@gmail.com | `municipal` | Ayuntamiento de Mieres |
 
-Contraseña solo en `C:\Users\pvela\planta14-cuenta-municipal-prueba.txt` (solo tu usuario). Comprobado desde el servidor, pidiendo a la app directamente:
+Contraseña en `planta14-cuenta-municipal-prueba.txt`, en la misma carpeta `Claves`. Comprobado desde el servidor, pidiendo a la app directamente (repetido con `af0924b`, con el mismo resultado):
 - entra (login 200, rol `municipal`) y `/mieres/panel` abre el panel de edición;
 - `/lena/panel` y `/aller/panel` dicen «Tu cuenta no gestiona este espacio municipal.»;
 - `/cms` la manda a `/cms/unauthorized` y la API le niega las noticias de Planta 14 (403);
 - por la API solo ve el espacio de Mieres y sus 10 contenidos, ninguno de otro concejo;
 - editar o borrar un contenido de Lena, editar el espacio de Lena y publicar en Lena: 403 en los cuatro casos;
-- «He olvidado mi contraseña»: `forgot-password` respondió 200 («Éxito») y **el correo llegó** a pvelasco81@gmail.com a las 20:55, remitente `Planta 14 <avisos@planta14.com>`, asunto «Restablecer tu Contraseña». El enlace lleva a `/cms/reset/…`, aunque la cuenta es municipal y no puede usar `/cms`.
+- «He olvidado mi contraseña»: `forgot-password` respondió 200 («Éxito») y **el correo llegó** a pvelasco81@gmail.com a las 20:55, remitente `Planta 14 <avisos@planta14.com>`, asunto «Restablecer tu Contraseña». El enlace lleva a `/cms/reset/…`, aunque la cuenta es municipal y no puede usar `/cms`. **Corregido en `af0924b`** (ver abajo).
 
 Es una cuenta de prueba: bórrala antes de la salida.
 
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a af0924b: recuperación de contraseña (4 de noviembre de 2026)
+
+Guía seguida: `docs/V2-RECUPERACION-CONTRASENA.md` del mismo commit, con los pasos de siempre de `deploy.sh`. No se han tocado el DNS, los buckets, los secretos ni el `.env.production`. No hizo falta ninguna contraseña ni sudo interactivo. **El ensayo no se ha retirado.**
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo (`status.sh`) | Correcto. Versión `9c19b92`, `/api/health: ok` y mantenimiento desactivado |
+| 2. `git fetch` y `checkout --detach` | `af0924b web: recuperación de contraseña con correo propio y página en el panel municipal`. `infra/test/out` estaba vacía |
+| 3. `deploy.sh … af0924b…` | **Código 0.** Construcción de 7 minutos, «Copia previa: …20261104T202131Z.dump.age (248K)», «**Sin migraciones nuevas**», «/api/health: ok» y «Desplegada». El mantenimiento duró 15 segundos. Registro: `/srv/planta14/state/deploy-af0924b.log` |
+| 4. Cuenta `editor` Pablo Velasco (redactor) | Creada, con la firma «Redacción Planta 14». La contraseña (20 caracteres, aleatoria) llegó por la entrada estándar y no quedó en ningún archivo ni registro del servidor |
+| 5. Cuenta municipal de prueba | Ya existía, así que no se ha tocado |
+| 6. Editor en `/cms` | Login 200, rol `editor`, `/cms` 200 con el panel de redacción («Nueva noticia», «Mis borradores» y «Publicadas hoy») |
+| 7. Municipal | Entra en `/mieres/panel`. `/lena/panel` y `/aller/panel` le dicen que no gestiona ese espacio, y `/cms` la manda a `/cms/unauthorized`. Por la API solo ve Mieres; editar, borrar o publicar en Lena da 403 |
+| 8. Recuperación desde el panel | `/mieres/panel` muestra «¿Has olvidado tu contraseña?», y `/mieres/panel/restablecer` da 200 con `noindex, nofollow`. La misma petición que hace el formulario (`forgot-password` con pvelasco81@gmail.com) respondió **200 «Éxito»**, sin errores en el registro de la app. Payload espera la respuesta del servidor de correo antes de contestar, así que el SMTP de IONOS lo aceptó |
+
+**Pendiente (Pablo):** abrir el enlace del correo de las 21:47 desde el buzón y comprobar:
+- el asunto «Planta 14: cambia tu contraseña» y el aspecto del correo;
+- que el enlace es `…/mieres/panel/restablecer#token=…`;
+- que con la contraseña nueva entra en el panel de Mieres;
+- que el mismo enlace, abierto otra vez, ya no vale.
+
+La contraseña nueva sustituirá a la del archivo `planta14-cuenta-municipal-prueba.txt`.
 
 ### Actualización a 9c19b92 y cuentas de redacción (4 de noviembre de 2026)
 
