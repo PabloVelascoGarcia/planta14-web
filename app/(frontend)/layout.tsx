@@ -22,7 +22,8 @@ export const dynamic = 'force-dynamic';
 export function generateMetadata(): Metadata {
   const indexable = isIndexable();
   return {
-    robots: { index: indexable, follow: indexable },
+    // Google Discover: vista previa grande de las imágenes, solo si el sitio es indexable.
+    robots: { index: indexable, follow: indexable, ...(indexable ? { 'max-image-preview': 'large' as const } : {}) },
     metadataBase: new URL(siteUrl),
     title: {
       default: "Planta 14 | Periódico digital de las cuencas mineras asturianas",

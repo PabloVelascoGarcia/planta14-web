@@ -36,7 +36,8 @@ export function articleJsonLd(article: Article) {
     "@type": "NewsArticle",
     headline: (article.seoTitle ?? article.title).slice(0, 110),
     description: article.seoDescription ?? article.excerpt,
-    image: [absoluteUrl(image.url)],
+    // Google Discover: imagen grande (≥ 1200 px de ancho) con sus medidas.
+    image: [{ "@type": "ImageObject", url: absoluteUrl(image.url), ...("width" in image && image.width ? { width: image.width, height: image.height } : {}) }],
     datePublished: published,
     dateModified: published,
     articleSection: article.topic,

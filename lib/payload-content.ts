@@ -36,15 +36,20 @@ export function imageSrcSet(value?: number | Media | null): string | undefined {
   if (value.width) entries.set(value.width, mediaURL(value));
   return entries.size > 1 ? [...entries].sort(([a], [b]) => a - b).map(([width, url]) => `${url} ${width}w`).join(', ') : undefined;
 }
-/** Social preview image: the "hero" variant (1600 px) of the public copy, falling back to "card" and the original. */
+/**
+ * Imagen para redes y Google Discover (Open Graph y JSON-LD): al menos 1200 px de ancho siempre que la foto los tenga.
+ * Primero la variante «hero» (1600 px); si no existe (original más estrecho), el original; «card» (800 px) solo si
+ * el original es aún más pequeño.
+ */
 export function shareImage(value?: number | Media | null): Article['shareImage'] {
   if (!value || typeof value === 'number' || mediaURL(value) === '/images/placeholder.svg') return undefined;
-  for (const size of ['hero', 'card'] as const) {
-    const variant = value.sizes?.[size];
-    const url = variant?.filename ? publicURL(value, variant.filename) : null;
-    if (url) return { url, width: variant?.width ?? undefined, height: variant?.height ?? undefined, alt: value.alt };
-  }
-  return { url: mediaURL(value), width: value.width ?? undefined, height: value.height ?? undefined, alt: value.alt };
+  const variant = (size: 'hero' | 'card') => {
+    const v = value.sizes?.[size];
+    const url = v?.filename ? publicURL(value, v.filename) : null;
+    return url ? { url, width: v?.width ?? undefined, height: v?.height ?? undefined, alt: value.alt } : null;
+  };
+  const original = { url: mediaURL(value), width: value.width ?? undefined, height: value.height ?? undefined, alt: value.alt };
+  return variant('hero') ?? ((value.width ?? 0) >= 1200 ? original : variant('card') ?? original);
 }
 export function articleContract(doc: PayloadArticle): Article {
   const author = populated(doc.author);

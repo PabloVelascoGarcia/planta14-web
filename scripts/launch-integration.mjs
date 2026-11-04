@@ -140,7 +140,8 @@ try {
   const ld = JSON.parse(ldRaw);
   assert.equal(ld['@context'], 'https://schema.org'); assert.equal(ld['@type'], 'NewsArticle');
   assert.equal(ld.headline, 'Noticia publicada para el lanzamiento');
-  assert.deepEqual(ld.image, [heroURL]);
+  assert.deepEqual(ld.image, [{ '@type': 'ImageObject', url: heroURL, width: hero.width, height: hero.height }], 'JSON-LD image with its size');
+  assert.ok(hero.width >= 1200, 'Google Discover: image of at least 1200 px');
   assert(!Number.isNaN(Date.parse(ld.datePublished)));
   assert.equal(ld.author[0]['@type'], 'Person'); assert.equal(ld.author[0].name, 'Redacción de prueba');
   assert.equal(ld.publisher['@type'], 'NewsMediaOrganization'); assert.equal(ld.publisher.name, 'Planta 14');
