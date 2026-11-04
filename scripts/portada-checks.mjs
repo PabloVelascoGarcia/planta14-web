@@ -156,11 +156,11 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
     });
     const firstFixed = order.indexOf('fijas');
     assert.ok(firstFixed > 0 && order.slice(0, firstFixed).every(x => x === 'noticia') && !order.slice(firstFixed).includes('noticia'), `news first, fixed cards after: ${order.join(' ')}`);
-    const grantImages = await tab.$$eval('.municipal-grant-preview img, .municipal-notices img', list => list.length);
-    assert.equal(grantImages, 0, 'grants and notices lists without photos');
+    const grantImages = await tab.$$eval('.municipal-grant-preview img', list => list.length);
+    assert.equal(grantImages, 0, 'grants list without photos');
     await context.close();
   }
-  passed('concejo page: in «Noticias del concejo» the news (municipal and Planta 14) come first and the three fixed cards after; grants and notices listed without photo');
+  passed('concejo page: in «Noticias del concejo» the news (municipal and Planta 14) come first and the three fixed cards after; the grants list without photo');
 
   // --- 11. Móvil: textos de 13 px o más y zonas táctiles de 44 px (24 px en créditos dentro de una frase).
   for (const path of ['/mieres', '/lena']) {

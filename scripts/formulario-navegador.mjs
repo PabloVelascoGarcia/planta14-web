@@ -51,7 +51,8 @@ export async function run({ tab, origin, email, password, photo, payload, firma,
 
   // 4. Clasificación: la firma ya viene puesta; concejo y sección.
   await tabButton('Clasificación').click();
-  assert.match(await tab.locator('label[for^="field-author"]').last().locator('xpath=ancestor::div[contains(@class,"field-type")][1]').innerText(), /Lucía Prueba/, 'linked author by default');
+  // El nombre de la firma lo carga Payload después de pintar el campo: se espera a que aparezca.
+  await tab.locator('label[for^="field-author"]').last().locator('xpath=ancestor::div[contains(@class,"field-type")][1]').getByText('Lucía Prueba').waitFor({ timeout: 15000 });
   await choose('town', 'Mieres');
   await choose('section', 'Política');
   await tabButton('Portada').click();

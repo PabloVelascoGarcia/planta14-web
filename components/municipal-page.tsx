@@ -12,7 +12,7 @@ import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 // Content published by a municipal account (not demo, no external reference) is labelled as such.
 // With real content (CONTENT_SOURCE=payload) the demo flag is ignored: there are no example items.
 function originLabel(item: MunicipalContent, demo: boolean) { return item.sourceUrl ? "Referencia" : demo && item.demo ? "Ejemplo" : "Publicado por el ayuntamiento"; }
-function ContentCard({ item, space, compact = false, demo }: { item: MunicipalContent; space: MunicipalSpace; compact?: boolean; demo: boolean }) {
+function ContentCard({ item, space, compact = false, demo, photo = true }: { item: MunicipalContent; space: MunicipalSpace; compact?: boolean; demo: boolean; photo?: boolean }) {
   const kind = sections.find(s => s.id === item.type)?.label;
   return <article className={`municipal-content-card ${compact ? "is-compact" : ""}`}>
     <div className="municipal-card-meta"><span>{space.name}</span><span>{kind} · {originLabel(item, demo)}</span></div>
@@ -21,8 +21,8 @@ function ContentCard({ item, space, compact = false, demo }: { item: MunicipalCo
       {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Consultar la referencia oficial ↗</a> : null}
       {item.attachments.map(file => <a key={file.url} href={file.url} className="editorial-link">{file.title} · PDF ↗</a>)}
     </details>
-    {/* En las listas (ayudas en portada del concejo, avisos de la barra) va sin foto; la foto sale en su sección. */}
-    {item.image && !compact ? <figure className="municipal-content-image"><img src={item.image.url} srcSet={item.image.srcSet} sizes={item.image.srcSet ? "(min-width: 1024px) 700px, calc(100vw - 32px)" : undefined} alt={item.image.alt} loading="lazy" decoding="async" /><figcaption>{item.image.credit}</figcaption></figure> : null}
+    {/* La lista de ayudas de «Noticias del concejo» va sin foto (photo=false); la foto sale en su sección. */}
+    {item.image && photo ? <figure className="municipal-content-image"><img src={item.image.url} srcSet={item.image.srcSet} sizes={item.image.srcSet ? "(min-width: 1024px) 700px, calc(100vw - 32px)" : undefined} alt={item.image.alt} loading="lazy" decoding="async" /><figcaption>{item.image.credit}</figcaption></figure> : null}
     <p>{item.excerpt}</p>
     <div className="municipal-card-dates">
       {item.type === "event" && item.eventAt ? <><time dateTime={item.eventAt}>{formatDate(item.eventAt.slice(0,10))} · {item.eventAt.slice(11,16)} h</time><span>{item.place}</span></> : null}
@@ -77,7 +77,7 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
             {articles.map(article => <article key={article.slug} className="municipal-editorial-card"><Link href={`/noticia/${article.slug}`} className="municipal-editorial-image"><ArticleImage article={article} sizes="horizontal" width={320} height={220} /></Link><div><p className="municipal-card-meta editorial-origin">Redacción Planta 14</p><h3><Link href={`/noticia/${article.slug}`}>{article.title}</Link></h3><p>{article.excerpt}</p><Link href={`/noticia/${article.slug}`} className="municipal-read-link">Leer la historia ↗</Link></div></article>)}
             {identity?.stories.length ? <section className="aller-discover" aria-label={`Descubre ${identity.name}`}><p className="municipal-kicker">{identity.name}, todo el año</p><div>{identity.stories.map(story => <a key={story.id} href={story.href} target={story.href.startsWith("https:") ? "_blank" : undefined} rel={story.href.startsWith("https:") ? "noopener noreferrer" : undefined}><span className="aller-story-number">{story.number}</span><small>{story.label}</small><h3>{story.title}</h3><p>{story.text}</p><span className="municipal-read-link">Descubrir ↗</span></a>)}</div></section> : null}
             {!active && !articles.length ? <p className="municipal-contact">El espacio municipal todavía no está activo. <Link href="/comarca/caudal">Explora las historias del Caudal ↗</Link></p> : null}
-            {active ? <section className="municipal-grant-preview"><p className="municipal-kicker">Ayudas y subvenciones</p>{all.filter(c => c.type === "grant").map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} compact />)}<button className="municipal-text-button" onClick={() => setSection("grant")}>Ver todas las ayudas ↗</button></section> : null}
+            {active ? <section className="municipal-grant-preview"><p className="municipal-kicker">Ayudas y subvenciones</p>{all.filter(c => c.type === "grant").map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} compact photo={false} />)}<button className="municipal-text-button" onClick={() => setSection("grant")}>Ver todas las ayudas ↗</button></section> : null}
           </> : null}
         </div>
         <aside className="municipal-sidebar">

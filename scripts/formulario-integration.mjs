@@ -65,7 +65,8 @@ try {
     console.log('EXPLORE READY'); await new Promise(() => {});
   }
   const { run } = await import('./formulario-navegador.mjs');
-  await run({ tab, origin, email: editor.email, password, photo, payload, firma, passed, assert });
+  try { await run({ tab, origin, email: editor.email, password, photo, payload, firma, passed, assert }); }
+  catch (error) { console.error(`--- registro del servidor (últimos 4000 caracteres) ---\n${logs.slice(-4000)}`); throw error; }
 } finally {
   await browser?.close();
   child?.kill('SIGTERM');
