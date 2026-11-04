@@ -448,6 +448,628 @@
         "Dudoso: distancia, desnivel y duración no publicados en el texto municipal consultado; GPX oficial no localizado.",
         "La página municipal se titula Rutas aunque su dirección conserva «dónde-comer»."
       ]
+    },
+    {
+      "id": "ruta-mieres-sierra-diego-sl2",
+      "nombre": "Sierra de Diego",
+      "codigo": "SL-AS 2",
+      "concejo": "Mieres",
+      "otrosConcejos": [],
+      "inicio": null,
+      "fin": null,
+      "distanciaKm": 7,
+      "distanciaCorrespondeA": "Circular, recorrido completo",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Fácil",
+      "tiempo": null,
+      "descripcion": "Circuito por la sierra de Diego incluido en el catálogo federativo de senderos de Mieres. La ficha sirve para identificar el itinerario, pero no acredita por sí sola el estado actual de sus señales.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://fempa.net/ruta/sl-as-2-sierra-de-diego/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La FEMPA indica «Con dudas» en homologación. No se confirma señalización vigente ni el punto exacto de salida y llegada; duración no publicada.",
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima."
+      ]
+    },
+    {
+      "id": "ruta-mieres-senda-lloreo",
+      "nombre": "Senda Verde de Lloreo",
+      "codigo": null,
+      "concejo": "Mieres",
+      "otrosConcejos": [],
+      "inicio": "La Perea",
+      "fin": "La Vega San Pedro",
+      "distanciaKm": 4,
+      "distanciaCorrespondeA": "Travesía, distancia de ida publicada por el ayuntamiento",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "1 h 10 min",
+      "descripcion": "Recorre una antigua plataforma ferroviaria minera entre La Perea y La Vega San Pedro. Conserva puentes, túneles y restos de instalaciones del valle de Lloreo. La ficha municipal aconseja linterna para los túneles y señala que el quinto está cerrado por una cantera.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.mieres.es/-/senda-verde-de-lloreo-1"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima.",
+        "Dificultad no cuantificada en la fuente consultada."
+      ]
+    },
+    {
+      "id": "ruta-mieres-senda-turon",
+      "nombre": "Senda Verde del Valle de Turón",
+      "codigo": "PR-AS 100.1",
+      "concejo": "Mieres",
+      "otrosConcejos": [],
+      "inicio": "Figareo",
+      "fin": "La Molinera",
+      "distanciaKm": 15,
+      "distanciaCorrespondeA": "Travesía Figareo–La Molinera; no incluye el regreso",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "4 h 30 min",
+      "descripcion": "Une Figareo y La Molinera siguiendo el valle minero de Turón. El trazado combina antiguas plataformas ferroviarias, caminos y tramos de carretera, con vistas a pozos y restos de transporte del carbón.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.mieres.es/-/senda-verde-de-tur%C3%B3n-p.r.-as-100.1-1"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No confundir con otras excursiones abreviadas o recorridos desde La Colladiella; estas cifras corresponden a la ficha municipal Figareo–La Molinera.",
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima.",
+        "Dificultad no cuantificada en la fuente consultada."
+      ]
+    },
+    {
+      "id": "ruta-lena-coguchu",
+      "nombre": "El Coguchu",
+      "codigo": null,
+      "concejo": "Lena",
+      "otrosConcejos": [],
+      "inicio": "La Pola, junto al cementerio",
+      "fin": "La Pola",
+      "distanciaKm": 17.38,
+      "distanciaCorrespondeA": "Circular, recorrido completo",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "5 h",
+      "descripcion": "Sale de La Pola hacia Cuamoros y las brañas de La Escrita y Ablaneu. Asciende al Coguchu y regresa por Tablao, Morues y el entorno de La Flor, entre bosque, antiguas infraestructuras mineras y caminos rurales.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aytolena.es/rutas"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima.",
+        "Dificultad no cuantificada en la fuente consultada."
+      ]
+    },
+    {
+      "id": "ruta-lena-branavalera",
+      "nombre": "Brañavalera",
+      "codigo": null,
+      "concejo": "Lena",
+      "otrosConcejos": [
+        "Quirós"
+      ],
+      "inicio": "Alto de La Cobertoria",
+      "fin": "La Pola",
+      "distanciaKm": 18.71,
+      "distanciaCorrespondeA": "Travesía, recorrido completo",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "6 h",
+      "descripcion": "Desde La Cobertoria sigue el cordal y atraviesa hayedos y acebales hasta Brañavalera. El descenso pasa por Ronzón, Sorríbas y La Vega’l Ciigu antes de terminar en La Pola. Al tener extremos distintos, requiere prever el transporte.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aytolena.es/rutas"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima.",
+        "Dificultad no cuantificada en la fuente consultada."
+      ]
+    },
+    {
+      "id": "ruta-lena-bosque-valgrande",
+      "nombre": "Bosque de Valgrande",
+      "codigo": null,
+      "concejo": "Lena",
+      "otrosConcejos": [],
+      "inicio": "Brañil.lín, estación de Valgrande-Pajares",
+      "fin": "Brañil.lín, estación de Valgrande-Pajares",
+      "distanciaKm": 15.96,
+      "distanciaCorrespondeA": "Circular, recorrido completo",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "5 h",
+      "descripcion": "Sube desde Brañil.lín al Cuitu Nigru y desciende hacia el bosque de Valgrande. La vuelta enlaza la Reguera del Puerto, el alto de Pajares y el Picu La Cerra. La descripción municipal incluye un tramo por la N-630.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aytolena.es/rutas"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El itinerario publicado utiliza pistas de esquí y un tramo de carretera. No se ha comprobado su estado sobre el terreno ni su adecuación en condiciones invernales.",
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima.",
+        "Dificultad no cuantificada en la fuente consultada."
+      ]
+    },
+    {
+      "id": "ruta-aller-piedrafita",
+      "nombre": "Puerto de Piedrafita",
+      "codigo": "PR-AS 265",
+      "concejo": "Aller",
+      "otrosConcejos": [],
+      "inicio": "La Paraya",
+      "fin": "Alto de Piedrafita",
+      "distanciaKm": 8.77,
+      "distanciaCorrespondeA": "Solo ida; el regreso no está incluido",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Media",
+      "tiempo": "4 h, solo ida",
+      "descripcion": "Remonta desde La Paraya hacia el alto de Piedrafita por el valle de Ruayer. Combina el paso por el pueblo, camino de montaña y brañas antes de alcanzar la divisoria. Es una travesía ascendente: la distancia publicada no cuenta la bajada.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aller.es/r-senderismo/-/asset_publisher/aXd7KtzaY6L8/content/puerto-de-piedrafita-pr-as-265"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima."
+      ]
+    },
+    {
+      "id": "ruta-aller-santibanes",
+      "nombre": "Santibanes–Santibanes",
+      "codigo": "PR-AS 236",
+      "concejo": "Aller",
+      "otrosConcejos": [],
+      "inicio": "Santibanes de Murias",
+      "fin": "Santibanes de Murias",
+      "distanciaKm": 3.775,
+      "distanciaCorrespondeA": "Circular, recorrido completo",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Baja",
+      "tiempo": "1 h 30 min",
+      "descripcion": "Paseo circular desde Santibanes de Murias por Vil.lar y antiguos caminos rurales. El regreso pasa por Visca Yana y Premalayo entre prados y arbolado. Permite conocer el poblamiento del valle sin confundirlo con Santibanes de la Fuente.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aller.es/r-senderismo/-/asset_publisher/aXd7KtzaY6L8/content/santibanes-santibanes-pr-as-236"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima."
+      ]
+    },
+    {
+      "id": "ruta-aller-foces-pino-ruayer",
+      "nombre": "Foces de El Pino–Foces de Ruayer",
+      "codigo": "PR-AS 31",
+      "concejo": "Aller",
+      "otrosConcejos": [],
+      "inicio": "El Pino",
+      "fin": "La Paraya",
+      "distanciaKm": 18.285,
+      "distanciaCorrespondeA": "Travesía completa; no es el paseo de ida y vuelta a las foces",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Media-Alta",
+      "tiempo": "6 h 30 min",
+      "descripcion": "Atraviesa las foces de El Pino y gana altura hacia Canieḷḷa antes de bajar a Ruayer y La Paraya. Une dos valles mediante caminos de montaña. La ficha describe la travesía larga, que exige organizar la llegada y el regreso.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aller.es/r-senderismo/-/asset_publisher/aXd7KtzaY6L8/content/foces-de-el-pino-foces-de-ruayer-pr-as-31"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima."
+      ]
+    },
+    {
+      "id": "ruta-aller-foyoso",
+      "nombre": "Senda Verde Foyoso",
+      "codigo": "PR-AS 242",
+      "concejo": "Aller",
+      "otrosConcejos": [],
+      "inicio": "Felechosa",
+      "fin": "Felechosa",
+      "distanciaKm": 3.61,
+      "distanciaCorrespondeA": "Ida y vuelta, recorrido completo según ficha técnica",
+      "desnivel": {
+        "positivoMetros": 31,
+        "negativoMetros": 31
+      },
+      "dificultad": "Muy fácil",
+      "tiempo": "Máximo 3 horas, según ficha técnica",
+      "descripcion": "Desde Felechosa avanza por el entorno de El Foyoso hacia el Molín de Peón, junto a El Pino. Recorre praderías y bosque con escaso desnivel. La fuente describe el regreso por el mismo camino y una alternativa por el camino real.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13754690/SendaVerde_Foyoso.gpx/da30060e-00ed-c4b5-0807-b38316598c22?t=1754390144368",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 148
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/familias/familias/senda-verde-foyoso"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La ficha técnica publica 3,61 km, 31 m de subida y máximo 3 horas; el texto narrativo cita 20 m y aproximadamente hora y media. Se conservan las cifras de la ficha técnica y se advierte la discrepancia."
+      ]
+    },
+    {
+      "id": "ruta-morcin-esperanza",
+      "nombre": "Ruta de la Esperanza",
+      "codigo": "PR-AS 318",
+      "concejo": "Morcín",
+      "otrosConcejos": [],
+      "inicio": "Aparcamiento de las tolvas, Lugar de Arriba, La Foz",
+      "fin": "Aparcamiento de las tolvas, Lugar de Arriba, La Foz",
+      "distanciaKm": 5.3,
+      "distanciaCorrespondeA": "Circular, recorrido completo",
+      "desnivel": {
+        "positivoMetros": 229,
+        "negativoMetros": 229
+      },
+      "dificultad": "Fácil",
+      "tiempo": "1 h 30 min",
+      "descripcion": "Desde las antiguas tolvas de La Foz enlaza caminos hacia La Górtica, El Cañu y Utiru. El itinerario permite reconocer la huella de la minería alrededor de la antigua mina Esperanza y regresar al punto de partida.",
+      "gpxOficial": "https://drive.google.com/uc?export=download&id=1b-fMzREesHrovxYxVjoGx7hT9ccXRHOe",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 348
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://fempa.net/ruta/ruta-de-la-esperanza/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Se toma el desnivel de la ficha técnica (229 m de subida y 229 de bajada). El texto de la misma página menciona 480 m sin aclarar cómo los calcula."
+      ]
+    },
+    {
+      "id": "ruta-morcin-foz-figares",
+      "nombre": "Ruta La Foz–Figares",
+      "codigo": "PR-AS 314",
+      "concejo": "Morcín",
+      "otrosConcejos": [],
+      "inicio": "La Foz",
+      "fin": "La Foz",
+      "distanciaKm": 7.5,
+      "distanciaCorrespondeA": "Circular, recorrido completo",
+      "desnivel": {
+        "positivoMetros": 270,
+        "negativoMetros": 270
+      },
+      "dificultad": "Fácil",
+      "tiempo": "2 h 30 min",
+      "descripcion": "Recorre parte del antiguo trazado ferroviario minero de La Foz y enlaza con Figares. La vuelta pasa por La Collá, Panizales y La Puente. Combina restos industriales, molinos y núcleos rurales del valle.",
+      "gpxOficial": "https://drive.google.com/uc?export=download&id=18-u4iiljqrwCCjIYf1ERiErNmIsPJgc7",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 498
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://fempa.net/ruta/ruta-la-foz-figares/"
+      ],
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "ruta-morcin-molinos",
+      "nombre": "Ruta de los Molinos de Morcín",
+      "codigo": null,
+      "concejo": "Morcín",
+      "otrosConcejos": [],
+      "inicio": null,
+      "fin": null,
+      "distanciaKm": 5.4,
+      "distanciaCorrespondeA": "Circular, recorrido completo según ficha federativa",
+      "desnivel": {
+        "positivoMetros": 280,
+        "negativoMetros": 280
+      },
+      "dificultad": "Fácil",
+      "tiempo": "3 horas",
+      "descripcion": "Itinerario circular que la federación incluye entre las rutas en familia de Morcín. La ficha permite contrastar distancia, duración y desnivel. Se omiten las atribuciones históricas genéricas de su introducción porque no identifican de forma fiable los molinos de este recorrido.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": "https://drive.google.com/file/d/1AwHQ2tCvW_4mC0cPNYLd4JuL2AMGTOkc/view?rm=minimal",
+      "fuentes": [
+        "https://fempa.net/ruta/ruta-de-los-molinos-de-morcin/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Puntos exactos de inicio y fin pendientes de contraste. La introducción mezcla explicaciones generales sobre molinos que no se usan como evidencia histórica del recorrido. La homologación figura como «No procede».",
+        "El enlace federativo de descarga no se ha validado como GPX; se conserva como enlace alternativo y no como track confirmado."
+      ]
+    },
+    {
+      "id": "ruta-riosa-gran-ruta",
+      "nombre": "Gran Ruta de Riosa",
+      "codigo": "GR 206",
+      "concejo": "Riosa",
+      "otrosConcejos": [],
+      "inicio": "La Vega",
+      "fin": "La Vega",
+      "distanciaKm": 36.4,
+      "distanciaCorrespondeA": "Circular, suma de dos etapas",
+      "desnivel": {
+        "positivoMetros": 1405,
+        "negativoMetros": 1405
+      },
+      "dificultad": "Moderada",
+      "tiempo": "11 horas",
+      "descripcion": "Circuito por los valles y cordales de Riosa organizado en dos etapas: La Vega–San Adriano y San Adriano–La Vega. La distancia de la ficha corresponde al recorrido completo y no a una excursión corta.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": "https://drive.google.com/file/d/1OXiCQ0R-901Bu_ckeVE-SOs_4QJyTg2H/view?rm=minimal",
+      "fuentes": [
+        "https://fempa.net/ruta/gr-206-gran-ruta-de-riosa/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El enlace federativo de descarga no se ha validado como GPX; se conserva como enlace alternativo y no como track confirmado."
+      ]
+    },
+    {
+      "id": "ruta-riosa-fuso-angliru",
+      "nombre": "Fuso–El Angliru",
+      "codigo": "PR-AS 143",
+      "concejo": "Riosa",
+      "otrosConcejos": [
+        "Oviedo",
+        "Ribera de Arriba",
+        "Morcín"
+      ],
+      "inicio": "Fuso de la Reina, Oviedo",
+      "fin": "El Angliru, Riosa",
+      "distanciaKm": 32.6,
+      "distanciaCorrespondeA": "Travesía completa entre varios concejos",
+      "desnivel": {
+        "positivoMetros": 2190,
+        "negativoMetros": 760
+      },
+      "dificultad": "Difícil",
+      "tiempo": "12 horas",
+      "descripcion": "Larga travesía desde el entorno del Nalón hasta los pastos altos del Aramo. El destino es El Angliru y la longitud corresponde a todo el itinerario intermunicipal, no solo a su tramo en Riosa.",
+      "gpxOficial": "https://drive.google.com/uc?export=download&id=1UHQkDnPXsKlfkbscQU1yFEYbOrdDCAlC",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 1702
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://fempa.net/ruta/fuso-el-angliru/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La FEMPA marca la ruta como «No homologado». El código identifica la ficha histórica; no acredita señalización o mantenimiento vigentes."
+      ]
+    },
+    {
+      "id": "ruta-riosa-neveros",
+      "nombre": "Ruta de los Neveros",
+      "codigo": "PR-AS 105",
+      "concejo": "Riosa",
+      "otrosConcejos": [
+        "Morcín"
+      ],
+      "inicio": null,
+      "fin": null,
+      "distanciaKm": 10.7,
+      "distanciaCorrespondeA": "Travesía según ficha federativa",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Moderada",
+      "tiempo": "3 h 45 min",
+      "descripcion": "La federación cataloga este itinerario de los Neveros en Riosa y facilita un trazado descargable. Las cifras reproducen su ficha técnica; no se mezclan con variantes circulares de longitud diferente.",
+      "gpxOficial": "https://drive.google.com/uc?export=download&id=1ZT7nXY7tQC7l9MWvmSJAISS9OLg8s9vr",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 1056
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://fempa.net/ruta/ruta-de-los-neveros/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La homologación figura como «No existe». Los topónimos exactos de los extremos no quedan identificados en el texto oficial consultado: inicio del GPX 43.267775,-5.927120; final 43.278600,-5.920319. La adscripción a Riosa procede de la ficha federativa.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima."
+      ]
+    },
+    {
+      "id": "ruta-riosa-senda-fluvial",
+      "nombre": "Senda Fluvial Alberto Suárez Laso",
+      "codigo": null,
+      "concejo": "Riosa",
+      "otrosConcejos": [],
+      "inicio": "El Llerón",
+      "fin": "Felguera",
+      "distanciaKm": 6,
+      "distanciaCorrespondeA": "Longitud publicada por el ayuntamiento; no precisa si incluye retorno",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Fácil",
+      "tiempo": null,
+      "descripcion": "Paseo fluvial que enlaza El Llerón y Felguera y permite seguir los ríos del valle desde las cercanías de La Vega. La fuente municipal lo presenta como una senda fácil ligada al paisaje de ribera.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.ayuntamientoriosa.com/senda-fluvial-alberto-su%C3%A1rez-laso"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El ayuntamiento publica 6 km, pero no aclara el cómputo de ida o vuelta ni ofrece una duración contrastable. No se convierte el enlace a una plataforma de terceros en un GPX oficial.",
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima."
+      ]
+    },
+    {
+      "id": "ruta-ribera-barcena-olloniego",
+      "nombre": "Senda Verde Bárcena–Olloniego",
+      "codigo": "PR-AS 240",
+      "concejo": "Ribera de Arriba",
+      "otrosConcejos": [
+        "Oviedo"
+      ],
+      "inicio": "Bárcena",
+      "fin": "Olloniego",
+      "distanciaKm": 3.7,
+      "distanciaCorrespondeA": "Travesía, solo ida",
+      "desnivel": {
+        "positivoMetros": 12,
+        "negativoMetros": 6
+      },
+      "dificultad": "Fácil",
+      "tiempo": "1 hora",
+      "descripcion": "Senda verde que conecta el entorno de Bárcena con Olloniego siguiendo el valle del Nalón. La ficha federativa describe un recorrido de poco desnivel entre Ribera de Arriba y Oviedo.",
+      "gpxOficial": "https://drive.google.com/uc?export=download&id=1Ind16tT9aJDENNcBOmxiOR8iy9RF8anv",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 128
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://fempa.net/ruta/senda-verde-barcena-olloniego/"
+      ],
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "ruta-ribera-san-melchor",
+      "nombre": "Ruta San Melchor",
+      "codigo": "GR 106",
+      "concejo": "Ribera de Arriba",
+      "otrosConcejos": [
+        "Oviedo",
+        "Morcín",
+        "Quirós"
+      ],
+      "inicio": "Oviedo",
+      "fin": "Cortes, Quirós",
+      "distanciaKm": 56.9,
+      "distanciaCorrespondeA": "Travesía completa de tres etapas entre varios concejos",
+      "desnivel": {
+        "positivoMetros": 2965,
+        "negativoMetros": 2320
+      },
+      "dificultad": "Moderada",
+      "tiempo": "16 h 30 min",
+      "descripcion": "Itinerario de gran recorrido entre Oviedo y Cortes, en Quirós, dividido en tres etapas. Pasa por el territorio de Ribera de Arriba y continúa hacia Pedroveya y Salcedo. Los datos técnicos corresponden al conjunto de la ruta.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": "https://drive.google.com/file/d/1JxRP7ol8G22_0ZAqBCCGuAMf_ir6UQAN/view?rm=minimal",
+      "fuentes": [
+        "https://fempa.net/ruta/gr-106-ruta-san-melchor/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La suma de las longitudes de las tres etapas redondeadas en el texto es 57 km; la ficha general publica 56,9 km. No atribuir toda esa distancia al concejo de Ribera de Arriba.",
+        "El enlace federativo de descarga no se ha validado como GPX; se conserva como enlace alternativo y no como track confirmado."
+      ]
+    },
+    {
+      "id": "ruta-ribera-bueno-caldas-caleyu",
+      "nombre": "Bueño–Las Caldas–El Caleyu",
+      "codigo": null,
+      "concejo": "Ribera de Arriba",
+      "otrosConcejos": [
+        "Oviedo"
+      ],
+      "inicio": "Bueño, punto exacto no indicado",
+      "fin": "Bueño, circuito municipal",
+      "distanciaKm": null,
+      "distanciaCorrespondeA": "Circular según descripción municipal",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": null,
+      "descripcion": "Circuito que el ayuntamiento presenta para caminar o ir en bicicleta, con paso por Palombar, Les Segaes y Soto Ribera. Enlaza pueblos del entorno de Bueño con Las Caldas y El Caleyu y discurre en gran parte por asfalto.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.ayto-riberadearriba.es/en/d%C3%B3nde-comer"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El ayuntamiento no publica ficha técnica ni punto exacto de arranque. Recorrido compartido con tráfico; la mención municipal a bicicleta no acredita una ruta BTT homologada.",
+        "No se ha localizado y validado un GPX oficial descargable en la ficha consultada.",
+        "Desnivel acumulado no comprobado; no se deduce de las cotas máxima y mínima.",
+        "Dificultad no cuantificada en la fuente consultada.",
+        "Distancia y duración no cuantificadas en la fuente municipal consultada."
+      ]
     }
   ]
 }
