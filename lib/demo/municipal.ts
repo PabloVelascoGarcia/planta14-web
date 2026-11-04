@@ -12,7 +12,7 @@ export type MunicipalContent = {
   attachments: { url: string; title: string }[]; demo: boolean;
   sourceUrl?: string;
   /** Only Payload content with a public image copy; demo data has none. */
-  image?: { url: string; alt: string; credit: string; share?: { url: string; width?: number; height?: number } };
+  image?: { url: string; srcSet?: string; alt: string; credit: string; share?: { url: string; width?: number; height?: number } };
 };
 export type MunicipalSpace = Omit<typeof spaceRecords[number], 'subscription'> & {
   subscription: { status: string; startsAt: string | null; endsAt: string | null };

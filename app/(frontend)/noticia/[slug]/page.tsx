@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getArticle, getArticles } from "@/lib/cms";
 import { ArticleView } from "@/components/article-view";
+import { relatedArticles } from "@/lib/front-page";
+import { siteUrl } from "@/lib/site-config";
 import { articleJsonLd, articleMetadata, jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -34,14 +36,12 @@ export default async function ArticlePage({ params }: PageProps) {
     notFound();
   }
 
-  const related = (await getArticles())
-    .filter((item) => item.slug !== article.slug && (item.comarca === article.comarca || item.topic === article.topic))
-    .slice(0, 3);
+  const related = relatedArticles(article, await getArticles());
 
   return (
     <article className="container-p14 py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd(article)) }} />
-      <ArticleView article={article} related={related} />
+      <ArticleView article={article} related={related} shareUrl={`${siteUrl}/noticia/${article.slug}`} />
     </article>
   );
 }

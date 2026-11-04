@@ -2,49 +2,50 @@ import Link from "next/link";
 import { AdSlot } from "@/components/ad-slot";
 import { AgendaList } from "@/components/agenda-list";
 import { ArticleCard } from "@/components/article-card";
+import { ArticleImage } from "@/components/article-image";
 import { Newsletter } from "@/components/newsletter";
 import { SectionHeading } from "@/components/section-heading";
 import { getArticles } from "@/lib/cms";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 import { contentSource } from "@/lib/content-source";
+import { frontPage } from "@/lib/front-page";
+import { getMunicipalSpaces } from "@/lib/municipal-content";
 
 export const revalidate = 300;
 export const metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
   const articles = await getArticles();
-  const mainArticle = articles.find((article) => article.main) ?? articles[0];
-  if (!mainArticle) return <div className="container-p14 py-20"><h1 className="font-serif text-5xl">Las cuencas tienen mucho que contar.</h1><p className="mt-5">Pronto encontrarás aquí nuestras primeras historias.</p></div>;
-  const secondary = articles.filter((article) => article.slug !== mainArticle.slug).sort((a,b) => Number(b.comarca === "Caudal") - Number(a.comarca === "Caudal"));
-  const featured = secondary.slice(0, 3);
-  const latest = secondary.slice(0, 5);
-  const caudal = articles.filter((article) => article.comarca === "Caudal").slice(0, 3);
-
-  const opinion = articles.filter((article) => article.opinion);
+  const front = frontPage(articles);
+  if (!front) return <div className="container-p14 py-20"><h1 className="font-serif text-5xl">Las cuencas tienen mucho que contar.</h1><p className="mt-5">Pronto encontrarás aquí nuestras primeras historias.</p></div>;
+  const { main: mainArticle, latest, featured, caudal, opinion, more } = front;
+  // «Tu ayuntamiento, aquí»: los espacios municipales activos; si no hay ninguno, la lista de los seis concejos.
+  const townNames = new Map(Object.values(territories).flat().map(name => [slugify(name), name]));
+  const activeSpaces = (await getMunicipalSpaces({ activos: true })).filter(space => townNames.has(space.id));
 
   return (
     <div className="pb-10">
       <section className="container-p14 front-opening">
-        <article className="lead-story">
+        <article className="lead-story" data-block="principal">
           <div className="flex items-center gap-3 editorial-kicker"><Link href={`/concejo/${slugify(mainArticle.concejo)}`}>{mainArticle.concejo}</Link><span aria-hidden="true">/</span><span>{mainArticle.topic}</span></div>
           <h1><Link href={`/noticia/${mainArticle.slug}`}>{mainArticle.title}</Link></h1>
           <p className="lead-excerpt">{mainArticle.excerpt}</p>
           <Link href={`/noticia/${mainArticle.slug}`} className="lead-image" aria-label={`Leer: ${mainArticle.title}`}>
-            <img src={mainArticle.image} alt={mainArticle.imageAlt ?? ""} fetchPriority="high" width={1400} height={788} />
+            <ArticleImage article={mainArticle} sizes="lead" priority width={1400} height={788} />
           </Link>
           {mainArticle.imageCredit ? <p className="mt-2 text-[10px] text-steel">Fotografía: {mainArticle.imageCredit}</p> : null}
           <div className="lead-byline"><span>{mainArticle.author}</span><Link href={`/noticia/${mainArticle.slug}`}>Leer la historia <span aria-hidden="true">↗</span></Link></div>
         </article>
-        <aside className="opening-sidebar">
+        <aside className="opening-sidebar" data-block="en-portada">
           <SectionHeading eyebrow="El pulso del territorio" title="En portada" />
-          {latest.slice(0, 4).map((article, index) => <div key={article.slug} className="numbered-story"><span className="story-number">0{index + 1}</span><ArticleCard article={article} variant="compact" /></div>)}
+          {latest.map((article, index) => <div key={article.slug} className="numbered-story"><span className="story-number">0{index + 1}</span><ArticleCard article={article} variant="compact" /></div>)}
           <Link className="editorial-link" href="/agenda">La agenda de las cuencas <span aria-hidden="true">↗</span></Link>
         </aside>
       </section>
 
       <section className="container-p14 mt-10 grid gap-8 lg:grid-cols-[1fr_300px]">
-        <div>
+        <div data-block="la-vida-aqui">
           <SectionHeading eyebrow="Portada" title="La vida aquí" />
           <div className="grid gap-6 md:grid-cols-3">
             {featured.map((article) => (
@@ -56,21 +57,21 @@ export default async function Home() {
       </section>
 
       <section className="container-p14 mt-12 grid gap-10 lg:grid-cols-2">
-        <div>
+        <div data-block="caudal">
           <SectionHeading eyebrow="Territorio" title="Caudal" href="/comarca/caudal" />
           {caudal.map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
         </div>
-        <div>
+        <div data-block="ayuntamientos">
           <SectionHeading eyebrow="Cerca de ti" title="Tu ayuntamiento, aquí" />
           <p className="mt-4 text-lg leading-7 text-steel">Avisos, agenda y oportunidades. Un espacio propio para cada concejo, conectado con la vida del Caudal.</p>
-          <Link href="/aller" className="municipal-cta mt-6">Descubre el espacio de Aller <span>↗</span></Link>
-          <Link href="/aller/panel" className="editorial-link mt-4">Prueba cómo se publica un aviso ↗</Link>
+          {activeSpaces.length ? <div className="mt-6 flex flex-wrap gap-3">{activeSpaces.map(space => <Link key={space.id} href={`/${space.id}`} className="municipal-cta">Descubre el espacio de {townNames.get(space.id)} <span>↗</span></Link>)}</div> : null}
+          <Link href="#concejos" className="editorial-link mt-4">Los seis concejos del Caudal ↗</Link>
         </div>
       </section>
 
-      <section className="container-p14 mt-12">
+      <section id="concejos" className="container-p14 mt-12 scroll-mt-24">
         <SectionHeading eyebrow="Mapa informativo" title="Los seis concejos del Caudal" />
         <div className="grid gap-4 md:grid-cols-2">
           {Object.entries(territories).map(([comarca, concejos]) => (
@@ -93,13 +94,13 @@ export default async function Home() {
       </section>
 
       <section className="container-p14 mt-12 grid gap-8 lg:grid-cols-[1fr_0.85fr]">
-        <div>
+        <div data-block="opinion">
           <SectionHeading title={opinion.length ? "Opinión" : "Más historias"} />
-          {(opinion.length ? opinion : articles.slice(-2)).map((article) => (
+          {(opinion.length ? opinion : more).map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
         </div>
-        <div>
+        <div data-block="agenda">
           <SectionHeading title="Para salir" href="/agenda" />
           <AgendaList />
         </div>

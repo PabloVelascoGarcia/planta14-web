@@ -16,11 +16,11 @@ export function Footer({ cookieSettings = false }: { cookieSettings?: boolean })
         </div>
         <div className="text-sm">
           <p className="font-bold uppercase tracking-[0.18em] text-paper/55">Proyecto</p>
-          <div className="mt-3 flex flex-col gap-2">
-            <Link href="/publicidad" className="hover:text-white">Publicidad</Link>
-            <Link href="/contacto" className="hover:text-white">Contacto</Link>
-            <Link href="/agenda" className="hover:text-white">Agenda</Link>
-            {demo ? <Link href="/aller/panel" className="hover:text-white">Demo municipal</Link> : null}
+          <div className="mt-1 flex flex-col">
+            <Link href="/publicidad" className="inline-flex min-h-11 items-center hover:text-white">Publicidad</Link>
+            <Link href="/contacto" className="inline-flex min-h-11 items-center hover:text-white">Contacto</Link>
+            <Link href="/agenda" className="inline-flex min-h-11 items-center hover:text-white">Agenda</Link>
+            {demo ? <Link href="/aller/panel" className="inline-flex min-h-11 items-center hover:text-white">Demo municipal</Link> : null}
           </div>
         </div>
         <div className="text-sm leading-6 text-paper/70">
@@ -30,12 +30,12 @@ export function Footer({ cookieSettings = false }: { cookieSettings?: boolean })
         </div>
       </div>
       <nav aria-label="Información legal" className="border-t border-paper/15">
-        <div className="container-p14 flex flex-wrap gap-x-6 gap-y-2 py-5 text-xs text-paper/70">
+        <div className="container-p14 flex flex-wrap items-center gap-x-6 py-3 text-[13px] text-paper/70">
           <span>Planta 14, medio editado por ASSA</span>
-          <Link href="/aviso-legal" className="hover:text-white">Aviso legal</Link>
-          <Link href="/privacidad" className="hover:text-white">Privacidad</Link>
-          <Link href="/cookies" className="hover:text-white">Cookies</Link>
-          <Link href="/condiciones-cuentas-municipales" className="hover:text-white">Condiciones de las cuentas municipales</Link>
+          <Link href="/aviso-legal" className="inline-flex min-h-11 items-center hover:text-white">Aviso legal</Link>
+          <Link href="/privacidad" className="inline-flex min-h-11 items-center hover:text-white">Privacidad</Link>
+          <Link href="/cookies" className="inline-flex min-h-11 items-center hover:text-white">Cookies</Link>
+          <Link href="/condiciones-cuentas-municipales" className="inline-flex min-h-11 items-center hover:text-white">Condiciones de las cuentas municipales</Link>
           {cookieSettings ? <CookieSettingsButton /> : null}
         </div>
       </nav>

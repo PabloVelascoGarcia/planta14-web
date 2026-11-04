@@ -108,5 +108,5 @@ export function CookieConsent({ gaId }: { gaId: string }) {
 }
 
 export function CookieSettingsButton() {
-  return <button type="button" className="hover:text-white text-left" onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS))}>Configurar cookies</button>;
+  return <button type="button" className="inline-flex min-h-11 items-center text-left hover:text-white" onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS))}>Configurar cookies</button>;
 }

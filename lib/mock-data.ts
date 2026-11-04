@@ -6,6 +6,8 @@ export type Article = {
   excerpt: string;
   body: string[];
   image: string;
+  /** Payload: tamaños de la copia pública para `srcset` (el navegador elige según el hueco). */
+  imageSrcSet?: string;
   imageAlt?: string;
   imageCredit?: string;
   sourceName?: string;

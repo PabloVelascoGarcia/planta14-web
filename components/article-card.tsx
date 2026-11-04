@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Article } from "@/lib/mock-data";
-import { formatDate, slugify } from "@/lib/utils";
+import { formatPublished, slugify } from "@/lib/utils";
+import { ArticleImage } from "@/components/article-image";
 
 type ArticleCardProps = {
   article: Article;
@@ -23,7 +24,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
     return (
       <article className="grid gap-4 border-t border-coal-900/15 py-5 sm:grid-cols-[180px_1fr]">
         <Link href={`/noticia/${article.slug}`} aria-label={`Leer: ${article.title}`} className="block overflow-hidden bg-coal-100">
-          <img src={article.image} alt={article.imageAlt ?? ""} loading="lazy" decoding="async" width={800} height={500} className="h-36 w-full object-cover transition duration-300 hover:scale-105" />
+          <ArticleImage article={article} sizes="horizontal" className="h-36 w-full object-cover transition duration-300 hover:scale-105" />
         </Link>
         <div>
           <Meta article={article} />
@@ -40,7 +41,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
   return (
     <article className="group">
       <Link href={`/noticia/${article.slug}`} aria-label={`Leer: ${article.title}`} className="block overflow-hidden bg-coal-100">
-        <img src={article.image} alt={article.imageAlt ?? ""} loading="lazy" decoding="async" width={800} height={500} className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-105" />
+        <ArticleImage article={article} sizes="card" className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-105" />
       </Link>
       <div className="mt-3">
         <Meta article={article} />
@@ -61,7 +62,7 @@ function Meta({ article }: { article: Article }) {
       <span>/</span>
       <Link href={`/concejo/${slugify(article.concejo)}`} className="hover:text-copper">{article.concejo}</Link>
       <span>/</span>
-      <time dateTime={article.date}>{formatDate(article.date)}</time>
+      <time dateTime={article.publishedAt || article.date}>{formatPublished(article)}</time>
     </div>
   );
 }

@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { Article } from "@/lib/mock-data";
-import { formatDate, slugify } from "@/lib/utils";
+import { formatPublished, slugify } from "@/lib/utils";
 import { AdSlot } from "@/components/ad-slot";
 import { ArticleCard } from "@/components/article-card";
 import { RichText } from "@/components/rich-text";
+import { ArticleImage } from "@/components/article-image";
+import { ShareButtons } from "@/components/share-buttons";
 
 /** Cuerpo de una noticia con el diseño público. Lo usan la página pública y la vista previa del CMS. */
-export function ArticleView({ article, related }: { article: Article; related: Article[] }) {
+export function ArticleView({ article, related, shareUrl }: { article: Article; related: Article[]; shareUrl?: string }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,760px)_300px]">
       <div>
@@ -25,10 +27,11 @@ export function ArticleView({ article, related }: { article: Article; related: A
           <Link href={`/autor/${slugify(article.author)}`} className="font-bold hover:text-copper">
             {article.author}
           </Link>
-          <time dateTime={article.date}>{formatDate(article.date)}</time>
+          <time dateTime={article.publishedAt || article.date}>{formatPublished(article)}</time>
           <span>· {Math.max(1, Math.ceil(article.body.join(" ").split(/\s+/).length / 220))} min de lectura</span>
         </div>
-        <img src={article.image} alt={article.imageAlt ?? ""} className="mt-6 aspect-[16/10] w-full object-cover" />
+        {shareUrl ? <ShareButtons url={shareUrl} title={article.title} /> : null}
+        <ArticleImage article={article} sizes="article" priority width={1600} height={1000} className="mt-6 aspect-[16/10] w-full object-cover" />
         {article.imageCredit ? <p className="mt-2 text-xs text-steel">Fotografía: {article.imageCredit}</p> : null}
         <div className="mx-auto mt-8 max-w-[640px] space-y-6 font-serif text-xl leading-9 text-coal-900">
           {article.bodyRich ? <RichText value={article.bodyRich} /> : article.body.map((paragraph) => (
@@ -38,7 +41,7 @@ export function ArticleView({ article, related }: { article: Article; related: A
       </div>
       <aside className="space-y-8">
         <AdSlot tall />
-        <div>
+        <div data-block="relacionadas">
           <h2 className="border-b-2 border-coal-950 pb-2 font-serif text-2xl font-black">Relacionadas</h2>
           <div className="mt-2">
             {related.map((item) => (

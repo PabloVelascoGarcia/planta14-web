@@ -24,6 +24,18 @@ function populated<T>(value: number | T): T {
 export function mediaURL(value?: number | Media | null) {
   return value && typeof value !== 'number' && value.rightsScope === 'publicable' && value.rightsHolder && value.rightsType && value.publicURL ? value.publicURL : '/images/placeholder.svg';
 }
+/** srcset de la copia pública: tamaños generados («card» 800 px, «hero» 1600 px) y el original, de menor a mayor. */
+export function imageSrcSet(value?: number | Media | null): string | undefined {
+  if (!value || typeof value === 'number' || mediaURL(value) === '/images/placeholder.svg') return undefined;
+  const entries = new Map<number, string>();
+  for (const size of ['card', 'hero'] as const) {
+    const variant = value.sizes?.[size];
+    const url = variant?.filename && variant.width ? publicURL(value, variant.filename) : null;
+    if (url && variant?.width) entries.set(variant.width, url);
+  }
+  if (value.width) entries.set(value.width, mediaURL(value));
+  return entries.size > 1 ? [...entries].sort(([a], [b]) => a - b).map(([width, url]) => `${url} ${width}w`).join(', ') : undefined;
+}
 /** Social preview image: the "hero" variant (1600 px) of the public copy, falling back to "card" and the original. */
 export function shareImage(value?: number | Media | null): Article['shareImage'] {
   if (!value || typeof value === 'number' || mediaURL(value) === '/images/placeholder.svg') return undefined;
@@ -41,7 +53,7 @@ export function articleContract(doc: PayloadArticle): Article {
   const image = typeof doc.image === 'object' ? doc.image : null;
   return {
     id: doc.legacyID || String(doc.id), slug: doc.slug || String(doc.id), title: doc.title, excerpt: doc.excerpt,
-    body: lexicalToParagraphs(doc.body), ...(toLexical(doc.body) && !isPlainParagraphs(doc.body) ? { bodyRich: toLexical(doc.body)! } : {}), image: mediaURL(doc.image), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
+    body: lexicalToParagraphs(doc.body), ...(toLexical(doc.body) && !isPlainParagraphs(doc.body) ? { bodyRich: toLexical(doc.body)! } : {}), image: mediaURL(doc.image), ...(imageSrcSet(doc.image) ? { imageSrcSet: imageSrcSet(doc.image) } : {}), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
     date: doc.date || madridLocal(doc.publishedAt).slice(0, 10), author: author.name, authorSlug: author.slug,
     comarca: town.comarca, concejo: town.name, topic: section.name, status: 'published',
     publishedAt: doc.publishedAt || doc.date || '', scheduledAt: doc.scheduledAt || undefined,
@@ -114,7 +126,7 @@ export function municipalContract(doc: PayloadMunicipalContent): MunicipalConten
     origin: 'municipality', status: 'published', publishedAt: doc.publishedAt, expiresAt: doc.expiresAt || null, eventAt: doc.eventAt || null,
     place: doc.place || null, deadline: doc.deadline || null, attachments: (doc.attachments || []).map(({ url, title }) => ({ url, title })),
     demo: Boolean(doc.demo), ...(doc.sourceUrl ? { sourceUrl: doc.sourceUrl } : {}),
-    ...(image && mediaURL(image) !== '/images/placeholder.svg' ? { image: { url: mediaURL(image), alt: image.alt, credit: image.credit, share: shareImage(image) } } : {}) };
+    ...(image && mediaURL(image) !== '/images/placeholder.svg' ? { image: { url: mediaURL(image), ...(imageSrcSet(image) ? { srcSet: imageSrcSet(image) } : {}), alt: image.alt, credit: image.credit, share: shareImage(image) } } : {}) };
 }
 export async function payloadMunicipalContent(): Promise<MunicipalContent[]> {
   const payload = await contentClient();
