@@ -259,12 +259,13 @@ La foto que elijas en Imágenes sustituye a la que venía con la web («Foto act
 
 ## 12. Escribir noticias en el CMS (redacción)
 
-Al entrar en `/cms`, el **inicio** muestra tres accesos:
+Al entrar en `/cms`, el **inicio** muestra cuatro accesos:
 - **Nueva noticia:** abre el formulario vacío;
 - **Mis borradores:** las noticias que has creado tú y aún no están publicadas, con su número;
-- **Publicadas hoy:** las noticias publicadas con la fecha de hoy.
+- **Publicadas hoy:** las noticias publicadas con la fecha de hoy;
+- **Pendientes de revisar:** lo que ha llegado de fuera de tus concejos (apartado 14).
 
-La administración ve además los **avisos municipales sin revisar**, los **espacios municipales** y los **usuarios**.
+La administración ve todos los pendientes, los **espacios municipales** y los **usuarios**. En el CMS, las fechas se muestran como `dd/MM/aaaa HH:mm`.
 
 ### El formulario, pestaña a pestaña
 
@@ -338,3 +339,107 @@ bash infra/deploy/ensayo.sh --env-file infra/.env.production retirar
 ```
 
 La retirada hace antes una copia de seguridad, borra solo lo marcado como ensayo, conserva los dos reportajes definitivos y lo que hayan escrito los periodistas, devuelve Mieres y Lena a su estado anterior y lo deja anotado en Auditoría.
+
+## 14. Periodistas responsables y «Pendientes de revisar»
+
+Cada concejo tiene un **periodista responsable** (Concejos → el concejo → **Periodista responsable**). Solo lo cambia la administración, y no se publica en la web. Valores iniciales:
+
+| Concejos | Responsable |
+|---|---|
+| Aller, Mieres y Morcín | Andrés (velascolne@gmail.com) |
+| Lena, Riosa y Ribera de Arriba | Juanfran Santos (juansantospolalena@gmail.com) |
+
+Los carga, una vez, `npm run cms:responsables` (lo hace Code local al instalar; ver el documento de la versión). Si las cuentas no existen, las crea con rol Redacción y una contraseña aleatoria que no se muestra a nadie: cada uno entra la primera vez con **«¿Olvidaste tu contraseña?»** en `/cms`. Se puede repetir: no cambia un responsable que ya esté elegido.
+
+**Lo que llega de fuera** se asigna al responsable del concejo:
+- las **publicaciones de los ayuntamientos** en su espacio;
+- las **fiestas enviadas** por comisiones y asociaciones (apartado 15).
+
+Cada entrada crea un aviso en **Pendientes de revisar** (antes «Avisos municipales»), asignado al responsable, que además recibe un **correo** con el enlace (desde avisos@planta14.com, si el correo está activado). Cuando lo hayas atendido, abre el pendiente y marca **Revisado**. Si un concejo no tiene responsable, el pendiente queda sin asignar y solo lo ve la administración.
+
+Las **cartas** todavía no tienen formulario en la web. Cuando lo tengan, seguirán este mismo camino.
+
+## 15. Fiestas de las Cuencas
+
+**En la web:**
+- **`/fiestas`:** «Este fin de semana» (de viernes a domingo; de lunes a jueves, el siguiente), el **calendario por meses** con las que aún no han terminado y un filtro por concejo. Sin carteles.
+- **Ficha** (`/fiestas/nombre-pueblo-año`): fechas, programa, botones de compartir, la crónica si se enlaza y el **cartel pequeño y enmarcado** junto al programa.
+- **Otros sitios:** también salen en la **agenda**, en la barra lateral de la **página del concejo** y, en la **portada**, en un bloque de texto «De fiesta este fin de semana» (si ese fin de semana no hay ninguna, «Próximas fiestas»). Hay un enlace «Fiestas» en el menú.
+
+**En el CMS** (Fiestas → Crear):
+
+| Campo | Para qué |
+|---|---|
+| Nombre de la fiesta, pueblo o barrio, concejo | Lo que se ve; el concejo decide su página y quién la revisa. |
+| Primer día y último día | Calendario (el mismo día si dura uno). |
+| Programa | Texto con negrita, listas, ladillos y enlaces. |
+| Cartel (opcional) | **Crear** y marcar la declaración de derechos, como en las noticias. Nunca sale en los listados. |
+| Crónica | La noticia de la fiesta, cuando se publique. |
+| Se repite cada año | Para duplicarla al año siguiente. |
+| Organiza y Contacto | **No se publican**: solo para la redacción. |
+
+La dirección se crea sola con el nombre, el pueblo y el año.
+
+**Duplicar para el año siguiente:** abre la fiesta y pulsa el botón de la barra lateral. Crea un **borrador** 52 semanas después (cae en el mismo día de la semana: el sábado sigue siendo sábado), con el mismo programa y sin cartel ni crónica. Revisa las fechas y el programa antes de publicarla.
+
+**«Envía tu fiesta»** (`/fiestas/enviar`, enlazado desde `/fiestas` y desde cada ficha):
+1. La comisión o asociación rellena la fiesta, el programa, el cartel si quiere (con su declaración de derechos) y sus datos de contacto, que no se publican.
+2. Recibe un correo y confirma con un botón. El enlace caduca en 7 días y sirve una vez. Sin confirmar, la fiesta no llega a nadie.
+3. Al confirmar, entra como **borrador** y se crea un pendiente para el periodista responsable del concejo, que recibe un correo.
+4. El periodista la revisa (fechas, programa, cartel) y la publica.
+
+Hay un campo trampa contra robots y un límite de 5 envíos al día por correo. Si el correo de avisos@planta14.com no está activado, el formulario lo dice y no guarda nada.
+
+**Precarga desde un JSON:** comprueba siempre antes con `--solo-comprobar`.
+
+```bash
+npm run cms:fiestas:importar -- fiestas.json --solo-comprobar
+```
+
+```bash
+npm run cms:fiestas:importar -- fiestas.json
+```
+
+- **Formato:** el de `docs/ejemplos/fiestas.json`:
+  - `nombre`, `pueblo` y `concejo` (slug o nombre);
+  - `inicio` y `fin` en formato AAAA-MM-DD;
+  - `programa`, con los párrafos separados por una línea en blanco;
+  - `organizador` y `contacto`, que no se publican;
+  - `seRepite`.
+- **Borradores o publicadas:** entran como borrador; con `--publicar`, publicadas.
+- **Errores:** primero se revisa todo el archivo; si hay un error, no se importa nada y se dice en qué fiesta está.
+- **Repetible:** una fiesta que ya existe (mismo nombre, pueblo y año) no se toca.
+- **En el servidor:** el archivo se pasa por la entrada estándar al contenedor de migraciones. El comando completo está en el documento de la versión.
+
+## 16. Boletín: suscriptores
+
+**Formulario.** Está en la portada, en el pie de todas las páginas, en cada noticia y en cada ficha de fiesta. Cada persona elige:
+- **qué recibir:** «Qué hacer este finde» y/o «Avisos de mi concejo»;
+- **sus concejos:** si no marca ninguno, recibirá los seis.
+
+Debe aceptar el consentimiento, que enlaza a la política de privacidad. La política ya recoge el boletín y las fiestas enviadas, pero aún tiene huecos por rellenar, como el proveedor de correo y los plazos.
+
+**Doble confirmación:**
+1. Al apuntarse, se guarda como **Pendiente de confirmar** y recibe un correo.
+2. El enlace abre una página con el botón **Confirmar la suscripción**. Así, los antivirus del correo no confirman solos.
+3. Las preferencias solo se aplican al confirmar. Si alguien ya suscrito vuelve a apuntarse con otras preferencias, también tiene que confirmar el cambio.
+4. Se envía como mucho un correo cada dos minutos a la misma dirección.
+
+**Baja con un clic.** Cada correo lleva un enlace de baja, que abre una página con un único botón. Además, los programas de correo muestran su propio «Cancelar suscripción» (cabeceras `List-Unsubscribe`).
+
+**En el CMS** (Suscriptores, solo la administración):
+- **Estado:** Pendiente de confirmar, Confirmado o De baja.
+- **Datos guardados:** concejos, contenidos, dónde se apuntó y el texto y la fecha del consentimiento.
+- **Exportar:** sobre la lista, **Exportar confirmados (CSV)** y **Exportar todos (CSV)**. El archivo va separado por punto y coma y se abre con Excel o LibreOffice.
+- **Borrar los datos de alguien** que lo pida: elimina su registro.
+
+El **envío del boletín** todavía no existe: llegará en un encargo posterior. Por ahora solo se captan y confirman suscriptores. Todo el correo sale del SMTP de avisos@planta14.com.
+
+## 17. Última hora
+
+**Última hora**, en la barra lateral del CMS (sección Globales): marca **Mostrar la barra de última hora** y rellena:
+- **Texto:** una frase de hasta 140 caracteres;
+- **Enlace:** opcional; la noticia (`/noticia/…`) o una dirección `https://`;
+- **Se quita sola el:** opcional; fecha y hora de caducidad.
+
+Aparece una barra roja bajo la cabecera de todas las páginas, salvo las de concejo, que tienen su propia cabecera. Desaparece a la hora de caducidad o al desmarcarla. La puede activar cualquier persona de la redacción.
