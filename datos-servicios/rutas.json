@@ -71,33 +71,35 @@
     },
     {
       "id": "ruta-mieres-sierra-lagos-sl1",
-      "nombre": "Sierra de Lagos",
+      "nombre": "Sierra de Llagos",
       "codigo": "SL-AS 1",
       "concejo": "Mieres",
       "otrosConcejos": [
         "Ribera de Arriba"
       ],
       "inicio": "Baiña",
-      "fin": null,
+      "fin": "Baiña (circuito circular; punto histórico de salida pendiente de contraste)",
       "distanciaKm": 6,
-      "distanciaCorrespondeA": "Recorrido según plan municipal; final no detallado",
+      "distanciaCorrespondeA": "Circular, distancia total",
       "desnivel": {
         "positivoMetros": null,
         "negativoMetros": null
       },
-      "dificultad": null,
-      "tiempo": "3 horas",
-      "descripcion": "El sendero local de la sierra de Lagos figura en la relación municipal de rutas con salida en Baiña. No se equipara con las variantes más largas publicadas desde Ribera de Arriba.",
+      "dificultad": "Fácil, según FEMPA",
+      "tiempo": null,
+      "descripcion": "Sendero local circular de seis kilómetros que figura en el registro de FEMPA para Mieres. La federación mantiene dudas sobre su homologación; no debe darse por actualizado el balizamiento.",
       "gpxOficial": null,
       "comprobacionGPX": null,
       "enlaceAlternativo": null,
       "fuentes": [
-        "https://www.mieres.es/wp-content/uploads/2017/06/Plan-Municipal-de-Salud-de-Mieres.pdf"
+        "https://fempa.net/ruta/sl-as-1-sierra-de-llagos/"
       ],
       "estado": "comprobado_con_pendientes",
       "dudas": [
-        "Dudoso: referencia municipal antigua; pendiente contrastar trazado, final, desnivel, dificultad y vigencia de la homologación.",
-        "No se ha localizado GPX oficial; no confundir con recorridos particulares a Magarrón o Castiellu."
+        "FEMPA indica expresamente homologación «Con dudas».",
+        "Dudoso: desnivel y duración no publicados en la ficha federativa; salida en Baiña procedente de referencia municipal histórica y pendiente de contraste.",
+        "El antiguo PDF del plan municipal daba 3 horas, pero su URL devuelve 404 el 04/11/2026. No se conserva esa duración como dato vigente.",
+        "No se ha localizado GPX oficial."
       ]
     },
     {
@@ -167,7 +169,7 @@
       ],
       "inicio": "Santibanes de Murias, Aller",
       "fin": "Campumanes/Campomanes, Lena",
-      "distanciaKm": 25.51,
+      "distanciaKm": 25.7,
       "distanciaCorrespondeA": "Travesía, solo ida",
       "desnivel": {
         "positivoMetros": null,
@@ -180,15 +182,21 @@
       "comprobacionGPX": null,
       "enlaceAlternativo": null,
       "fuentes": [
-        "https://www.turismoasturias.es/descubre/naturaleza/rutas/asturias-interior/santibanez-de-murias-campomanes",
         "https://fempa.net/ruta/gr-109-asturias-interior/"
       ],
       "estado": "comprobado_con_pendientes",
       "dudas": [
-        "Dudoso: la ficha indica «Desnivel: 996 m» sin definir si es positivo o diferencia de cotas; se conserva en nota, sin convertirlo en ascenso acumulado.",
-        "Turismo Asturias da 25,51 km y FEMPA 25,7 km; se conserva la distancia de la ficha turística.",
-        "Se anuncia KML, pero no se ha localizado GPX oficial directo."
-      ]
+        "Se usa la distancia actual de FEMPA: 25,7 km. La ficha turística indexada daba 25,51 km, pero su URL devolvió 404 en la comprobación directa del 04/11/2026.",
+        "Dudoso: dificultad media y duración de 8 h 30 min proceden de esa ficha turística indexada; su vigencia requiere confirmación.",
+        "La antigua ficha indicaba desnivel 996 m sin definir el tipo; no se convierte en desnivel positivo.",
+        "No se ha localizado GPX oficial directo."
+      ],
+      "fuenteHistoricaNoAccesible": {
+        "url": "https://www.turismoasturias.es/descubre/naturaleza/rutas/asturias-interior/santibanez-de-murias-campomanes",
+        "estadoHTTP": 404,
+        "consulta": "2026-11-04",
+        "lectura": "Extracto indexado de la página oficial; no acceso directo vigente."
+      }
     },
     {
       "id": "ruta-aller-xurbeo",
@@ -349,10 +357,10 @@
       "id": "ruta-llosorio",
       "nombre": "Pico Llosorio desde La Foz",
       "codigo": null,
-      "concejo": "Riosa",
+      "concejo": "Morcín",
       "otrosConcejos": [
-        "Morcín",
-        "Mieres"
+        "Mieres",
+        "Riosa"
       ],
       "inicio": "La Foz de Morcín",
       "fin": "La Foz de Morcín",
@@ -377,7 +385,7 @@
       ],
       "estado": "comprobado_con_pendientes",
       "dudas": [
-        "Asignada a Riosa como ruta compartida, no como salida situada dentro de Riosa. Inicio y fin en Morcín."
+        "Ruta compartida por Morcín, Mieres y Riosa según Turismo Asturias. La salida y la llegada se encuentran en La Foz de Morcín."
       ]
     },
     {
