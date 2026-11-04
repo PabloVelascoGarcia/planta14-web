@@ -1,0 +1,2854 @@
+{
+  "version": 1,
+  "fecha_consulta": "2026-11-04",
+  "territorio": "Seis concejos del Caudal, Asturias",
+  "naturaleza": "Catálogo documental de fiestas reales; no contiene las actividades ficticias del conjunto de ensayo.",
+  "alcance": "Selección documentada de fiestas patronales, romerías y celebraciones populares y gastronómicas. No es un inventario exhaustivo ni un calendario confirmado para 2026 o años posteriores.",
+  "criterios": {
+    "descripciones": "Redacción original; máximo 80 palabras por fiesta.",
+    "fuentes": "Ayuntamientos, Turismo Asturias y fuentes institucionales públicas. No se utiliza prensa, recopilaciones de prensa alojadas en webs municipales ni directorios comerciales como prueba de un dato.",
+    "red_via_de_la_plata": {
+      "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+      "naturaleza": "Asociación con personalidad jurídica pública integrada por ayuntamientos, entre ellos los seis concejos del Caudal.",
+      "verificacion": "https://rutadelaplata.com/la-asociacion/red-de-cooperacion/",
+      "uso": "Fichas institucionales de Riosa; no es un medio de comunicación."
+    },
+    "fechas": "Las fechas habituales no se convierten automáticamente en fechas de 2025. Las fechas de festivos laborales se guardan separadas del intervalo festivo.",
+    "periodicidad": "La inclusión en un calendario tradicional se distingue de una afirmación explícita de periodicidad anual. Los programas antiguos no prueban continuidad actual.",
+    "datos_ausentes": "null, no_consta o no_localizado indican ausencia de confirmación, no ausencia de la fiesta. Las dudas específicas figuran en cada ficha.",
+    "carteles": "Solo enlaces a publicaciones del ayuntamiento o la comisión, con su procedencia. No se han descargado carteles ni reproducido su contenido."
+  },
+  "resumen": {
+    "total": 46,
+    "por_concejo": {
+      "Mieres": 6,
+      "Lena": 12,
+      "Aller": 7,
+      "Morcín": 7,
+      "Riosa": 6,
+      "Ribera de Arriba": 8
+    },
+    "fechas_2025_por_estado": {
+      "parcial": 6,
+      "confirmado": 4,
+      "no_localizado": 35,
+      "dudoso": 1
+    },
+    "periodicidad_anual_no_confirmada": [
+      "aller-miravalles",
+      "aller-toreu-santu",
+      "aller-carmin-felechosa",
+      "aller-san-mames-bustiye",
+      "aller-rosario",
+      "aller-cordero-coto-bello"
+    ]
+  },
+  "dudas_generales": [
+    "No se han localizado programas oficiales completos de 2025 para la mayoría de las fiestas: no se rellenan por cálculo.",
+    "La Flor: Turismo Asturias muestra 25–27 de abril de 2025 y añade actos de un lunes sin fecha; las páginas municipales tampoco formulan igual la relación con Pascua.",
+    "Aller: seis fichas se apoyan en programas antiguos, algunos identificados como 2013 o 2014 y otros sin año inequívoco. No se presentan como calendario vigente.",
+    "Ribera de Arriba: el calendario municipal detalla localidades y meses, pero no los actos ni la organización. No se completan por analogía con otras romerías.",
+    "El calendario SITPA de 2025 se pudo consultar mediante su texto indexado oficial; su apertura directa agotó el tiempo de respuesta. Solo se usan sus fechas como festivos laborales.",
+    "Los enlaces de cartel llevan a la publicación original. Salvo el enlace de imagen extraído del HTML de Lena, no se ha fijado una URL directa al archivo."
+  ],
+  "fiestas": [
+    {
+      "id": "mieres-san-xuan",
+      "nombre": "San Xuan",
+      "pueblo_o_parroquia": "Mieres del Camín",
+      "concejo": "Mieres",
+      "fechas_habituales": {
+        "texto": "24 de junio como día principal; actividades en los días próximos.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.mieres.es/areas-municipales/festejos/festejos-en-mieres-del-camin/san-xuan/",
+          "https://www.mieres.es/llega-san-xuan-2025-con-12-dias-de-fiesta-musica-tradicion-y-folclore/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": "2025-06-13",
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "parcial",
+        "nota": "El anuncio confirma el comienzo el 13 de junio y doce días de celebración; no se fija aquí el final por cálculo."
+      },
+      "descripcion": "La capital del concejo celebra su patronal con música, fuego y baile colectivo en las calles.",
+      "actos_tipicos": {
+        "actos": [
+          "Foguera",
+          "danza prima",
+          "pasacalles",
+          "conciertos",
+          "concurso de entibadores"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Concejalía de Festejos del Ayuntamiento de Mieres",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "San Xuan",
+          "url": "https://www.mieres.es/areas-municipales/festejos/festejos-en-mieres-del-camin/san-xuan/",
+          "consulta": "2026-11-04",
+          "alcance": "Fecha habitual, foguera, danza y tradición.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Llega San Xuan 2025, con 12 días de fiesta, música, tradición y folclore",
+          "url": "https://www.mieres.es/llega-san-xuan-2025-con-12-dias-de-fiesta-musica-tradicion-y-folclore/",
+          "consulta": "2026-11-04",
+          "alcance": "Arranque el 13 de junio, duración anunciada de doce días, actos y organización en 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.mieres.es/evento/san-xuan-2025-programa-domingo-22/",
+          "url_archivo": null,
+          "publicado_por": "Ayuntamiento de Mieres",
+          "consulta": "2026-11-04",
+          "nota": "Cartel publicado dentro de la ficha municipal; solo se enlaza la publicación."
+        }
+      ],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "mieres-martires-valdecuna",
+      "nombre": "Romería de los Mártires de Valdecuna",
+      "pueblo_o_parroquia": "Insierto y santuario de los Mártires, valle de Cuna",
+      "concejo": "Mieres",
+      "fechas_habituales": {
+        "texto": "27 de septiembre; programa en torno a esa jornada.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "https://www.mieres.es/todo-listo-para-los-martires-fiesta-de-interes-turistico-que-llega-con-tres-dias-de-celebracion-y-la-gran-romeria-del-sabado-27/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": "2025-09-26",
+        "fin": "2025-09-28",
+        "dias_confirmados": [],
+        "dia_principal": "2025-09-27",
+        "festivo_laboral": null,
+        "estado": "confirmado",
+        "nota": "Intervalo expresamente anunciado en la publicación municipal."
+      },
+      "descripcion": "Romería de encuentro alrededor del santuario, con actos religiosos, música asturiana y celebración en la campa.",
+      "actos_tipicos": {
+        "actos": [
+          "Subida al santuario",
+          "misa y procesión",
+          "puya del ramu",
+          "música tradicional",
+          "verbenas"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Concejalía de Festejos y Asociación de Vecinos Llanduelu de Insierto",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "explicitamente_anual",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Festejos en el concejo",
+          "url": "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario habitual, localidades y carácter recurrente.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Programa de Los Mártires 2025",
+          "url": "https://www.mieres.es/todo-listo-para-los-martires-fiesta-de-interes-turistico-que-llega-con-tres-dias-de-celebracion-y-la-gran-romeria-del-sabado-27/",
+          "consulta": "2026-11-04",
+          "alcance": "Fechas 26 a 28 de septiembre de 2025, día principal 27, actos y organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.mieres.es/todo-listo-para-los-martires-fiesta-de-interes-turistico-que-llega-con-tres-dias-de-celebracion-y-la-gran-romeria-del-sabado-27/",
+          "url_archivo": null,
+          "publicado_por": "Ayuntamiento de Mieres",
+          "consulta": "2026-11-04",
+          "nota": "Cartel publicado dentro de la ficha municipal; solo se enlaza la publicación."
+        }
+      ],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "mieres-folixa",
+      "nombre": "Folixa na Primavera",
+      "pueblo_o_parroquia": "Mieres del Camín",
+      "concejo": "Mieres",
+      "fechas_habituales": {
+        "texto": "Abril; fin de semana variable.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "https://www.mieres.es/evento/folixa-na-primavera-2025/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": "2025-04-04",
+        "fin": "2025-04-06",
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "confirmado",
+        "nota": "Las tres fechas figuran en la ficha municipal."
+      },
+      "descripcion": "Encuentro de primavera dedicado a la cultura asturiana, con presencia destacada de música y baile.",
+      "actos_tipicos": {
+        "actos": [
+          "Música folk",
+          "baile tradicional"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Concejalía de Festejos del Ayuntamiento de Mieres",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Festejos en el concejo",
+          "url": "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario habitual, localidades y carácter recurrente.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Folixa na Primavera 2025",
+          "url": "https://www.mieres.es/evento/folixa-na-primavera-2025/",
+          "consulta": "2026-11-04",
+          "alcance": "Fechas 4, 5 y 6 de abril de 2025 y organizador.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.mieres.es/evento/folixa-na-primavera-2025/",
+          "url_archivo": null,
+          "publicado_por": "Ayuntamiento de Mieres",
+          "consulta": "2026-11-04",
+          "nota": "Publicación municipal con láminas de la programación de 2025; sin descargar."
+        }
+      ],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "mieres-antroxu",
+      "nombre": "Antroxu de Mieres",
+      "pueblo_o_parroquia": "Mieres del Camín",
+      "concejo": "Mieres",
+      "fechas_habituales": {
+        "texto": "Febrero o marzo, según el calendario de Carnaval.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "https://www.mieres.es/evento/gran-antroxu-2025/",
+          "https://www.mieres.es/evento/antroxu-infantil-2025/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [
+          "2025-03-04",
+          "2025-03-07"
+        ],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "parcial",
+        "nota": "Fechas de los dos desfiles comprobados; no se presenta como programa íntegro de Carnaval."
+      },
+      "descripcion": "El carnaval local ocupa las calles con disfraces y desfiles para público infantil y adulto.",
+      "actos_tipicos": {
+        "actos": [
+          "Desfile-concurso infantil",
+          "desfile-concurso general"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Concejalía de Festejos del Ayuntamiento de Mieres",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Festejos en el concejo",
+          "url": "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario habitual, localidades y carácter recurrente.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Gran Antroxu 2025",
+          "url": "https://www.mieres.es/evento/gran-antroxu-2025/",
+          "consulta": "2026-11-04",
+          "alcance": "Desfile general del 7 de marzo y organizador.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Antroxu infantil 2025",
+          "url": "https://www.mieres.es/evento/antroxu-infantil-2025/",
+          "consulta": "2026-11-04",
+          "alcance": "Desfile infantil del 4 de marzo.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.mieres.es/evento/gran-antroxu-2025/",
+          "url_archivo": null,
+          "publicado_por": "Ayuntamiento de Mieres",
+          "consulta": "2026-11-04",
+          "nota": "Cartel publicado dentro de la ficha municipal; solo se enlaza la publicación."
+        }
+      ],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "mieres-cristo-turon",
+      "nombre": "Fiestas del Cristo de la Paz",
+      "pueblo_o_parroquia": "Turón",
+      "concejo": "Mieres",
+      "fechas_habituales": {
+        "texto": "Septiembre; la programación de cada edición concreta los días.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "https://www.mieres.es/evento/fiestas-del-cristo-de-la-paz-turon-2025-10-15set-4/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": "2025-09-10",
+        "fin": "2025-09-15",
+        "dias_confirmados": [],
+        "dia_principal": "2025-09-14",
+        "festivo_laboral": null,
+        "estado": "confirmado",
+        "nota": "Intervalo y día del Cristo indicados expresamente en la ficha."
+      },
+      "descripcion": "La fiesta de Turón combina celebración religiosa, encuentro vecinal y actividades en distintos puntos del valle.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa y procesión",
+          "puya del ramu",
+          "pasacalles",
+          "reparto del bollu",
+          "carrera de cintas"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "SOTUFE y Concejalía de Festejos del Ayuntamiento de Mieres",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Festejos en el concejo",
+          "url": "https://www.mieres.es/areas-municipales/festejos/festejos-en-el-concejo/",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario habitual, localidades y carácter recurrente.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Cristo de la Paz, Turón 2025: día del Cristo",
+          "url": "https://www.mieres.es/evento/fiestas-del-cristo-de-la-paz-turon-2025-10-15set-4/",
+          "consulta": "2026-11-04",
+          "alcance": "Programa del 10 al 15 de septiembre, actos del día 14 y organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.mieres.es/evento/fiestas-del-cristo-de-la-paz-turon-2025-10-15set-4/",
+          "url_archivo": null,
+          "publicado_por": "Ayuntamiento de Mieres",
+          "consulta": "2026-11-04",
+          "nota": "Cartel publicado dentro de la ficha municipal; solo se enlaza la publicación."
+        }
+      ],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "mieres-antroxu-turon",
+      "nombre": "Antroxu del Valle de Turón",
+      "pueblo_o_parroquia": "Turón",
+      "concejo": "Mieres",
+      "fechas_habituales": {
+        "texto": "Febrero o marzo, en torno al Carnaval.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.mieres.es/local/turon/?tribe_event_display=past&tribe_venue=turon",
+          "https://www.mieres.es/evento/antroxu-valle-de-turon-2025-desfile-infantil/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [
+          "2025-02-27",
+          "2025-02-28",
+          "2025-03-01",
+          "2025-03-04"
+        ],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "parcial",
+        "nota": "Se enumeran solo las jornadas documentadas en el archivo municipal."
+      },
+      "descripcion": "Celebración del valle con desfiles, cocina de temporada y participación infantil.",
+      "actos_tipicos": {
+        "actos": [
+          "Desfiles de colegios, adultos y menores",
+          "concurso de frixuelos",
+          "quema de la sardina"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "SOTUFE y Concejalía de Festejos del Ayuntamiento de Mieres",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "tradicion_de_carnaval; continuidad_anual_no_explicitada",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Turón: archivo de actividades de 2025",
+          "url": "https://www.mieres.es/local/turon/?tribe_event_display=past&tribe_venue=turon",
+          "consulta": "2026-11-04",
+          "alcance": "Actos del 27 y 28 de febrero, 1 y 4 de marzo de 2025.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Mieres",
+          "titulo": "Antroxu del Valle de Turón 2025: desfile infantil",
+          "url": "https://www.mieres.es/evento/antroxu-valle-de-turon-2025-desfile-infantil/",
+          "consulta": "2026-11-04",
+          "alcance": "Fecha, desfile y organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.mieres.es/evento/antroxu-valle-de-turon-2025-desfile-infantil/",
+          "url_archivo": null,
+          "publicado_por": "Ayuntamiento de Mieres",
+          "consulta": "2026-11-04",
+          "nota": "Cartel publicado dentro de la ficha municipal; solo se enlaza la publicación."
+        }
+      ],
+      "dudas": [
+        "La periodicidad anual se corresponde con la tradición de Carnaval, pero la ficha de 2025 no certifica todas las ediciones."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "lena-antroxu",
+      "nombre": "Antroxu",
+      "pueblo_o_parroquia": "La Pola",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Martes de Carnaval y un sábado posterior; fecha variable.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El Carnaval lenense combina una jornada infantil con otra de desfile festivo.",
+      "actos_tipicos": {
+        "actos": [
+          "Disfraces",
+          "batalla de harina y merengues",
+          "desfile"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La web describe la resaca aproximadamente una semana y media después; falta fecha oficial de cada edición."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "lena-pascua-campomanes",
+      "nombre": "Pascua y Santu Encuentru",
+      "pueblo_o_parroquia": "Campomanes / Campumanes",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Semana Santa, con acto principal el domingo de Pascua.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La celebración reúne al pueblo alrededor del encuentro de Pascua.",
+      "actos_tipicos": {
+        "actos": [
+          "Santu Encuentru"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "lena-la-flor",
+      "nombre": "La Flor y Mercáu Tradicional",
+      "pueblo_o_parroquia": "La Pola",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Primavera, en torno a Pascua; jornada principal en lunes.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.turismoasturias.es/agenda-de-asturias/-/calendarsuite/event/la-flor-de-lena/12590466/JXvXAPSD7JC0",
+          "https://www.aytolena.es/en/noticia/-/asset_publisher/f7b4e113864b/content/la-flor-2025",
+          "https://www.aytolena.es/historico-y-cultural",
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": "2025-04-25",
+        "fin": "2025-04-27",
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "dudoso",
+        "nota": "Turismo Asturias muestra 25–27 de abril, pero añade actividades de un lunes sin fechar. La duración completa requiere aclaración; no se asigna el 28 por deducción."
+      },
+      "descripcion": "La fiesta enlaza mercado, música y subida a la ermita de La Flor.",
+      "actos_tipicos": {
+        "actos": [
+          "Mercado artesanal",
+          "música",
+          "misa",
+          "puya del ramu"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Turismo Asturias",
+          "titulo": "La Flor de Lena 2025",
+          "url": "https://www.turismoasturias.es/agenda-de-asturias/-/calendarsuite/event/la-flor-de-lena/12590466/JXvXAPSD7JC0",
+          "consulta": "2026-11-04",
+          "alcance": "Cabecera del 25 al 27 de abril y programa con una jornada adicional rotulada «Luens».",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "La Flor 2025",
+          "url": "https://www.aytolena.es/en/noticia/-/asset_publisher/f7b4e113864b/content/la-flor-2025",
+          "consulta": "2026-11-04",
+          "alcance": "Publicación municipal del cartel de 2025; imagen enlazada, no descargada.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Histórico y cultural",
+          "url": "https://www.aytolena.es/historico-y-cultural",
+          "consulta": "2026-11-04",
+          "alcance": "Sitúa la romería el lunes siguiente a Pascua; difiere de la formulación del calendario de fiestas.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [
+        {
+          "url_publicacion": "https://www.aytolena.es/en/noticia/-/asset_publisher/f7b4e113864b/content/la-flor-2025",
+          "url_archivo": "https://www.aytolena.es/documents/1905982/4882266/La+FL+%28560%C2%A0%C3%97%C2%A0315%C2%A0px%29+%28Portada+para+Facebook%29+%28Cartel%29+%281%29.png/561efb5d-b550-0644-4b14-a1bf81744cda?t=1745321700049",
+          "publicado_por": "Ayuntamiento de Lena",
+          "consulta": "2026-11-04",
+          "nota": "URL extraída del HTML municipal. No se descargó ni se transcribió la imagen."
+        }
+      ],
+      "dudas": [
+        "Desajuste entre las fechas de cabecera y el programa de Turismo Asturias.",
+        "Las páginas municipales describen de forma diferente la relación con Pascua. Confirmar fecha concreta anual."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "lena-corderu",
+      "nombre": "Fiesta del Corderu",
+      "pueblo_o_parroquia": "Prau Llagüezos, límite de Lena y Quirós",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Primer domingo de julio.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas",
+          "https://www.aytolena.es/noticia/-/asset_publisher/f7b4e113864b/content/not-licitaci%25C3%25B3n-barra-bar-el-cordero-2025"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": "2025-07-05",
+        "fin": "2025-07-06",
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "confirmado",
+        "nota": "Ambos días constan expresamente en el anuncio municipal. No se equipara la licitación de la barra con la ejecución de todos los actos."
+      },
+      "descripcion": "Una comida campestre compartida con Quirós reúne música y tradición ganadera.",
+      "actos_tipicos": {
+        "actos": [
+          "Cordero a la estaca",
+          "música y baile",
+          "misa campestre"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": "La fuente documenta celebración conjunta de Lena y Quirós; no se atribuye la organización técnica completa."
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "El Corderu: calendario tradicional",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Primer domingo de julio, lugar y actos de la celebración conjunta.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Licitación de barra para El Corderu 2025",
+          "url": "https://www.aytolena.es/noticia/-/asset_publisher/f7b4e113864b/content/not-licitaci%25C3%25B3n-barra-bar-el-cordero-2025",
+          "consulta": "2026-11-04",
+          "alcance": "Publicación del 14 de mayo de 2025 que anuncia la festividad los días 5 y 6 de julio.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "lena-la-corrona",
+      "nombre": "Fiestas de La Corrona",
+      "pueblo_o_parroquia": "La Corrona",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Segundo fin de semana de agosto.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La celebración local mantiene una carrera de burros como rasgo singular.",
+      "actos_tipicos": {
+        "actos": [
+          "Carrera de burros"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "lena-payares",
+      "nombre": "Fiestas de Payares",
+      "pueblo_o_parroquia": "Payares / Pajares",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Finales de agosto.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta del pueblo combina deporte y reunión vecinal.",
+      "actos_tipicos": {
+        "actos": [
+          "Esquí sobre hierba"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "lena-escanda",
+      "nombre": "Fiesta de la Escanda",
+      "pueblo_o_parroquia": "Xomezana / Jomezana",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Último fin de semana de agosto.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El cereal tradicional da nombre a esta celebración del valle.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La ficha identifica la fiesta, pero no detalla su programa típico."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "lena-cristo-amparo",
+      "nombre": "Cristo del Amparo",
+      "pueblo_o_parroquia": "Villayana / Vil.layana",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Segundo fin de semana de septiembre.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta patronal reúne música y una prueba ecuestre.",
+      "actos_tipicos": {
+        "actos": [
+          "Verbenas",
+          "cintas a caballo"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "lena-corpus-rospaso",
+      "nombre": "Corpus de Rospaso",
+      "pueblo_o_parroquia": "Rospaso",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "21 de septiembre, según el calendario municipal.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La cita de Rospaso enlaza comida y celebración nocturna.",
+      "actos_tipicos": {
+        "actos": [
+          "Gastronomía",
+          "verbena"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La fecha se transcribe del calendario local: no se identifica con la fecha móvil del Corpus litúrgico ni confirma la edición 2025."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "lena-les-feries",
+      "nombre": "Les Feries / Nuestra Señora del Rosario",
+      "pueblo_o_parroquia": "La Pola",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Octubre; el calendario municipal señala el segundo viernes como inicio habitual.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas",
+          "https://www.turismoasturias.es/pt/agenda-de-asturias/fiestas/-/calendarsuite/event/les-feries-2026-lena/20153194/jr0cMeS144cd"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Las ferias unen ganadería, gastronomía y festejos en la capital lenense.",
+      "actos_tipicos": {
+        "actos": [
+          "Feria ganadera",
+          "callos",
+          "entibadores",
+          "verbenas"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        },
+        {
+          "entidad": "Turismo Asturias",
+          "titulo": "Les Feries 2026",
+          "url": "https://www.turismoasturias.es/pt/agenda-de-asturias/fiestas/-/calendarsuite/event/les-feries-2026-lena/20153194/jr0cMeS144cd",
+          "consulta": "2026-11-04",
+          "alcance": "Contraste de continuidad: programa de 2026, no de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "El inicio habitual del calendario no sirve como fecha invariable: la edición 2026 empezó un jueves.",
+        "No se utiliza el programa 2026 para rellenar fechas de 2025."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "lena-mercau-seruenda",
+      "nombre": "Mercáu de Seruenda",
+      "pueblo_o_parroquia": "Xomezana Riba",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Último fin de semana de octubre.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El encuentro otoñal reúne artesanía y cocina del valle.",
+      "actos_tipicos": {
+        "actos": [
+          "Artesanía",
+          "música",
+          "baile"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "lena-amaguestu",
+      "nombre": "Amagüestu tradicional",
+      "pueblo_o_parroquia": "La Pola",
+      "concejo": "Lena",
+      "fechas_habituales": {
+        "texto": "Noviembre, próximo a las jornadas del castaño.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aytolena.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El otoño se celebra con productos del castaño y encuentro popular.",
+      "actos_tipicos": {
+        "actos": [
+          "Castañas asadas",
+          "sidra dulce"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Lena",
+          "titulo": "Fiestas",
+          "url": "https://www.aytolena.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Localidades, calendario tradicional y actos característicos; no confirma por sí solo la edición 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "El calendario solo señala coincidencia aproximada con las jornadas gastronómicas."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "aller-humanitarios",
+      "nombre": "Fiesta de los Humanitarios / San Martín",
+      "pueblo_o_parroquia": "Moreda / Morea",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "11 de noviembre.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.turismoasturias.es/en/descubre/fiestas-de-interes-turistico/fiesta-de-los-humanitarios",
+          "https://www.turismoasturias.es/agenda-de-asturias/fiestas/-/calendarsuite/event/fiesta-de-los-humanitarios-aller/6347496/jr0cMeS144cd"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Moreda celebra una jornada de raíz solidaria con folclore y mesa compartida.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "puya del ramu",
+          "desfile de gaitas y carrozas",
+          "fabada y panchón"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Humanitarios de San Martín",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "explicitamente_anual",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Turismo Asturias",
+          "titulo": "Fiesta de los Humanitarios",
+          "url": "https://www.turismoasturias.es/en/descubre/fiestas-de-interes-turistico/fiesta-de-los-humanitarios",
+          "consulta": "2026-11-04",
+          "alcance": "Localidad, repetición cada 11 de noviembre, actos y asociación.",
+          "nota": null
+        },
+        {
+          "entidad": "Turismo Asturias",
+          "titulo": "Fiesta de los Humanitarios: agenda",
+          "url": "https://www.turismoasturias.es/agenda-de-asturias/fiestas/-/calendarsuite/event/fiesta-de-los-humanitarios-aller/6347496/jr0cMeS144cd",
+          "consulta": "2026-11-04",
+          "alcance": "Actos tradicionales; la ficha consultada corresponde a 2026.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La ficha dinámica de agenda corresponde a 2026; no acredita el programa completo de 2025."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "aller-miravalles",
+      "nombre": "Nuestra Señora de Miravalles",
+      "pueblo_o_parroquia": "Soto de Aller",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "En torno al 8 de septiembre; día principal documentado en 2013 y 2014.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-miravalles-2014",
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-miravalles"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Soto se reúne alrededor del santuario y del recorrido procesional de la Virgen.",
+      "actos_tipicos": {
+        "actos": [
+          "Procesión",
+          "gaitas",
+          "romería",
+          "reparto del bollu"
+        ],
+        "estado": "documentados",
+        "nota": "Los actos constan en programas municipales antiguos; no son una programación vigente."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": null,
+        "estado": "dudoso",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "Miravalles 2014",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-miravalles-2014",
+          "consulta": "2026-11-04",
+          "alcance": "Programa de 6 a 8 de septiembre de 2014, con día grande el 8.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "Miravalles: programa de 2013",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-miravalles",
+          "consulta": "2026-11-04",
+          "alcance": "Programa identificado en el texto como edición 2013.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Las fuentes son programas antiguos: falta corroborar la continuidad y el calendario actual."
+      ],
+      "verificacion": "parcial_historica"
+    },
+    {
+      "id": "aller-toreu-santu",
+      "nombre": "San Antonio / Toreu del Santu",
+      "pueblo_o_parroquia": "Piñeres",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "Finales de agosto en los programas históricos consultados; fecha actual pendiente.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-toreu-del-santu-san-antonio-en-pineres",
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-san-antonio-en-pineres"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La celebración de Piñeres conserva un rito festivo singular vinculado a San Antonio.",
+      "actos_tipicos": {
+        "actos": [
+          "Toreu del Santu",
+          "misa",
+          "puya del ramu",
+          "romería"
+        ],
+        "estado": "documentados",
+        "nota": "Los actos constan en programas municipales antiguos; no son una programación vigente."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": null,
+        "estado": "dudoso",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "Toreu del Santu",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-toreu-del-santu-san-antonio-en-pineres",
+          "consulta": "2026-11-04",
+          "alcance": "Programa del 29 al 31 de agosto sin año inequívoco en el cuerpo consultado.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "San Antonio en Piñeres",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-san-antonio-en-pineres",
+          "consulta": "2026-11-04",
+          "alcance": "Otro programa antiguo del 23 al 25 de agosto; permite detectar la variación de fechas.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Los programas históricos ofrecen fines de semana distintos. No se transforma ninguna de esas fechas en una edición 2025.",
+        "Las fuentes son programas antiguos: falta corroborar la continuidad y el calendario actual."
+      ],
+      "verificacion": "parcial_historica"
+    },
+    {
+      "id": "aller-carmin-felechosa",
+      "nombre": "El Carmín",
+      "pueblo_o_parroquia": "Felechosa",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "Agosto; día exacto habitual pendiente de confirmar.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-carmin-en-felechosa"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Felechosa reúne devoción, música y costumbres gastronómicas en su celebración.",
+      "actos_tipicos": {
+        "actos": [
+          "Procesión",
+          "puya del ramu",
+          "verbena",
+          "recogida del panchón"
+        ],
+        "estado": "documentados",
+        "nota": "Los actos constan en programas municipales antiguos; no son una programación vigente."
+      },
+      "organizador": {
+        "nombre": "Asociación Cultural y de Festejos La Pitera",
+        "estado": "documentado_en_fuente_historica",
+        "nota": "Nombre recogido del programa antiguo; continuidad actual no comprobada."
+      },
+      "se_repite_cada_ano": {
+        "valor": null,
+        "estado": "dudoso",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "El Carmín de Felechosa",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-carmin-en-felechosa",
+          "consulta": "2026-11-04",
+          "alcance": "Programa antiguo con lunes 26 de agosto, actos y organizador; sin año explícito en el cuerpo.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Las fuentes son programas antiguos: falta corroborar la continuidad y el calendario actual."
+      ],
+      "verificacion": "parcial_historica"
+    },
+    {
+      "id": "aller-san-mames-bustiye",
+      "nombre": "San Mamés",
+      "pueblo_o_parroquia": "Bustiyé",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "Agosto; fines de semana variables en los programas históricos.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-san-mames-en-bustiye-2014",
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-san-mames-en-bustiye"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta del pueblo combina actos religiosos y reunión festiva.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "puya del ramu",
+          "verbenas"
+        ],
+        "estado": "documentados",
+        "nota": "Los actos constan en programas municipales antiguos; no son una programación vigente."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": null,
+        "estado": "dudoso",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "San Mamés de Bustiyé 2014",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-san-mames-en-bustiye-2014",
+          "consulta": "2026-11-04",
+          "alcance": "Edición del 29 al 31 de agosto de 2014.",
+          "nota": null
+        },
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "San Mamés de Bustiyé",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-de-san-mames-en-bustiye",
+          "consulta": "2026-11-04",
+          "alcance": "Otro programa municipal antiguo, del 23 al 25 de agosto.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Las fuentes son programas antiguos: falta corroborar la continuidad y el calendario actual."
+      ],
+      "verificacion": "parcial_historica"
+    },
+    {
+      "id": "aller-rosario",
+      "nombre": "Nuestra Señora del Rosario",
+      "pueblo_o_parroquia": "Cabañaquinta / Cabanaquinta",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "Octubre; fecha concreta anual no acreditada.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-rosario-en-cabanaquinta"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La capital allerana celebra su patronal con música y actividades populares.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "gigantes y cabezudos",
+          "reparto del bollu",
+          "verbenas"
+        ],
+        "estado": "documentados",
+        "nota": "Los actos constan en programas municipales antiguos; no son una programación vigente."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": null,
+        "estado": "dudoso",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "Rosario en Cabañaquinta",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-rosario-en-cabanaquinta",
+          "consulta": "2026-11-04",
+          "alcance": "Programa antiguo del 4 al 6 de octubre, sin año expreso en el cuerpo.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Las fuentes son programas antiguos: falta corroborar la continuidad y el calendario actual."
+      ],
+      "verificacion": "parcial_historica"
+    },
+    {
+      "id": "aller-cordero-coto-bello",
+      "nombre": "Fiesta del Cordero de Coto Bello",
+      "pueblo_o_parroquia": "Coto Bello",
+      "concejo": "Aller",
+      "fechas_habituales": {
+        "texto": "Junio en la edición histórica documentada; regla anual no acreditada.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-cordero-en-coto-bello"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La comida de cordero sirve de punto de encuentro en Coto Bello.",
+      "actos_tipicos": {
+        "actos": [
+          "Comida de cordero",
+          "verbena"
+        ],
+        "estado": "documentados",
+        "nota": "Los actos constan en programas municipales antiguos; no son una programación vigente."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": null,
+        "estado": "dudoso",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Aller",
+          "titulo": "Cordero de Coto Bello",
+          "url": "https://www.aller.es/fiestas-ferias-y-mercados/-/asset_publisher/oElrWX9N18Qy/content/fiestas-del-cordero-en-coto-bello",
+          "consulta": "2026-11-04",
+          "alcance": "Programa del 15 de junio con referencia explícita al Trail 2013.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Las fuentes son programas antiguos: falta corroborar la continuidad y el calendario actual."
+      ],
+      "verificacion": "parcial_historica"
+    },
+    {
+      "id": "morcin-san-anton",
+      "nombre": "San Antón Abad / Santoantón",
+      "pueblo_o_parroquia": "La Foz",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "17 de enero.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta invernal de La Foz enlaza devoción y cocina local.",
+      "actos_tipicos": {
+        "actos": [
+          "Puya del ramu",
+          "pote de nabos",
+          "casadielles"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "morcin-afuegal-pitu",
+      "nombre": "Certamen del Quesu Afuega'l Pitu",
+      "pueblo_o_parroquia": "La Foz",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "Domingo siguiente al 17 de enero.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El certamen prolonga las celebraciones de San Antón alrededor del queso.",
+      "actos_tipicos": {
+        "actos": [
+          "Degustación",
+          "concurso y subasta de quesos"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Hermandad de la Probe",
+        "estado": "consta_en_fuente",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "morcin-madalena-santiago",
+      "nombre": "La Madalena y Santiago del Monsacro",
+      "pueblo_o_parroquia": "Majada de las capillas del Monsacro",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "25 de julio.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Romería de montaña celebrada alrededor de las capillas.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "gaita y tambor"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "morcin-nieves-argame",
+      "nombre": "Virgen de las Nieves",
+      "pueblo_o_parroquia": "Argame",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "Agosto; día concreto no indicado.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta reúne al pueblo en un prado próximo.",
+      "actos_tipicos": {
+        "actos": [
+          "Verbenas",
+          "reparto del bollu"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La fuente solo indica agosto; no permite fijar el 5 de agosto ni un fin de semana."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "morcin-asuncion-monsacro",
+      "nombre": "La Asunción / Nuestra Señora del Monsacro",
+      "pueblo_o_parroquia": "Majada de las capillas del Monsacro",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "15 de agosto.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Una segunda cita estival lleva la romería al Monsacro.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "gaita y tambor"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "morcin-virgen-probe",
+      "nombre": "Virgen de la Probe",
+      "pueblo_o_parroquia": "La Foz",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "Segunda semana de septiembre, según el calendario municipal.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La celebración de septiembre incorpora una muestra quesera.",
+      "actos_tipicos": {
+        "actos": [
+          "Exposición de quesos"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La expresión «segunda semana» no define un intervalo exacto ni confirma la edición 2025."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "morcin-mercao-otono",
+      "nombre": "Mercao de Otoño",
+      "pueblo_o_parroquia": "Santa Eulalia / Santolaya",
+      "concejo": "Morcín",
+      "fechas_habituales": {
+        "texto": "Octubre; fecha variable.",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.morcin.es/fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El otoño reúne artesanía y gastronomía en el recinto ferial.",
+      "actos_tipicos": {
+        "actos": [
+          "Amagüestu",
+          "mallado de sidra",
+          "juegos tradicionales"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Morcín",
+          "titulo": "Fiestas y certámenes",
+          "url": "https://www.morcin.es/fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Calendario tradicional, lugares, actos y organización del certamen del queso. Sin programación específica de 2025.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "No consta día ni fin de semana concreto en la fuente."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "riosa-san-antonio",
+      "nombre": "San Antonio",
+      "pueblo_o_parroquia": "La Vega",
+      "concejo": "Riosa",
+      "fechas_habituales": {
+        "texto": "13 de junio.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://rutadelaplata.com/evento/fiesta-de-san-antonio/",
+          "https://sig.asturias.es/HIPERVINCULOS/Calendarios/Calendario_SITPA_2025.pdf"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": "2025-06-13",
+        "estado": "parcial",
+        "nota": "El calendario oficial acredita el festivo laboral; no confirma las fechas de todos los actos de la fiesta."
+      },
+      "descripcion": "La celebración de La Vega incorpora un mercado de cocina casera y artesanía realizado desde el tejido asociativo local.",
+      "actos_tipicos": {
+        "actos": [
+          "Mercado tradicional",
+          "puestos de comida casera",
+          "artesanía"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": "Asociación de mujeres La Pimpana",
+        "estado": "consta_en_fuente",
+        "nota": "Atribución de la ficha institucional general; no se ha localizado el programa de la edición 2025."
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+          "titulo": "San Antonio en Riosa",
+          "url": "https://rutadelaplata.com/evento/fiesta-de-san-antonio/",
+          "consulta": "2026-11-04",
+          "alcance": "Localidad, fecha habitual, mercado y asociación organizadora.",
+          "nota": "Fuente institucional de una asociación pública de ayuntamientos; Riosa figura como miembro."
+        },
+        {
+          "entidad": "Principado de Asturias · SITPA",
+          "titulo": "Fiestas locales 2025",
+          "url": "https://sig.asturias.es/HIPERVINCULOS/Calendarios/Calendario_SITPA_2025.pdf",
+          "consulta": "2026-11-04",
+          "alcance": "Riosa: 13 de junio, San Antonio; 3 de octubre, Rosario. Son festivos laborales, no el intervalo del programa.",
+          "nota": "Consultado el texto indexado del PDF oficial; la apertura directa del documento agotó el tiempo de respuesta."
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Programa y organización específica de 2025 no contrastados con la comisión."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "riosa-san-pedro",
+      "nombre": "San Pedro",
+      "pueblo_o_parroquia": "Grandiella",
+      "concejo": "Riosa",
+      "fechas_habituales": {
+        "texto": "29 de junio.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://rutadelaplata.com/evento/fiestas-de-san-pedro/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta de Grandiella reúne actos religiosos y celebración popular en el pueblo.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "romería",
+          "verbena"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+          "titulo": "San Pedro en Riosa",
+          "url": "https://rutadelaplata.com/evento/fiestas-de-san-pedro/",
+          "consulta": "2026-11-04",
+          "alcance": "Lugar, fecha habitual y actos.",
+          "nota": "Fuente institucional de una asociación pública de ayuntamientos; Riosa figura como miembro."
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "riosa-felechu",
+      "nombre": "Fiestas del Felechu",
+      "pueblo_o_parroquia": "Área recreativa de Viapará",
+      "concejo": "Riosa",
+      "fechas_habituales": {
+        "texto": "Último fin de semana de agosto.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://rutadelaplata.com/evento/fiestas-del-felechu/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La celebración campestre combina juegos, mesa compartida y música en el entorno de Viapará.",
+      "actos_tipicos": {
+        "actos": [
+          "Juegos tradicionales",
+          "cordero a la estaca",
+          "puya del ramu",
+          "cintas a caballo",
+          "bollu"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+          "titulo": "Felechu",
+          "url": "https://rutadelaplata.com/evento/fiestas-del-felechu/",
+          "consulta": "2026-11-04",
+          "alcance": "Lugar, calendario habitual y actos; no se trasladan precios ni horarios antiguos.",
+          "nota": "Fuente institucional de una asociación pública de ayuntamientos; Riosa figura como miembro."
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "riosa-remedios",
+      "nombre": "Nuestra Señora de los Remedios",
+      "pueblo_o_parroquia": "Felguera / La Felguera",
+      "concejo": "Riosa",
+      "fechas_habituales": {
+        "texto": "8 de septiembre y celebraciones próximas.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://rutadelaplata.com/evento/fiesta-de-los-remedios/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Felguera celebra una romería en la que la música acompaña la devoción y la reunión del pueblo.",
+      "actos_tipicos": {
+        "actos": [
+          "Misa",
+          "gaita y tambor",
+          "puya del ramu",
+          "verbena",
+          "bollu"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+          "titulo": "Los Remedios en Riosa",
+          "url": "https://rutadelaplata.com/evento/fiesta-de-los-remedios/",
+          "consulta": "2026-11-04",
+          "alcance": "Lugar, día habitual y actos tradicionales.",
+          "nota": "Fuente institucional de una asociación pública de ayuntamientos; Riosa figura como miembro."
+        }
+      ],
+      "carteles": [],
+      "dudas": [],
+      "verificacion": "datos_generales_documentados"
+    },
+    {
+      "id": "riosa-san-adriano",
+      "nombre": "San Adriano",
+      "pueblo_o_parroquia": "San Adriano",
+      "concejo": "Riosa",
+      "fechas_habituales": {
+        "texto": "17 de septiembre, según la ficha institucional.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://rutadelaplata.com/evento/fiesta-de-san-adriano/"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "El encuentro alrededor de la ermita reúne peregrinos y comida al aire libre.",
+      "actos_tipicos": {
+        "actos": [
+          "Procesión",
+          "puya del ramu",
+          "comida campestre",
+          "baile de la escoba"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+          "titulo": "San Adriano en Riosa",
+          "url": "https://rutadelaplata.com/evento/fiesta-de-san-adriano/",
+          "consulta": "2026-11-04",
+          "alcance": "Lugar, día habitual y actos.",
+          "nota": "Fuente institucional de una asociación pública de ayuntamientos; Riosa figura como miembro."
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "La ficha no tiene edición anual identificada: confirmar con la organización si los actos se trasladan a un fin de semana."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "riosa-rosario",
+      "nombre": "Nuestra Señora del Rosario",
+      "pueblo_o_parroquia": "La Vega",
+      "concejo": "Riosa",
+      "fechas_habituales": {
+        "texto": "Primer fin de semana de octubre; la ficha extiende actos al lunes.",
+        "estado": "verificado",
+        "fuentes": [
+          "https://rutadelaplata.com/evento/fiesta-de-nuestra-senora-del-rosario/",
+          "https://sig.asturias.es/HIPERVINCULOS/Calendarios/Calendario_SITPA_2025.pdf"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": "2025-10-03",
+        "estado": "parcial",
+        "nota": "Solo queda acreditada la fecha del festivo laboral. No se calcula un intervalo completo de fiestas a partir de ella."
+      },
+      "descripcion": "Las fiestas patronales combinan feria ganadera, música y costumbres compartidas por los vecinos del concejo.",
+      "actos_tipicos": {
+        "actos": [
+          "Feria ganadera",
+          "procesión",
+          "puya del ramu",
+          "tonada",
+          "reparto del bollu"
+        ],
+        "estado": "documentados",
+        "nota": "La lista recoge actos descritos por la fuente; no garantiza su inclusión en una edición futura."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Red de Cooperación de Ciudades en la Ruta de la Plata",
+          "titulo": "Rosario de Riosa",
+          "url": "https://rutadelaplata.com/evento/fiesta-de-nuestra-senora-del-rosario/",
+          "consulta": "2026-11-04",
+          "alcance": "Localidad, calendario habitual y actos.",
+          "nota": "Fuente institucional de una asociación pública de ayuntamientos; Riosa figura como miembro."
+        },
+        {
+          "entidad": "Principado de Asturias · SITPA",
+          "titulo": "Fiestas locales 2025",
+          "url": "https://sig.asturias.es/HIPERVINCULOS/Calendarios/Calendario_SITPA_2025.pdf",
+          "consulta": "2026-11-04",
+          "alcance": "Riosa: 13 de junio, San Antonio; 3 de octubre, Rosario. Son festivos laborales, no el intervalo del programa.",
+          "nota": "Consultado el texto indexado del PDF oficial; la apertura directa del documento agotó el tiempo de respuesta."
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "No se ha localizado el programa oficial completo de 2025.",
+        "El festivo laboral no equivale necesariamente al día principal de la romería."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-san-juan-mata",
+      "nombre": "San Juan de Mata",
+      "pueblo_o_parroquia": "Bueño",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Febrero",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La patronal de Bueño abre las citas religiosas del calendario municipal.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-santo-angel",
+      "nombre": "Santo Ángel",
+      "pueblo_o_parroquia": "La Mortera y Llavareros",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Primer domingo después de Pascua",
+        "estado": "verificado",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La celebración vincula a ambos núcleos en el calendario de primavera.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-san-nicolas",
+      "nombre": "San Nicolás",
+      "pueblo_o_parroquia": "Tellego",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Mayo",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Tellego celebra su fiesta patronal en primavera.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-san-antonio",
+      "nombre": "San Antonio",
+      "pueblo_o_parroquia": "Sardín",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Junio",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta de Sardín forma parte del ciclo festivo del inicio del verano.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-nuestra-senora-luz",
+      "nombre": "Nuestra Señora de la Luz",
+      "pueblo_o_parroquia": "Soto del Rey",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Junio",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Soto del Rey celebra su cita patronal al comienzo del verano.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-carmen",
+      "nombre": "El Carmen",
+      "pueblo_o_parroquia": "Soto de Ribera",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Julio",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "La fiesta veraniega de Soto de Ribera se dedica al Carmen.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-santiago",
+      "nombre": "Santiago Apóstol",
+      "pueblo_o_parroquia": "Ferreros",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Julio",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": null,
+        "estado": "no_localizado",
+        "nota": "No se ha localizado un programa oficial de 2025 que confirme las fechas. No se calcula la edición a partir del calendario habitual."
+      },
+      "descripcion": "Ferreros tiene su cita patronal dentro del calendario estival.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    },
+    {
+      "id": "ribera-santa-lucia",
+      "nombre": "Santa Lucía",
+      "pueblo_o_parroquia": "Soto de Ribera",
+      "concejo": "Ribera de Arriba",
+      "fechas_habituales": {
+        "texto": "Diciembre",
+        "estado": "dudoso",
+        "fuentes": [
+          "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "https://sig.asturias.es/HIPERVINCULOS/Calendarios/Calendario_SITPA_2025.pdf"
+        ]
+      },
+      "fechas_2025": {
+        "inicio": null,
+        "fin": null,
+        "dias_confirmados": [],
+        "dia_principal": null,
+        "festivo_laboral": "2025-12-13",
+        "estado": "parcial",
+        "nota": "Fecha del festivo laboral; no se ha localizado el intervalo del programa festivo."
+      },
+      "descripcion": "Santa Lucía cierra el calendario patronal municipal con una celebración invernal.",
+      "actos_tipicos": {
+        "actos": [],
+        "estado": "no_constan",
+        "nota": "El calendario municipal no describe los actos. No se añaden misa, procesión, verbena o bollu por analogía."
+      },
+      "organizador": {
+        "nombre": null,
+        "estado": "no_consta",
+        "nota": null
+      },
+      "se_repite_cada_ano": {
+        "valor": true,
+        "estado": "incluida_en_calendario_tradicional",
+        "nota": "Periodicidad habitual; no equivale a confirmar todas las ediciones ni la continuidad futura."
+      },
+      "fuentes_consultadas": [
+        {
+          "entidad": "Ayuntamiento de Ribera de Arriba",
+          "titulo": "Calendario de fiestas",
+          "url": "https://www.ayto-riberadearriba.es/calendario-de-fiestas",
+          "consulta": "2026-11-04",
+          "alcance": "Nombres, localidades y meses o regla de celebración. No detalla actos ni organizadores.",
+          "nota": null
+        },
+        {
+          "entidad": "Principado de Asturias · SITPA",
+          "titulo": "Fiestas locales 2025",
+          "url": "https://sig.asturias.es/HIPERVINCULOS/Calendarios/Calendario_SITPA_2025.pdf",
+          "consulta": "2026-11-04",
+          "alcance": "Ribera de Arriba: festivo de Santa Lucía el 13 de diciembre de 2025.",
+          "nota": "Consulta del texto indexado oficial; apertura directa del PDF no disponible por tiempo de respuesta."
+        }
+      ],
+      "carteles": [],
+      "dudas": [
+        "Actos típicos y organizador no detallados en la fuente municipal.",
+        "Solo se documenta el mes, sin fecha o fin de semana concreto."
+      ],
+      "verificacion": "con_dudas_indicadas"
+    }
+  ]
+}
