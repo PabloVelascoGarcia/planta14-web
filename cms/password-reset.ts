@@ -8,6 +8,8 @@ import type { PayloadRequest } from 'payload';
  *   propio panel. El token va tras «#», así que el navegador no lo envía al servidor ni queda en los registros.
  */
 export const RESET_EXPIRATION_MS = 60 * 60 * 1000;
+/** Mínimo para todas las cuentas; lo exige el servidor (cms/collections.ts, Users). */
+export const MIN_PASSWORD_LENGTH = 12;
 export const RESET_SUBJECT = 'Planta 14: cambia tu contraseña';
 
 type ResetUser = { name?: string | null; role?: string | null; municipalSpace?: unknown };
@@ -54,8 +56,11 @@ async function municipalSpace(req: PayloadRequest | undefined, user: ResetUser) 
   const raw = user.municipalSpace;
   const id = typeof raw === 'object' && raw ? (raw as { id?: unknown }).id : raw;
   if (id == null) return null;
-  const space = await req.payload.findByID({ collection: 'municipal-spaces', id: id as number, depth: 0, overrideAccess: true, req }).catch(() => null);
-  return space?.legacyID ? { slug: String(space.legacyID), name: String(space.name ?? '') } : null;
+  const space = await req.payload.findByID({ collection: 'municipal-spaces', id: id as number, depth: 1, overrideAccess: true, req }).catch(() => null);
+  // Misma dirección que la web pública del espacio (lib/payload-content.ts): identificador de origen o slug del concejo.
+  const town = space?.town && typeof space.town === 'object' ? (space.town as { slug?: string }) : null;
+  const slug = space?.legacyID || town?.slug;
+  return space && slug ? { slug: String(slug), name: String(space.name ?? '') } : null;
 }
 
 export const forgotPasswordOptions = {

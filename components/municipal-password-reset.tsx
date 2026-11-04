@@ -6,7 +6,7 @@ import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 import type { MunicipalSpace } from "@/lib/demo/municipal";
 import { MunicipalMasthead } from "./municipal-masthead";
 
-export const MIN_PASSWORD_LENGTH = 12;
+import { MIN_PASSWORD_LENGTH } from "@/cms/password-reset";
 
 // El token se lee una vez de la dirección (tras «#») y se conserva aunque luego se quite de la barra de direcciones.
 let hashToken: string | undefined;

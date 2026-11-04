@@ -5,7 +5,7 @@ import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
 import { withPublicMediaLock } from './public-media-lock';
 import { loteField } from './lote';
-import { forgotPasswordOptions } from './password-reset';
+import { forgotPasswordOptions, MIN_PASSWORD_LENGTH } from './password-reset';
 
 /** Text stored with each municipal upload (versioned so the evidence says what was declared). */
 export const municipalRightsStatement = (municipality: string) =>
@@ -23,6 +23,12 @@ export const Users: CollectionConfig = {
     beforeOperation: [({ operation, req, args }) => {
       if (operation === 'create' && !adminOnly({ req }) && req.context.cmsBootstrap !== true) {
         throw new APIError('Crea el primer administrador mediante cms:bootstrap', 403);
+      }
+      // Contraseñas de al menos 12 caracteres en todas las cuentas (redacción, municipales y administración), al
+      // crearlas, al cambiarlas y al restablecerlas con el enlace del correo. Lo exige el servidor, no solo el formulario.
+      const password = (args as { data?: { password?: unknown } }).data?.password;
+      if (['create', 'update', 'resetPassword'].includes(operation) && password !== undefined && password !== null && password !== '' && String(password).length < MIN_PASSWORD_LENGTH) {
+        throw new APIError(`La contraseña debe tener al menos ${MIN_PASSWORD_LENGTH} caracteres.`, 400, undefined, true);
       }
       return args;
     }],

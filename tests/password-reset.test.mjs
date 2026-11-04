@@ -17,7 +17,7 @@ const fakeReq = (spaces) => ({ payload: { config: { serverURL: server }, findByI
   if (!spaces[id]) throw new Error('not found');
   return spaces[id];
 } } });
-const req = fakeReq({ 1: { legacyID: 'mieres', name: 'Ayuntamiento de Mieres' } });
+const req = fakeReq({ 1: { legacyID: 'mieres', name: 'Ayuntamiento de Mieres' }, 2: { legacyID: null, name: 'Ayuntamiento de Riosa', town: { slug: 'riosa' } } });
 const html = async (user) => m.forgotPasswordOptions.generateEmailHTML({ req, token: 'tok', user });
 
 const municipal = await html({ name: 'Prueba <Mieres>', role: 'municipal', municipalSpace: 1 });
@@ -31,6 +31,9 @@ assert.equal(await html({ role: 'municipal', municipalSpace: { id: 1 } }), munic
 const editor = await html({ name: 'Andrés', role: 'editor' });
 assert.match(editor, /href="https:\/\/pruebas\.planta14\.com\/cms\/reset\/tok"/);
 assert.match(editor, /tu cuenta de la redacción de Planta 14/);
+// Espacio sin identificador de origen: la dirección del concejo (como la web pública).
+assert.match(await html({ role: 'municipal', municipalSpace: 2 }), /href="https:\/\/pruebas\.planta14\.com\/riosa\/panel\/restablecer#token=tok"/);
+assert.equal(m.MIN_PASSWORD_LENGTH, 12);
 // Cuenta municipal cuyo espacio ya no existe: enlace de /cms (no se rompe el envío).
 assert.match(await html({ role: 'municipal', municipalSpace: 99 }), /\/cms\/reset\/tok/);
 
