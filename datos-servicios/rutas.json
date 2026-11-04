@@ -833,14 +833,14 @@
       "descripcion": "Itinerario circular que la federación incluye entre las rutas en familia de Morcín. La ficha permite contrastar distancia, duración y desnivel. Se omiten las atribuciones históricas genéricas de su introducción porque no identifican de forma fiable los molinos de este recorrido.",
       "gpxOficial": null,
       "comprobacionGPX": null,
-      "enlaceAlternativo": "https://drive.google.com/file/d/1AwHQ2tCvW_4mC0cPNYLd4JuL2AMGTOkc/view?rm=minimal",
+      "enlaceAlternativo": "https://drive.google.com/uc?export=download&id=1AwHQ2tCvW_4mC0cPNYLd4JuL2AMGTOkc",
       "fuentes": [
         "https://fempa.net/ruta/ruta-de-los-molinos-de-morcin/"
       ],
       "estado": "comprobado_con_pendientes",
       "dudas": [
         "Puntos exactos de inicio y fin pendientes de contraste. La introducción mezcla explicaciones generales sobre molinos que no se usan como evidencia histórica del recorrido. La homologación figura como «No procede».",
-        "El enlace federativo de descarga no se ha validado como GPX; se conserva como enlace alternativo y no como track confirmado."
+        "Descarga federativa comprobada el 4 de noviembre de 2026: archivo OziExplorer Track Point (PLT), no GPX. Se ofrece el enlace original como alternativa, sin convertirlo ni presentarlo como GPX."
       ]
     },
     {
@@ -862,13 +862,13 @@
       "descripcion": "Circuito por los valles y cordales de Riosa organizado en dos etapas: La Vega–San Adriano y San Adriano–La Vega. La distancia de la ficha corresponde al recorrido completo y no a una excursión corta.",
       "gpxOficial": null,
       "comprobacionGPX": null,
-      "enlaceAlternativo": "https://drive.google.com/file/d/1OXiCQ0R-901Bu_ckeVE-SOs_4QJyTg2H/view?rm=minimal",
+      "enlaceAlternativo": "https://drive.google.com/uc?export=download&id=1OXiCQ0R-901Bu_ckeVE-SOs_4QJyTg2H",
       "fuentes": [
         "https://fempa.net/ruta/gr-206-gran-ruta-de-riosa/"
       ],
       "estado": "comprobado_con_pendientes",
       "dudas": [
-        "El enlace federativo de descarga no se ha validado como GPX; se conserva como enlace alternativo y no como track confirmado."
+        "Descarga federativa comprobada el 4 de noviembre de 2026: ZIP con GPX 1.1 de las dos etapas a pie (1.037 y 811 puntos) y un GPX de variante ciclista (348 puntos). El enlace alternativo permite obtenerlos. gpxOficial permanece null porque no es una URL que entregue directamente XML GPX; no confundir la variante ciclista con el trazado a pie."
       ]
     },
     {
@@ -1027,14 +1027,14 @@
       "descripcion": "Itinerario de gran recorrido entre Oviedo y Cortes, en Quirós, dividido en tres etapas. Pasa por el territorio de Ribera de Arriba y continúa hacia Pedroveya y Salcedo. Los datos técnicos corresponden al conjunto de la ruta.",
       "gpxOficial": null,
       "comprobacionGPX": null,
-      "enlaceAlternativo": "https://drive.google.com/file/d/1JxRP7ol8G22_0ZAqBCCGuAMf_ir6UQAN/view?rm=minimal",
+      "enlaceAlternativo": "https://drive.google.com/uc?export=download&id=1JxRP7ol8G22_0ZAqBCCGuAMf_ir6UQAN",
       "fuentes": [
         "https://fempa.net/ruta/gr-106-ruta-san-melchor/"
       ],
       "estado": "comprobado_con_pendientes",
       "dudas": [
         "La suma de las longitudes de las tres etapas redondeadas en el texto es 57 km; la ficha general publica 56,9 km. No atribuir toda esa distancia al concejo de Ribera de Arriba.",
-        "El enlace federativo de descarga no se ha validado como GPX; se conserva como enlace alternativo y no como track confirmado."
+        "Descarga federativa comprobada el 4 de noviembre de 2026: ZIP con tres tracks OziExplorer PLT, uno por etapa; no contiene GPX. Se conserva el enlace oficial como alternativa, sin convertirlo ni presentarlo como GPX."
       ]
     },
     {
