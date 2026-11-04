@@ -109,8 +109,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'breaking-news': BreakingNew;
+  };
+  globalsSelect: {
+    'breaking-news': BreakingNewsSelect<false> | BreakingNewsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -1306,6 +1310,43 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Barra roja bajo la cabecera de la web. Se quita sola a la hora de caducidad, o desmarcando «Mostrar».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "breaking-news".
+ */
+export interface BreakingNew {
+  id: number;
+  active?: boolean | null;
+  /**
+   * Una frase corta (140 caracteres como mucho).
+   */
+  text?: string | null;
+  /**
+   * La noticia que lo cuenta: /noticia/… o una dirección https://
+   */
+  link?: string | null;
+  /**
+   * Opcional. A esa hora deja de verse aunque siga marcada.
+   */
+  expiresAt?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "breaking-news_select".
+ */
+export interface BreakingNewsSelect<T extends boolean = true> {
+  active?: T;
+  text?: T;
+  link?: T;
+  expiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

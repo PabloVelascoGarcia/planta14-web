@@ -10,6 +10,7 @@ import { Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent }
 import { AuditLog, Notifications } from './cms/activity';
 import { Festivals } from './cms/festivals';
 import { Subscribers } from './cms/subscribers';
+import { BreakingNews } from './cms/breaking-news';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { smtpOptions, testOutboxAdapter } from './cms/email';
 import { withMaintenanceGuard } from './cms/maintenance';
@@ -30,6 +31,7 @@ export default buildConfig({
   admin: { user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
   collections: [Users, Media, Articles, Festivals, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Subscribers, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
+  globals: [BreakingNews],
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({
     enabled: settings.enabled,
