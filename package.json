@@ -20,6 +20,7 @@
     "cms:structure": "payload run scripts/load-structure.ts",
     "cms:responsables": "payload run scripts/responsables.ts",
     "cms:fiestas:importar": "node scripts/fiestas-run.mjs",
+    "cms:cartas:caducar": "payload run scripts/cartas-caducar.ts",
     "cms:ensayo:cargar": "node scripts/ensayo-run.mjs cargar",
     "cms:ensayo:retirar": "node scripts/ensayo-run.mjs retirar",
     "test:block2": "payload run scripts/block2-integration.mjs",

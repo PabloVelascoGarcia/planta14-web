@@ -39,11 +39,12 @@ export const Notifications: CollectionConfig = {
     description: 'Lo que llega de fuera (publicaciones de los ayuntamientos, fiestas enviadas…), asignado al periodista responsable del concejo. Márcalo como revisado cuando lo hayas atendido.' },
   access: { read: editorialUser, create: () => false, update: editorialUser, delete: () => false },
   fields: [
-    { name: 'kind', type: 'select', required: true, defaultValue: 'municipal-publication', options: ['municipal-publication', 'festival-submission'], access: { update: () => false } },
+    { name: 'kind', type: 'select', required: true, defaultValue: 'municipal-publication', options: ['municipal-publication', 'festival-submission', 'letter-submission'], access: { update: () => false } },
     // Periodista responsable del concejo (Concejos → Periodista responsable) cuando llegó el aviso.
     { name: 'assignedTo', label: 'Asignado a', type: 'relationship', relationTo: 'users', index: true, access: { update: adminOnlyField } },
     { name: 'content', type: 'relationship', relationTo: 'municipal-content', access: { update: () => false } },
     { name: 'festival', label: 'Fiesta', type: 'relationship', relationTo: 'festivals', access: { update: () => false } },
+    { name: 'letter', label: 'Carta', type: 'relationship', relationTo: 'letters', access: { update: () => false } },
     { name: 'space', type: 'relationship', relationTo: 'municipal-spaces', index: true, access: { update: () => false } },
     { name: 'title', type: 'text', required: true, access: { update: () => false } },
     { name: 'publishedBy', type: 'relationship', relationTo: 'users', access: { update: () => false } },

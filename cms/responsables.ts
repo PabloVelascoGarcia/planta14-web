@@ -29,7 +29,7 @@ const cmsURL = (path: string) => `${(process.env.CMS_SERVER_URL || '').replace(/
  * `fallbackEmailStatus`: estado del correo general (si no hay responsable al que escribir).
  */
 export async function createPendingNotice(payload: Payload, req: PayloadRequest | undefined, entry: {
-  kind: 'municipal-publication' | 'festival-submission'; title: string; townID: unknown; townName?: string;
+  kind: 'municipal-publication' | 'festival-submission' | 'letter-submission'; title: string; townID: unknown; townName?: string;
   data?: Record<string, unknown>; detail: string; fallbackEmailStatus?: 'disabled' | 'sent' | 'failed';
 }) {
   const responsible = await responsibleOfTown(payload, entry.townID, req);

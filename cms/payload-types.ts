@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     articles: Article;
     festivals: Festival;
+    letters: Letter;
     authors: Author;
     sections: Section;
     towns: Town;
@@ -91,6 +92,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     festivals: FestivalsSelect<false> | FestivalsSelect<true>;
+    letters: LettersSelect<false> | LettersSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     towns: TownsSelect<false> | TownsSelect<true>;
@@ -613,6 +615,53 @@ export interface Festival {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Cartas enviadas desde /cartas/enviar. Al confirmar el correo llegan a «Pendientes de revisar» del periodista del concejo. Apruébala (puedes editar el texto) o recházala con un motivo, que se envía al autor.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "letters".
+ */
+export interface Letter {
+  id: number;
+  summary?: string | null;
+  /**
+   * Aprobada: sale en Opinión → Cartas de los lectores. Rechazada: escribe el motivo; se envía al autor.
+   */
+  status: 'sin-confirmar' | 'pendiente' | 'aprobada' | 'rechazada';
+  /**
+   * Se envía por correo al autor. Sé breve y cita la norma que no cumple.
+   */
+  rejectionReason?: string | null;
+  title?: string | null;
+  /**
+   * Puedes corregir erratas o acortarla siguiendo las normas. El texto original se guarda abajo.
+   */
+  text: string;
+  firstName: string;
+  lastName: string;
+  town: number | Town;
+  email: string;
+  /**
+   * Cifrado. Solo lo ven la administración y el periodista responsable del concejo. Se borra a los 24 meses.
+   */
+  dni?: string | null;
+  /**
+   * Cifrado. Solo lo ven la administración y el periodista responsable del concejo. Se borra a los 24 meses.
+   */
+  phone?: string | null;
+  originalText?: string | null;
+  publishedAt?: string | null;
+  decidedBy?: (number | null) | User;
+  decidedAt?: string | null;
+  personalDataErasedAt?: string | null;
+  dniEnc?: string | null;
+  phoneEnc?: string | null;
+  personKey?: string | null;
+  tokenHash?: string | null;
+  tokenExpiresAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "municipal-content".
  */
@@ -663,10 +712,11 @@ export interface MunicipalContent {
  */
 export interface Notification {
   id: number;
-  kind: 'municipal-publication' | 'festival-submission';
+  kind: 'municipal-publication' | 'festival-submission' | 'letter-submission';
   assignedTo?: (number | null) | User;
   content?: (number | null) | MunicipalContent;
   festival?: (number | null) | Festival;
+  letter?: (number | null) | Letter;
   space?: (number | null) | MunicipalSpace;
   title: string;
   publishedBy?: (number | null) | User;
@@ -795,6 +845,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'festivals';
         value: number | Festival;
+      } | null)
+    | ({
+        relationTo: 'letters';
+        value: number | Letter;
       } | null)
     | ({
         relationTo: 'authors';
@@ -1041,6 +1095,35 @@ export interface FestivalsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "letters_select".
+ */
+export interface LettersSelect<T extends boolean = true> {
+  summary?: T;
+  status?: T;
+  rejectionReason?: T;
+  title?: T;
+  text?: T;
+  firstName?: T;
+  lastName?: T;
+  town?: T;
+  email?: T;
+  dni?: T;
+  phone?: T;
+  originalText?: T;
+  publishedAt?: T;
+  decidedBy?: T;
+  decidedAt?: T;
+  personalDataErasedAt?: T;
+  dniEnc?: T;
+  phoneEnc?: T;
+  personKey?: T;
+  tokenHash?: T;
+  tokenExpiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "authors_select".
  */
 export interface AuthorsSelect<T extends boolean = true> {
@@ -1197,6 +1280,7 @@ export interface NotificationsSelect<T extends boolean = true> {
   assignedTo?: T;
   content?: T;
   festival?: T;
+  letter?: T;
   space?: T;
   title?: T;
   publishedBy?: T;

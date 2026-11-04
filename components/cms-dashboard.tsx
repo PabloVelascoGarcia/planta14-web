@@ -8,6 +8,8 @@ const count = { fontSize: 28, fontWeight: 800, lineHeight: 1.1, display: "block"
 export async function CmsDashboard({ payload, user }: { payload: Payload; user?: DashboardUser | null }) {
   if (!user || user.collection !== "users" || !["admin", "editor"].includes(String(user.role))) return null;
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
+  // DNI y teléfono de las cartas: se borran a los 24 meses (también con npm run cms:cartas:caducar).
+  await (await import("@/cms/letters")).eraseExpiredPersonalData(payload).catch(() => 0);
   const [drafts, publishedToday, unreviewed] = await Promise.all([
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "draft" } }, { createdBy: { equals: user.id } }] } }),
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "published" } }, { date: { equals: today } }] } }),

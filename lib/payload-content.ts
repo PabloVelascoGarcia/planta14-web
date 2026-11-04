@@ -163,3 +163,11 @@ export async function payloadFiestas(): Promise<import('./fiestas').Fiesta[]> {
       ...(chronicle ? { chronicle: { slug: chronicle.slug!, title: chronicle.title } } : {}) };
   });
 }
+
+/** Cartas de los lectores publicadas: solo nombre, apellidos, concejo, título, texto y fecha. */
+export async function payloadLetters(limit?: number) {
+  const payload = await contentClient();
+  const result = await payload.find({ collection: 'letters', overrideAccess: false, depth: 1, pagination: Boolean(limit), limit: limit ?? 0, sort: '-publishedAt', where: { status: { equals: 'aprobada' } } });
+  return result.docs.map(doc => ({ id: doc.id, name: `${doc.firstName} ${doc.lastName}`, town: typeof doc.town === 'object' && doc.town ? doc.town.name : '',
+    title: doc.title || null, text: doc.text, publishedAt: doc.publishedAt || doc.createdAt }));
+}

@@ -12,6 +12,7 @@ import * as migration_20261104_195227_responsables from './20261104_195227_respo
 import * as migration_20261104_200318_fiestas from './20261104_200318_fiestas';
 import * as migration_20261104_201144_suscriptores from './20261104_201144_suscriptores';
 import * as migration_20261104_202002_ultima_hora from './20261104_202002_ultima_hora';
+import * as migration_20261104_205214_cartas from './20261104_205214_cartas';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261104_202002_ultima_hora.up,
     down: migration_20261104_202002_ultima_hora.down,
-    name: '20261104_202002_ultima_hora'
+    name: '20261104_202002_ultima_hora',
+  },
+  {
+    up: migration_20261104_205214_cartas.up,
+    down: migration_20261104_205214_cartas.down,
+    name: '20261104_205214_cartas'
   },
 ];

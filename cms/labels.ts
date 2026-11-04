@@ -46,7 +46,7 @@ const optionLabels: Record<string, string> = {
   propia: 'Propia', licencia: 'Con licencia (p. ej. Creative Commons)', 'autorización': 'Cedida con autorización', institucional: 'Institucional',
   'status.demo': 'Demostración', active: 'Activo', inactive: 'Inactivo',
   news: 'Noticia', notice: 'Aviso', event: 'Agenda', grant: 'Ayuda o subvención', announcement: 'Tablón de anuncios', municipality: 'Ayuntamiento',
-  'emailStatus.disabled': 'Desactivado', sent: 'Enviado', 'emailStatus.failed': 'Fallido', 'municipal-publication': 'Publicación municipal', 'festival-submission': 'Fiesta enviada',
+  'emailStatus.disabled': 'Desactivado', sent: 'Enviado', 'emailStatus.failed': 'Fallido', 'municipal-publication': 'Publicación municipal', 'festival-submission': 'Fiesta enviada', 'letter-submission': 'Carta de un lector',
   'action.create': 'Creación', 'action.update': 'Edición', publish: 'Publicación', unpublish: 'Despublicación', withdraw: 'Retirada',
   reinstate: 'Restitución', 'action.delete': 'Borrado',
   'public-media-ops.kind.create': 'Crear copia', 'public-media-ops.kind.delete': 'Borrar copia', pending: 'Pendiente', applied: 'Aplicada',
