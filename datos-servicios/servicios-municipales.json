@@ -1,0 +1,2645 @@
+{
+  "version": 1,
+  "consulta": "2026-11-04",
+  "alcance": "Directorio documentado de servicios de los seis concejos. Las 40 farmacias corresponden al resultado de las consultas del directorio colegial en esta fecha; el resto es una selección de equipamientos y servicios, no un censo exhaustivo ni una confirmación telefónica de funcionamiento.",
+  "criterios": {
+    "valoresDesconocidos": "null o una lista vacía indican dato no contrastado, no inexistencia del servicio. Las discrepancias entre fuentes permanecen en dudas.",
+    "horarios": "Horarios publicados por las entidades consultadas; no se han comprobado por teléfono. L lunes; M martes; X miércoles; J jueves; V viernes; S sábado; D domingo. Las franjas de temporada no se extienden al resto del año.",
+    "sanidad": "Se distingue el tipo de centro en su nombre. La fuente sanitaria de referencia es Astursalud; se documentan diferencias con directorios municipales. No se infiere atención urgente de un horario administrativo.",
+    "farmacias": "Solo directorio y horario habitual. No incluye turnos de guardia ni certifica apertura actual. El buscador colegial publica 25 Mieres, 5 Lena, 6 Aller, 2 Morcín, 1 Riosa y 1 Ribera de Arriba; deduplicado por número de farmacia. Las búsquedas pueden necesitar sesión para paginar. No se presupone autorización de reutilización masiva o de las guardias: ver fuentes-automaticas.md.",
+    "turismo": "En Morcín, Riosa y Ribera se identifica el contacto turístico municipal; no se inventa una oficina independiente. El centro del Hórreo es un centro de interpretación.",
+    "residuos": "Se diferencia punto limpio fijo, referencia municipal de modalidad pendiente y punto limpio móvil. No confundir el horario de información telefónica con el de recepción de residuos.",
+    "operatividad": "Un aviso de cierre prevalece sobre los horarios ordinarios que la misma página pueda conservar. No hay comprobación presencial."
+  },
+  "resumenPorConcejoYTipo": {
+    "Mieres": {
+      "ayuntamiento": 1,
+      "atencion_primaria": 13,
+      "farmacia": 25,
+      "biblioteca": 4,
+      "instalacion_deportiva": 3,
+      "oficina_turismo": 1,
+      "punto_limpio_fijo": 1
+    },
+    "Lena": {
+      "ayuntamiento": 1,
+      "atencion_primaria": 4,
+      "farmacia": 5,
+      "biblioteca": 3,
+      "instalacion_deportiva": 1,
+      "oficina_turismo": 1,
+      "punto_limpio_movil": 1
+    },
+    "Aller": {
+      "ayuntamiento": 1,
+      "atencion_primaria": 9,
+      "farmacia": 6,
+      "biblioteca": 3,
+      "instalacion_deportiva": 2,
+      "oficina_turismo": 2,
+      "punto_limpio": 1
+    },
+    "Morcín": {
+      "ayuntamiento": 1,
+      "atencion_primaria": 2,
+      "farmacia": 2,
+      "biblioteca": 1,
+      "instalacion_deportiva": 1,
+      "informacion_turistica_municipal": 1,
+      "punto_limpio_movil": 1
+    },
+    "Riosa": {
+      "ayuntamiento": 1,
+      "atencion_primaria": 1,
+      "farmacia": 1,
+      "biblioteca": 1,
+      "instalacion_deportiva": 1,
+      "informacion_turistica_municipal": 1,
+      "punto_limpio_movil": 1
+    },
+    "Ribera de Arriba": {
+      "ayuntamiento": 1,
+      "atencion_primaria": 1,
+      "farmacia": 1,
+      "biblioteca": 1,
+      "instalacion_deportiva": 2,
+      "informacion_turistica_municipal": 2,
+      "punto_limpio_movil": 1
+    }
+  },
+  "fuenteAutomaticaComplementaria": {
+    "entidad": "COGERSA",
+    "url": "https://puntolimpiomovilcogersa.com/wp-json/wp/v2/puntos-limpios",
+    "formato": "API REST WordPress, JSON público",
+    "clave": false,
+    "consulta": "Se comprobó el tipo público en /wp-json/wp/v2/types. Filtrar search y usar per_page con paginación; comprobar el concejo del resultado. La fecha date/modified es editorial, no la visita. Los lugares y fechas de próximas visitas figuran en title/slug; las horas no se han obtenido de esta API.",
+    "frecuencia": "Actualización por el gestor; sin periodicidad o SLA verificados.",
+    "reutilizacion": "La web indica todos los derechos reservados; no se ha localizado licencia abierta ni autorización expresa para republicar el calendario de forma automatizada."
+  },
+  "registros": [
+    {
+      "id": "serv-mieres-ayto",
+      "concejo": "Mieres",
+      "tipo": "ayuntamiento",
+      "nombre": "Ayuntamiento de Mieres",
+      "localidad": "Mieres del Camín",
+      "direccion": "Plaza de la Constitución, s/n, 33600 Mieres",
+      "telefonos": [
+        "985466111",
+        "985466262"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-lena-ayto",
+      "concejo": "Lena",
+      "tipo": "ayuntamiento",
+      "nombre": "Ayuntamiento de Lena",
+      "localidad": "La Pola",
+      "direccion": "Calle Vital Aza, 20, 33630 La Pola",
+      "telefonos": [
+        "985490417"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aytolena.es/contacto"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La casa consistorial no es la oficina de registro: el registro/SAC figura en Parque de la Ería, 6.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-aller-ayto",
+      "concejo": "Aller",
+      "tipo": "ayuntamiento",
+      "nombre": "Ayuntamiento de Aller",
+      "localidad": "Cabañaquinta",
+      "direccion": "Avenida de la Constitución, 1, 33686 Cabañaquinta",
+      "telefonos": [
+        "985494000"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/contacto"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-morcin-ayto",
+      "concejo": "Morcín",
+      "tipo": "ayuntamiento",
+      "nombre": "Ayuntamiento de Morcín",
+      "localidad": "Santolaya/Santa Eulalia",
+      "direccion": "Avenida Monsacro, 17, 33162 Santa Eulalia de Morcín",
+      "telefonos": [
+        "985783178",
+        "985783162"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.morcin.es/contacto"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-riosa-ayto",
+      "concejo": "Riosa",
+      "tipo": "ayuntamiento",
+      "nombre": "Ayuntamiento de Riosa",
+      "localidad": "La Vega",
+      "direccion": "Plaza de la Constitución, 1, 33160 La Vega",
+      "telefonos": [
+        "985766006",
+        "985766180"
+      ],
+      "horario": "L–V 08:00–15:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.ayuntamientoriosa.com/directorio-municipal",
+        "https://www.ayuntamientoriosa.com/contacto1"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-ribera-ayto",
+      "concejo": "Ribera de Arriba",
+      "tipo": "ayuntamiento",
+      "nombre": "Ayuntamiento de Ribera de Arriba",
+      "localidad": "Soto Ribera",
+      "direccion": "Plaza de la Constitución, s/n, 33172 Soto Ribera",
+      "telefonos": [
+        "985796009"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.ayto-riberadearriba.es/contacto"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-mieres-norte",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Centro de Salud de Mieres Norte",
+      "localidad": "Mieres",
+      "direccion": "Calle Ramón Pérez de Ayala, 25, 33600 Mieres",
+      "telefonos": [
+        "985458606"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-mieres-sur",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Centro de Salud de Mieres Sur",
+      "localidad": "Mieres",
+      "direccion": "Plaza de los Sindicatos Mineros, 3, 33600 Mieres",
+      "telefonos": [
+        "985452159"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "Barrio La Villa, 231, 33616 Mieres",
+        "telefonos": [
+          "985451962",
+          "985451151"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-figaredo",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Centro de Salud de Figaredo",
+      "localidad": "Figaredo",
+      "direccion": "Calle Peñule, s/n, 33683 Figaredo",
+      "telefonos": [
+        "985427313"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-mieres-rebollada",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de La Rebollada",
+      "localidad": "La Rebollada",
+      "direccion": "Las Piezas, 76, bajo, 33619 La Rebollada",
+      "telefonos": [
+        "985458606"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-mieres-rioturbio",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Rioturbio/Returbiu",
+      "localidad": "Returbiu",
+      "direccion": "Calle E, 11, 33614 Returbiu",
+      "telefonos": [
+        "985458607"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "Calle E, 11, 33614 Returbiu",
+        "telefonos": [
+          "985458860"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-ablana",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Ablaña",
+      "localidad": "Ablaña",
+      "direccion": "San Martiniego, s/n, 33682 Ablaña",
+      "telefonos": [
+        "985451962"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "San Martiniego, s/n, Ablaña",
+        "telefonos": [
+          "985446018"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-santullano",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Santullano",
+      "localidad": "Santullano",
+      "direccion": "Calle La Estación, 4, 33618 Santullano",
+      "telefonos": [
+        "985451962"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "Santullano",
+        "telefonos": [
+          "985427006"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-pereda",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de La Pereda",
+      "localidad": "La Pereda",
+      "direccion": "La Pereda, 33682; sin calle publicada",
+      "telefonos": [
+        "985451962"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: Astursalud no detalla calle ni número del consultorio.",
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "Lugar La Pereda, s/n, 33682",
+        "telefonos": [
+          "985446415"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-santa-cruz",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Santa Cruz",
+      "localidad": "Santa Cruz",
+      "direccion": "Barrio de Collanzo, s/n, 33612 Santa Cruz",
+      "telefonos": [
+        "985427313"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "Carretera General, s/n, Santa Cruz de Mieres",
+        "telefonos": [
+          "985420775"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-ujo",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Ujo/Uxo",
+      "localidad": "Uxo",
+      "direccion": "La Vega, 7, 33640 Uxo",
+      "telefonos": [
+        "985421113"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-mieres-urbies",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Urbiés",
+      "localidad": "Urbiés",
+      "direccion": "Colominas de San Luis, 1, 33613 Urbiés",
+      "telefonos": [
+        "985432211"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "Caserío Viviendas Protegidas, 1, 33613 Urbiés",
+        "telefonos": [
+          "985430852"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-mieres-turon",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio del Valle de Turón",
+      "localidad": "Turón",
+      "direccion": "Calle San Juan Bautista de la Salle, 26 A, 33610 Turón",
+      "telefonos": [
+        "985432211"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ]
+    },
+    {
+      "id": "serv-salud-mieres-san-andres",
+      "concejo": "Mieres",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de San Andrés",
+      "localidad": "San Andrés, Turón",
+      "direccion": "Carretera General, 18, bajo, 33610 San Andrés",
+      "telefonos": [
+        "985432211"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado.",
+        "Dudoso: el directorio municipal de centros de atención primaria da otro teléfono o dirección. Se conserva el dato del directorio sanitario de Astursalud; confirmar por teléfono antes de acudir."
+      ],
+      "datoAlternativoMunicipal": {
+        "direccion": "San Andrés, s/n, Turón",
+        "telefonos": [
+          "985431354"
+        ],
+        "fuente": "https://www.mieres.es/areas-municipales/salud/centros-atencion-primaria",
+        "estado": "Dudoso: discrepancia con Astursalud; no se establece cuál está actualizado."
+      }
+    },
+    {
+      "id": "serv-salud-lena-pola",
+      "concejo": "Lena",
+      "tipo": "atencion_primaria",
+      "nombre": "Centro de Salud de Pola de Lena",
+      "localidad": "La Pola",
+      "direccion": "Calle Vicente Regueral, 2, 33630 La Pola",
+      "telefonos": [
+        "985491172"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.aytolena.es/salud"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-lena-villayana",
+      "concejo": "Lena",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Villallana/Viḷḷayana",
+      "localidad": "Viḷḷayana",
+      "direccion": "Barrio del Carmen, s/n, 33695 Viḷḷayana",
+      "telefonos": [
+        "985491172"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.aytolena.es/salud"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-lena-fierros",
+      "concejo": "Lena",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Puente de los Fierros",
+      "localidad": "Fierros",
+      "direccion": "Fierros, junto a la estación, 33693 Fierros",
+      "telefonos": [
+        "985496622"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.aytolena.es/salud"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-lena-campomanes",
+      "concejo": "Lena",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Campomanes/Campumanes",
+      "localidad": "Campumanes",
+      "direccion": "Calle La Divisa, 24, 33620 Campumanes",
+      "telefonos": [
+        "985496622"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.aytolena.es/salud"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: Astursalud da La Divisa, 24, y el ayuntamiento La Vega, 17. Ambas fuentes coinciden en el teléfono; confirmar dirección antes de acudir.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-moreda",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Centro de Salud de Moreda",
+      "localidad": "Moreda",
+      "direccion": "Calle La Estación, 6, 33670 Moreda",
+      "telefonos": [
+        "985482858"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-cabanaquinta",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Centro de Salud de Cabañaquinta",
+      "localidad": "Cabañaquinta",
+      "direccion": "Carretera de la Estación, s/n, 33686 Cabañaquinta",
+      "telefonos": [
+        "985494296"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-caborana",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Caborana",
+      "localidad": "Caborana",
+      "direccion": "Plaza de las Nieves, s/n, 33684 Caborana",
+      "telefonos": [
+        "985483122"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-boo",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Boo",
+      "localidad": "Boo",
+      "direccion": "Barrio La Vega, s/n, 33675 Boo",
+      "telefonos": [
+        "985482858"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-nembra",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Nembra",
+      "localidad": "Nembra",
+      "direccion": "Barrio El Campo, s/n, 33677 Nembra",
+      "telefonos": [
+        "985482858"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-collanzo",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Collanzo",
+      "localidad": "Collanzo",
+      "direccion": "Carretera General, s/n, 33680 Collanzo",
+      "telefonos": [
+        "985487474"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-pineres",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Piñeres",
+      "localidad": "Piñeres",
+      "direccion": "Lugar Veguelina, s/n, 33685 Piñeres",
+      "telefonos": [
+        "985494296"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-casomera",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Casomera",
+      "localidad": "Casomera",
+      "direccion": "Casomera, s/n, 33681 Casomera",
+      "telefonos": [
+        "985487474"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-aller-felechosa",
+      "concejo": "Aller",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Felechosa",
+      "localidad": "Felechosa",
+      "direccion": "Barrio Parte Baja, 34, 33688 Felechosa",
+      "telefonos": [
+        "985487474"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-morcin-santolaya",
+      "concejo": "Morcín",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Santolaya",
+      "localidad": "Santolaya",
+      "direccion": "Urbanización Monsacro, edificio Agara, bajo 1, 33162 Santa Eulalia",
+      "telefonos": [
+        "985783163"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-morcin-foz",
+      "concejo": "Morcín",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de La Foz",
+      "localidad": "La Foz",
+      "direccion": "Plaza de la Iglesia, 33161 La Foz",
+      "telefonos": [
+        "985795262"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-salud-riosa-vega",
+      "concejo": "Riosa",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de La Vega (centro de salud de Riosa)",
+      "localidad": "La Vega",
+      "direccion": "Travesía de Santa Bárbara, Riosa",
+      "telefonos": [
+        "985767187"
+      ],
+      "horario": "08:00–15:00, según el ayuntamiento; días no especificados. Atención posterior a través del servicio de atención continuada.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.ayuntamientoriosa.com/sanidad"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: Astursalud publica CP 33169 y el ayuntamiento 33160; se omite el código postal hasta confirmarlo."
+      ]
+    },
+    {
+      "id": "serv-salud-ribera-soto",
+      "concejo": "Ribera de Arriba",
+      "tipo": "atencion_primaria",
+      "nombre": "Consultorio de Soto de Ribera",
+      "localidad": "Soto Ribera",
+      "direccion": "Edificio Polivalente La Rampa, 33172 Soto Ribera",
+      "telefonos": [
+        "985796060"
+      ],
+      "horario": "L–V 08:00–15:00, según el ayuntamiento",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.astursalud.es/noticias/-/noticias/cangas-del-narcea-area-sanitaria-2",
+        "https://www.ayto-riberadearriba.es/sanidad"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: el ayuntamiento sitúa el centro en el Edificio de Servicios Múltiples, plaza de la Cultura s/n; Astursalud lo denomina Edificio Polivalente La Rampa. Confirmar equivalencia de direcciones."
+      ]
+    },
+    {
+      "id": "serv-farmacia-206",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — ALEMANY SANCHEZ, SARA",
+      "localidad": "MIERES",
+      "direccion": "C/ PEREZ DE AYALA, 32, MIERES",
+      "telefonos": [
+        "985461783"
+      ],
+      "horario": "L–V 09:00–15:00 / 16:00–20:00, S 10:00–13:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-331",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — BELLOSO MONTERO, M. NATIVIDAD",
+      "localidad": "UJO",
+      "direccion": "C/ LAS LLERAS, 2, UJO",
+      "telefonos": [
+        "985420215"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:00, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-317",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — CALZON FERNANDEZ, PAULA",
+      "localidad": "MIERES",
+      "direccion": "C/ MARTINEZ DE VEGA 18, MIERES",
+      "telefonos": [
+        "985466629"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-120",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — CARREIRA GONZALEZ, IRIA ANXELA",
+      "localidad": "MIERES",
+      "direccion": "C/ SAN JOSE DE CALASANZ 14, MIERES",
+      "telefonos": [
+        "985464348"
+      ],
+      "horario": "L–V 09:00–21:00, S 10:00–14:00 (DOMINGOS Y FESTIVOS CERRADO)",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-122",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — DE LA HOZ FERNANDEZ, M. DE LA CONCEPCION Y PARRAGA GONZALEZ, M. ISABEL",
+      "localidad": "TURON",
+      "direccion": "C/ LA CUADRIELLA 10, TURON",
+      "telefonos": [
+        "985430622"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-340",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — DIAZ BONILLA, JUAN ANDRES",
+      "localidad": "TURON",
+      "direccion": "C/ RAFAEL DEL RIEGO, 59, TURON",
+      "telefonos": [
+        "985430196"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-119",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — DIAZ FERNANDEZ, EMILIO",
+      "localidad": "MIERES",
+      "direccion": "C/ MANUEL LLANEZA 12, MIERES",
+      "telefonos": [
+        "985464010"
+      ],
+      "horario": "L–V 09:30–20:30, S 10:00–14:00 (DOMINGO CERRADO)",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-259",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — DONATE GONZALEZ, PABLO",
+      "localidad": "SANTULLANO DE MIERES",
+      "direccion": "C/ LA ESTACION 1, SANTULLANO DE MIERES",
+      "telefonos": [
+        "985426106"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:00, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-293",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — FERNANDEZ GONZALEZ, MARTA",
+      "localidad": "MIERES",
+      "direccion": "C/ NUMA GUILHOU,  28, MIERES",
+      "telefonos": [
+        "985462904"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-420",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — FERNANDEZ MENENDEZ, ROBERTO",
+      "localidad": "MIERES",
+      "direccion": "POLIGONO VEGA DE ARRIBA, PARCELA 5, MIERES",
+      "telefonos": [
+        "985467172"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MIERES&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-438",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — FERNANDEZ RIVAS, MANUEL",
+      "localidad": "ABLAÑA",
+      "direccion": "C/ PABLO IGLESIAS 3, ABLAÑA",
+      "telefonos": [
+        "985446272"
+      ],
+      "horario": "L–V 09:30–14:00 / 16:30–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-121",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — FUEYO MUÑIZ, FRANCISCO J.",
+      "localidad": "MIERES",
+      "direccion": "C/ MANUEL LLANEZA 41, MIERES",
+      "telefonos": [
+        "985460337"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:00–13:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-272",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — GONZALEZ-CUEVA FDEZ-M, AMPARO Y DEL POZO GLEZ-CUEVA, FERNANDO",
+      "localidad": "MIERES",
+      "direccion": "C/ ESCUELA DE CAPATACES,  15, MIERES",
+      "telefonos": [
+        "985466570"
+      ],
+      "horario": "Lunes a D 09:00–21:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-281",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — GRELA FERNANDEZ, LUIS RAMON",
+      "localidad": "MIERES",
+      "direccion": "C/ RAMON PEREZ DE AYALA, 3, MIERES",
+      "telefonos": [
+        "985460020"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-241",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — GRELA FERNANDEZ, M. DOLORES",
+      "localidad": "MIERES",
+      "direccion": "C/ DR. FLEMING 34, MIERES",
+      "telefonos": [
+        "985460529"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-226",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — GUTIERREZ GARCIA, ROSA",
+      "localidad": "MIERES",
+      "direccion": "AVDA. DE MEJICO, 32, MIERES",
+      "telefonos": [
+        "985463609"
+      ],
+      "horario": "L–V 09:30–20:30, S 10:00–14:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-381",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — HOSPITAL ALVAREZ BUYLLA",
+      "localidad": "MIERES",
+      "direccion": "MURIAS, S/N, MIERES",
+      "telefonos": [
+        "985458500"
+      ],
+      "horario": "[No Consta]",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-116",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — MUÑIZ TORREJON, MARINA",
+      "localidad": "MIERES",
+      "direccion": "C/ GUILLERMO SCHULTZ 10, MIERES",
+      "telefonos": [
+        "985465547"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-430",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — OCIO LOPEZ, MARCIAL SANTIAGO",
+      "localidad": "SAN ANDRES - TURON",
+      "direccion": "C/ SAN ANDRES, 2, SAN ANDRES - TURON",
+      "telefonos": [
+        "985432469"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-221",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — PATIÑO HERRERA, ELENA",
+      "localidad": "SANTA CRUZ DE MIERES",
+      "direccion": "C/ LAS LLANAS 10, SANTA CRUZ DE MIERES",
+      "telefonos": [
+        "985420034"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:00, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=2"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-273",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — RODRIGUEZ GARCIA, ANA COVADONGA",
+      "localidad": "MIERES",
+      "direccion": "C/ LA VEGA, 26, MIERES",
+      "telefonos": [
+        "985454057"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=3"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-118",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — SAN JUAN ALVAREZ, HECTOR",
+      "localidad": "MIERES",
+      "direccion": "C/ OÑON,  5-7, MIERES",
+      "telefonos": [
+        "985464723"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=3"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-278",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — SANZ DIAZ, ELENA Y SANZ DIAZ, ANTONIO",
+      "localidad": "RIOTURBIO",
+      "direccion": "C/ PUEBLO VIEJO 1, RIOTURBIO",
+      "telefonos": [
+        "985443003"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=3"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-123",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — SUAREZ DEL VILLAR CARRERO, MARIA",
+      "localidad": "TURON",
+      "direccion": "C/ RAFAEL DEL RIEGO,  1 - LA VEGUINA, TURON",
+      "telefonos": [
+        "985430077"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=3"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-199",
+      "concejo": "Mieres",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — VILLAMIL CABO, JOSE EUGENIO Y RIERA RODRIGUEZ, MARIA",
+      "localidad": "FIGAREDO",
+      "direccion": "CRTA. DE TURON S/N, FIGAREDO",
+      "telefonos": [
+        "985426642"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:00, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=3"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "La paginación usa sesión: primero buscar MIERES y después abrir la página enlazada; la URL de las páginas 2 y 3 no conserva por sí sola el filtro."
+      ]
+    },
+    {
+      "id": "serv-farmacia-276",
+      "concejo": "Aller",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — ANTUÑA GALLARDO, MARIA",
+      "localidad": "COLLANZO",
+      "direccion": "CRTA. GENERAL,  21, COLLANZO",
+      "telefonos": [
+        "985487062"
+      ],
+      "horario": "L–V 09:30–14:00 / 15:30–18:30, S 10:00–12:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=ALLER&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-288",
+      "concejo": "Aller",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — BERNALDO DE QUIROS BERNARDO, EUGENIA Y BERNALDO DE QUIROS BERNARDO, FAUSTINO",
+      "localidad": "MOREDA",
+      "direccion": "C/ HORACIO FERNANDEZ INGUANZO 16, MOREDA",
+      "telefonos": [
+        "985480264"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=ALLER&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-98",
+      "concejo": "Aller",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — BLANCO FERNANDEZ, AMALIA",
+      "localidad": "CABORANA",
+      "direccion": "AVDA. DE ALLER 9, CABORANA",
+      "telefonos": [
+        "985480483"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=ALLER&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-96",
+      "concejo": "Aller",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — FERNANDEZ GUTIERREZ, MARIA",
+      "localidad": "MOREDA",
+      "direccion": "AVDA. DE TARTIERE 131, MOREDA",
+      "telefonos": [
+        "985480127"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=ALLER&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-205",
+      "concejo": "Aller",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — IBAÑEZ FUEYO, ANA",
+      "localidad": "CABAÑAQUINTA",
+      "direccion": "C/ FRANCISCO CABRERA 2, CABAÑAQUINTA",
+      "telefonos": [
+        "985494042"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:30, S 09:30–13:30 / 16:00–19:00, D 10:00–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=ALLER&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-94",
+      "concejo": "Aller",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — MENENDEZ FERNANDEZ, ISABEL Y FERNANDEZ GONZALEZ, MODESTO",
+      "localidad": "MOREDA",
+      "direccion": "C/ CONSTITUCION 15, MOREDA",
+      "telefonos": [
+        "985480856"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:00–19:30, S 10:00–13:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=ALLER&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-97",
+      "concejo": "Lena",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — ADDEO RIVERO, MARIELA",
+      "localidad": "POLA DE LENA",
+      "direccion": "AVDA. DE LA CONSTITUCION, 6, POLA DE LENA",
+      "telefonos": [
+        "985490156"
+      ],
+      "horario": "L–V 08:30–14:00 / 16:00–20:00, S 09:30–14:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=LENA&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-125",
+      "concejo": "Lena",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — ALVAREZ ALONSO, BEATRIZ",
+      "localidad": "CAMPOMANES",
+      "direccion": "C/ PORTALON 18, CAMPOMANES",
+      "telefonos": [
+        "985496492"
+      ],
+      "horario": "L–V 09:00–14:00 / 16:00–18:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=LENA&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-91",
+      "concejo": "Lena",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — BARTHE FERNANDEZ, JUAN",
+      "localidad": "POLA DE LENA",
+      "direccion": "C/ MARQUES DE SAN FELIZ 1, POLA DE LENA",
+      "telefonos": [
+        "985490155"
+      ],
+      "horario": "L–V 09:00–20:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=LENA&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-92",
+      "concejo": "Lena",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — GIL BAIZAN, LUIS",
+      "localidad": "POLA DE LENA",
+      "direccion": "C/ VITAL AZA 24, POLA DE LENA",
+      "telefonos": [
+        "985490261"
+      ],
+      "horario": "L–V 09:00–14:00 / 16:00–20:00, S 09:30–14:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=LENA&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-476",
+      "concejo": "Lena",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — MEJIDO ARES, YAIZA MARIA",
+      "localidad": "POLA DE LENA",
+      "direccion": "C/ HERMANOS GRANDA, 41, POLA DE LENA",
+      "telefonos": [
+        "985490137"
+      ],
+      "horario": "L–V 09:00–14:00 / 16:00–20:00, S 09:30–13:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=LENA&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-211",
+      "concejo": "Morcín",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — ALVAREZ GARCIA, JOSE LUIS",
+      "localidad": "SANTA EULALIA DE MORCIN",
+      "direccion": "C/ EDIFICIO AGARA S/N, SANTA EULALIA DE MORCIN",
+      "telefonos": [
+        "985783376"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:30–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MORC&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-401",
+      "concejo": "Morcín",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — SUAREZ ANTUÑA, IRENE",
+      "localidad": "LA FOZ DE MORCIN",
+      "direccion": "C/ CARRETERA GENERAL, 18, LA FOZ DE MORCIN",
+      "telefonos": [
+        "985795298"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:30–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=MORC&txtNombre=&txtLocalidad=&radiobutton=N"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-253",
+      "concejo": "Riosa",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — MENDEZ VELASCO, ANTONIO",
+      "localidad": "RIOSA",
+      "direccion": "AVENIDA DEL ARAMO 13, RIOSA",
+      "telefonos": [
+        "985766023"
+      ],
+      "horario": "L–V 09:00–13:30 / 16:30–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=RIOSA&txtNombre=&txtLocalidad=&radiobutton=N",
+        "https://www.ayuntamientoriosa.com/ast/otros-servicios"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta."
+      ]
+    },
+    {
+      "id": "serv-farmacia-233",
+      "concejo": "Ribera de Arriba",
+      "tipo": "farmacia",
+      "nombre": "Farmacia — BOBES SAN EMETERIO, ISABEL",
+      "localidad": "SOTO DE RIBERA",
+      "direccion": "C/ PZ. DEL AYUNTAMIENTO  S/N, SOTO DE RIBERA",
+      "telefonos": [
+        "985796014"
+      ],
+      "horario": "L–V 09:30–13:30 / 16:00–19:30, S 10:30–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.farmasturias.org/GESCOF/cms/Farmacias/FarmaciaBuscar.asp?IdMenu=93&intPagina=1&busqueda=1&txtMunicipio=RIBERA&txtNombre=&txtLocalidad=&radiobutton=N",
+        "https://www.ayto-riberadearriba.es/sanidad"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Horarios habituales del directorio colegial; no indican guardia ni garantizan apertura en festivos. Reutilización automatizada del directorio no autorizada expresamente en las condiciones comprobadas; no se afirma licencia abierta.",
+        "Dudoso: dirección y horario discrepan con el directorio municipal (plaza Daira Echedeiria s/n y otra franja horaria). Ambos publican 985796014; confirmar antes de acudir."
+      ]
+    },
+    {
+      "id": "serv-mieres-biblio-vital",
+      "concejo": "Mieres",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Pública Vital Aza",
+      "localidad": "Mieres",
+      "direccion": "Calle Manuel Llaneza, 8, 33600 Mieres",
+      "telefonos": [
+        "985456294"
+      ],
+      "horario": "L–V 09:00–20:30; préstamo hasta 20:15. Julio y agosto: L–V 08:00–14:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/cultura/red-de-bibliotecas-publicas-municipales-de-mieres/biblioteca-de-mieres/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-mieres-biblio-turon",
+      "concejo": "Mieres",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Pública del Atenéu de Turón",
+      "localidad": "Turón",
+      "direccion": "Plaza Turón, El Parque, s/n, 33610 Turón",
+      "telefonos": [
+        "985432710"
+      ],
+      "horario": "L–V 16:30–20:00. Julio y agosto: L–V 10:00–14:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/cultura/red-de-bibliotecas-publicas-municipales-de-mieres/biblioteca-del-ateneu-de-turon/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-mieres-biblio-ujo",
+      "concejo": "Mieres",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Pública de Ujo",
+      "localidad": "Uxo",
+      "direccion": "Calle Doctor Julio Rodríguez Vigil, s/n, 33640 Uxo",
+      "telefonos": [
+        "985422109"
+      ],
+      "horario": "L–V 16:00–19:00. Julio y agosto: L–V 11:00–14:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/cultura/red-de-bibliotecas-publicas-municipales-de-mieres/biblioteca-de-ujo"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-mieres-biblio-cruz",
+      "concejo": "Mieres",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Pública de Santa Cruz",
+      "localidad": "Santa Cruz",
+      "direccion": "Polideportivo de Santa Cruz, 1.ª planta, 33612 Santa Cruz",
+      "telefonos": [
+        "985420059"
+      ],
+      "horario": "Martes y jueves 16:00–19:00. Julio y agosto: martes y jueves 11:00–14:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/cultura/red-de-bibliotecas-publicas-municipales-de-mieres/biblioteca-de-santa-cruz/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-lena-biblio-pola",
+      "concejo": "Lena",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Pública Ramón Menéndez Pidal",
+      "localidad": "La Pola",
+      "direccion": "Plaza Alfonso X el Sabio, 7, Casa de Cultura, 33630 La Pola",
+      "telefonos": [
+        "985491157"
+      ],
+      "horario": "L–V 10:00–14:00 / 16:00–20:00; S 10:00–14:00. Julio y agosto: L–V 09:00–14:00. Sábados de julio, agosto y septiembre: cerrada.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aytolena.es/biblioteca-p%C3%BAblica-ram%C3%B3n-men%C3%A9ndez-pidal-la-pola-"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-lena-biblio-campomanes",
+      "concejo": "Lena",
+      "tipo": "biblioteca",
+      "nombre": "Centro de Lectura La Casona",
+      "localidad": "Campumanes",
+      "direccion": "Calle Alfonso Llanes Alonso, 5, 33620 Campumanes",
+      "telefonos": [
+        "985496264"
+      ],
+      "horario": "L, X y V 10:00–13:00; L–V 16:00–19:00. Julio 10:00–14:00, días no detallados. Agosto cerrado.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aytolena.es/centro-de-lectura-la-casona-campumanes-"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-lena-biblio-villayana",
+      "concejo": "Lena",
+      "tipo": "biblioteca",
+      "nombre": "Centro de Lectura de Viḷḷayana",
+      "localidad": "Viḷḷayana",
+      "direccion": "Calle La Estación, 1, 33695 Viḷḷayana",
+      "telefonos": [
+        "985490118"
+      ],
+      "horario": "L–V 16:00–19:00. Julio y agosto cerrado.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aytolena.es/centro-de-lectura-vi%E1%B8%B7%E1%B8%B7ayana-"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-aller-biblio-moreda",
+      "concejo": "Aller",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca de Moreda",
+      "localidad": "Moreda",
+      "direccion": "Calle Eloy Martino, s/n, 33670 Moreda",
+      "telefonos": [
+        "985482885"
+      ],
+      "horario": "L–V 16:00–21:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/cultura/-/asset_publisher/zLaZb5maRApI/content/biblioteca-de-moreda"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-aller-biblio-cabanaquinta",
+      "concejo": "Aller",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca de Cabañaquinta",
+      "localidad": "Cabañaquinta",
+      "direccion": "Avenida de la Constitución, 45, 33686 Cabañaquinta",
+      "telefonos": [
+        "985494107"
+      ],
+      "horario": "L–J 16:30–20:30; V 10:00–13:00",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/cultura/-/asset_publisher/zLaZb5maRApI/content/centro-de-lectura-lorenzo-rodriguez-castellano-"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El horario de la biblioteca se diferencia del que publica el ayuntamiento para el conjunto del centro cultural."
+      ]
+    },
+    {
+      "id": "serv-aller-biblio-caborana",
+      "concejo": "Aller",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca de Caborana",
+      "localidad": "Caborana",
+      "direccion": "Avenida Ángel del Valle, 53, 33684 Caborana",
+      "telefonos": [
+        "985482028"
+      ],
+      "horario": "L–J 17:00–20:00; V 10:30–13:30",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/cultura/-/asset_publisher/zLaZb5maRApI/content/centro-de-lectura-jesus-barettini-"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-morcin-biblio",
+      "concejo": "Morcín",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Municipal de Morcín",
+      "localidad": "Santolaya/Santa Eulalia",
+      "direccion": "Avenida Mont-Sacro, 33162 Santa Eulalia de Morcín; número no contrastado",
+      "telefonos": [
+        "985783602"
+      ],
+      "horario": null,
+      "estadoOperativo": "apertura_pendiente_de_confirmacion",
+      "fuentes": [
+        "https://www.morcin.es/directorio-de-interes",
+        "https://absys.asturias.es/opacbp/imag/ba_directorio.pdf"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: el directorio municipal publica teléfono, pero no horario ni ubicación. El directorio regional localizado contiene una referencia de cierre que requiere confirmación; no se da por abierta.",
+        "Dudoso: horario de atención no contrastado.",
+        "Dirección general del directorio regional de bibliotecas; número y emplazamiento de acceso pendientes de confirmación."
+      ]
+    },
+    {
+      "id": "serv-riosa-biblio",
+      "concejo": "Riosa",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca y Casa de Cultura de Riosa",
+      "localidad": "L'Ará",
+      "direccion": "Calle Alcalde Próspero Martínez Suárez, s/n, 33160 L'Ará",
+      "telefonos": [
+        "984108891"
+      ],
+      "horario": "Octubre–mayo: L, X y V 08:00–15:00; M y J 10:00–14:00 / 17:00–20:00. Junio–septiembre: L–V 08:00–14:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.ayuntamientoriosa.com/biblioteca-y-casa-de-cultura"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-ribera-biblio",
+      "concejo": "Ribera de Arriba",
+      "tipo": "biblioteca",
+      "nombre": "Biblioteca Pública de Soto de Ribera",
+      "localidad": "Soto Ribera",
+      "direccion": "Edificio de Servicios Múltiples, 2.ª planta, 33172 Soto Ribera",
+      "telefonos": [
+        "985797172"
+      ],
+      "horario": "Habitual: L, X y J 14:00–19:00; M 10:30–19:00; V 09:00–14:00. Del 15 de junio al 15 de septiembre: L 14:00–19:00; M–V 09:30–14:30.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.ayto-riberadearriba.es/bibliotecas-y-espacios-culturales"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-mieres-deporte-onon",
+      "concejo": "Mieres",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo de Oñón",
+      "localidad": "Mieres",
+      "direccion": "Calle Oñón, s/n, 33600 Mieres",
+      "telefonos": [
+        "985451021"
+      ],
+      "horario": "Cierre por remodelación integral hasta nuevo aviso, según la ficha municipal.",
+      "estadoOperativo": "cierre_anunciado",
+      "fuentes": [
+        "https://www.mieres.es/areas-municipales/deportes/instalaciones-deportivas/polideportivo-de-onon"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: confirmar si ha reabierto. La página conserva horarios ordinarios junto al aviso de cierre; no se presentan como vigentes."
+      ]
+    },
+    {
+      "id": "serv-mieres-deporte-sur",
+      "concejo": "Mieres",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo Mieres Sur",
+      "localidad": "Mieres",
+      "direccion": "Calle Los Llerones, 33600 Mieres",
+      "telefonos": [
+        "985452458"
+      ],
+      "horario": "Septiembre–junio: L–V 10:00–15:00 / 16:00–22:00; S 10:00–20:00; D 10:00–13:00. Julio–agosto: L–V 10:00–13:00 / 17:00–22:00; S 10:00–14:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/areas-municipales/deportes/instalaciones-deportivas/polideportivo-mieres-sur"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-mieres-deporte-turon",
+      "concejo": "Mieres",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo de Turón",
+      "localidad": "Turón",
+      "direccion": "Plaza El Parque, Turón",
+      "telefonos": [
+        "985431936"
+      ],
+      "horario": "Septiembre–junio: L–V 10:00–13:00 / 15:30–22:00; S 10:00–13:00. Julio–agosto: L–V 10:00–13:00 / 15:30–21:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/areas-municipales/deportes/instalaciones-deportivas/polideportivo-de-turon"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La ficha imprime el código postal como «3610»; no se reproduce ese dato incompleto."
+      ]
+    },
+    {
+      "id": "serv-lena-deporte",
+      "concejo": "Lena",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo Jesús Suárez Valgrande",
+      "localidad": "La Pola",
+      "direccion": "Calle Los Suspiros, 4, 33630 La Pola",
+      "telefonos": [
+        "985490645"
+      ],
+      "horario": "15 de septiembre–15 de junio: L–V 09:00–22:00; S 10:00–14:00 / 16:00–21:00, sujeto a competiciones. 15 de junio–15 de septiembre: L–V 09:00–21:45.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aytolena.es/polideportivo"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Los días frontera de temporada se solapan en la fuente; confirmar en el centro."
+      ]
+    },
+    {
+      "id": "serv-aller-deporte-moreda",
+      "concejo": "Aller",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo Antonio Vázquez Megido",
+      "localidad": "Moreda",
+      "direccion": "Paséu Les Xandes, s/n, 33670 Moreda",
+      "telefonos": [
+        "985483141"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/en/directorio-municipal"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-aller-deporte-cabanaquinta",
+      "concejo": "Aller",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo Jesús Antonio Fernández González",
+      "localidad": "Cabañaquinta",
+      "direccion": "Calle Doctor Ochoa, 6, 33686 Cabañaquinta",
+      "telefonos": [
+        "985494507"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/en/directorio-municipal"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-morcin-deporte",
+      "concejo": "Morcín",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo de Santolaya",
+      "localidad": "Santolaya",
+      "direccion": "Avenida Monsacro, 5, 33162 Santa Eulalia",
+      "telefonos": [
+        "985783602"
+      ],
+      "horario": "Solo gimnasio: M y J 09:00–12:00; L–J 17:00–21:00; V 17:00–20:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.morcin.es/instalaciones-deportivas"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El horario publicado corresponde al gimnasio, no a la totalidad del polideportivo."
+      ]
+    },
+    {
+      "id": "serv-riosa-deporte",
+      "concejo": "Riosa",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Polideportivo Municipal Secretario José Cabo González",
+      "localidad": "L'Ará",
+      "direccion": "Calle La Mina, s/n, 33160 L'Ará",
+      "telefonos": [],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.ayuntamientoriosa.com/directorio-municipal",
+        "https://www.ayuntamientoriosa.com/instalaciones-deportivas"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: la ficha escribe «9:30 a 21:0», sin completar el cierre. Se deja el horario sin normalizar hasta confirmación.",
+        "Dudoso: teléfono propio no contrastado.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-ribera-deporte-sotorei",
+      "concejo": "Ribera de Arriba",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Pista polideportiva de Soto Rei",
+      "localidad": "Soto Rei",
+      "direccion": "Soto Rei; sin calle publicada",
+      "telefonos": [
+        "985796009"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.ayto-riberadearriba.es/instalaciones-deportivas"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El teléfono es la centralita municipal, no una línea propia de la cancha.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-ribera-deporte-llosalin",
+      "concejo": "Ribera de Arriba",
+      "tipo": "instalacion_deportiva",
+      "nombre": "Instalaciones deportivas de El Llosalín",
+      "localidad": "Güeñu/Bueño",
+      "direccion": "El Llosalín, entorno de Bueño",
+      "telefonos": [
+        "985797058"
+      ],
+      "horario": null,
+      "estadoOperativo": "cierre_anunciado_pendiente_de_confirmacion",
+      "fuentes": [
+        "https://www.ayto-riberadearriba.es/instalaciones-deportivas"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: la página anuncia cierre por obras y también apertura estival de piscinas, sin resolver su vigencia. Confirmar antes de acudir.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-mieres-turismo",
+      "concejo": "Mieres",
+      "tipo": "oficina_turismo",
+      "nombre": "Oficina Municipal de Turismo de Mieres",
+      "localidad": "Mieres",
+      "direccion": "Calle Manuel Llaneza, 8, 33600 Mieres",
+      "telefonos": [
+        "985450533"
+      ],
+      "horario": "L 08:00–15:00; M–V 08:00–20:00; S 10:00–14:00 / 16:00–19:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.mieres.es/turismo/oficina-municipal-de-turismo"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-lena-turismo",
+      "concejo": "Lena",
+      "tipo": "oficina_turismo",
+      "nombre": "Oficina de Turismo de Lena",
+      "localidad": "La Pola",
+      "direccion": "Calle Marqués de San Feliz, 2, 33630 La Pola",
+      "telefonos": [
+        "985497608"
+      ],
+      "horario": "Solo horario estival publicado, 17 de junio–15 de septiembre: M–V 10:00–13:00 / 16:00–18:00; S 10:00–13:00 / 16:30–18:00; D 10:00–13:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.turismoasturias.es/organiza-tu-viaje/oficinas-de-turismo/oficina-de-turismo-de-lena"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: horario del resto del año no comprobado; no usar el estival para noviembre o diciembre."
+      ]
+    },
+    {
+      "id": "serv-aller-turismo-caborana",
+      "concejo": "Aller",
+      "tipo": "oficina_turismo",
+      "nombre": "Centro de Recepción de Visitantes de Aller",
+      "localidad": "Caborana",
+      "direccion": "Complejo Cívico Deportivo, s/n, 33684 Caborana",
+      "telefonos": [
+        "985481439"
+      ],
+      "horario": "L–V 09:00–15:00. S, D y festivos cerrado.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/oficinas"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-aller-turismo-felechosa",
+      "concejo": "Aller",
+      "tipo": "oficina_turismo",
+      "nombre": "Punto de Información Turística de Felechosa",
+      "localidad": "Felechosa",
+      "direccion": "El Parque, s/n, 33688 Felechosa",
+      "telefonos": [
+        "985481439"
+      ],
+      "horario": "S 09:00–14:00 / 15:00–17:00. L–V y D cerrado, según la ficha.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/oficinas"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-morcin-info-turistica",
+      "concejo": "Morcín",
+      "tipo": "informacion_turistica_municipal",
+      "nombre": "Información turística municipal de Morcín",
+      "localidad": "Santolaya",
+      "direccion": "Avenida Monsacro, 17, 33162 Santa Eulalia de Morcín",
+      "telefonos": [
+        "985783162"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.turismoasturias.es/descubre/donde-ir/municipios/morcin",
+        "https://www.morcin.es/contacto"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Contacto municipal publicado por Turismo Asturias; no se ha verificado una oficina turística independiente.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-riosa-info-turistica",
+      "concejo": "Riosa",
+      "tipo": "informacion_turistica_municipal",
+      "nombre": "Información turística municipal de Riosa",
+      "localidad": "La Vega",
+      "direccion": "Plaza de la Constitución, 1, 33160 La Vega",
+      "telefonos": [
+        "985766006"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.turismoasturias.es/descubre/donde-ir/municipios/riosa",
+        "https://www.ayuntamientoriosa.com/contacto1"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Contacto municipal publicado por Turismo Asturias; no se ha verificado una oficina turística independiente.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-ribera-info-turistica",
+      "concejo": "Ribera de Arriba",
+      "tipo": "informacion_turistica_municipal",
+      "nombre": "Información turística municipal de Ribera de Arriba",
+      "localidad": "Soto Ribera",
+      "direccion": "Plaza de la Constitución, s/n, 33172 Soto Ribera",
+      "telefonos": [
+        "985796009"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.turismoasturias.es/descubre/donde-ir/municipios/ribera-de-arriba",
+        "https://www.ayto-riberadearriba.es/contacto"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Contacto municipal publicado por Turismo Asturias; no se ha verificado una oficina turística independiente.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-ribera-ci-horreo",
+      "concejo": "Ribera de Arriba",
+      "tipo": "informacion_turistica_municipal",
+      "nombre": "Centro de Interpretación del Hórreo",
+      "localidad": "Güeñu/Bueño",
+      "direccion": "Carretera a Bueño, s/n, 33171 Güeñu/Bueño",
+      "telefonos": [
+        "985087223"
+      ],
+      "horario": "Julio–septiembre: J–D y festivos 10:30–14:30 / 16:30–20:00. Octubre, abril, mayo y junio: V 16:00–18:30; S, D y festivos 11:00–14:00 / 16:00–18:30. Noviembre–marzo: S, D y festivos 11:00–14:00 / 16:00–18:30. Cierra del 10 de enero al 15 de febrero y el 24, 25 y 31 de diciembre, 1 y 6 de enero y 1 de mayo.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.turismoasturias.es/en/descubre/cultura/museos-y-espacios-culturales/otros-espacios/centro-de-interpretacion-del-horreo",
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Centro de interpretación; no se presenta como oficina de turismo general. Confirmar cierres estacionales antes de la visita."
+      ]
+    },
+    {
+      "id": "serv-mieres-punto-limpio",
+      "concejo": "Mieres",
+      "tipo": "punto_limpio_fijo",
+      "nombre": "Punto limpio de Mieres",
+      "localidad": "Polígono La Fábrica",
+      "direccion": "Estación de Transferencia, polígono La Fábrica, Mieres",
+      "telefonos": [
+        "679110518"
+      ],
+      "horario": "L–V 08:00–20:30; S 08:00–13:30 / 15:30–19:00.",
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://cogersa.es/puntos_limpios/punto_limpio_mieres/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "serv-aller-punto-limpio",
+      "concejo": "Aller",
+      "tipo": "punto_limpio",
+      "nombre": "Punto limpio de Oyanco",
+      "localidad": "Oyanco/Moreda",
+      "direccion": "PL Oyanco, AS-112, Oyanco, Aller",
+      "telefonos": [],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://www.aller.es/punto-limpio"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La fuente municipal lo rotula «MPL» y no concreta personal, acceso ni horario. Confirmar modalidad antes de llevar residuos.",
+        "Dudoso: teléfono propio no contrastado.",
+        "Dudoso: horario de atención no contrastado."
+      ]
+    },
+    {
+      "id": "serv-lena-punto-limpio-movil",
+      "concejo": "Lena",
+      "tipo": "punto_limpio_movil",
+      "nombre": "Punto limpio móvil de COGERSA",
+      "localidad": "La Pola",
+      "direccion": "Pola de Lena. Plaza Alfonso X El Sabio",
+      "telefonos": [
+        "900141414"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://cogersa.es/noticias/puntolimpiomovil-2026-y-horario-sabado/",
+        "https://cogersa.es/punto-limpio-movil/",
+        "https://puntolimpiomovilcogersa.com/",
+        "https://puntolimpiomovilcogersa.com/wp-json/wp/v2/puntos-limpios?search=Lena&per_page=100",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/lena-2026-nov-25-pola-de-lena-plaza-alfonso-x-el-sabio/",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/lena-2026-dic-30-pola-de-lena-plaza-alfonso-x-el-sabio/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Fechas y lugares publicados en el calendario oficial para noviembre y diciembre de 2026. Dudoso: horas de recogida no expuestas en los registros JSON ni en la ficha individual consultada; confirmar en la página principal o por teléfono.",
+        "900141414 es atención general de COGERSA (08:30–16:30 según su web), no el horario del camión.",
+        "La fecha de publicación técnica de un registro de calendario no es la fecha de recogida; las fechas aquí se han contrastado con el título de cada visita."
+      ],
+      "paradasPublicadas2026": [
+        {
+          "fecha": "2026-11-25",
+          "lugar": "Pola de Lena. Plaza Alfonso X El Sabio",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/lena-2026-nov-25-pola-de-lena-plaza-alfonso-x-el-sabio/"
+        },
+        {
+          "fecha": "2026-12-30",
+          "lugar": "Pola de Lena. Plaza Alfonso X El Sabio",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/lena-2026-dic-30-pola-de-lena-plaza-alfonso-x-el-sabio/"
+        }
+      ]
+    },
+    {
+      "id": "serv-morcin-punto-limpio-movil",
+      "concejo": "Morcín",
+      "tipo": "punto_limpio_movil",
+      "nombre": "Punto limpio móvil de COGERSA",
+      "localidad": "Santolaya y La Foz",
+      "direccion": "Sta. Eulalia. Aparcamiento consultorio; La Foz. Aparcamiento polideportivo",
+      "telefonos": [
+        "900141414"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://cogersa.es/noticias/puntolimpiomovil-2026-y-horario-sabado/",
+        "https://cogersa.es/punto-limpio-movil/",
+        "https://puntolimpiomovilcogersa.com/",
+        "https://puntolimpiomovilcogersa.com/wp-json/wp/v2/puntos-limpios?search=Morc%C3%ADn&per_page=100",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/morcin-2026-nov-20-sta-eulalia-aparcamiento-consultorio/",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/morcin-2026-dic-24-la-foz-aparcamiento-polideportivo/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Fechas y lugares publicados en el calendario oficial para noviembre y diciembre de 2026. Dudoso: horas de recogida no expuestas en los registros JSON ni en la ficha individual consultada; confirmar en la página principal o por teléfono.",
+        "900141414 es atención general de COGERSA (08:30–16:30 según su web), no el horario del camión.",
+        "La fecha de publicación técnica de un registro de calendario no es la fecha de recogida; las fechas aquí se han contrastado con el título de cada visita."
+      ],
+      "paradasPublicadas2026": [
+        {
+          "fecha": "2026-11-20",
+          "lugar": "Sta. Eulalia. Aparcamiento consultorio",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/morcin-2026-nov-20-sta-eulalia-aparcamiento-consultorio/"
+        },
+        {
+          "fecha": "2026-12-24",
+          "lugar": "La Foz. Aparcamiento polideportivo",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/morcin-2026-dic-24-la-foz-aparcamiento-polideportivo/"
+        }
+      ]
+    },
+    {
+      "id": "serv-riosa-punto-limpio-movil",
+      "concejo": "Riosa",
+      "tipo": "punto_limpio_movil",
+      "nombre": "Punto limpio móvil de COGERSA",
+      "localidad": "L'Ará",
+      "direccion": "La Ará. Junto ambulatorio",
+      "telefonos": [
+        "900141414"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://cogersa.es/noticias/puntolimpiomovil-2026-y-horario-sabado/",
+        "https://cogersa.es/punto-limpio-movil/",
+        "https://puntolimpiomovilcogersa.com/",
+        "https://puntolimpiomovilcogersa.com/wp-json/wp/v2/puntos-limpios?search=Riosa&per_page=100",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/riosa-2026-nov-20-la-ara-junto-ambulatorio/",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/riosa-2026-dic-24-la-ara-junto-ambulatorio/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Fechas y lugares publicados en el calendario oficial para noviembre y diciembre de 2026. Dudoso: horas de recogida no expuestas en los registros JSON ni en la ficha individual consultada; confirmar en la página principal o por teléfono.",
+        "900141414 es atención general de COGERSA (08:30–16:30 según su web), no el horario del camión.",
+        "La fecha de publicación técnica de un registro de calendario no es la fecha de recogida; las fechas aquí se han contrastado con el título de cada visita."
+      ],
+      "paradasPublicadas2026": [
+        {
+          "fecha": "2026-11-20",
+          "lugar": "La Ará. Junto ambulatorio",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/riosa-2026-nov-20-la-ara-junto-ambulatorio/"
+        },
+        {
+          "fecha": "2026-12-24",
+          "lugar": "La Ará. Junto ambulatorio",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/riosa-2026-dic-24-la-ara-junto-ambulatorio/"
+        }
+      ]
+    },
+    {
+      "id": "serv-ribera-punto-limpio-movil",
+      "concejo": "Ribera de Arriba",
+      "tipo": "punto_limpio_movil",
+      "nombre": "Punto limpio móvil de COGERSA",
+      "localidad": "Soto de Rey",
+      "direccion": "Soto de Rey. Explanada rotonda entrada",
+      "telefonos": [
+        "900141414"
+      ],
+      "horario": null,
+      "estadoOperativo": "no_verificado_en_persona",
+      "fuentes": [
+        "https://cogersa.es/noticias/puntolimpiomovil-2026-y-horario-sabado/",
+        "https://cogersa.es/punto-limpio-movil/",
+        "https://puntolimpiomovilcogersa.com/",
+        "https://puntolimpiomovilcogersa.com/wp-json/wp/v2/puntos-limpios?search=Ribera+de+Arriba&per_page=100",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/ribera-de-arriba-2026-nov-19-soto-de-rey-explanada-rotonda-entrada/",
+        "https://puntolimpiomovilcogersa.com/puntos-limpios/ribera-de-arriba-2026-dic-24-soto-de-rey-explanada-rotonda-entrada/"
+      ],
+      "comprobacion": "2026-11-04",
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Fechas y lugares publicados en el calendario oficial para noviembre y diciembre de 2026. Dudoso: horas de recogida no expuestas en los registros JSON ni en la ficha individual consultada; confirmar en la página principal o por teléfono.",
+        "900141414 es atención general de COGERSA (08:30–16:30 según su web), no el horario del camión.",
+        "La fecha de publicación técnica de un registro de calendario no es la fecha de recogida; las fechas aquí se han contrastado con el título de cada visita."
+      ],
+      "paradasPublicadas2026": [
+        {
+          "fecha": "2026-11-19",
+          "lugar": "Soto de Rey. Explanada rotonda entrada",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/ribera-de-arriba-2026-nov-19-soto-de-rey-explanada-rotonda-entrada/"
+        },
+        {
+          "fecha": "2026-12-24",
+          "lugar": "Soto de Rey. Explanada rotonda entrada",
+          "horario": null,
+          "fuente": "https://puntolimpiomovilcogersa.com/puntos-limpios/ribera-de-arriba-2026-dic-24-soto-de-rey-explanada-rotonda-entrada/"
+        }
+      ]
+    }
+  ]
+}
