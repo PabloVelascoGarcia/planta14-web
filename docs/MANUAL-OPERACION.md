@@ -274,12 +274,19 @@ Cada campo lleva debajo una ayuda breve. Solo son obligatorios título, entradil
 |---|---|
 | **Contenido** | Título, entradilla, texto y foto principal. |
 | **Clasificación** | Autor (ya viene puesto si tu cuenta tiene firma), concejo, sección, «Es un artículo de opinión» y, solo para actividades, fecha y lugar de la **Agenda**. |
-| **Portada** | **Principal** (la noticia grande de la portada; si hay varias, la más reciente), **Destacada** (bloque de destacadas) y **Mostrar en la página del concejo** (viene marcada; si la desmarcas, la noticia sigue en portada, sección y buscador, pero no en la página del concejo). |
+| **Portada** | **Principal** (la noticia grande de la portada; si hay varias, la más reciente; si no hay ninguna, la última noticia que no sea opinión ni agenda), **Destacada** (bloque de destacadas) y **Mostrar en la página del concejo** (viene marcada; si la desmarcas, la noticia sigue en portada, sección y buscador, pero no en la página del concejo). |
 | **Publicación** | Fecha de publicación y publicación programada (abajo). |
 | **Buscadores** | Título, descripción e imagen para Google y redes. **Opcionales:** si están vacíos se usan el título, la entradilla y la foto principal. |
 | **Fuente** | Bloque plegado y opcional: **solo si la noticia procede de otro medio o de una nota de prensa** (medio, enlace y autor original). |
 
 A la derecha, la **Dirección (slug)** se crea sola al guardar, a partir del título (sin tildes, eñes ni espacios; si ya existe, añade -2, -3…). Se puede cambiar, pero no hace falta. **Creada por** lo pone el CMS y no se cambia. El identificador de origen, la procedencia y el lote solo los ve la administración.
+
+### Qué sale en la portada
+
+- **Bloques de noticias** («En portada», «La vida aquí», Caudal y «Relacionadas» en cada noticia): solo noticias. Las piezas de la sección **Agenda** salen únicamente en la agenda («Para salir» y `/agenda`), y la **opinión**, en su bloque.
+- **Sin repetidos:** una pieza aparece en un solo bloque de la portada; los bloques se rellenan con las siguientes noticias por fecha. «La vida aquí» empieza por las marcadas como **Destacada**.
+- **Relacionadas:** primero las del mismo concejo y después las de la misma sección.
+- **Tu ayuntamiento, aquí:** enlaza los espacios municipales activos y la lista de los seis concejos; nunca un panel.
 
 ### El texto
 

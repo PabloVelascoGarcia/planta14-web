@@ -9,6 +9,8 @@ import { Header } from "@/components/header";
 import { NotFoundContent } from "@/components/not-found-content";
 import { contentSource } from "@/lib/content-source";
 
+// Se pinta en cada petición: la cabecera depende de CONTENT_SOURCE (demo o contenido real), que no existe al compilar.
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Página no encontrada | Planta 14", robots: { index: false, follow: true } };
 
 export default async function GlobalNotFound() {

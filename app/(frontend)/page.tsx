@@ -22,7 +22,9 @@ export default async function Home() {
   const { main: mainArticle, latest, featured, caudal, opinion, more } = front;
   // «Tu ayuntamiento, aquí»: los espacios municipales activos; si no hay ninguno, la lista de los seis concejos.
   const townNames = new Map(Object.values(territories).flat().map(name => [slugify(name), name]));
-  const activeSpaces = (await getMunicipalSpaces({ activos: true })).filter(space => townNames.has(space.id));
+  const townOrder = [...townNames.keys()];
+  const activeSpaces = (await getMunicipalSpaces({ activos: true })).filter(space => townNames.has(space.id))
+    .sort((a, b) => townOrder.indexOf(a.id) - townOrder.indexOf(b.id));
 
   return (
     <div className="pb-10">

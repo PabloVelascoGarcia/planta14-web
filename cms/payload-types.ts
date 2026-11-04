@@ -441,7 +441,7 @@ export interface Article {
     place?: string | null;
   };
   /**
-   * La noticia grande de la portada. Si hay varias marcadas, sale la más reciente.
+   * La noticia grande de la portada. Si hay varias marcadas, sale la más reciente; si no hay ninguna, la última noticia (ni opinión ni agenda).
    */
   main?: boolean | null;
   /**

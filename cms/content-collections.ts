@@ -185,7 +185,7 @@ export const Articles: CollectionConfig = {
         ] },
       ] },
       { label: 'Portada', fields: [
-        { name: 'main', label: 'Principal', type: 'checkbox', ...help('La noticia grande de la portada. Si hay varias marcadas, sale la más reciente.') },
+        { name: 'main', label: 'Principal', type: 'checkbox', ...help('La noticia grande de la portada. Si hay varias marcadas, sale la más reciente; si no hay ninguna, la última noticia (ni opinión ni agenda).') },
         { name: 'featured', label: 'Destacada', type: 'checkbox', ...help('Entra en el bloque de noticias destacadas de la portada.') },
         { name: 'showInTown', label: 'Mostrar en la página del concejo', type: 'checkbox', defaultValue: true,
           ...help('Desmárcala si la noticia no debe aparecer en la página de su concejo (sigue en portada, sección y buscador).') },

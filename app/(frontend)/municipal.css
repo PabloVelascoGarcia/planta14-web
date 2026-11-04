@@ -204,13 +204,15 @@
    44 px de alto; los créditos y licencias dentro de una frase, al menos 24 px. Va al final para ganar a lo anterior. */
 @media(max-width:680px){
   .municipal-shell :is(.municipal-topbar,.municipal-kicker,.municipal-subline,.municipal-introline,.municipal-example,.municipal-notice-strip small,.municipal-notice-strip strong,.municipal-card-meta,.municipal-content-card>p,.municipal-card-dates,.municipal-editorial-label,.municipal-read-link,.municipal-text-button,.municipal-event time span,.municipal-event small,.municipal-notices .municipal-card-meta,.municipal-notices .municipal-content-card>p,.municipal-panel-invite small,.municipal-panel-invite>p:not(.municipal-kicker),.municipal-cta,.municipal-bottom-note,.municipal-content-image figcaption,.municipal-editorial-card p:not(.municipal-card-meta),.municipal-section-nav button,.municipal-detail-text,.municipal-demo-banner p,.municipal-demo-banner a){font-size:13px;letter-spacing:.02em}
-  .municipal-shell .municipal-brand span{font-size:13px;letter-spacing:.06em;text-align:right;max-width:9em;line-height:1.25}
+  .municipal-shell .municipal-brand span{font-size:13px;letter-spacing:.06em;text-align:right;max-width:10em;line-height:1.25;white-space:normal}
+  .municipal-shell .municipal-topbar .container-p14{flex-wrap:wrap;column-gap:12px}
   .municipal-shell .municipal-crest small{font-size:13px}
   .municipal-shell :is(.aller-hero-copy .municipal-kicker,.aller-hero-copy>p:not(.municipal-kicker),.aller-hero-copy>a,.aller-discover small,.aller-discover p,.aller-asset-credit){font-size:13px;letter-spacing:.02em}
   .municipal-shell .aller-hero figcaption{font-size:13px;padding:0 8px;line-height:1.3}
   .municipal-shell .aller-hero figcaption a{display:inline-flex;align-items:center;min-height:24px}
   .municipal-shell .municipal-topbar a,.municipal-shell .aller-hero-copy>a,.municipal-shell .municipal-read-link,.municipal-shell .municipal-bottom-note a,.municipal-shell .municipal-text-button,.municipal-shell .municipal-detail-text~a{display:inline-flex;align-items:center;min-height:44px}
   .municipal-shell .municipal-sidebar-heading button{min-width:44px;min-height:44px}
+  .municipal-shell .municipal-brand{min-height:44px}
   .municipal-shell .aller-asset-credit a{display:inline-flex;align-items:center;min-height:24px}
   .municipal-shell .municipal-notice-strip>span:last-child{font-size:0}
 }

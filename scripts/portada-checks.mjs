@@ -119,16 +119,30 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
   assert.ok(page.includes('Anúnciate en Planta 14'), 'also in the article');
   passed('ad slots without an ad: discreet «Anúnciate en Planta 14» linking to /publicidad');
 
-  // --- 6. 404 propia.
-  for (const path of ['/no-existe-esta-pagina', `/noticia/no-existe`, '/noticia/a/b/c', '/autor/nadie']) {
+  // --- 6. 404 propia. Las direcciones sin ruta llevan la página completa en el HTML (app/global-not-found.tsx); las
+  // que llaman a notFound() (concejo, noticia o autor inexistentes) responden 404 y Next.js la pinta en el navegador.
+  const towns = ['mieres', 'lena', 'aller', 'morcin', 'riosa', 'ribera-de-arriba'];
+  for (const path of ['/noticia/a/b/c', '/concejo/mieres/x/y']) {
     const response = await fetch(`${web}${path}`);
     assert.equal(response.status, 404, path);
     const body = (await response.text()).replaceAll('<!-- -->', '');
-    assert.ok(body.includes('Esta página no está en Planta 14.') && body.includes('action="/buscar"') && body.includes('href="/"'), `own 404 at ${path}`);
-    for (const town of ['mieres', 'lena', 'aller', 'morcin', 'riosa', 'ribera-de-arriba']) assert.ok(body.includes(`href="/${town}"`), `404 links ${town} at ${path}`);
-    assert.ok(body.includes('lang="es"') && /noindex/.test(body), `Spanish and noindex at ${path}`);
+    assert.ok(body.includes('Esta página no está en Planta 14.') && body.includes('action="/buscar"') && body.includes('href="/"') && body.includes('lang="es"') && /noindex/.test(body), `own 404 in the HTML at ${path}`);
+    for (const town of towns) assert.ok(body.includes(`href="/${town}"`), `404 links ${town} at ${path}`);
+    assert.ok(!body.includes('Edición de demostración'), `real-content header at ${path}`);
   }
-  passed('404: own page in Spanish with the Planta 14 design, search box and links to the home page and the six concejos (unknown concejo, article, deep path and author)');
+  for (const path of ['/no-existe-esta-pagina', '/noticia/no-existe', '/autor/nadie', '/tema/nada']) {
+    const context = await browser.newContext();
+    const tab = await context.newPage();
+    const response = await tab.goto(`${web}${path}`);
+    assert.equal(response.status(), 404, path);
+    await tab.locator('h1', { hasText: 'Esta página no está en Planta 14.' }).waitFor();
+    assert.equal(await tab.locator('form[action="/buscar"] input[name="q"]').count(), 1, `search at ${path}`);
+    assert.equal(await tab.locator('[data-not-found] a[href="/"]').count(), 1, `home link at ${path}`);
+    for (const town of towns) assert.equal(await tab.locator(`[data-not-found] a[href="/${town}"]`).count(), 1, `${town} at ${path}`);
+    assert.ok(await tab.locator('footer').count(), `site footer at ${path}`);
+    await context.close();
+  }
+  passed('404: own page in Spanish with the Planta 14 design, search box and links to the home page and the six concejos; unmatched addresses get it in the HTML, missing concejo/article/author/section pages (404) in the browser');
 
   // --- 9. Página del concejo: noticias primero, tarjetas fijas después; ayudas sin foto en la lista.
   {
@@ -156,6 +170,7 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
     const problems = await tab.evaluate(() => {
       const visible = e => { const s = getComputedStyle(e); const r = e.getBoundingClientRect(); return s.visibility !== 'hidden' && s.display !== 'none' && r.width > 0 && r.height > 0 && !e.closest('.sr-only'); };
       const out = [];
+      if (document.scrollingElement.scrollWidth > window.innerWidth + 1) out.push(`desborda: ${document.scrollingElement.scrollWidth}px de ancho en ${window.innerWidth}px`);
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       while (walker.nextNode()) {
         const node = walker.currentNode, element = node.parentElement;
@@ -175,5 +190,13 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
     await context.close();
     assert.deepEqual(problems, [], `${path} on mobile`);
   }
-  passed('concejo page on mobile (Mieres and Lena): no text under 13 px; links and buttons at least 44 px (credits inside a sentence, 24 px)');
+  for (const path of ['/', `/noticia/${news[0].slug}`, '/noticia/a/b/c', '/agenda']) {
+    const context = await browser.newContext({ ...devices['iPhone 13'] });
+    const tab = await context.newPage();
+    await tab.goto(`${web}${path}`, { waitUntil: 'networkidle' });
+    const width = await tab.evaluate(() => [document.scrollingElement.scrollWidth, window.innerWidth]);
+    await context.close();
+    assert.ok(width[0] <= width[1] + 1, `${path} overflows on mobile: ${width}`);
+  }
+  passed('mobile: home, article, 404 and agenda without horizontal overflow; concejo page (Mieres and Lena): no horizontal overflow, no text under 13 px; links and buttons at least 44 px (credits inside a sentence, 24 px)');
 }
