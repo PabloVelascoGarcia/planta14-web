@@ -4,7 +4,7 @@ import { paragraphsToLexical } from "@/lib/rich-text";
 import { siteUrl } from "@/lib/site-config";
 import { slugify } from "@/lib/utils";
 
-export type FiestaFormState = { ok: boolean; message?: string; errors?: Record<string, string> };
+export type FiestaFormState = { ok: boolean; message?: string; errors?: Record<string, string>; values?: Record<string, string> };
 
 const MAX_POSTER = 5 * 1024 * 1024;
 const text = (form: FormData, name: string, max: number) => String(form.get(name) ?? "").trim().slice(0, max);
@@ -41,7 +41,9 @@ export async function sendFiesta(_previous: FiestaFormState, form: FormData): Pr
     if (values.posterCredit.length < 2) errors.posterCredit = "Indica quién hizo el cartel.";
     if (form.get("posterRights") !== "on") errors.posterRights = "Marca la declaración de derechos del cartel o envía la fiesta sin cartel.";
   }
-  if (Object.keys(errors).length) return { ok: false, errors, message: "Revisa los campos marcados." };
+  // Se devuelven los valores para que el formulario no se vacíe al mostrar los errores (el archivo hay que volver a elegirlo).
+  const kept = { ...values, endDay: text(form, "endDay", 10), posterRights: form.get("posterRights") === "on" ? "on" : "", privacy: form.get("privacy") === "on" ? "on" : "" };
+  if (Object.keys(errors).length) return { ok: false, errors, values: kept, message: hasPoster ? "Revisa los campos marcados y vuelve a elegir el archivo del cartel." : "Revisa los campos marcados." };
 
   const { contentClient } = await import("@/lib/payload-content");
   const { hashToken, newToken, dayToStored } = await import("@/cms/festivals");

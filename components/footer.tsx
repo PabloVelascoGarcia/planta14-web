@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CookieSettingsButton } from "./cookie-consent";
+import { SubscribeForm } from "./subscribe-form";
 import { contentSource } from "@/lib/content-source";
 
 export function Footer({ cookieSettings = false }: { cookieSettings?: boolean }) {
@@ -7,7 +8,7 @@ export function Footer({ cookieSettings = false }: { cookieSettings?: boolean })
   const demo = contentSource() === "demo";
   return (
     <footer className="mt-16 bg-coal-950 text-paper">
-      <div className="container-p14 grid gap-8 py-10 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
+      <div className="container-p14 grid gap-8 py-10 md:grid-cols-[1.2fr_0.8fr_0.8fr_1.4fr]">
         <div>
           <p className="font-serif text-4xl font-black">Planta 14</p>
           <p className="mt-3 max-w-xl text-sm leading-6 text-paper/75">
@@ -27,6 +28,10 @@ export function Footer({ cookieSettings = false }: { cookieSettings?: boolean })
           <p className="font-bold uppercase tracking-[0.18em] text-paper/55">Redacción</p>
           <p className="mt-3">El Caudal, Asturias.</p>
           {demo ? <p className="mt-3">Textos e imágenes utilizados únicamente con fines de demostración. No se publican.</p> : null}
+        </div>
+        <div data-footer-newsletter>
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-paper/55">Boletín</p>
+          <SubscribeForm source="pie" variant="compact" />
         </div>
       </div>
       <nav aria-label="Información legal" className="border-t border-paper/15">

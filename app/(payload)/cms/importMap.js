@@ -12,6 +12,7 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ParagraphFeatureClient as ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { FestivalNextYear as FestivalNextYear_517eb2bb3c416e5d69b4461666be00c8 } from '../../../components/festival-next-year'
+import { SubscribersExport as SubscribersExport_f6ded776a75faf4178e16d924592bac9 } from '../../../components/subscribers-export'
 import { CmsMaintenanceBanner as CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd } from '../../../components/cms-maintenance-banner'
 import { CmsDashboard as CmsDashboard_c961bb4b059fa844220814f2fa37f917 } from '../../../components/cms-dashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -33,6 +34,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ParagraphFeatureClient": ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/festival-next-year#FestivalNextYear": FestivalNextYear_517eb2bb3c416e5d69b4461666be00c8,
+  "/components/subscribers-export#SubscribersExport": SubscribersExport_f6ded776a75faf4178e16d924592bac9,
   "/components/cms-maintenance-banner#CmsMaintenanceBanner": CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd,
   "/components/cms-dashboard#CmsDashboard": CmsDashboard_c961bb4b059fa844220814f2fa37f917,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FiestaList } from "@/components/fiesta-list";
+import { Newsletter } from "@/components/newsletter";
 import { RichText } from "@/components/rich-text";
 import { ShareButtons } from "@/components/share-buttons";
 import { fiestaDates, getFiesta, getFiestas, upcoming } from "@/lib/fiestas";
@@ -52,6 +53,7 @@ export default async function FiestaPage({ params }: Props) {
         <aside className="space-y-8">
           {more.length ? <section><h2 className="border-b-2 border-coal-950 pb-2 font-serif text-2xl font-black">Más fiestas en {fiesta.town}</h2><div className="mt-2"><FiestaList fiestas={more} showTown={false} /></div></section> : null}
           <p><Link href="/fiestas/enviar" className="inline-flex min-h-11 items-center font-bold text-copper hover:underline">¿Organizas una fiesta? Envíanosla ↗</Link></p>
+          <Newsletter source="fiesta" />
         </aside>
       </div>
     </article>

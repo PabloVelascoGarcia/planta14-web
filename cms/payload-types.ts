@@ -77,6 +77,7 @@ export interface Config {
     'municipal-spaces': MunicipalSpace;
     'municipal-content': MunicipalContent;
     notifications: Notification;
+    subscribers: Subscriber;
     'audit-log': AuditLog;
     'public-media-ops': PublicMediaOp;
     'payload-kv': PayloadKv;
@@ -96,6 +97,7 @@ export interface Config {
     'municipal-spaces': MunicipalSpacesSelect<false> | MunicipalSpacesSelect<true>;
     'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'public-media-ops': PublicMediaOpsSelect<false> | PublicMediaOpsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -670,6 +672,43 @@ export interface Notification {
   createdAt: string;
 }
 /**
+ * Altas del boletín (doble confirmación por correo). Solo las «confirmadas» reciben el boletín. Para borrar los datos de alguien, elimina su registro.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  /**
+   * Solo cambia por los enlaces del correo; la administración puede dar de baja a mano.
+   */
+  status: 'pendiente' | 'confirmado' | 'baja';
+  /**
+   * Vacío: los seis concejos.
+   */
+  towns?: (number | Town)[] | null;
+  topics?: ('finde' | 'avisos')[] | null;
+  source?: string | null;
+  consent?: {
+    text?: string | null;
+    acceptedAt?: string | null;
+  };
+  confirmedAt?: string | null;
+  unsubscribedAt?: string | null;
+  pending?: {
+    towns?: (number | Town)[] | null;
+    topics?: ('finde' | 'avisos')[] | null;
+    source?: string | null;
+    tokenHash?: string | null;
+    expiresAt?: string | null;
+  };
+  unsubscribeToken?: string | null;
+  lastEmailAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "audit-log".
  */
@@ -776,6 +815,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'notifications';
         value: number | Notification;
+      } | null)
+    | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
       } | null)
     | ({
         relationTo: 'audit-log';
@@ -1155,6 +1198,38 @@ export interface NotificationsSelect<T extends boolean = true> {
   publishedBy?: T;
   emailStatus?: T;
   reviewed?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  status?: T;
+  towns?: T;
+  topics?: T;
+  source?: T;
+  consent?:
+    | T
+    | {
+        text?: T;
+        acceptedAt?: T;
+      };
+  confirmedAt?: T;
+  unsubscribedAt?: T;
+  pending?:
+    | T
+    | {
+        towns?: T;
+        topics?: T;
+        source?: T;
+        tokenHash?: T;
+        expiresAt?: T;
+      };
+  unsubscribeToken?: T;
+  lastEmailAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
