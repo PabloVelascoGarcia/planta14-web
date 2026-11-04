@@ -13,6 +13,22 @@
 
 Las contraseñas no están en el repositorio ni en el servidor: solo en `C:\Users\pvela\planta14-cuentas-periodistas.txt` (solo tu usuario), para entregarlas por otra vía.
 
+**Cuenta municipal de prueba** (creada el 4 de noviembre de 2026):
+
+| Nombre | Correo | Rol | Espacio |
+|---|---|---|---|
+| Prueba Ayuntamiento Mieres | pvelasco81@gmail.com | `municipal` | Ayuntamiento de Mieres |
+
+Contraseña solo en `C:\Users\pvela\planta14-cuenta-municipal-prueba.txt` (solo tu usuario). Comprobado desde el servidor, pidiendo a la app directamente:
+- entra (login 200, rol `municipal`) y `/mieres/panel` abre el panel de edición;
+- `/lena/panel` y `/aller/panel` dicen «Tu cuenta no gestiona este espacio municipal.»;
+- `/cms` la manda a `/cms/unauthorized` y la API le niega las noticias de Planta 14 (403);
+- por la API solo ve el espacio de Mieres y sus 10 contenidos, ninguno de otro concejo;
+- editar o borrar un contenido de Lena, editar el espacio de Lena y publicar en Lena: 403 en los cuatro casos;
+- «He olvidado mi contraseña»: `forgot-password` respondió 200 («Éxito»), sin errores de correo en el registro de la app. Falta confirmar en el buzón que llegó.
+
+Es una cuenta de prueba: bórrala antes de la salida.
+
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
