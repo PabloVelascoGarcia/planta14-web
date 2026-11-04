@@ -25,7 +25,7 @@ Contraseña solo en `C:\Users\pvela\planta14-cuenta-municipal-prueba.txt` (solo 
 - `/cms` la manda a `/cms/unauthorized` y la API le niega las noticias de Planta 14 (403);
 - por la API solo ve el espacio de Mieres y sus 10 contenidos, ninguno de otro concejo;
 - editar o borrar un contenido de Lena, editar el espacio de Lena y publicar en Lena: 403 en los cuatro casos;
-- «He olvidado mi contraseña»: `forgot-password` respondió 200 («Éxito»), sin errores de correo en el registro de la app. Falta confirmar en el buzón que llegó.
+- «He olvidado mi contraseña»: `forgot-password` respondió 200 («Éxito») y **el correo llegó** a pvelasco81@gmail.com a las 20:55, remitente `Planta 14 <avisos@planta14.com>`, asunto «Restablecer tu Contraseña». El enlace lleva a `/cms/reset/…`, aunque la cuenta es municipal y no puede usar `/cms`.
 
 Es una cuenta de prueba: bórrala antes de la salida.
 
