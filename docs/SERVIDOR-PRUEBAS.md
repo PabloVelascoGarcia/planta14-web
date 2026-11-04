@@ -2,9 +2,45 @@
 
 ## Versión instalada ahora
 
-**`c740ceaca0160151bfb9c244472759a4709e482c`** (`c740cea`, rama `desarrollo/planta14-ensayo-carga`). Desplegada el **3 de noviembre de 2026 a las 20:58** (hora de Madrid), **con el contenido de ensayo cargado**. La versión anterior es `8623791`, y `deploy.sh` la conserva para poder volver a ella.
+**`9c19b9232a54357697e2787b06a44e50dbe59898`** (`9c19b92`, rama `desarrollo/planta14-v2-revision-portada`). Desplegada el **4 de noviembre de 2026 a las 19:38** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `c740cea`, y `deploy.sh` la conserva para poder volver a ella.
+
+## Cuentas de la redacción en /cms
+
+| Nombre | Correo | Rol | Firma por defecto |
+|---|---|---|---|
+| Andrés | velascolne@gmail.com | `editor` | Redacción Planta 14 |
+| Juanfran Santos | juansantospolalena@gmail.com | `editor` | Redacción Planta 14 |
+
+Las contraseñas no están en el repositorio ni en el servidor: solo en `C:\Users\pvela\planta14-cuentas-periodistas.txt` (solo tu usuario), para entregarlas por otra vía.
+
+**Autores (firmas):**
+- **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
+- **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a 9c19b92 y cuentas de redacción (4 de noviembre de 2026)
+
+Guía seguida: `docs/V2-REVISION-PORTADA.md` del commit `d451b49` de la misma rama, que solo añade el documento. No se han tocado el DNS, los buckets, los secretos ni el `.env.production`. No hizo falta ninguna contraseña ni sudo interactivo. **El ensayo no se ha retirado.**
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo (`status.sh`) | Correcto. Versión `c740cea`, `/api/health: ok`, mantenimiento desactivado y sin restauración pendiente |
+| 2. `git fetch` y `checkout --detach` | `9c19b92 web: los avisos conservan su foto (solo la lista de ayudas va sin ella)…`. `infra/test/out` estaba vacía |
+| 3. `deploy.sh … 9c19b92…` | **Código 0.** «Modo mantenimiento ACTIVADO», «Copia previa: …20261104T183741Z.dump.age (244K)», «**Sin migraciones nuevas**», «/api/health: ok», «Modo mantenimiento DESACTIVADO» y «Desplegada». El mantenimiento duró 15 segundos. Registro: `/srv/planta14/state/deploy-9c19b92.log` |
+| 4. Cuentas `editor` | Creadas con la API local de Payload en el contenedor de migraciones; las contraseñas (20 caracteres, aleatorias) llegaron por la entrada estándar y no quedaron en ningún archivo ni registro del servidor |
+| 5. Inicio de sesión | Las dos cuentas: `/api/cms/users/login` 200, rol `editor`, y `/cms` 200 con el panel de inicio de redacción («Nueva noticia», «Mis borradores» y «Publicadas hoy»). Comprobado desde el servidor, pidiendo a la app directamente |
+| 6. `ensayo.sh retirar --solo-comprobar` | Código 0, sin cambios. Se borraría: 34 articles, 20 municipal-content, 17 media y **2 authors («Firma invitada» y «Pablo Velasco»)**; Lena y Mieres volverían a inactivos. **«Redacción Planta 14» no aparece.** Registro: `/srv/planta14/state/ensayo-retirar-comprobar.log` |
+
+**Ojo antes de retirar el ensayo:** el autor **«Pablo Velasco»** está marcado como lote ensayo y se borraría. Si debe quedarse, márcalo como «Definitivo» en el CMS antes de la retirada.
+
+**Pendiente de comprobar en el navegador** (hace falta la contraseña común): la lista del paso 4 de `docs/V2-REVISION-PORTADA.md` (portada, noticia, `/mieres` en el móvil y la 404).
+
+### Correo de planta14.com (consulta DNS, 4 de noviembre de 2026)
+
+Solo consulta, sin cambios: SPF `v=spf1 include:_spf-eu.ionos.com ~all`; DKIM `s1-ionos._domainkey` y `s2-ionos._domainkey` (CNAME a `s1/s2.dkim.ionos.com`, con clave publicada); DMARC `_dmarc` (CNAME a `dmarc.ionos.es`: `v=DMARC1; p=none;`).
 
 ### Actualización a c740cea y carga del ensayo (3 de noviembre de 2026)
+
+**`c740ceaca0160151bfb9c244472759a4709e482c`** (`c740cea`, rama `desarrollo/planta14-ensayo-carga`). Desplegada el **3 de noviembre de 2026 a las 20:58** (hora de Madrid), **con el contenido de ensayo cargado**.
 
 Guía seguida: `docs/V2-ENSAYO-CARGA.md` del commit `9d117a1` de la misma rama, que solo añade el documento. No se han tocado el DNS, los buckets, los secretos ni el `.env.production`. No hizo falta ninguna contraseña ni sudo. **El ensayo no se ha retirado.**
 
@@ -152,6 +188,6 @@ La web de prueba de Planta 14 ya funciona en **https://pruebas.planta14.com**. A
 2. **Mirar el buzón de alertas** y confirmar que llegó la alerta de prueba (revisa también el correo no deseado).
 3. **Entrar tú en https://pruebas.planta14.com** con el usuario `planta14` y la contraseña de preproducción, y después en `/cms` con el administrador.
 4. **Dar de alta el monitor externo** (UptimeRobot) sobre `https://pruebas.planta14.com/api/health` (`docs/MANUAL-OPERACION.md`, apartado 1).
-5. **Crear las cuentas `editor` de los periodistas** (guía, paso 6 ter) y explicarles la regla `[PRUEBA]`.
+5. ~~Crear las cuentas `editor` de los periodistas~~ (hecho el 4 de noviembre: Andrés y Juanfran Santos). Falta darles su contraseña y la común, y explicarles la regla `[PRUEBA]`.
 6. Mañana, comprobar que las copias de las 03:15, 03:30 y 03:45 salieron bien: `bash infra/deploy/status.sh --env-file infra/.env.production` en el servidor, o `/var/log/planta14/tareas.log`.
 7. Decidir la retención de las copias en Fráncfort y, si quieres limitarla, crear la regla de ciclo de vida en el panel. Mientras no se decida, crecen.
