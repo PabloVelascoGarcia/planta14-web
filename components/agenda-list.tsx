@@ -6,10 +6,11 @@ import { formatDate, slugify } from "@/lib/utils";
 import { getArticles } from "@/lib/cms";
 import { contentSource } from '@/lib/content-source';
 import { getMunicipalContents, getMunicipalSpace as getSpace } from '@/lib/municipal-content';
+import { fiestaDates, getFiestas } from '@/lib/fiestas';
 
 type AgendaItem = { title: string; date: string; time?: string; place: string; concejo: string; description: string; href?: string };
 
-/** Agenda con contenido real: eventos municipales y agenda general (noticias de Agenda con fecha), solo los próximos. */
+/** Agenda con contenido real: eventos municipales, agenda general (noticias de Agenda con fecha) y fiestas, solo los próximos. */
 async function payloadAgenda(limit: number): Promise<AgendaItem[]> {
   // PLANTA14_TEST_TODAY (AAAA-MM-DD) solo para pruebas con fecha fija.
   const today = process.env.PLANTA14_TEST_TODAY || new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());
@@ -21,8 +22,12 @@ async function payloadAgenda(limit: number): Promise<AgendaItem[]> {
     title: a.title, date: a.eventAt!.slice(0, 10), time: a.eventAt!.slice(11, 16) || undefined, place: a.eventPlace || '', concejo: a.concejo,
     description: a.excerpt, href: `/noticia/${a.slug}`, sort: a.eventAt!,
   }));
-  return [...general, ...municipal.filter(e => e !== null)]
-    .filter(e => e.date >= today)
+  // Fiestas de las Cuencas: mientras no hayan terminado, con sus fechas.
+  const fiestas = (await getFiestas()).filter(f => f.endDay >= today).map(f => ({
+    title: f.name, date: f.startDay, until: f.endDay, time: undefined as string | undefined, place: f.village, concejo: f.town, description: `Fiestas · ${fiestaDates(f)}`, href: `/fiestas/${f.slug}`, sort: f.startDay,
+  }));
+  return [...general, ...fiestas, ...municipal.filter(e => e !== null)]
+    .filter(e => ('until' in e && e.until ? e.until : e.date) >= today)
     .sort((a, b) => a.sort.localeCompare(b.sort))
     .slice(0, limit)
     .map(item => ({ title: item.title, date: item.date, time: item.time, place: item.place, concejo: item.concejo, description: item.description, href: 'href' in item ? String(item.href) : undefined }));

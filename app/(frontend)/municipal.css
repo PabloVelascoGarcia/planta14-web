@@ -216,3 +216,10 @@
   .municipal-shell .aller-asset-credit a{display:inline-flex;align-items:center;min-height:24px}
   .municipal-shell .municipal-notice-strip>span:last-child{font-size:0}
 }
+/* Fiestas del concejo en la barra lateral (texto, sin carteles). */
+.municipal-fiestas{margin-bottom:28px}
+.municipal-fiestas ul{list-style:none;margin:0;padding:0;border-top:1px solid #ddd2c2}
+.municipal-fiestas li a{display:block;min-height:44px;padding:12px 0;border-bottom:1px solid #ddd2c2}
+.municipal-fiestas strong{display:block;font-size:15px;line-height:1.35}
+.municipal-fiestas small{display:block;font-size:13px;color:#8d8070;margin-top:3px}
+.municipal-fiestas .municipal-sidebar-heading a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;color:#a4522d;font-size:20px}

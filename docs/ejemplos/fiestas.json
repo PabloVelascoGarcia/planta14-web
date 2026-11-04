@@ -1,0 +1,13 @@
+[
+  {
+    "nombre": "Fiestas de San Juan",
+    "pueblo": "Pola de Lena",
+    "concejo": "lena",
+    "inicio": "2027-06-24",
+    "fin": "2027-06-26",
+    "programa": "Jueves 24\n12:00 Misa y procesión\n\nSábado 26\n23:00 Verbena",
+    "organizador": "Comisión de fiestas de San Juan",
+    "contacto": "Teléfono de la comisión",
+    "seRepite": true
+  }
+]

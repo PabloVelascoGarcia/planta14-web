@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     articles: Article;
+    festivals: Festival;
     authors: Author;
     sections: Section;
     towns: Town;
@@ -88,6 +89,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    festivals: FestivalsSelect<false> | FestivalsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     towns: TownsSelect<false> | TownsSelect<true>;
@@ -520,6 +522,91 @@ export interface Section {
   createdAt: string;
 }
 /**
+ * Fiestas de las Cuencas: salen en /fiestas, en la agenda, en la página de su concejo y, el fin de semana, en la portada. Las que envían comisiones y asociaciones llegan como borrador a «Pendientes de revisar».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "festivals".
+ */
+export interface Festival {
+  id: number;
+  /**
+   * Por ejemplo: San Juan, El Carmen, Fiestas de Santa Bárbara.
+   */
+  name: string;
+  /**
+   * Dónde se celebra: pueblo, parroquia o barrio.
+   */
+  village: string;
+  /**
+   * Decide en qué página de concejo sale y quién la revisa.
+   */
+  town: number | Town;
+  /**
+   * Día en que empieza.
+   */
+  startDate: string;
+  /**
+   * Día en que termina (el mismo si dura un día).
+   */
+  endDate: string;
+  /**
+   * Actos por días y horas. Puedes usar negrita, listas y enlaces.
+   */
+  program?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Se ve pequeño y enmarcado en la ficha; nunca en los listados. Súbelo con «Crear» y marca la declaración de derechos.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Cuando se publique la crónica de la fiesta, enlázala aquí.
+   */
+  chronicle?: (number | null) | Article;
+  /**
+   * Las fiestas que se repiten se pueden duplicar para el año siguiente con un clic.
+   */
+  recurring?: boolean | null;
+  /**
+   * Comisión de fiestas, asociación… Solo lo ve la redacción.
+   */
+  organizer?: string | null;
+  /**
+   * Teléfono o correo de la organización. Solo lo ve la redacción.
+   */
+  contact?: string | null;
+  origin?: ('redaccion' | 'publico') | null;
+  submission?: {
+    name?: string | null;
+    email?: string | null;
+    confirmed?: boolean | null;
+    confirmedAt?: string | null;
+    tokenHash?: string | null;
+    tokenExpiresAt?: string | null;
+  };
+  /**
+   * Se crea sola: nombre, pueblo y año.
+   */
+  slug?: string | null;
+  startDay?: string | null;
+  endDay?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "municipal-content".
  */
@@ -573,6 +660,7 @@ export interface Notification {
   kind: 'municipal-publication' | 'festival-submission';
   assignedTo?: (number | null) | User;
   content?: (number | null) | MunicipalContent;
+  festival?: (number | null) | Festival;
   space?: (number | null) | MunicipalSpace;
   title: string;
   publishedBy?: (number | null) | User;
@@ -660,6 +748,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'festivals';
+        value: number | Festival;
       } | null)
     | ({
         relationTo: 'authors';
@@ -868,6 +960,40 @@ export interface ArticlesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "festivals_select".
+ */
+export interface FestivalsSelect<T extends boolean = true> {
+  name?: T;
+  village?: T;
+  town?: T;
+  startDate?: T;
+  endDate?: T;
+  program?: T;
+  image?: T;
+  chronicle?: T;
+  recurring?: T;
+  organizer?: T;
+  contact?: T;
+  origin?: T;
+  submission?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        confirmed?: T;
+        confirmedAt?: T;
+        tokenHash?: T;
+        tokenExpiresAt?: T;
+      };
+  slug?: T;
+  startDay?: T;
+  endDay?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "authors_select".
  */
 export interface AuthorsSelect<T extends boolean = true> {
@@ -1023,6 +1149,7 @@ export interface NotificationsSelect<T extends boolean = true> {
   kind?: T;
   assignedTo?: T;
   content?: T;
+  festival?: T;
   space?: T;
   title?: T;
   publishedBy?: T;

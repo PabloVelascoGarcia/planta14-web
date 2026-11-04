@@ -19,6 +19,7 @@
     "cms:import:municipal": "payload run scripts/import-municipal.ts",
     "cms:structure": "payload run scripts/load-structure.ts",
     "cms:responsables": "payload run scripts/responsables.ts",
+    "cms:fiestas:importar": "node scripts/fiestas-run.mjs",
     "cms:ensayo:cargar": "node scripts/ensayo-run.mjs cargar",
     "cms:ensayo:retirar": "node scripts/ensayo-run.mjs retirar",
     "test:block2": "payload run scripts/block2-integration.mjs",

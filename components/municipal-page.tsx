@@ -6,6 +6,7 @@ import { MunicipalMasthead } from "./municipal-masthead";
 import { ArticleImage } from "./article-image";
 import { sections, readBrowserContent, storageKey, type MunicipalSpace, type MunicipalContent } from "@/lib/demo/municipal";
 import type { Article } from "@/lib/mock-data";
+import { fiestaDates, type Fiesta } from "@/lib/fiestas-dates";
 import { formatDate } from "@/lib/utils";
 import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 
@@ -43,7 +44,7 @@ function assetCredits(identity?: MunicipalIdentity) {
   if (!parts.length) return null;
   return <p className="aller-asset-credit">{parts.flatMap((part, i) => i ? [" · ", part] : [part])}. Fotografía de cabecera adaptada en tamaño y encuadre; colores de presentación inspirados en el paisaje.</p>;
 }
-export function MunicipalPage({ space, active, contents, articles, demo = false }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[]; demo?: boolean }) {
+export function MunicipalPage({ space, active, contents, articles, fiestas = [], demo = false }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[]; fiestas?: Fiesta[]; demo?: boolean }) {
   const identity = space.identity;
   const [section, setSection] = useState<string>("news");
   const [browserItems, setBrowserItems] = useState<MunicipalContent[]>([]);
@@ -81,6 +82,8 @@ export function MunicipalPage({ space, active, contents, articles, demo = false 
           </> : null}
         </div>
         <aside className="municipal-sidebar">
+          {fiestas.length ? <section className="municipal-fiestas" data-municipal-fiestas><div className="municipal-sidebar-heading"><h2>Fiestas</h2><Link href={`/fiestas?concejo=${space.territory}`} aria-label="Ver todas las fiestas del concejo">↗</Link></div>
+            <ul>{fiestas.map(f => <li key={f.slug}><Link href={`/fiestas/${f.slug}`}><strong>{f.name}</strong><small>{f.village} · {fiestaDates(f)}</small></Link></li>)}</ul></section> : null}
           {active ? <><section><div className="municipal-sidebar-heading"><h2>Agenda</h2><button onClick={() => setSection("event")} aria-label="Ver toda la agenda">↗</button></div>{events.slice(0,3).map(event => <button className="municipal-event" key={event.id} onClick={() => setSection("event")}><time dateTime={event.eventAt ?? undefined}><strong>{event.eventAt?.slice(8,10)}</strong><span>{new Intl.DateTimeFormat("es-ES",{month:"short"}).format(new Date(event.eventAt ?? event.publishedAt)).replace(".","")}</span></time><span><strong>{event.title}</strong><small>{event.place}</small><small>{event.eventAt?.slice(11,16)} h · {originLabel(event, demo)}</small></span></button>)}</section>
           <section className="municipal-notices"><h2>Avisos</h2>{notices.map(item => <ContentCard key={item.id} item={item} space={space} demo={demo} compact />)}</section>
           {demo ? <section className="municipal-panel-invite"><p className="municipal-kicker">Así de sencillo</p><h2>Tu ayuntamiento<br />tiene la palabra.</h2><p>Escribe un aviso, comprueba cómo queda y publícalo. Sin complicaciones.</p><Link href={`/${space.id}/panel`} className="municipal-cta">Probar el panel <span>↗</span></Link><small>Demostración · Sin registro</small></section> : null}</> : <Link href="/comarca/caudal" className="municipal-cta">Historias del Caudal ↗</Link>}

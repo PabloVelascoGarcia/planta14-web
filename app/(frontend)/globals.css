@@ -244,3 +244,10 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
 .share-label { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: #6b645d; margin-right: 4px; }
 .share-buttons a, .share-buttons button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid #1c191733; background: #fffdf9; font-size: 14px; font-weight: 700; color: #1c1917; cursor: pointer; }
 .share-buttons a:hover, .share-buttons button:hover { border-color: #a4522d; color: #a4522d; }
+
+/* Ficha de fiesta: cartel pequeño y enmarcado, flotando junto al programa (nunca a página completa). */
+.fiesta-poster { float: right; width: 200px; margin: 4px 0 16px 24px; padding: 8px; background: #fffdf9; border: 1px solid #1c191726; box-shadow: 0 1px 0 #1c191712; }
+.fiesta-poster img { display: block; width: 100%; height: auto; max-height: 300px; object-fit: contain; background: #f1ece4; }
+.fiesta-poster figcaption { margin-top: 6px; font-size: 13px; line-height: 1.35; color: #6b645d; }
+@media (max-width: 639px) { .fiesta-poster { width: 160px; margin-left: 16px; } }
+.capitalize-first::first-letter { text-transform: uppercase; }

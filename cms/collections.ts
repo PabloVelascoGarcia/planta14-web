@@ -99,6 +99,13 @@ export const Media: CollectionConfig = {
           throw new APIError('Para que la foto se pueda publicar, marca la declaración de derechos', 400);
         }
       }
+      // Cartel enviado con «Envía tu fiesta»: declaración de quien lo envía. Solo llega por el contexto de la API local
+      // (acción del servidor del formulario), nunca como dato del cliente.
+      const submissionDeclaration = req.context.submissionRightsDeclaration as { statement?: string } | undefined;
+      if (space === null && !req.user && submissionDeclaration?.statement && operation === 'create') {
+        data.rightsScope = 'publicable';
+        data.rightsDeclaration = { declared: true, statement: submissionDeclaration.statement, declaredBy: null, declaredAt: new Date().toISOString() };
+      }
       if (space === null && adminDeclaration?.statement && (operation === 'create' || req.file)) {
         if (req.user?.collection !== 'users' || req.user.role !== 'admin') throw new APIError('Solo la administración puede declarar los derechos de esta imagen', 403);
         data.rightsDeclaration = { declared: true, statement: adminDeclaration.statement, declaredBy: req.user.id, declaredAt: new Date().toISOString() };

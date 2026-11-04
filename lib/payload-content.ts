@@ -143,3 +143,18 @@ export async function payloadNavigation() {
   return { sectionNames: sections.docs.map(s => s.name), townSlugs: towns.docs.map(t => t.slug),
     navigationTerritories: Object.fromEntries([...new Set(towns.docs.map(t => t.comarca))].map(comarca => [comarca, towns.docs.filter(t => t.comarca === comarca).map(t => t.name)])) };
 }
+
+/** Fiestas publicadas (lib/fiestas.ts): sin organizador, contacto ni datos de quien las envía. */
+export async function payloadFiestas(): Promise<import('./fiestas').Fiesta[]> {
+  const payload = await contentClient();
+  const result = await payload.find({ collection: 'festivals', overrideAccess: false, depth: 1, pagination: false, sort: 'startDay', where: { _status: { equals: 'published' } } });
+  return result.docs.filter(doc => typeof doc.town === 'object' && doc.town).map(doc => {
+    const town = doc.town as Town;
+    const image = typeof doc.image === 'object' && doc.image && mediaURL(doc.image) !== '/images/placeholder.svg' ? doc.image : null;
+    const chronicle = typeof doc.chronicle === 'object' && doc.chronicle && doc.chronicle._status === 'published' ? doc.chronicle : null;
+    return { slug: doc.slug!, name: doc.name, village: doc.village, town: town.name, townSlug: town.slug, startDay: doc.startDay!, endDay: doc.endDay || doc.startDay!,
+      recurring: Boolean(doc.recurring), ...(toLexical(doc.program) ? { program: toLexical(doc.program)! } : {}),
+      ...(image ? { image: { url: mediaURL(image), ...(imageSrcSet(image) ? { srcSet: imageSrcSet(image) } : {}), alt: image.alt, credit: image.credit } } : {}),
+      ...(chronicle ? { chronicle: { slug: chronicle.slug!, title: chronicle.title } } : {}) };
+  });
+}

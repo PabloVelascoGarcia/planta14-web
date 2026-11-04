@@ -1,0 +1,160 @@
+import { spawnSync } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
+import path from 'node:path';
+
+// Bloque 2 de scripts/participacion-integration.mjs: Fiestas de las Cuencas.
+export async function run(ctx) {
+  const { payload, users, all, town, mails, web, origin, page, passed, assert, browser, sharp, directory, signIn, password } = ctx;
+  const { weekend, madridToday, fiestaDates } = await import('../lib/fiestas-dates.ts');
+  const shift = (day, n) => { const d = new Date(`${day}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const today = madridToday(), { from } = weekend(today);
+  const lena = await town('lena'), mieres = await town('mieres');
+  const poster = path.join(directory, 'cartel.png');
+  await sharp({ create: { width: 1240, height: 1754, channels: 3, background: { r: 190, g: 60, b: 40 } } }).png().toFile(poster);
+  const posterMedia = await payload.create({ collection: 'media', user: users.editor, overrideAccess: false, filePath: poster,
+    data: { alt: 'Cartel de San Juan', credit: 'Comisión de San Juan', rightsHolder: 'Comisión de San Juan', rightsType: 'autorización', rightsConfirm: true } });
+  const program = { root: { type: 'root', direction: 'ltr', format: '', indent: 0, version: 1, children: [{ type: 'paragraph', direction: 'ltr', format: '', indent: 0, version: 1, textFormat: 0, textStyle: '', children: [{ type: 'text', text: 'Sábado: verbena con orquesta.', format: 0, detail: 0, mode: 'normal', style: '', version: 1 }] }] } };
+  const base = { program, recurring: true, organizer: 'Comisión de San Juan', contact: 'Teléfono privado 600000000', _status: 'published' };
+  const sanJuan = await payload.create({ collection: 'festivals', user: users.editor, overrideAccess: false, data: { ...base, name: 'San Juan', village: 'Pola de Lena', town: lena.id, startDate: `${from}T12:00:00.000Z`, endDate: `${shift(from, 2)}T12:00:00.000Z`, image: posterMedia.id } });
+  const nextMonth = shift(today, 35);
+  const carmen = await payload.create({ collection: 'festivals', user: users.editor, overrideAccess: false, data: { ...base, name: 'El Carmen', village: 'Turón', town: mieres.id, startDate: `${nextMonth}T12:00:00.000Z`, endDate: `${nextMonth}T12:00:00.000Z` } });
+  const pasada = await payload.create({ collection: 'festivals', user: users.editor, overrideAccess: false, data: { ...base, name: 'Fiesta pasada', village: 'Ujo', town: mieres.id, startDate: `${shift(today, -40)}T12:00:00.000Z`, endDate: `${shift(today, -39)}T12:00:00.000Z` } });
+  assert.equal(sanJuan.slug, `san-juan-pola-de-lena-${from.slice(0, 4)}`, 'slug: name, village and year');
+  assert.deepEqual([sanJuan.startDay, sanJuan.endDay], [from, shift(from, 2)]);
+  await assert.rejects(payload.create({ collection: 'festivals', user: users.editor, overrideAccess: false, data: { ...base, name: 'Al revés', village: 'Mieres', town: mieres.id, startDate: `${today}T12:00:00.000Z`, endDate: `${shift(today, -1)}T12:00:00.000Z` } }), /anterior a la de inicio/);
+
+  // /fiestas: este fin de semana, calendario por meses y filtro por concejo; sin carteles.
+  const list = await page(`${web}/fiestas`);
+  const weekendBlock = list.slice(list.indexOf('data-fiestas-weekend'), list.indexOf('data-fiestas-calendar'));
+  assert.ok(weekendBlock.includes(`href="/fiestas/${sanJuan.slug}"`) && !weekendBlock.includes(carmen.slug), 'this weekend: San Juan');
+  const calendar = list.slice(list.indexOf('data-fiestas-calendar'));
+  assert.ok(calendar.includes(`data-month="${nextMonth.slice(0, 7)}"`) && calendar.includes(`href="/fiestas/${carmen.slug}"`), 'calendar by month');
+  assert.ok(!list.includes(pasada.slug), 'past fiestas not listed');
+  assert.ok(!/<main[\s\S]*<img[\s\S]*<\/main>/.test(list), 'no posters in the listing');
+  const filtered = await page(`${web}/fiestas?concejo=mieres`);
+  assert.ok(filtered.includes(carmen.slug) && !filtered.includes(sanJuan.slug) && filtered.includes('aria-current="page"'), 'filter by concejo');
+  // Ficha: cartel pequeño y enmarcado; organizador y contacto no salen.
+  const ficha = await page(`${web}/fiestas/${sanJuan.slug}`);
+  assert.ok(ficha.includes('Sábado: verbena con orquesta.') && ficha.includes(fiestaDates(sanJuan)) && ficha.includes('"@type":"Event"'), 'fiesta page with programme, dates and Event data');
+  assert.ok(!ficha.includes('Teléfono privado'), 'contact is not public');
+  {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const tab = await context.newPage();
+    await tab.goto(`${web}/fiestas/${sanJuan.slug}`);
+    const box = await tab.locator('[data-fiesta-poster]').boundingBox();
+    assert.ok(box && box.width <= 220 && box.height <= 360, `small framed poster: ${JSON.stringify(box)}`);
+    assert.equal(await tab.locator('[data-fiesta-poster] img').evaluate(img => img.complete && img.naturalWidth > 0), true, 'poster from the public copy');
+    await tab.setViewportSize({ width: 390, height: 844 });
+    const mobile = await tab.locator('[data-fiesta-poster]').boundingBox();
+    assert.ok(mobile.width <= 170, `small on mobile too: ${mobile.width}`);
+    await context.close();
+  }
+  const api = await (await fetch(`${web}/api/cms/festivals?depth=0`)).json();
+  assert.ok(api.docs.length === 3 && api.docs.every(d => d.organizer === undefined && d.contact === undefined && d.submission === undefined), 'public API: published only, without private fields');
+  // Agenda, concejo y portada (texto, sin carteles).
+  const agenda = await page(`${web}/agenda`);
+  assert.ok(agenda.includes(`href="/fiestas/${sanJuan.slug}"`) && agenda.includes(`href="/fiestas/${carmen.slug}"`), 'fiestas in the agenda');
+  const lenaPage = await page(`${web}/lena`);
+  assert.ok(lenaPage.includes('data-municipal-fiestas') && lenaPage.includes(`href="/fiestas/${sanJuan.slug}"`) && !lenaPage.includes(carmen.slug), 'fiestas on the concejo page');
+  const author = await payload.create({ collection: 'authors', overrideAccess: true, data: { name: 'Redacción de prueba', slug: 'redaccion-prueba' } });
+  const section = (await all('sections', { slug: { equals: 'sociedad' } }))[0];
+  await payload.create({ collection: 'articles', overrideAccess: true, data: { title: 'Noticia de prueba para la portada', excerpt: 'Entradilla.', body: ['Texto.'], author: author.id, town: mieres.id, section: section.id, _status: 'published' } });
+  const home = await page(`${web}/`);
+  const block = home.slice(home.indexOf('data-block="fiestas"'), home.indexOf('id="concejos"'));
+  assert.ok(block.includes('De fiesta este fin de semana') && block.includes(`href="/fiestas/${sanJuan.slug}"`) && !block.includes('<img'), `home: text-only weekend block: ${block.slice(0, 600) || home.slice(0, 300)}`);
+  passed('fiestas: /fiestas with «Este fin de semana», calendar by month and concejo filter (past ones hidden, no posters); fiesta page with programme, Event data and a small framed poster (≤ 220 px, 160 px on mobile); organizer and contact never public; also in the agenda, on the concejo page and as a text-only home block');
+
+  // Formulario público: confirmación por correo y borrador asignado al responsable del concejo.
+  const pendingBefore = (await all('notifications')).length;
+  const context = await browser.newContext();
+  const tab = await context.newPage();
+  await tab.goto(`${web}/fiestas/enviar`);
+  await tab.click('button:has-text("Enviar la fiesta")');
+  await tab.locator('[role="alert"]', { hasText: 'Revisa los campos marcados.' }).waitFor();
+  assert.equal(await tab.locator('#email-error').count(), 1, 'validation messages');
+  const startDay = shift(today, 60);
+  await tab.fill('input[name="name"]', 'Santa Bárbara');
+  await tab.fill('input[name="village"]', 'Felechosa');
+  await tab.selectOption('select[name="town"]', 'lena');
+  await tab.fill('input[name="startDay"]', startDay);
+  await tab.fill('input[name="endDay"]', shift(startDay, 1));
+  await tab.fill('textarea[name="program"]', 'Sábado\n13:00 Misa\n\nDomingo\n18:00 Baile');
+  await tab.setInputFiles('input[name="poster"]', poster);
+  await tab.fill('input[name="posterCredit"]', 'Asociación de Felechosa');
+  await tab.check('input[name="posterRights"]');
+  await tab.fill('input[name="organizer"]', 'Asociación vecinal de Felechosa');
+  await tab.fill('input[name="submitterName"]', 'Marta Prueba');
+  await tab.fill('input[name="email"]', 'marta-fiestas@example.org');
+  await tab.check('input[name="privacy"]');
+  await tab.click('button:has-text("Enviar la fiesta")');
+  await tab.locator('[data-fiesta-sent]').waitFor();
+  const draft = (await all('festivals', { 'submission.email': { equals: 'marta-fiestas@example.org' } }, 1))[0];
+  assert.ok(draft && draft._status === 'draft' && draft.origin === 'publico' && draft.submission.confirmed === false, 'stored as an unconfirmed draft');
+  assert.equal((await all('notifications')).length, pendingBefore, 'nothing reaches the newsroom before confirming');
+  assert.equal((await fetch(`${web}/fiestas/${draft.slug}`)).status, 404, 'not public');
+  const confirmMail = (await mails()).find(m => m.to === 'marta-fiestas@example.org');
+  const link = confirmMail?.text.match(/https?:\/\/\S+\/fiestas\/confirmar\?t=\S+/)?.[0];
+  assert.ok(link?.startsWith(`${origin}/fiestas/confirmar?t=`), 'confirmation email with link');
+  await tab.goto(link.replace(origin, web));
+  await tab.click('button:has-text("Confirmar el envío")');
+  await tab.locator('[data-fiesta-confirmed="true"]').waitFor();
+  await tab.goto(link.replace(origin, web));
+  assert.ok((await tab.content()).includes('ya se ha usado'), 'the link only works once');
+  await context.close();
+  const confirmed = (await all('festivals', { id: { equals: draft.id } }, 1))[0];
+  assert.ok(confirmed.submission.confirmed && !confirmed.submission.tokenHash && confirmed._status === 'draft', 'confirmed, still a draft');
+  const notice = (await all('notifications', { festival: { equals: draft.id } }, 1))[0];
+  assert.ok(notice && notice.kind === 'festival-submission' && notice.assignedTo.id === users.juanfran.id && notice.emailStatus === 'sent', 'pending item for the responsible of Lena');
+  const journalistMail = (await mails()).find(m => m.to === 'juansantospolalena@gmail.com' && m.subject.includes('Santa Bárbara'));
+  assert.ok(journalistMail?.text.includes(`/cms/collections/festivals/${draft.id}`), 'email to Juanfran with the draft');
+  const posterDoc = await payload.findByID({ collection: 'media', id: confirmed.image.id, overrideAccess: true, depth: 0 });
+  assert.ok(posterDoc.rightsScope === 'publicable' && posterDoc.rightsDeclaration.statement.includes('Marta Prueba <marta-fiestas@example.org>') && !posterDoc.publicKey, 'poster with the sender declaration, not public yet');
+  await payload.update({ collection: 'festivals', id: draft.id, user: users.juanfran, overrideAccess: false, data: { _status: 'published' } });
+  assert.ok((await page(`${web}/fiestas/${draft.slug}`)).includes('Felechosa'), 'published by the journalist');
+  assert.ok((await payload.findByID({ collection: 'media', id: confirmed.image.id, overrideAccess: true })).publicKey, 'poster public once published');
+  // Robots (campo trampa): «gracias», pero nada guardado.
+  const honeypot = await browser.newContext(); const bot = await honeypot.newPage();
+  await bot.goto(`${web}/fiestas/enviar`);
+  await bot.evaluate(() => { document.querySelector('input[name="web"]').value = 'http://spam.example'; });
+  await bot.click('button:has-text("Enviar la fiesta")');
+  await bot.locator('[data-fiesta-sent]').waitFor();
+  await honeypot.close();
+  assert.equal((await all('festivals', { origin: { equals: 'publico' } })).length, 1, 'spam trap stores nothing');
+  passed('«Envía tu fiesta»: validation messages; stored as a hidden unconfirmed draft; confirmation email whose page needs a button (single use); then a pending item and email for the concejo journalist (Juanfran, Lena); poster with the sender\'s rights declaration, public only once published; spam trap');
+
+  // Duplicar para el año siguiente con un clic (botón del CMS).
+  const browserContext = await browser.newContext();
+  const cookie = await signIn(users.editor.email);
+  await browserContext.addCookies(cookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
+  const cms = await browserContext.newPage();
+  await cms.goto(`${origin}/cms/collections/festivals/${sanJuan.id}`);
+  await cms.click('[data-festival-next-year]');
+  await cms.waitForURL(url => /\/festivals\/\d+$/.test(url.pathname) && !url.pathname.endsWith(`/${sanJuan.id}`));
+  const copyID = Number(cms.url().split('/').pop());
+  await browserContext.close();
+  const copy = (await all('festivals', { id: { equals: copyID } }))[0];
+  assert.deepEqual([copy._status, copy.startDay, copy.endDay, copy.image ?? null, copy.recurring], ['draft', shift(from, 364), shift(from, 366), null, true], 'next-year draft');
+  assert.equal(new Date(`${copy.startDay}T12:00:00Z`).getUTCDay(), new Date(`${from}T12:00:00Z`).getUTCDay(), 'same weekday');
+  assert.equal(copy.slug, `san-juan-pola-de-lena-${copy.startDay.slice(0, 4)}`);
+  assert.equal((await fetch(`${web}/api/cms/festivals/${sanJuan.id}/siguiente-ano`, { method: 'POST' })).status, 403, 'only the newsroom');
+  void password;
+  passed('«Duplicar para el año siguiente»: one click in the CMS creates a draft 52 weeks later (same weekday), same programme, without poster or chronicle; only the newsroom can');
+
+  // Importador JSON (precarga).
+  const { importFiestas } = await import('../cms/fiestas-import.ts');
+  const items = [{ nombre: 'Nuestra Señora', pueblo: 'Moreda', concejo: 'aller', inicio: shift(today, 90), fin: shift(today, 92), programa: 'Viernes\n\nSábado', organizador: 'Comisión', contacto: 'privado' },
+    { nombre: 'San Roque', pueblo: 'Riosa', concejo: 'Riosa', inicio: shift(today, 100) }];
+  const bad = await importFiestas(payload, [...items, { nombre: 'Sin concejo', pueblo: 'X', concejo: 'gijon', inicio: '2027-13-01' }], { publicar: false, soloComprobar: false });
+  assert.ok(bad.errores.length === 1 && /concejo desconocido/.test(bad.errores[0]) && !bad.creadas.length, 'all-or-nothing validation');
+  const file = path.join(directory, 'fiestas.json');
+  await writeFile(file, JSON.stringify(items));
+  const cli = spawnSync(process.execPath, ['scripts/fiestas-run.mjs', file, '--solo-comprobar'], { env: process.env, encoding: 'utf8' });
+  assert.ok(cli.status === 0 && cli.stdout.includes('Se crearían 2 fiestas') && cli.stdout.includes('COMPROBACIÓN TERMINADA'), cli.stdout + cli.stderr);
+  assert.equal(spawnSync(process.execPath, ['scripts/fiestas-run.mjs', file, '--publicr'], { encoding: 'utf8' }).status, 2, 'unknown options rejected');
+  const imported = await importFiestas(payload, items, { publicar: true, soloComprobar: false });
+  assert.equal(imported.creadas.length, 2);
+  const again = await importFiestas(payload, items, { publicar: true, soloComprobar: false });
+  assert.deepEqual([again.creadas.length, again.existentes.length], [0, 2], 'repeatable');
+  assert.ok((await page(`${web}/fiestas?concejo=aller`)).includes('Nuestra Señora'), 'imported fiesta published');
+  passed('npm run cms:fiestas:importar: validates the whole JSON first (nothing imported on error), --solo-comprobar, drafts or --publicar, repeatable without duplicates; unknown options rejected');
+}

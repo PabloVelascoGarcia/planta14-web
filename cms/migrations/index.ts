@@ -9,6 +9,7 @@ import * as migration_20261103_001210_creado_por from './20261103_001210_creado_
 import * as migration_20261103_081533_lote_ensayo from './20261103_081533_lote_ensayo';
 import * as migration_20261103_121545_formulario_noticias from './20261103_121545_formulario_noticias';
 import * as migration_20261104_195227_responsables from './20261104_195227_responsables';
+import * as migration_20261104_200318_fiestas from './20261104_200318_fiestas';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20261104_195227_responsables.up,
     down: migration_20261104_195227_responsables.down,
-    name: '20261104_195227_responsables'
+    name: '20261104_195227_responsables',
+  },
+  {
+    up: migration_20261104_200318_fiestas.up,
+    down: migration_20261104_200318_fiestas.down,
+    name: '20261104_200318_fiestas'
   },
 ];

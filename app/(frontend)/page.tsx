@@ -11,6 +11,7 @@ import { slugify } from "@/lib/utils";
 import { contentSource } from "@/lib/content-source";
 import { frontPage } from "@/lib/front-page";
 import { getMunicipalSpaces } from "@/lib/municipal-content";
+import { fiestaDates, getFiestas, madridToday, overlaps, upcoming, weekend } from "@/lib/fiestas";
 
 export const revalidate = 300;
 export const metadata = { alternates: { canonical: "/" } };
@@ -25,6 +26,12 @@ export default async function Home() {
   const townOrder = [...townNames.keys()];
   const activeSpaces = (await getMunicipalSpaces({ activos: true })).filter(space => townNames.has(space.id))
     .sort((a, b) => townOrder.indexOf(a.id) - townOrder.indexOf(b.id));
+
+  // Fiestas: solo texto (sin carteles). Las de este fin de semana; si no hay, las próximas.
+  const today = madridToday(), { from, to } = weekend(today);
+  const nextFiestas = upcoming(await getFiestas(), today);
+  const weekendFiestas = nextFiestas.filter(f => overlaps(f, from, to));
+  const fiestasBlock = weekendFiestas.length ? { title: "De fiesta este fin de semana", list: weekendFiestas.slice(0, 6) } : nextFiestas.length ? { title: "Próximas fiestas", list: nextFiestas.slice(0, 3) } : null;
 
   return (
     <div className="pb-10">
@@ -72,6 +79,17 @@ export default async function Home() {
           <Link href="#concejos" className="editorial-link mt-4">Los seis concejos del Caudal ↗</Link>
         </div>
       </section>
+
+      {fiestasBlock ? <section className="container-p14 mt-12" data-block="fiestas" aria-labelledby="fiestas-portada">
+        <div className="border-t-4 border-coal-950 pt-4">
+          <p className="editorial-kicker">Fiestas de las Cuencas</p>
+          <h2 id="fiestas-portada" className="mt-2 font-serif text-3xl font-black">{fiestasBlock.title}</h2>
+          <ul className="mt-4 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+            {fiestasBlock.list.map(f => <li key={f.slug} className="border-b border-coal-900/15 py-3"><Link href={`/fiestas/${f.slug}`} className="block font-serif text-xl font-black leading-tight hover:text-copper">{f.name}</Link><span className="mt-1 block text-[15px] text-coal-800">{f.village} · {f.town} · {fiestaDates(f)}</span></li>)}
+          </ul>
+          <Link href="/fiestas" className="mt-4 inline-flex min-h-11 items-center font-bold text-copper hover:underline">Calendario de fiestas ↗</Link>
+        </div>
+      </section> : null}
 
       <section id="concejos" className="container-p14 mt-12 scroll-mt-24">
         <SectionHeading eyebrow="Mapa informativo" title="Los seis concejos del Caudal" />

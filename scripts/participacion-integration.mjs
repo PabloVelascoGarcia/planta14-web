@@ -119,6 +119,7 @@ try {
     const block = await import(`./${file}`).catch(error => (error.code === 'ERR_MODULE_NOT_FOUND' ? null : Promise.reject(error)));
     if (block) await block.run(ctx);
   }
+  if (process.env.PARTICIPACION_EXPLORE) { console.log(`EXPLORE READY ${web}`); await new Promise(() => {}); }
 } catch (error) {
   console.error(`--- registro del servidor (últimos 3000 caracteres) ---\n${logs.slice(-3000)}`);
   throw error;

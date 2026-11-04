@@ -38,10 +38,12 @@ export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().m
           <summary>Explorar secciones <span aria-hidden="true">+</span></summary>
           <nav aria-label="Secciones" className="topic-nav">
             {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
+            <Link href="/fiestas">Fiestas</Link>
           </nav>
         </details>
         <nav aria-label="Secciones destacadas" className="desktop-topics">
           {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
+          <Link href="/fiestas">Fiestas</Link>
         </nav>
       </div>
     </header>

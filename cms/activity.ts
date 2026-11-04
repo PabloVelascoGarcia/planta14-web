@@ -43,6 +43,7 @@ export const Notifications: CollectionConfig = {
     // Periodista responsable del concejo (Concejos → Periodista responsable) cuando llegó el aviso.
     { name: 'assignedTo', label: 'Asignado a', type: 'relationship', relationTo: 'users', index: true, access: { update: adminOnlyField } },
     { name: 'content', type: 'relationship', relationTo: 'municipal-content', access: { update: () => false } },
+    { name: 'festival', label: 'Fiesta', type: 'relationship', relationTo: 'festivals', access: { update: () => false } },
     { name: 'space', type: 'relationship', relationTo: 'municipal-spaces', index: true, access: { update: () => false } },
     { name: 'title', type: 'text', required: true, access: { update: () => false } },
     { name: 'publishedBy', type: 'relationship', relationTo: 'users', access: { update: () => false } },
