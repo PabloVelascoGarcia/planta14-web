@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StatsScope } from "@/components/stats-beacon";
 import { AgendaList } from "@/components/agenda-list";
 import { AdSlot } from "@/components/ad-slot";
 
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function AgendaPage() {
   return (
     <div className="container-p14 grid gap-10 py-8 lg:grid-cols-[minmax(0,760px)_300px]">
+      <StatsScope section="agenda" />
       <section>
         <header className="border-b-2 border-coal-950 pb-5">
           <p className="text-[11px] font-black uppercase tracking-[0.2em] text-copper">Qué hacer</p>

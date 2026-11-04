@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StatsScope } from "@/components/stats-beacon";
 import Link from "next/link";
 import { FiestaList } from "@/components/fiesta-list";
 import { getFiestas, madridToday, monthLabel, overlaps, upcoming, weekend } from "@/lib/fiestas";
@@ -23,6 +24,7 @@ export default async function FiestasPage({ searchParams }: { searchParams: Prom
   const months = [...new Set(next.map(f => f.startDay.slice(0, 7)))];
   return (
     <div className="container-p14 py-8">
+      <StatsScope town={selected ? slugify(selected) : ""} section="fiestas" />
       <header className="max-w-3xl border-b-2 border-coal-950 pb-5">
         <p className="editorial-kicker">Qué hacer</p>
         <h1 className="mt-2 font-serif text-5xl font-black leading-none">Fiestas de las Cuencas</h1>

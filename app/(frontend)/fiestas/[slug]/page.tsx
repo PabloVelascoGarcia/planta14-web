@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FiestaList } from "@/components/fiesta-list";
 import { Newsletter } from "@/components/newsletter";
+import { StatsScope } from "@/components/stats-beacon";
 import { RichText } from "@/components/rich-text";
 import { ShareButtons } from "@/components/share-buttons";
 import { fiestaDates, getFiesta, getFiestas, upcoming } from "@/lib/fiestas";
@@ -30,6 +31,7 @@ export default async function FiestaPage({ params }: Props) {
   return (
     <article className="container-p14 py-8" data-fiesta={fiesta.slug}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(event) }} />
+      <StatsScope town={fiesta.townSlug} section="fiestas" />
       <div className="grid gap-10 lg:grid-cols-[minmax(0,760px)_300px]">
         <div>
           <p className="editorial-kicker"><Link href="/fiestas">Fiestas</Link> <span aria-hidden="true">/</span> <Link href={`/fiestas?concejo=${fiesta.townSlug}`}>{fiesta.town}</Link></p>

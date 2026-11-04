@@ -13,7 +13,7 @@ export type PanelItem = {
 export type PanelState =
   | { kind: 'login' }
   | { kind: 'forbidden'; email: string; reason: string }
-  | { kind: 'editor'; email: string; name: string; spaceID: number; items: PanelItem[] };
+  | { kind: 'editor'; email: string; name: string; spaceID: number; items: PanelItem[]; stats: import('./stats').StatsReport | null; statsMonth: string };
 
 /**
  * Server-side state of the real municipal panel (CONTENT_SOURCE=payload). Every query runs with the
@@ -38,5 +38,10 @@ export async function municipalPanelState(slug: string): Promise<PanelState> {
     withdrawn: Boolean((liveWithdrawal.get(doc.id) || doc.withdrawal)?.withdrawn), withdrawalReason: (liveWithdrawal.get(doc.id) || doc.withdrawal)?.reason || null, withdrawnAt: (liveWithdrawal.get(doc.id) || doc.withdrawal)?.withdrawnAt || null,
     image: relationID(doc.image), updatedAt: doc.updatedAt,
   }));
-  return { kind: 'editor', email: user.email, name: user.name, spaceID: space.id, items };
+  // Visitas del mes, solo de su concejo (estadísticas propias, sin datos personales).
+  const { monthRange, statsReport } = await import('./stats');
+  const town = await payload.findByID({ collection: 'towns', id: relationID(space.town)!, depth: 0, overrideAccess: true }).catch(() => null);
+  const range = monthRange(null);
+  const stats = town ? await statsReport(range.from, range.to, town.slug).catch(() => null) : null;
+  return { kind: 'editor', email: user.email, name: user.name, spaceID: space.id, items, stats, statsMonth: range.month };
 }

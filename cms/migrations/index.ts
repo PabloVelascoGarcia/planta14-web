@@ -14,6 +14,7 @@ import * as migration_20261104_201144_suscriptores from './20261104_201144_suscr
 import * as migration_20261104_202002_ultima_hora from './20261104_202002_ultima_hora';
 import * as migration_20261104_205214_cartas from './20261104_205214_cartas';
 import * as migration_20261104_205655_sugerencias from './20261104_205655_sugerencias';
+import * as migration_20261104_210500_estadisticas from './20261104_210500_estadisticas';
 
 export const migrations = [
   {
@@ -95,5 +96,10 @@ export const migrations = [
     up: migration_20261104_205655_sugerencias.up,
     down: migration_20261104_205655_sugerencias.down,
     name: '20261104_205655_sugerencias'
+  },
+  {
+    up: migration_20261104_210500_estadisticas.up,
+    down: migration_20261104_210500_estadisticas.down,
+    name: '20261104_210500_estadisticas'
   },
 ];

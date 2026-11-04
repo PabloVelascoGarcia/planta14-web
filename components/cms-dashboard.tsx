@@ -25,6 +25,7 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
       title: "Pendientes de revisar", text: user.role === "admin" ? "Lo que ha llegado de fuera (ayuntamientos, fiestas enviadas…) y aún no está revisado." : "Lo que ha llegado de fuera de tus concejos (ayuntamientos, fiestas enviadas…) y aún no has revisado.", value: unreviewed.totalDocs },
   ];
   if (user.role === "admin") links.push(
+    { id: "estadisticas", href: "/cms/estadisticas", title: "Estadísticas", text: "Visitas por día, páginas más vistas y procedencia, con CSV y PDF mensuales." },
     { id: "espacios", href: "/cms/collections/municipal-spaces", title: "Espacios municipales", text: "Estado, contacto e identidad visual (foto, lema, escudo y colores)." },
     { id: "usuarios", href: "/cms/collections/users", title: "Usuarios", text: "Cuentas de la redacción y de los ayuntamientos." },
   );

@@ -13,6 +13,7 @@ import { Header } from "@/components/header";
 import { contentSource } from '@/lib/content-source';
 import { CookieConsent } from "@/components/cookie-consent";
 import { BreakingNewsBar } from "@/components/breaking-news-bar";
+import { StatsBeacon } from "@/components/stats-beacon";
 import { activeBreakingNews } from "@/cms/breaking-news";
 import { analyticsId } from "@/lib/consent";
 
@@ -61,6 +62,8 @@ export default async function RootLayout({
         <main id="contenido">{children}</main>
         <Footer cookieSettings={Boolean(gaId)} />
         {gaId ? <CookieConsent gaId={gaId} /> : null}
+        {/* Estadísticas propias, sin cookies: solo con contenido real. */}
+        {contentSource() === 'payload' ? <StatsBeacon /> : null}
       </body>
     </html>
   );

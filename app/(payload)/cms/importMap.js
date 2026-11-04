@@ -15,6 +15,7 @@ import { FestivalNextYear as FestivalNextYear_517eb2bb3c416e5d69b4461666be00c8 }
 import { SubscribersExport as SubscribersExport_f6ded776a75faf4178e16d924592bac9 } from '../../../components/subscribers-export'
 import { CmsMaintenanceBanner as CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd } from '../../../components/cms-maintenance-banner'
 import { CmsDashboard as CmsDashboard_c961bb4b059fa844220814f2fa37f917 } from '../../../components/cms-dashboard'
+import { StatsAdminView as StatsAdminView_f018c169a2aca0b545db3ec27d597051 } from '../../../components/stats-admin-view'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
@@ -37,6 +38,7 @@ export const importMap = {
   "/components/subscribers-export#SubscribersExport": SubscribersExport_f6ded776a75faf4178e16d924592bac9,
   "/components/cms-maintenance-banner#CmsMaintenanceBanner": CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd,
   "/components/cms-dashboard#CmsDashboard": CmsDashboard_c961bb4b059fa844220814f2fa37f917,
+  "/components/stats-admin-view#StatsAdminView": StatsAdminView_f018c169a2aca0b545db3ec27d597051,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

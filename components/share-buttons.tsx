@@ -6,7 +6,8 @@ export function ShareButtons({ url, title }: { url: string; title: string }) {
   const [copied, setCopied] = useState(false);
   const u = encodeURIComponent(url), t = encodeURIComponent(title);
   const links = [
-    { name: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}` },
+    // utm_source: WhatsApp no envía la página de origen; así las estadísticas propias saben de dónde llegó la visita.
+    { name: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}?utm_source=whatsapp`)}` },
     { name: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
     { name: "X", href: `https://x.com/intent/post?text=${t}&url=${u}` },
     { name: "Telegram", href: `https://t.me/share/url?url=${u}&text=${t}` },

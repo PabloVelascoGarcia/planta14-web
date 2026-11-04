@@ -23,6 +23,7 @@ export default function Page() {
       </tbody>
     </table>
     <p>Los datos personales que un ayuntamiento incluya en sus publicaciones se tratan por cuenta de ese ayuntamiento, que es su responsable. {owner.shortName} actúa como encargado del tratamiento conforme al contrato de encargo firmado con cada ayuntamiento.</p>
+    <p>Para saber qué páginas se leen, Planta 14 usa un contador propio <strong>sin cookies ni datos personales</strong>: solo suma visitas por página, concejo, sección, día y procedencia general (buscadores, redes sociales, WhatsApp o acceso directo). No guarda la dirección IP, el navegador ni ningún identificador.</p>
     <h2>Destinatarios</h2>
     <p>No cedemos datos a terceros salvo obligación legal. Nos prestan servicios, como encargados del tratamiento:</p>
     <ul>

@@ -92,7 +92,7 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
   const url = `http://localhost:${new URL(web).port}/noticia/${article.slug}`;
   const page = await html(`${web}/noticia/${article.slug}`);
   const u = encodeURIComponent(url);
-  for (const href of [`https://wa.me/?text=${encodeURIComponent(`${article.title} ${url}`)}`, `https://www.facebook.com/sharer/sharer.php?u=${u}`,
+  for (const href of [`https://wa.me/?text=${encodeURIComponent(`${article.title} ${url}?utm_source=whatsapp`)}`, `https://www.facebook.com/sharer/sharer.php?u=${u}`,
     `https://x.com/intent/post?text=${encodeURIComponent(article.title)}&amp;url=${u}`, `https://t.me/share/url?url=${u}&amp;text=${encodeURIComponent(article.title)}`])
     assert.ok(page.includes(`href="${href}"`), `share link ${href.slice(0, 40)}`);
   const context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] });
