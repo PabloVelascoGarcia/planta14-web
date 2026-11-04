@@ -28,7 +28,8 @@ export default buildConfig({
   // CMS solo en español.
   i18n: { supportedLanguages: { es }, fallbackLanguage: 'es' },
   routes: { admin: '/cms', api: '/api/cms' },
-  admin: { user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
+  // Fechas del CMS (listas, «Última modificación», versiones) como dd/MM/yyyy HH:mm.
+  admin: { dateFormat: 'dd/MM/yyyy HH:mm', user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
   collections: [Users, Media, Articles, Festivals, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Subscribers, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   globals: [BreakingNews],

@@ -1,4 +1,4 @@
-// Bloques 4 y 5 de scripts/participacion-integration.mjs: «Última hora» y Google Discover.
+// Bloques 4 a 6 de scripts/participacion-integration.mjs: «Última hora», Google Discover y fechas del CMS.
 export async function run(ctx) {
   const { payload, users, page, passed, assert, web, start, stop, signIn } = ctx;
 
@@ -45,4 +45,23 @@ export async function run(ctx) {
   await stop(); await start();
   passed('Google Discover: robots «max-image-preview:large» only when the site is indexable (noindex otherwise); articles expose a ≥ 1200 px image in Open Graph (with its size) and in the NewsArticle JSON-LD (ImageObject with width and height)');
 
+  // --- 6. Fechas del CMS: dd/MM/yyyy HH:mm.
+  const cookie = await signIn(users.admin.email);
+  const context = await ctx.browser.newContext();
+  await context.addCookies(cookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: ctx.origin }; }));
+  const tab = await context.newPage();
+  await tab.goto(`${ctx.origin}/cms/collections/notifications`);
+  const cell = tab.locator('td.cell-createdAt').first();
+  await cell.waitFor();
+  const shown = (await cell.innerText()).trim();
+  await tab.goto(`${ctx.origin}/cms/collections/festivals`);
+  await tab.locator('td.cell-startDate').first().waitFor();
+  const festivalDate = (await tab.locator('td.cell-startDate').first().innerText()).trim();
+  await context.close();
+  assert.match(shown, /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/, `list dates as dd/MM/yyyy HH:mm (${shown})`);
+  assert.match(festivalDate, /^\d{2}\/\d{2}\/\d{4}/, `fiesta days as dd/MM/yyyy (${festivalDate})`);
+  const { default: config } = await import('../payload.config.ts');
+  const resolved = await config;
+  assert.equal(resolved.admin.dateFormat, 'dd/MM/yyyy HH:mm');
+  passed('CMS dates as dd/MM/yyyy HH:mm (lists, document details and versions); date pickers already dd/MM/yyyy HH:mm (dd/MM/yyyy for fiesta days)');
 }
