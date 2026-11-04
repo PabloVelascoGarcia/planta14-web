@@ -1,0 +1,445 @@
+{
+  "version": 1,
+  "consulta": "2026-11-04",
+  "alcance": "Selección de rutas oficiales municipales, autonómicas y federativas. Incluye PR, GR, SL y rutas sin código publicado; no es un inventario completo.",
+  "criterios": {
+    "valoresDesconocidos": "null significa no comprobado. No se rellenan desniveles ni tiempos con cálculos o fichas de particulares.",
+    "distancias": "Se explicita si la cifra es solo ida, ida y vuelta o circuito completo.",
+    "codigo": "null significa que la fuente consultada no publica código; no implica que no exista.",
+    "estado": "Que una ruta aparezca en una web oficial no acredita su mantenimiento u homologación vigentes. No se ha comprobado el terreno.",
+    "gpx": "Se enlaza el archivo del organismo que lo publica. Los seis GPX enlazados respondieron y se analizaron como XML GPX 1.1; esto no certifica seguridad, transitabilidad ni derechos de paso."
+  },
+  "registros": [
+    {
+      "id": "ruta-mieres-baltasara",
+      "nombre": "Ruta del Ferrocarril de Baltasara",
+      "codigo": null,
+      "concejo": "Mieres",
+      "otrosConcejos": [],
+      "inicio": "Plaza de Requexu, Mieres",
+      "fin": "Plaza de Requexu, Mieres",
+      "distanciaKm": 10.4,
+      "distanciaCorrespondeA": "Ida y vuelta, distancia total",
+      "desnivel": {
+        "positivoMetros": 125,
+        "negativoMetros": 125
+      },
+      "dificultad": "Fácil",
+      "tiempo": "Entre 3 y 5 horas",
+      "descripcion": "El paseo sigue la huella ferroviaria de la Güeria San Xuan entre barrios y restos de instalaciones mineras. Sale de Requexu y regresa al mismo lugar.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13304282/003_Ruta+del+ferrocarril+de+Baltasara.gpx/ca188550-f974-f00a-976e-d255c1357d75?t=1758714170842",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 232
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/familia/ruta-del-ferrocarril-de-baltasara"
+      ],
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "ruta-mieres-bustiello-sovilla",
+      "nombre": "Senda Verde Bustiello–Sovilla",
+      "codigo": null,
+      "concejo": "Mieres",
+      "otrosConcejos": [],
+      "inicio": "Bustiello",
+      "fin": "Sovilla",
+      "distanciaKm": 2,
+      "distanciaCorrespondeA": "Lineal, solo ida",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "30 minutos, solo ida",
+      "descripcion": "Senda por la margen izquierda del Aller que enlaza Bustiello con la confluencia de los ríos Lena y Aller en Sovilla.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.mieres.es/turismo/naturaleza/rutas-de-senderismo/senda-verde-bustiello-sovilla/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: desnivel y categoría de dificultad no publicados en la ficha consultada.",
+        "No se ha localizado un GPX oficial descargable."
+      ]
+    },
+    {
+      "id": "ruta-mieres-sierra-lagos-sl1",
+      "nombre": "Sierra de Lagos",
+      "codigo": "SL-AS 1",
+      "concejo": "Mieres",
+      "otrosConcejos": [
+        "Ribera de Arriba"
+      ],
+      "inicio": "Baiña",
+      "fin": null,
+      "distanciaKm": 6,
+      "distanciaCorrespondeA": "Recorrido según plan municipal; final no detallado",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "3 horas",
+      "descripcion": "El sendero local de la sierra de Lagos figura en la relación municipal de rutas con salida en Baiña. No se equipara con las variantes más largas publicadas desde Ribera de Arriba.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.mieres.es/wp-content/uploads/2017/06/Plan-Municipal-de-Salud-de-Mieres.pdf"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: referencia municipal antigua; pendiente contrastar trazado, final, desnivel, dificultad y vigencia de la homologación.",
+        "No se ha localizado GPX oficial; no confundir con recorridos particulares a Magarrón o Castiellu."
+      ]
+    },
+    {
+      "id": "ruta-lena-ablaneo",
+      "nombre": "Ablaneo",
+      "codigo": null,
+      "concejo": "Lena",
+      "otrosConcejos": [],
+      "inicio": "La Pola, Lena",
+      "fin": "La Pola, Lena",
+      "distanciaKm": 13.05,
+      "distanciaCorrespondeA": "Circular, distancia total",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "4 horas",
+      "descripcion": "Recorrido municipal por Muñón Fondiru, Brañal.lamosa y el cordal de Ablaneo. El regreso desciende hacia La Crespa y La Pola.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aytolena.es/rutas"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: desnivel y dificultad global no publicados; la descripción de un tramo sin dificultad no califica toda la ruta.",
+        "La web anuncia descargas, pero no se ha comprobado un enlace directo GPX."
+      ]
+    },
+    {
+      "id": "ruta-lena-mofusu",
+      "nombre": "El Mofusu",
+      "codigo": null,
+      "concejo": "Lena",
+      "otrosConcejos": [],
+      "inicio": "La Pola, Lena",
+      "fin": "La Pola, Lena",
+      "distanciaKm": 9.5,
+      "distanciaCorrespondeA": "Circular con tramo de acceso compartido; distancia total",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": null,
+      "tiempo": "3 horas",
+      "descripcion": "El itinerario sale por La Caleya, pasa por Palaciós y la ermita de La Flor y asciende hacia el Colláu de Vil.lares antes de volver al valle.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aytolena.es/rutas"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: desnivel y dificultad global no publicados; GPX directo no comprobado."
+      ]
+    },
+    {
+      "id": "ruta-gr109-etapa12",
+      "nombre": "Santibanes de Murias–Campumanes",
+      "codigo": "GR 109, etapa 12",
+      "concejo": "Lena",
+      "otrosConcejos": [
+        "Aller"
+      ],
+      "inicio": "Santibanes de Murias, Aller",
+      "fin": "Campumanes/Campomanes, Lena",
+      "distanciaKm": 25.51,
+      "distanciaCorrespondeA": "Travesía, solo ida",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Media",
+      "tiempo": "8 horas y 30 minutos, solo ida",
+      "descripcion": "La etapa cruza desde Aller a Lena por los puertos del Rasón y El Tunelón. Continúa por un tramo de La Carisa y baja hacia los pueblos del valle de Pajares.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/descubre/naturaleza/rutas/asturias-interior/santibanez-de-murias-campomanes",
+        "https://fempa.net/ruta/gr-109-asturias-interior/"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: la ficha indica «Desnivel: 996 m» sin definir si es positivo o diferencia de cotas; se conserva en nota, sin convertirlo en ascenso acumulado.",
+        "Turismo Asturias da 25,51 km y FEMPA 25,7 km; se conserva la distancia de la ficha turística.",
+        "Se anuncia KML, pero no se ha localizado GPX oficial directo."
+      ]
+    },
+    {
+      "id": "ruta-aller-xurbeo",
+      "nombre": "Cascada de Xurbeo",
+      "codigo": "PR-AS 295",
+      "concejo": "Aller",
+      "otrosConcejos": [],
+      "inicio": "Aparcamiento de Murias",
+      "fin": "Aparcamiento de Murias",
+      "distanciaKm": 2.6,
+      "distanciaCorrespondeA": "Ida y vuelta, distancia total",
+      "desnivel": {
+        "positivoMetros": 224,
+        "negativoMetros": 224
+      },
+      "dificultad": "Muy fácil, según Turismo Asturias",
+      "tiempo": "Máximo 3 horas",
+      "descripcion": "Desde Murias se baja al río Negro y se continúa por el bosque hasta el salto de Xurbeo. El retorno se hace por el mismo camino, que incluye pendientes.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13492064/139_Cascada+Xurbeo.gpx/5ae23130-1476-03c9-981d-6678d7db66ce?t=1751610515419",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 357
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/familias/cascada-xurbeo",
+        "https://visitaaller.es/naturaleza-imprescindible"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La ficha actual da 2,6 km totales; existen fichas municipales antiguas con 1,1 km de ida. No se han mezclado ambas medidas."
+      ]
+    },
+    {
+      "id": "ruta-aller-gumial",
+      "nombre": "El Gumial",
+      "codigo": "PR-AS 48",
+      "concejo": "Aller",
+      "otrosConcejos": [],
+      "inicio": "El Fielato",
+      "fin": "Cuevas",
+      "distanciaKm": 9.43,
+      "distanciaCorrespondeA": "Travesía, solo ida",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Media",
+      "tiempo": "4 horas",
+      "descripcion": "La travesía pasa por Brañarreonda y la braña del Gumial antes de descender por el hayedo hacia Cuevas. Al terminar en otro lugar, requiere organizar el regreso.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.aller.es/r-senderismo/-/asset_publisher/aXd7KtzaY6L8/content/el-gumial-pr-as-48"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: la ficha de la ruta no proporciona desnivel; no se incorporan cifras de excursiones que pueden tener variantes.",
+        "No se ha comprobado un GPX oficial directo."
+      ]
+    },
+    {
+      "id": "ruta-morcin-monsacro",
+      "nombre": "Capillas del Monsacro",
+      "codigo": null,
+      "concejo": "Morcín",
+      "otrosConcejos": [],
+      "inicio": "La Collá",
+      "fin": "La Collá",
+      "distanciaKm": 8.21,
+      "distanciaCorrespondeA": "Circular, distancia total",
+      "desnivel": {
+        "positivoMetros": 525,
+        "negativoMetros": 525
+      },
+      "dificultad": "Media",
+      "tiempo": "Entre 3 y 5 horas",
+      "descripcion": "La subida desde La Collá alcanza el entorno de las ermitas de Santiago y la Magdalena. El circuito combina tramos de bosque y pastos de montaña.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13307443/020_Capillas+del+Monsacro.gpx/ee328ad2-f2a8-65ae-e19d-482245115d39?t=1758720967155",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 356
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/senderistas/capillas-del-monsacro"
+      ],
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "ruta-morcin-anillo",
+      "nombre": "Ruta perimetral del Monsacro — Anillo Sacro",
+      "codigo": null,
+      "concejo": "Morcín",
+      "otrosConcejos": [],
+      "inicio": "Los Llanos/Los Yanos",
+      "fin": "Los Llanos/Los Yanos",
+      "distanciaKm": 12,
+      "distanciaCorrespondeA": "Circular, distancia total aproximada",
+      "desnivel": {
+        "positivoMetros": 680,
+        "negativoMetros": 680
+      },
+      "dificultad": null,
+      "tiempo": null,
+      "descripcion": "El recorrido rodea el Monsacro y enlaza caminos y núcleos rurales de sus laderas. Es una propuesta diferente de la ascensión directa a las capillas.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": "https://es.wikiloc.com/rutas-senderismo/ruta-perimetral-del-monsacro-253717842",
+      "fuentes": [
+        "https://www.morcin.es/ruta-perimetral-del-monsacro"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: dificultad y duración no contrastadas en la ficha municipal.",
+        "El ayuntamiento distingue 680 m positivos y 1.360 m acumulados totales; los 680 m de descenso se deducen de esa suma y del circuito cerrado.",
+        "La ficha municipal enlaza Wikiloc; no se ha comprobado descarga GPX directa sin registro."
+      ]
+    },
+    {
+      "id": "ruta-riosa-texeo",
+      "nombre": "Minas de Texeo desde Collada Arganosa",
+      "codigo": null,
+      "concejo": "Riosa",
+      "otrosConcejos": [],
+      "inicio": "Collada Arganosa",
+      "fin": "Collada Arganosa",
+      "distanciaKm": 9.2,
+      "distanciaCorrespondeA": "Ida y vuelta, distancia total",
+      "desnivel": {
+        "positivoMetros": 864,
+        "negativoMetros": 864
+      },
+      "dificultad": "Dura",
+      "tiempo": "Entre 3 y 5 horas",
+      "descripcion": "El recorrido llega primero al poblado de Rioseco y continúa hacia las antiguas labores de la montaña. El segundo tramo es exigente y la ficha advierte que no está señalizado.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13317725/053_Minas+Texeo.gpx/4e3fea0d-7c90-0f4f-4d22-13dae2925d55?t=1750170311930",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 1662
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/senderistas/minas-texeo"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La descripción utiliza «lineal» para la subida; la distancia de 9,2 km corresponde a ida y vuelta de la ficha técnica.",
+        "No es la variante de 8 km desde Llamo. No entrar en galerías ni interpretar el track como autorización de acceso."
+      ]
+    },
+    {
+      "id": "ruta-llosorio",
+      "nombre": "Pico Llosorio desde La Foz",
+      "codigo": null,
+      "concejo": "Riosa",
+      "otrosConcejos": [
+        "Morcín",
+        "Mieres"
+      ],
+      "inicio": "La Foz de Morcín",
+      "fin": "La Foz de Morcín",
+      "distanciaKm": 12.82,
+      "distanciaCorrespondeA": "Circular, distancia total",
+      "desnivel": {
+        "positivoMetros": 952,
+        "negativoMetros": 952
+      },
+      "dificultad": "Muy dura",
+      "tiempo": "Entre 3 y 5 horas",
+      "descripcion": "Esta ruta de montaña parte de La Foz y recorre el entorno de Mina Esperanza y las cumbres del Llosorio. La ficha la vincula a los tres concejos.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13308902/022_Pico+Llosorio.gpx/30e1c920-cf18-d1ad-a78d-173063740e94?t=1758721604097",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 1991
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/montaneros/pico-llosorio"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Asignada a Riosa como ruta compartida, no como salida situada dentro de Riosa. Inicio y fin en Morcín."
+      ]
+    },
+    {
+      "id": "ruta-ribera-bueno",
+      "nombre": "Paseo de los Hórreos de Güeñu/Bueño",
+      "codigo": null,
+      "concejo": "Ribera de Arriba",
+      "otrosConcejos": [],
+      "inicio": "Güeñu/Bueño",
+      "fin": "Güeñu/Bueño",
+      "distanciaKm": 4.35,
+      "distanciaCorrespondeA": "Circular, distancia total",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Muy fácil, según Turismo Asturias",
+      "tiempo": "Máximo 3 horas",
+      "descripcion": "El paseo combina las calles de Bueño, el Centro de Interpretación del Hórreo y la zona de El Llosalín. Incluye un tramo próximo al Nalón.",
+      "gpxOficial": "https://www.turismoasturias.es/documents/39908/13490026/Horreos_Bueno.gpx/371935f6-f4e0-8452-69b4-915ca30a4113?t=1779176651941",
+      "comprobacionGPX": {
+        "consulta": "2026-11-04",
+        "formato": "GPX 1.1",
+        "puntos": 160
+      },
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.turismoasturias.es/senderismo/rutas/familia/paseo-de-los-horreos-de-bueno"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: la ficha publica +1/-1 m, pero da cotas de 112 a 119 m. La incoherencia impide dar ese desnivel como fiable; se deja null hasta confirmación."
+      ]
+    },
+    {
+      "id": "ruta-ribera-castiellu-gatu",
+      "nombre": "Pico Castiellu y Gatu desde Mortera de Tellego",
+      "codigo": null,
+      "concejo": "Ribera de Arriba",
+      "otrosConcejos": [],
+      "inicio": "Mortera de Tellego",
+      "fin": "Mortera de Tellego",
+      "distanciaKm": null,
+      "distanciaCorrespondeA": "Circular según la descripción municipal",
+      "desnivel": {
+        "positivoMetros": null,
+        "negativoMetros": null
+      },
+      "dificultad": "Media, con trepada expuesta al Castiellu",
+      "tiempo": null,
+      "descripcion": "La propuesta municipal asciende desde Mortera de Tellego al Castiellu y al Gatu. El acceso final al Castiellu exige una trepada expuesta y no debe confundirse con un paseo familiar.",
+      "gpxOficial": null,
+      "comprobacionGPX": null,
+      "enlaceAlternativo": null,
+      "fuentes": [
+        "https://www.ayto-riberadearriba.es/en/d%C3%B3nde-comer"
+      ],
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: distancia, desnivel y duración no publicados en el texto municipal consultado; GPX oficial no localizado.",
+        "La página municipal se titula Rutas aunque su dirección conserva «dónde-comer»."
+      ]
+    }
+  ]
+}
