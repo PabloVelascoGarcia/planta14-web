@@ -1,6 +1,6 @@
 # Proyecto futuro: plataforma de inteligencia territorial (Territory Intelligence Platform)
 
-Estado: proyecto a valorar a futuro, separado del periódico; no es funcionalidad de Planta 14 ni forma parte del lanzamiento de diciembre de 2026. Fecha: 4/11/2026.
+Estado: proyecto separado del periódico, no funcionalidad de Planta 14. Fase 0 decidida el 4/11/2026: se hará en enero de 2027.
 
 ## Idea
 - Planta 14 sería la primera aplicación visible de una infraestructura que captura de forma permanente información pública del territorio y la convierte en inteligencia. Los ayuntamientos pagan el periódico y, de hecho, financian la tecnología.
@@ -20,11 +20,11 @@ Fuentes automáticas de la sección Útil (BDNS, BOE, DGT, AEMET), servidor con 
 5. Lo difícil y continuo: resolución de entidades y mantenimiento de los lectores.
 
 ## Fases
-- Fase 0 (enero de 2027): almacén en bruto separado del periódico. Captura diaria con fecha y huella de BOPA, contratación pública de los 6 ayuntamientos y del Principado, BDNS, BOE y notas de prensa municipales. Sin procesar, sin publicar, sin perfiles de personas.
+- Fase 0 (enero de 2027, decidida): archivador automático separado del periódico. Cada noche guarda, con fecha y huella, BOPA (sumario y anuncios de los seis concejos), contratación pública de los seis ayuntamientos y del Principado (Plataforma de Contratación del Sector Público), BDNS (convocatorias y concesiones a entidades), BOE y notas de prensa municipales. Almacenamiento S3 actual con copia en Fráncfort y aviso por correo si una fuente falla. Sin procesar, sin publicar, sin perfiles de personas. Extra: correo diario a cada periodista con lo aparecido ayer de sus concejos. Coste estimado: menos de 1 €/mes de almacenamiento y un encargo de uno o dos días.
 - Fase 1 (tras las elecciones de mayo de 2027): IA para normalizar, relacionar y alertar a los periodistas.
 - Fase 2: productos para terceros con marca propia.
 
 ## Pendientes
-- Decidir si se arranca la Fase 0 en enero de 2027.
 - Revisar la base legal (RGPD y propiedad intelectual) con el abogado.
 - Decidir nombre e identidad propios separados de Planta 14.
+- Encargo de la Fase 0 a Code nube en enero de 2027.
