@@ -9,6 +9,8 @@ import { municipalMetadata } from "@/lib/seo";
 import { contentSource } from "@/lib/content-source";
 import { getFiestas, upcoming } from "@/lib/fiestas";
 import { StatsScope } from "@/components/stats-beacon";
+import { UtilBlocks } from "@/components/util-blocks";
+import { getUtilData } from "@/lib/util";
 
 export function generateStaticParams() { return visibleTowns().map(t => ({ municipality: t.slug })); }
 export async function generateMetadata({ params }: { params: Promise<{ municipality: string }> }): Promise<Metadata> {
@@ -30,5 +32,7 @@ export default async function Page({ params }: { params: Promise<{ municipality:
   const today = process.env.PLANTA14_TEST_TODAY || new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
   const contents = (await getMunicipalContents()).filter(c => c.space === space.id && (demo || !c.expiresAt || c.expiresAt >= today));
   const fiestas = upcoming(await getFiestas()).filter(f => f.townSlug === space.territory).slice(0, 5);
-  return <><StatsScope town={space.territory} section="concejo" /><MunicipalPage space={space} active={spaceIsActive(space)} contents={contents} articles={await getArticlesByConcejo(space.territory)} fiestas={fiestas} demo={demo} /></>;
+  // «Útil» solo con contenido real (las fuentes automáticas usan la caché de la base de datos).
+  const util = demo ? null : <UtilBlocks data={await getUtilData(space.territory)} />;
+  return <><StatsScope town={space.territory} section="concejo" /><MunicipalPage space={space} active={spaceIsActive(space)} contents={contents} articles={await getArticlesByConcejo(space.territory)} fiestas={fiestas} demo={demo} util={util} /></>;
 }

@@ -21,7 +21,10 @@ await writeFile(outbox, '');
 Object.assign(process.env, { NODE_ENV: 'production', CMS_ENABLED: 'true', CONTENT_SOURCE: 'payload', PAYLOAD_SECRET: randomUUID() + randomUUID(), DATABASE_URL: databaseURL,
   CMS_SERVER_URL: origin, SITE_URL: origin, S3_BUCKET: 'planta14-participacion-private', S3_REGION: 'us-east-1', S3_ENDPOINT: `http://127.0.0.1:${s3Port}`, S3_FORCE_PATH_STYLE: 'true',
   S3_ACCESS_KEY_ID: 'S3RVER', S3_SECRET_ACCESS_KEY: 'S3RVER', PUBLIC_MEDIA_BASE_URL: `http://127.0.0.1:${s3Port}/planta14-participacion-public`, PUBLIC_MEDIA_BUCKET: 'planta14-participacion-public',
-  PLANTA14_TEST_EMAIL_OUTBOX: outbox });
+  PLANTA14_TEST_EMAIL_OUTBOX: outbox,
+  // Las pruebas nunca consultan las fuentes reales de «Útil» (el bloque util usa un servidor simulado).
+  UTIL_DGT_URL: 'http://127.0.0.1:9/sin-red', UTIL_BDNS_URL: 'http://127.0.0.1:9/sin-red', UTIL_BOE_RSS_URL: 'http://127.0.0.1:9/sin-red' });
+for (const key of ['AEMET_API_KEY', 'AEMET_BASE_URL']) delete process.env[key];
 for (const key of ['SITE_INDEXABLE', 'SMTP_ENABLED']) delete process.env[key];
 const reset = new pg.Client({ connectionString: databaseURL });
 await reset.connect(); await reset.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;'); await reset.end();
@@ -114,7 +117,7 @@ try {
   assert.ok(juanfranHome.includes(`assignedTo][equals]=${users.juanfran.id}`), 'link filtered to the user');
   passed('«Pendientes de revisar» in the CMS home: each journalist sees what was assigned to them (Juanfran 1, Andrés 0), linked to the filtered list');
 
-  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-portada.mjs'];
+  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-portada.mjs'];
   // PARTICIPACION_BLOQUES=contrasena,cartas… para pasar solo algunos (pruebas rápidas); por defecto, todos.
   const only = (process.env.PARTICIPACION_BLOQUES || '').split(',').filter(Boolean);
   for (const file of blocks.filter(f => !only.length || only.some(o => f === `participacion-${o}.mjs`))) {

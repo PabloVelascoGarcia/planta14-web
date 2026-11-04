@@ -39,11 +39,13 @@ export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().m
           <nav aria-label="Secciones" className="topic-nav">
             {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
             <Link href="/fiestas">Fiestas</Link>
+            <Link href="/util">Útil</Link>
           </nav>
         </details>
         <nav aria-label="Secciones destacadas" className="desktop-topics">
           {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
           <Link href="/fiestas">Fiestas</Link>
+            <Link href="/util">Útil</Link>
         </nav>
       </div>
     </header>

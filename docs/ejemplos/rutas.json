@@ -1,0 +1,13 @@
+{
+  "version": "ejemplo",
+  "alcance": "EJEMPLO con el formato de datos-servicios/rutas.json (rama desarrollo/planta14-contenido-ensayo). Para la carga real se usa ese archivo.",
+  "registros": [
+    { "id": "ejemplo-ruta-aller", "nombre": "Ruta de ejemplo en Aller", "codigo": "PR AS-00", "concejo": "Aller", "otrosConcejos": ["Lena"], "inicio": "Soto de Agues", "fin": "Soto de Agues",
+      "distanciaKm": 9.5, "distanciaCorrespondeA": "Ida y vuelta, distancia total", "desnivel": { "positivoMetros": 450, "negativoMetros": 450 }, "dificultad": "Media",
+      "tiempo": "3 h 30 min", "descripcion": "EJEMPLO para probar la importación.", "gpxOficial": "https://www.turismoasturias.es/ejemplo.gpx", "enlaceAlternativo": null,
+      "fuentes": ["https://www.turismoasturias.es/"], "estado": "comprobado", "dudas": [] },
+    { "id": "ejemplo-ruta-lena", "nombre": "Ruta de ejemplo en Lena", "codigo": null, "concejo": "Lena", "otrosConcejos": [], "inicio": "La Pola", "fin": "La Pola",
+      "distanciaKm": 12, "distanciaCorrespondeA": null, "desnivel": { "positivoMetros": null, "negativoMetros": null }, "dificultad": null, "tiempo": null,
+      "descripcion": "EJEMPLO.", "gpxOficial": null, "enlaceAlternativo": null, "fuentes": [], "estado": "comprobado_con_pendientes", "dudas": ["Dudoso: EJEMPLO."] }
+  ]
+}

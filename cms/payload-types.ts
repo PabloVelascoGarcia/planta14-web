@@ -79,6 +79,9 @@ export interface Config {
     'municipal-content': MunicipalContent;
     notifications: Notification;
     suggestions: Suggestion;
+    heritage: Heritage;
+    routes: Route;
+    'municipal-services': MunicipalService;
     subscribers: Subscriber;
     'audit-log': AuditLog;
     'public-media-ops': PublicMediaOp;
@@ -101,6 +104,9 @@ export interface Config {
     'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     suggestions: SuggestionsSelect<false> | SuggestionsSelect<true>;
+    heritage: HeritageSelect<false> | HeritageSelect<true>;
+    routes: RoutesSelect<false> | RoutesSelect<true>;
+    'municipal-services': MunicipalServicesSelect<false> | MunicipalServicesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'public-media-ops': PublicMediaOpsSelect<false> | PublicMediaOpsSelect<true>;
@@ -747,6 +753,223 @@ export interface Suggestion {
   createdAt: string;
 }
 /**
+ * Fichas de patrimonio de la sección «Útil» (con mapa de OpenStreetMap). Se pueden importar con npm run cms:patrimonio:importar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "heritage".
+ */
+export interface Heritage {
+  id: number;
+  name: string;
+  town: number | Town;
+  /**
+   * Sin foto, la ficha usa el diseño neutro. Con foto, se publican su autoría y su licencia.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Por ejemplo: iglesia prerrománica, patrimonio minero.
+   */
+  kind?: string | null;
+  /**
+   * Pueblo, parroquia o paraje.
+   */
+  place?: string | null;
+  /**
+   * Texto de la ficha. Párrafos separados por una línea en blanco.
+   */
+  description?: string | null;
+  /**
+   * Figura y norma. Por ejemplo: BIC, monumento (Decreto…).
+   */
+  protection?: string | null;
+  protectionUrl?: string | null;
+  /**
+   * Por ejemplo 43.1234 (para el mapa de OpenStreetMap).
+   */
+  lat?: number | null;
+  /**
+   * Por ejemplo -5.7654 (negativa en Asturias).
+   */
+  lon?: number | null;
+  /**
+   * Por ejemplo: «Centro de interpretación; no delimita el conjunto». Sin coordenadas comprobadas la ficha sale en la lista pero no en el mapa.
+   */
+  coordinatesNote?: string | null;
+  /**
+   * Se publican al pie de la ficha.
+   */
+  sources?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Lo que falta por contrastar. Solo lo ve la redacción.
+   */
+  doubts?: string | null;
+  /**
+   * Márcalo cuando la redacción haya comprobado las dudas: quita el aviso «Dudoso».
+   */
+  reviewed?: boolean | null;
+  externalID?: string | null;
+  /**
+   * Se calcula sola: faltan coordenadas (no sale en el mapa) o hay dudas sin revisar.
+   */
+  review?: ('ok' | 'coordenadas' | 'dudoso' | 'dudoso-coordenadas') | null;
+  /**
+   * Se crea sola a partir del nombre.
+   */
+  slug?: string | null;
+  published?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Rutas de la sección «Útil» (recorrido dibujado sobre OpenStreetMap cuando hay track oficial). Se pueden importar con npm run cms:rutas:importar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "routes".
+ */
+export interface Route {
+  id: number;
+  name: string;
+  town: number | Town;
+  /**
+   * PR, GR o SL homologado, si lo tiene.
+   */
+  code?: string | null;
+  /**
+   * La ruta sale también en la página de estos concejos.
+   */
+  otherTowns?: (number | Town)[] | null;
+  /**
+   * Todos los demás concejos por los que pasa, como texto (también los de fuera de las Cuencas).
+   */
+  alsoIn?: string | null;
+  start?: string | null;
+  end?: string | null;
+  distanceKm?: number | null;
+  /**
+   * Por ejemplo: ida y vuelta, distancia total.
+   */
+  distanceNote?: string | null;
+  elevationUp?: number | null;
+  elevationDown?: number | null;
+  /**
+   * Como la publica la fuente. Por ejemplo: «Media», «Fácil, según FEMPA».
+   */
+  difficulty?: string | null;
+  duration?: string | null;
+  /**
+   * Texto de la ficha. Párrafos separados por una línea en blanco.
+   */
+  description?: string | null;
+  /**
+   * GPX, ZIP o PLT de la fuente oficial. Se enlaza siempre.
+   */
+  gpxUrl?: string | null;
+  /**
+   * Por ejemplo: «Track GPX oficial» o «Descarga oficial (PLT)».
+   */
+  gpxLabel?: string | null;
+  /**
+   * Lo rellena el importador a partir de la descarga oficial; sin recorrido, la ficha solo enlaza la descarga.
+   */
+  track?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  trackNote?: string | null;
+  /**
+   * Por ejemplo 43.1234 (para el mapa de OpenStreetMap).
+   */
+  lat?: number | null;
+  /**
+   * Por ejemplo -5.7654 (negativa en Asturias).
+   */
+  lon?: number | null;
+  /**
+   * Se publican al pie de la ficha.
+   */
+  sources?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Lo que falta por contrastar. Solo lo ve la redacción.
+   */
+  doubts?: string | null;
+  /**
+   * Márcalo cuando la redacción haya comprobado las dudas: quita el aviso «Dudoso».
+   */
+  reviewed?: boolean | null;
+  externalID?: string | null;
+  /**
+   * Se calcula sola: faltan coordenadas (no sale en el mapa) o hay dudas sin revisar.
+   */
+  review?: ('ok' | 'coordenadas' | 'dudoso' | 'dudoso-coordenadas') | null;
+  /**
+   * Se crea sola a partir del nombre.
+   */
+  slug?: string | null;
+  published?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Directorio de servicios municipales de la sección «Útil». Lo edita la administración y cada ayuntamiento el de su concejo desde su panel. Se puede importar con npm run cms:servicios:importar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-services".
+ */
+export interface MunicipalService {
+  id: number;
+  name: string;
+  town: number | Town;
+  category:
+    | 'ayuntamiento'
+    | 'salud'
+    | 'social'
+    | 'educacion'
+    | 'cultura'
+    | 'deportes'
+    | 'emergencias'
+    | 'transporte'
+    | 'medio-ambiente'
+    | 'turismo'
+    | 'otros';
+  place?: string | null;
+  address?: string | null;
+  /**
+   * Varios, separados por « · ».
+   */
+  phone?: string | null;
+  email?: string | null;
+  web?: string | null;
+  hours?: string | null;
+  notes?: string | null;
+  /**
+   * Página oficial de la que sale el dato.
+   */
+  sourceUrl?: string | null;
+  doubts?: string | null;
+  externalID?: string | null;
+  /**
+   * Los números más bajos salen antes dentro de su tipo.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Altas del boletín (doble confirmación por correo). Solo las «confirmadas» reciben el boletín. Para borrar los datos de alguien, elimina su registro.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -898,6 +1121,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'suggestions';
         value: number | Suggestion;
+      } | null)
+    | ({
+        relationTo: 'heritage';
+        value: number | Heritage;
+      } | null)
+    | ({
+        relationTo: 'routes';
+        value: number | Route;
+      } | null)
+    | ({
+        relationTo: 'municipal-services';
+        value: number | MunicipalService;
       } | null)
     | ({
         relationTo: 'subscribers';
@@ -1326,6 +1561,99 @@ export interface SuggestionsSelect<T extends boolean = true> {
   text?: T;
   assignedTo?: T;
   createdBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "heritage_select".
+ */
+export interface HeritageSelect<T extends boolean = true> {
+  name?: T;
+  town?: T;
+  image?: T;
+  kind?: T;
+  place?: T;
+  description?: T;
+  protection?: T;
+  protectionUrl?: T;
+  lat?: T;
+  lon?: T;
+  coordinatesNote?: T;
+  sources?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
+  doubts?: T;
+  reviewed?: T;
+  externalID?: T;
+  review?: T;
+  slug?: T;
+  published?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "routes_select".
+ */
+export interface RoutesSelect<T extends boolean = true> {
+  name?: T;
+  town?: T;
+  code?: T;
+  otherTowns?: T;
+  alsoIn?: T;
+  start?: T;
+  end?: T;
+  distanceKm?: T;
+  distanceNote?: T;
+  elevationUp?: T;
+  elevationDown?: T;
+  difficulty?: T;
+  duration?: T;
+  description?: T;
+  gpxUrl?: T;
+  gpxLabel?: T;
+  track?: T;
+  trackNote?: T;
+  lat?: T;
+  lon?: T;
+  sources?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
+  doubts?: T;
+  reviewed?: T;
+  externalID?: T;
+  review?: T;
+  slug?: T;
+  published?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "municipal-services_select".
+ */
+export interface MunicipalServicesSelect<T extends boolean = true> {
+  name?: T;
+  town?: T;
+  category?: T;
+  place?: T;
+  address?: T;
+  phone?: T;
+  email?: T;
+  web?: T;
+  hours?: T;
+  notes?: T;
+  sourceUrl?: T;
+  doubts?: T;
+  externalID?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

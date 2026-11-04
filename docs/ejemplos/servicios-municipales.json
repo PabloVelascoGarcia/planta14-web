@@ -1,0 +1,14 @@
+{
+  "version": "ejemplo",
+  "alcance": "EJEMPLO con el formato de datos-servicios/servicios-municipales.json (rama desarrollo/planta14-contenido-ensayo). Para la carga real se usa ese archivo.",
+  "registros": [
+    { "id": "ejemplo-lena-ayto", "concejo": "Lena", "tipo": "ayuntamiento", "nombre": "Ayuntamiento de Lena (EJEMPLO)", "localidad": "La Pola", "direccion": "EJEMPLO: Plaza del Ayuntamiento",
+      "telefonos": ["000000000"], "horario": "Lunes a viernes, 9:00 a 14:00", "estadoOperativo": "no_verificado_en_persona", "fuentes": ["https://www.aytolena.es/"], "estado": "comprobado", "dudas": [] },
+    { "id": "ejemplo-lena-salud", "concejo": "Lena", "tipo": "atencion_primaria", "nombre": "Centro de salud (EJEMPLO)", "localidad": "La Pola", "direccion": null,
+      "telefonos": ["000000001", "000000002"], "horario": null, "estadoOperativo": "cierre_anunciado", "fuentes": [], "estado": "comprobado_con_pendientes", "dudas": ["Dudoso: EJEMPLO."] },
+    { "id": "ejemplo-mieres-biblioteca", "concejo": "Mieres", "tipo": "biblioteca", "nombre": "Biblioteca municipal (EJEMPLO)", "localidad": "Mieres", "direccion": null,
+      "telefonos": [], "horario": "Tardes", "estadoOperativo": "no_verificado_en_persona", "fuentes": [], "estado": "comprobado", "dudas": [] },
+    { "id": "ejemplo-lena-farmacia", "concejo": "Lena", "tipo": "farmacia", "nombre": "Farmacia (EJEMPLO, no se importa)", "localidad": "La Pola", "direccion": null,
+      "telefonos": [], "horario": null, "estadoOperativo": "no_verificado_en_persona", "fuentes": [], "estado": "comprobado", "dudas": [] }
+  ]
+}

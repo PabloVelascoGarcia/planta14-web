@@ -13,7 +13,8 @@ export type PanelItem = {
 export type PanelState =
   | { kind: 'login' }
   | { kind: 'forbidden'; email: string; reason: string }
-  | { kind: 'editor'; email: string; name: string; spaceID: number; items: PanelItem[]; stats: import('./stats').StatsReport | null; statsMonth: string };
+  | { kind: 'editor'; email: string; name: string; spaceID: number; items: PanelItem[]; stats: import('./stats').StatsReport | null; statsMonth: string;
+      services: import('../components/municipal-services-editor').ServiceRow[] };
 
 /**
  * Server-side state of the real municipal panel (CONTENT_SOURCE=payload). Every query runs with the
@@ -43,5 +44,8 @@ export async function municipalPanelState(slug: string): Promise<PanelState> {
   const town = await payload.findByID({ collection: 'towns', id: relationID(space.town)!, depth: 0, overrideAccess: true }).catch(() => null);
   const range = monthRange(null);
   const stats = town ? await statsReport(range.from, range.to, town.slug).catch(() => null) : null;
-  return { kind: 'editor', email: user.email, name: user.name, spaceID: space.id, items, stats, statsMonth: range.month };
+  // Directorio de servicios municipales de «Útil» (con los permisos de la cuenta: solo su concejo).
+  const services = (await payload.find({ collection: 'municipal-services', user, overrideAccess: false, depth: 0, pagination: false, sort: 'order', where: { town: { equals: relationID(space.town) } } })).docs
+    .map(doc => ({ id: doc.id, name: doc.name, category: doc.category, address: doc.address ?? null, phone: doc.phone ?? null, email: doc.email ?? null, web: doc.web ?? null, hours: doc.hours ?? null, notes: doc.notes ?? null, order: doc.order ?? null }));
+  return { kind: 'editor', email: user.email, name: user.name, spaceID: space.id, items, stats, statsMonth: range.month, services };
 }

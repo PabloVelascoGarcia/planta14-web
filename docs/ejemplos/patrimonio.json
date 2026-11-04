@@ -1,0 +1,16 @@
+{
+  "version": "ejemplo",
+  "alcance": "EJEMPLO con el formato de datos-servicios/patrimonio.json (rama desarrollo/planta14-contenido-ensayo). Para la carga real se usa ese archivo.",
+  "registros": [
+    { "id": "ejemplo-lena-santa-cristina", "nombre": "Santa Cristina de Lena", "concejo": "Lena", "localidad": "Felgueras", "tipo": "iglesia prerrománica",
+      "proteccionLegal": { "figura": "BIC, monumento", "norma": "EJEMPLO", "fuente": "https://www.boe.es/" },
+      "coordenadas": { "sistema": "WGS84", "latitud": 43.128594, "longitud": -5.818, "referencia": "EJEMPLO: punto aproximado" },
+      "descripcion": "EJEMPLO para probar la importación.\n\nSegundo párrafo de ejemplo.", "fuentesOficiales": ["https://www.turismoasturias.es/"],
+      "foto": null, "estado": "comprobado", "dudas": [] },
+    { "id": "ejemplo-mieres-bustiello", "nombre": "Poblado minero de Bustiello", "concejo": "Mieres", "localidad": "Bustiello", "tipo": "patrimonio minero",
+      "proteccionLegal": null, "coordenadas": { "sistema": "WGS84", "latitud": 43.188344, "longitud": -5.768397 },
+      "descripcion": "EJEMPLO.", "fuentesOficiales": [], "foto": null, "estado": "comprobado_con_pendientes", "dudas": ["Dudoso: EJEMPLO de duda interna."] },
+    { "id": "ejemplo-riosa-sin-mapa", "nombre": "Ficha de Riosa sin coordenadas", "concejo": "Riosa", "localidad": null, "tipo": "ermita medieval",
+      "proteccionLegal": null, "coordenadas": null, "descripcion": "EJEMPLO.", "fuentesOficiales": [], "foto": null, "estado": "comprobado", "dudas": [] }
+  ]
+}
