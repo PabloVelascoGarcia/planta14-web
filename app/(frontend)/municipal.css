@@ -216,3 +216,7 @@
   .municipal-shell .aller-asset-credit a{display:inline-flex;align-items:center;min-height:24px}
   .municipal-shell .municipal-notice-strip>span:last-child{font-size:0}
 }
+/* Recuperar la contraseña (panel municipal): textos de 13 px o más y enlaces de 44 px de alto. */
+.municipal-text-link{display:inline-flex;align-items:center;min-height:44px;margin-top:12px;padding:0;background:none;border:0;font-size:13px;font-weight:700;color:#a4522d;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.municipal-form-help{font-size:14px;line-height:1.6;color:#5d5348;margin:0 0 4px}
+.aller-theme .municipal-text-link{color:#315c49}

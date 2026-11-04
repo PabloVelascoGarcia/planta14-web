@@ -7,7 +7,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node tests/session-codec.test.mjs && node tests/proxy.test.mjs && node tests/cms.test.mjs && node tests/launch.test.mjs && node tests/production.test.mjs && node tests/maintenance.test.mjs",
+    "test": "node tests/session-codec.test.mjs && node tests/proxy.test.mjs && node tests/cms.test.mjs && node tests/launch.test.mjs && node tests/production.test.mjs && node tests/maintenance.test.mjs && node tests/password-reset.test.mjs",
     "typecheck": "tsc --noEmit",
     "cms": "payload",
     "cms:types": "payload generate:types",

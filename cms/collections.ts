@@ -5,6 +5,7 @@ import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
 import { withPublicMediaLock } from './public-media-lock';
 import { loteField } from './lote';
+import { forgotPasswordOptions } from './password-reset';
 
 /** Text stored with each municipal upload (versioned so the evidence says what was declared). */
 export const municipalRightsStatement = (municipality: string) =>
@@ -12,7 +13,9 @@ export const municipalRightsStatement = (municipality: string) =>
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  auth: { cookies: { secure: process.env.NODE_ENV === 'production', sameSite: 'Lax' }, maxLoginAttempts: 5, lockTime: 10 * 60 * 1000 },
+  auth: { cookies: { secure: process.env.NODE_ENV === 'production', sameSite: 'Lax' }, maxLoginAttempts: 5, lockTime: 10 * 60 * 1000,
+    // Correo propio de Planta 14; a las cuentas municipales las lleva a su panel, no a /cms (cms/password-reset.ts).
+    forgotPassword: forgotPasswordOptions },
   admin: { useAsTitle: 'email' },
   // Municipal accounts use /[municipality]/panel, never the /cms administration.
   access: { admin: editorialUser, create: adminOnly, read: ownUserOrAdmin, update: adminOnly, delete: adminOnly },

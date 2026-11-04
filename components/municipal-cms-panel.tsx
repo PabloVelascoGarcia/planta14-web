@@ -30,18 +30,40 @@ function Login({ onDone }: { onDone: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [forgot, setForgot] = useState(false);
+  const [busy, setBusy] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
     try { await request("/users/login", json("POST", { email, password })); onDone(); }
     catch { setMessage("No se ha podido iniciar sesión. Revisa el correo y la contraseña."); }
   }
+  async function sendReset(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true); setMessage("");
+    try {
+      await request("/users/forgot-password", json("POST", { email }));
+      // Mismo mensaje exista o no la cuenta: no se revela qué correos tienen cuenta.
+      setMessage("Si ese correo tiene una cuenta, en unos minutos recibirás un enlace para elegir una contraseña nueva. Caduca en una hora. Mira también en el correo no deseado.");
+    } catch (error) {
+      setMessage(error instanceof Error && /actualiz/i.test(error.message) ? error.message : "No se ha podido enviar el correo. Inténtalo de nuevo en unos minutos.");
+    } finally { setBusy(false); }
+  }
+  if (forgot) return <form onSubmit={sendReset} className="municipal-form" data-forgot-password>
+    <div className="municipal-step"><span>1</span><h3>¿Has olvidado tu contraseña?</h3></div>
+    <p className="municipal-form-help">Escribe el correo de la cuenta de tu ayuntamiento y te enviaremos un enlace para elegir una nueva.</p>
+    <label>Correo electrónico<input type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} required /></label>
+    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy}>{busy ? "Enviando…" : "Enviar el enlace ↗"}</button></div>
+    <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
+    <button type="button" className="municipal-text-link" onClick={() => { setForgot(false); setMessage(""); }}>← Volver a entrar</button>
+  </form>;
   return <form onSubmit={submit} className="municipal-form">
     <div className="municipal-step"><span>1</span><h3>Entra con la cuenta de tu ayuntamiento</h3></div>
     <label>Correo electrónico<input type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} required /></label>
     <label>Contraseña<input type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required /></label>
     <div className="municipal-publish-actions"><button type="submit" className="municipal-cta">Entrar ↗</button><small>Las cuentas municipales las crea Planta 14.</small></div>
     <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
+    <button type="button" className="municipal-text-link" onClick={() => { setForgot(true); setMessage(""); }}>¿Has olvidado tu contraseña?</button>
   </form>;
 }
 
