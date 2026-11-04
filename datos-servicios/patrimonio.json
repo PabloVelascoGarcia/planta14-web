@@ -549,6 +549,1242 @@
       "dudas": [
         "Dudoso: coordenadas exactas y figura concreta de protección pendientes de fuente oficial."
       ]
+    },
+    {
+      "id": "pat-mieres-espinos",
+      "nombre": "Pozu Espinos",
+      "concejo": "Mieres",
+      "localidad": "San Andrés, valle de Turón",
+      "tipo": "patrimonio minero y torre de extracción",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "El conjunto conserva una singular torre de extracción con la maquinaria elevada sobre el pozo, además de dependencias auxiliares y un puente metálico relacionado con el transporte del carbón. Es una muestra de las soluciones técnicas empleadas en la minería del valle de Turón.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-industrial/pozu-espinos"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozo_Espinos_Tur%C3%B3n.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/6/63/Pozo_Espinos_Tur%C3%B3n.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Yandrak",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1196043718,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1196043718",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Torre de extracción del Pozu Espinos, en el valle de Turón."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El marcador de la página municipal consultada (43.270923,-5.745976) no concuerda con la localización en Turón. No se incorpora como coordenada validada.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara."
+      ]
+    },
+    {
+      "id": "pat-mieres-barredo",
+      "nombre": "Pozo Barredo",
+      "concejo": "Mieres",
+      "localidad": "Mieres del Camín, barrio de La Villa",
+      "tipo": "patrimonio minero y castillete",
+      "proteccionLegal": null,
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.243226,
+        "longitud": -5.775639,
+        "referencia": "Marcador de la ficha municipal; punto de referencia del conjunto, no delimitación parcelaria",
+        "fuente": "https://www.mieres.es/turismo/patrimonio/patrimonio-industrial/pozo-barredo"
+      },
+      "descripcion": "El castillete y los edificios conservados recuerdan la explotación del carbón junto al casco urbano de Mieres. El conjunto ayuda a interpretar la relación entre la mina, los barrios de trabajadores y las transformaciones de este sector de la villa.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-industrial/pozo-barredo"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Castillete_barredo_rehabili.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Castillete_barredo_rehabili.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "LMLM",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 850892557,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=850892557",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": false
+        },
+        "pie": "Castillete rehabilitado del Pozo Barredo."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial."
+      ]
+    },
+    {
+      "id": "pat-mieres-camposagrado",
+      "nombre": "Palacio del Marqués de Camposagrado",
+      "concejo": "Mieres",
+      "localidad": "La Villa, Mieres del Camín",
+      "tipo": "palacio y arquitectura civil",
+      "proteccionLegal": {
+        "figura": "BIC, monumento",
+        "norma": "Decreto 63/2004, de 22 de julio",
+        "publicacion": "2004-08-06",
+        "fuente": "https://www.asturias.es/bopa/2004/08/06/20040806.pdf"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.244397,
+        "longitud": -5.774129,
+        "referencia": "Marcador del palacio en la ficha municipal",
+        "fuente": "https://www.mieres.es/turismo/patrimonio/patrimonio-artistico/palacio-de-los-marqueses-de-camposagrado"
+      },
+      "descripcion": "Palacio barroco organizado alrededor de un patio y vinculado a una antigua torre. Aloja el Instituto Bernaldo de Quirós y una colección artística. Su posición en La Villa permite reconocer una parte del Mieres anterior a la expansión industrial.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-artistico/palacio-de-los-marqueses-de-camposagrado",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Palaciu_Camposagrado_-_Mieres_(01).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Palaciu_Camposagrado_-_Mieres_%2801%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1039136705,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1039136705",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Fachadas del palacio de Camposagrado, en Mieres."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-mieres-casa-duro",
+      "nombre": "Casa Duró o casa de los Álvarez Castañón",
+      "concejo": "Mieres",
+      "localidad": "Mieres del Camín",
+      "tipo": "casona urbana",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1995-04-20",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.244422,
+        "longitud": -5.772738,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27370501002000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "Casona histórica que conserva elementos de la arquitectura residencial tradicional de Mieres, con balcones y vanos enmarcados en piedra. La ficha municipal la incluye entre los bienes de interés cultural del concejo.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-artistico/casa-duro",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27370501002000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Casa_Duro_-_Mieres_(04).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/78/Casa_Duro_-_Mieres_%2804%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1116031398,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1116031398",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Detalle de balcón y ventana de la fachada de Casa Duró."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El marcador municipal de esta ficha difiere de la localización de la fotografía de Commons; la posición exacta se deja pendiente. No se afirma un uso o un horario de visita actuales.",
+        "Para la coordenada se adopta la capa BIC del Principado; difiere de los marcadores de la ficha municipal y de la posición de cámara de Commons. No se usa la cámara como ubicación del inmueble."
+      ]
+    },
+    {
+      "id": "pat-mieres-martires-cuna",
+      "nombre": "Santuario de los Mártires Cosme y Damián",
+      "concejo": "Mieres",
+      "localidad": "Insierto, valle de Cuna",
+      "tipo": "santuario y patrimonio festivo",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1995-04-20",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.220893,
+        "longitud": -5.806511,
+        "referencia": "Marcador del santuario en la ficha municipal",
+        "fuente": "https://www.mieres.es/turismo/patrimonio/patrimonio-artistico/santuario-de-los-martires-cosme-y-damian"
+      },
+      "descripcion": "Santuario barroco de planta de cruz latina, con pórticos y torre, situado sobre el valle de Cuna. Está ligado a la romería de los Mártires y conserva elementos que permiten relacionar arquitectura religiosa y tradición festiva local.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-artistico/santuario-de-los-martires-cosme-y-damian",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santuariu_martires_cosme_y_damian.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Santuariu_martires_cosme_y_damian.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Astur1",
+        "licencia": "Public domain",
+        "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1065951603,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1065951603",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Santuario de los Mártires Cosme y Damián, en el valle de Cuna."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-lena-san-martino",
+      "nombre": "Iglesia de San Martino",
+      "concejo": "Lena",
+      "localidad": "Samartino, parroquia de Vil.layana",
+      "tipo": "iglesia románica",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1982-05-10",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.183204,
+        "longitud": -5.822763,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27332223001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "El templo conserva escultura medieval en su portada y en los canecillos, junto a reformas de épocas posteriores. Forma parte del patrimonio religioso del valle del Lena y permite apreciar la continuidad de uso de una iglesia rural.",
+      "fuentesOficiales": [
+        "https://www.aytolena.es/historico-y-cultural",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27332223001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ilesia_San_Martino_-_Villayana_(08).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Ilesia_San_Martino_-_Villayana_%2808%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 900731963,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=900731963",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Detalle de las ventanas de la fachada sur de San Martino."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-lena-casa-vital-aza",
+      "nombre": "Casa natal de Vital Aza",
+      "concejo": "Lena",
+      "localidad": "La Pola",
+      "tipo": "vivienda histórica",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "2006-07-07",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.157293,
+        "longitud": -5.828345,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27331616001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "Vivienda urbana de arquitectura popular vinculada al escritor Vital Aza. Su fachada permite reconocer la escala de las antiguas casas de La Pola y la relación entre vivienda, calle y memoria cultural de la villa.",
+      "fuentesOficiales": [
+        "https://www.aytolena.es/historico-y-cultural",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27331616001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Casa_de_Vital_Aza_(01).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/0/06/Casa_de_Vital_Aza_%2801%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 993681040,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=993681040",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Fachadas de la casa natal de Vital Aza, en La Pola."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La página municipal menciona 1980 como fecha de protección, pero el inventario BIC del Principado da publicación de 7 de julio de 2006; se usa esta última referencia administrativa."
+      ]
+    },
+    {
+      "id": "pat-lena-fierros-rectoral-puente",
+      "nombre": "Casa rectoral, capilla y puente de Fierros",
+      "concejo": "Lena",
+      "localidad": "Puente de los Fierros",
+      "tipo": "conjunto histórico vinculado al camino",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "2006-07-07",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.078166,
+        "longitud": -5.770544,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27331703001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "El conjunto reúne una casa rectoral, una capilla y un puente en un enclave de paso del valle de Pajares. La proximidad entre estos elementos ayuda a interpretar las antiguas comunicaciones y la asistencia religiosa en el camino.",
+      "fuentesOficiales": [
+        "https://www.aytolena.es/historico-y-cultural",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27331703001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Rectoral,_capiella_y_ponte_de_Fierros_(04).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/78/Rectoral%2C_capiella_y_ponte_de_Fierros_%2804%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1194573369,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1194573369",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Casa rectoral del conjunto protegido de Fierros."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-lena-villa-mamorana",
+      "nombre": "Villa romana de Mamorana",
+      "concejo": "Lena",
+      "localidad": "La Vega’l Ciigu, entorno de Mamorana",
+      "tipo": "yacimiento arqueológico romano",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Yacimiento conocido por los restos de una villa y por un mosaico recuperado en las excavaciones y trasladado al Museo Arqueológico de Asturias. Documenta la presencia romana en el valle y el uso residencial de este territorio.",
+      "fuentesOficiales": [
+        "https://www.aytolena.es/historico-y-cultural"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La ficha no acredita visita pública ni estructuras visibles. No se ha confirmado una figura de protección individual en el inventario consultado; tampoco se asigna al yacimiento una foto de un mosaico de procedencia distinta.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-lena-faes-miranda",
+      "nombre": "Palacio de los Faes-Miranda",
+      "concejo": "Lena",
+      "localidad": "Carabanzo",
+      "tipo": "palacio y torre señorial",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Restos de una casona barroca del siglo XVII de la que la fuente municipal destaca el torreón y el escudo familiar. Su presencia en Carabanzo recuerda la organización histórica de las propiedades y los núcleos rurales del concejo.",
+      "fuentesOficiales": [
+        "https://www.aytolena.es/historico-y-cultural"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Palaciu_de_los_Faes-Miranda.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Palaciu_de_los_Faes-Miranda.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Esguil",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 958117775,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=958117775",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": false
+        },
+        "pie": "Palacio de los Faes-Miranda, en Carabanzo."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara."
+      ]
+    },
+    {
+      "id": "pat-lena-ubinas-mesa",
+      "nombre": "Parque Natural de Las Ubiñas-La Mesa: sector de Lena",
+      "concejo": "Lena",
+      "localidad": "Montaña meridional de Lena",
+      "tipo": "espacio natural protegido y paisaje cultural de montaña",
+      "proteccionLegal": {
+        "figura": "Parque Natural",
+        "norma": "Ley 5/2006, de 30 de mayo",
+        "fuente": "https://naturalezadeasturias.es/espacios/accede/protegidos/parques-naturales/pn-ubinyas-la-mesa.html"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.025105,
+        "longitud": -5.938973,
+        "referencia": "Refugio de El Meicín: punto de referencia en el sector de Lena, no centroide ni delimitación del parque",
+        "fuente": "https://www.turismoasturias.es/organiza-tu-viaje/donde-dormir/alojamiento/refugios-de-montana/refugio-del-meicin"
+      },
+      "descripcion": "El sector lenense del parque combina cumbres, bosques y pastos de altura. Las brañas, los caminos y los aprovechamientos ganaderos forman parte de su valor cultural. El espacio protegido se extiende también por Quirós y Teverga; este registro identifica únicamente su relación con Lena.",
+      "fuentesOficiales": [
+        "https://naturalezadeasturias.es/espacios/accede/protegidos/parques-naturales/pn-ubinyas-la-mesa.html",
+        "https://www.turismoasturias.es/descubre/naturaleza/reservas-de-la-biosfera/parque-natural-de-las-ubinas-la-mesa",
+        "https://www.turismoasturias.es/organiza-tu-viaje/donde-dormir/alojamiento/refugios-de-montana/refugio-del-meicin"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Macizo_de_Ubi%C3%B1a.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/7/75/Macizo_de_Ubi%C3%B1a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Joaquinceb",
+        "licencia": "Public domain",
+        "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1122166770,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1122166770",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Macizo de Ubiña visto desde el entorno de Tuiza, en Lena."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La coordenada identifica el refugio de El Meicín, no todo el parque. Para determinar límites o zonificación debe utilizarse la cartografía del espacio protegido."
+      ]
+    },
+    {
+      "id": "pat-aller-san-juan-llamas",
+      "nombre": "Iglesia de San Juan el Real de Llamas",
+      "concejo": "Aller",
+      "localidad": "Ḷḷamas",
+      "tipo": "iglesia histórica",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1963-05-14",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.105683,
+        "longitud": -5.575121,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27020801001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "Templo rural protegido como bien de interés cultural en el núcleo de Ḷḷamas. Su arquitectura conserva elementos medievales y reformas posteriores. Es una referencia del patrimonio religioso del alto Aller.",
+      "fuentesOficiales": [
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://iglesiadeasturias.org/parroquia/san-juan-llamas-aller/",
+        "https://visitaaller.es/iglesia-de-san-juan-el-real-de-llamas-llamas",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27020801001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:San_Xuan_de_Llamas_(01).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/9b/San_Xuan_de_Llamas_%2801%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1177365542,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1177365542",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Fachada occidental y pórtico de San Juan el Real de Llamas."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El marcador de Turismo de Aller difiere de la capa BIC unos 170 m. La coordenada incluida procede de la cartografía patrimonial del Principado."
+      ]
+    },
+    {
+      "id": "pat-aller-san-felix-pino",
+      "nombre": "Iglesia de San Félix de El Pino",
+      "concejo": "Aller",
+      "localidad": "El Pino",
+      "tipo": "iglesia barroca",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1973-04-19",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.109109,
+        "longitud": -5.520947,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27021303001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "Iglesia del siglo XVIII que forma parte del patrimonio protegido de Aller. Su volumen y su decoración permiten conocer la arquitectura religiosa de época moderna en el valle del río San Isidro, más allá de los templos medievales del concejo.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/documents/39908/2268845/Mapa_rutas_ES.pdf/cf62ab42-d576-3fe0-40ae-22105dcab037",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://iglesiadeasturias.org/parroquia/san-felix-el-pino-aller/",
+        "https://visitaaller.es/iglesia-de-san-felix-de-el-pino",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27021303001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_F%C3%A9lix_(El_Pino)_003_3.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/5/50/Iglesia_de_San_F%C3%A9lix_%28El_Pino%29_003_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "SITOMON",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1194584440,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1194584440",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Iglesia de San Félix, en El Pino."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-aller-san-juan-riomera",
+      "nombre": "Iglesia de San Juan de Riomera",
+      "concejo": "Aller",
+      "localidad": "Santibanes de la Fuente",
+      "tipo": "iglesia románica",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1972-02-23",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.123377,
+        "longitud": -5.559583,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27021504001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "Templo medieval que la guía turística regional identifica con el siglo XIII. Está situado junto al tejo de Santibanes de la Fuente, aunque iglesia y árbol cuentan con referencias de protección distintas. El conjunto vincula arquitectura religiosa y paisaje cultural.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/documents/39908/2268845/Mapa_rutas_ES.pdf/cf62ab42-d576-3fe0-40ae-22105dcab037",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://visitaaller.es/iglesia-de-san-juan-de-rumiera",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27021504001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:San_Juan_de_Riomera_003.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/3/38/San_Juan_de_Riomera_003.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "SITOMON",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1251201021,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1251201021",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Iglesia de San Juan de Riomera, en Santibanes de la Fuente."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-aller-pozo-san-fernando",
+      "nombre": "Pozo San Fernando",
+      "concejo": "Aller",
+      "localidad": "Uriés / Orillés",
+      "tipo": "patrimonio minero y castillete",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-02-32",
+        "publicacion": "2013-02-26",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.184244,
+        "longitud": -5.648569,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-02-32.pdf"
+      },
+      "descripcion": "Instalación minera situada sobre el valle de Aller, junto a un área recreativa. La fuente regional destaca su sistema de extracción por contrapeso, que elevaba el carbón desde cotas inferiores. El acceso descrito se realiza a pie desde Uriés.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/descubre/naturaleza/otros-espacios/areas-recreativas/pozo-san-fernando",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-02-32.pdf"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica.",
+        "Se usa el identificador del castillete en el IPCA. El punto de Turismo Asturias corresponde al área recreativa y no al centro del elemento protegido."
+      ]
+    },
+    {
+      "id": "pat-aller-texu-santibanes",
+      "nombre": "Tejo de Santibanes de la Fuente",
+      "concejo": "Aller",
+      "localidad": "Santibanes de la Fuente",
+      "tipo": "árbol monumental y patrimonio cultural del campo de iglesia",
+      "proteccionLegal": {
+        "figura": "Monumento Natural",
+        "norma": "Decreto 78/1995, de 27 de abril",
+        "publicacion": "1995-06-06",
+        "fuente": "https://naturalezadeasturias.es/upload/MN_Decreto_78_1995_Tejo_Santibanez.pdf"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.123412,
+        "longitud": -5.55993,
+        "referencia": "Punto del monumento natural en la cartografía oficial del Principado",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/EspaciosProtegidos/MapServer/5/query?where=1%3D1&outFields=%2A&returnGeometry=true&outSR=4326&geometry=-6.02%2C42.96%2C-5.35%2C43.36&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&f=json&resultRecordCount=2000"
+      },
+      "descripcion": "Tejo situado junto a la iglesia de San Juan, en el espacio tradicional de reunión del pueblo. Su declaración como monumento natural reconoce el valor del ejemplar y de su entorno. No se le asigna una edad exacta que las fuentes no puedan acreditar.",
+      "fuentesOficiales": [
+        "https://naturalezadeasturias.es/espacios/visita/destinos/MN-tejo-de-santibanyez-de-la-fuente.html",
+        "https://naturalezadeasturias.es/upload/MN_Decreto_78_1995_Tejo_Santibanez.pdf",
+        "https://sig.asturias.es/servicios/rest/services/EspaciosProtegidos/MapServer/5/query?where=1%3D1&outFields=%2A&returnGeometry=true&outSR=4326&geometry=-6.02%2C42.96%2C-5.35%2C43.36&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&f=json&resultRecordCount=2000"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Tejo_Santiba%C3%B1ez.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/12/Tejo_Santiba%C3%B1ez.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "SITOMON",
+        "licencia": "CC BY-SA 3.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1244324127,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1244324127",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Tejo de Santibanes de la Fuente, junto a la iglesia."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-morcin-entrefoces",
+      "nombre": "Abrigo de Entrefoces y Cueva del Molín",
+      "concejo": "Morcín",
+      "localidad": "Entrefoces, La Foz",
+      "tipo": "yacimiento paleolítico y arte rupestre",
+      "proteccionLegal": {
+        "figura": "BIC, yacimiento con arte rupestre",
+        "norma": "Ley 16/1985, de Patrimonio Histórico Español; entorno publicado el 11 de enero de 2010",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.255153,
+        "longitud": -5.87052,
+        "referencia": "Punto de localización del BIC en SITPA-IDEAS, consultado el 4 de noviembre de 2026; no sustituye el polígono de protección",
+        "fuente": "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27380204001000%27&outFields=%2A&outSR=4326&f=json"
+      },
+      "descripcion": "En el desfiladero del río Riosa se localiza este conjunto arqueológico, excavado en la década de 1980. Entre los hallazgos destaca una cabeza humana tallada en cuarcita. El abrigo y la cueva permiten conocer la ocupación prehistórica del valle.",
+      "fuentesOficiales": [
+        "https://www.morcin.es/turismo",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb",
+        "https://sig.asturias.es/servicios/rest/services/BienesDeInteresCultural/MapServer/0/query?where=codigo%3D%27380204001000%27&outFields=%2A&outSR=4326&f=json"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Abrigo_de_Entrefoces_(1).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Abrigo_de_Entrefoces_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 780199734,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=780199734",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Abrigo de Entrefoces, junto al desfiladero del río Riosa."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha comprobado un régimen de visitas ni acceso autorizado al interior. La fotografía no sustituye la cartografía de protección."
+      ]
+    },
+    {
+      "id": "pat-morcin-pozu-neveru",
+      "nombre": "Pozu Neveru de La Carbayosa",
+      "concejo": "Morcín",
+      "localidad": "Entorno de La Carbayosa, hacia Vega Bobies",
+      "tipo": "construcción etnográfica y pozo de nieve",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Pozo circular de piedra utilizado para conservar nieve y abastecer de hielo a los centros de consumo. Se encuentra en el entorno de La Carbayosa y es testimonio de un aprovechamiento tradicional de la montaña anterior a la refrigeración industrial.",
+      "fuentesOficiales": [
+        "https://www.morcin.es/turismo"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El ayuntamiento atribuye origen medieval al pozo, pero no aporta datación documental o arqueológica. Se omite esa cronología de la descripción.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-morcin-museo-lecheria",
+      "nombre": "Museo Etnográfico de la Lechería",
+      "concejo": "Morcín",
+      "localidad": "La Foz",
+      "tipo": "colección etnográfica y cultura ganadera",
+      "proteccionLegal": null,
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.251737,
+        "longitud": -5.872311,
+        "referencia": "Localización del museo publicada por Turismo Asturias",
+        "fuente": "https://www.turismoasturias.es/descubre/cultura/museos-y-espacios-culturales/colecciones-museograficas/museu-etnograficu-de-la-llecheria"
+      },
+      "descripcion": "Colección dedicada a las prácticas y utensilios de la producción y transformación de la leche, instalada en las antiguas tolvas del Pozo Monsacro. Explica una parte del trabajo doméstico y ganadero de Asturias y complementa la lectura del patrimonio minero de La Foz.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/documents/39908/12259678/itinerarios-abril-junio-2025.pdf",
+        "https://directoriomuseos.mcu.es/dirmuseos/mostrarDetalleMuseo.do?idMuseo=1098",
+        "https://www.turismoasturias.es/descubre/cultura/museos-y-espacios-culturales/colecciones-museograficas/museu-etnograficu-de-la-llecheria"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica.",
+        "Las fichas regionales relacionan el museo con las tolvas del Pozo Monsacro y publican la dirección Naveo, 31. No se dan horarios o tarifas como vigentes sin confirmarlos con el centro."
+      ]
+    },
+    {
+      "id": "pat-morcin-pozo-monsacro",
+      "nombre": "Pozo Monsacro",
+      "concejo": "Morcín",
+      "localidad": "La Foz",
+      "tipo": "patrimonio minero e instalaciones de extracción",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-38-01 / IPCA-EI-58-01",
+        "publicacion": "2013-02-22",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.242657,
+        "longitud": -5.872108,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-38-01.pdf"
+      },
+      "descripcion": "El conjunto industrial del Pozo Monsacro forma parte del paisaje minero de La Foz. Las imágenes del archivo regional documentan sus instalaciones y trabajos. El registro se refiere al pozo, distinto de la colección etnográfica que utiliza parte de sus antiguas tolvas.",
+      "fuentesOficiales": [
+        "https://memoriadigital.asturias.es/detalle/-/categories/849622?_com_liferay_asset_categories_navigation_web_portlet_AssetCategoriesNavigationPortlet_articleId=1007010&articleId=1007010&title=Pozo+Monsacro",
+        "https://www.turismoasturias.es/documents/39908/12259678/itinerarios-abril-junio-2025.pdf",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-38-01.pdf"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozo_Monsacro.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/3/34/Pozo_Monsacro.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Sierra del Aramo",
+        "licencia": "Public domain",
+        "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-self",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1164927392,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1164927392",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": false
+        },
+        "pie": "Instalaciones del Pozo Monsacro; fotografía histórica respecto a la fecha de consulta."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se infiere que la instalación siga en explotación ni que sus edificios sean de libre acceso. La fecha de toma y el estado que muestra la foto deben consultarse en Commons.",
+        "El inventario incluye elementos del Pozo Monsacro tanto en Morcín como en Riosa (Piedrafita). Se conserva un solo registro del conjunto, adscrito aquí a Morcín; no se duplica para alcanzar el cupo de Riosa."
+      ]
+    },
+    {
+      "id": "pat-morcin-alfilorios",
+      "nombre": "Embalse de Los Alfilorios",
+      "concejo": "Morcín",
+      "localidad": "Valle del río Barrea",
+      "tipo": "patrimonio hidráulico y paisaje transformado",
+      "proteccionLegal": null,
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.29178,
+        "longitud": -5.917858,
+        "referencia": "Punto de referencia del embalse publicado por Turismo Asturias; no delimita su perímetro",
+        "fuente": "https://www.turismoasturias.es/pt/descubre/naturaleza/otros-espacios/embalses/alfilorios"
+      },
+      "descripcion": "El embalse ocupa parte del valle del Barrea y muestra la transformación del territorio asociada al abastecimiento de agua. Se incluye por su interés como paisaje hidráulico, sin atribuirle una protección natural específica que no se ha comprobado.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/pt/descubre/naturaleza/otros-espacios/embalses/alfilorios"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Embalse_de_Alfilorios.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Embalse_de_Alfilorios.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Urbano Suárez",
+        "licencia": "CC BY-SA 3.0",
+        "enlaceLicencia": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1142582117,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1142582117",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": false
+        },
+        "pie": "Lámina de agua del embalse de Los Alfilorios."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "El embalse se sitúa principalmente en Morcín y alcanza también Ribera de Arriba. No se presenta como monumento natural ni como obra de cronología antigua.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial."
+      ]
+    },
+    {
+      "id": "pat-riosa-nieves-llamo",
+      "nombre": "Ermita de la Virgen de las Nieves",
+      "concejo": "Riosa",
+      "localidad": "Llamo",
+      "tipo": "arquitectura religiosa rural",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-YA-58-018",
+        "publicacion": "2014-01-20",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.191282,
+        "longitud": -5.884288,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-YA-58-018.pdf"
+      },
+      "descripcion": "Ermita del pueblo de Llamo que conserva pinturas con escenas de la Pasión, según la descripción municipal. Su emplazamiento relaciona el patrimonio religioso del valle con el entorno de las antiguas minas de Rioseco.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-llamo",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-YA-58-018.pdf"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se confirma la datación de las pinturas ni la apertura del interior.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-riosa-santo-angel-muriellos",
+      "nombre": "Ermita del Santo Ángel",
+      "concejo": "Riosa",
+      "localidad": "Muriellos",
+      "tipo": "arquitectura religiosa rural",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Ermita de Muriellos cuyo acceso conserva escudo e inscripción fundacional. La fuente municipal destaca estos elementos como parte del patrimonio del pueblo. Se evita atribuir a la construcción una fecha no documentada en esa ficha.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-llamo"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-riosa-remedios-felguera",
+      "nombre": "Ermita de San Juan y Nuestra Señora de los Remedios",
+      "concejo": "Riosa",
+      "localidad": "Felguera",
+      "tipo": "arquitectura religiosa rural",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Templo de nave única con pórtico y puerta de arco de medio punto. Forma parte del núcleo histórico de Felguera, antigua sede administrativa de Riosa. La descripción municipal destaca su configuración frente a otras ermitas del concejo.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-llamo"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se incorpora una fecha exacta de construcción sin contrastar la documentación patrimonial.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-riosa-corrala",
+      "nombre": "Casa de La Corralá",
+      "concejo": "Riosa",
+      "localidad": "Felguera",
+      "tipo": "casona y antigua sede municipal",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "La casa de La Corralá albergó el Ayuntamiento cuando Felguera ejercía como centro administrativo del concejo. El inmueble permite explicar los cambios en la organización municipal de Riosa y la importancia histórica de este pueblo.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-llamo"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La referencia municipal sitúa en 1880 el final de la capitalidad administrativa de Felguera. No se infiere titularidad pública actual ni posibilidad de visita.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-riosa-casa-muniz",
+      "nombre": "Casa de los Muñiz",
+      "concejo": "Riosa",
+      "localidad": "Doñaxuande",
+      "tipo": "casona y arquitectura señorial",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-YA-58-010",
+        "publicacion": "2014-01-20",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.234242,
+        "longitud": -5.884116,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-YA-58-010.pdf"
+      },
+      "descripcion": "Casona situada en el centro de Doñaxuande, con un escudo entre los vanos del piso superior. El ayuntamiento la fecha en el siglo XVII y señala reformas posteriores. Es una muestra de la arquitectura residencial histórica del valle de Grandiella.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-grandiella-copy",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-YA-58-010.pdf"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-riosa-casa-felix",
+      "nombre": "Casa de Félix",
+      "concejo": "Riosa",
+      "localidad": "La Xuncar",
+      "tipo": "casa tradicional y cantería histórica",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Vivienda que conserva un dintel decorado con una cruz y dos rosetas y la fecha de 1611. Este elemento permite reconocer la antigüedad de parte de la construcción, sin fechar automáticamente todas sus fábricas o reformas.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-la-xuncar"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "1611 es la inscripción del dintel según la ficha municipal; no una datación comprobada de todo el edificio.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-riosa-san-jose-xuncar",
+      "nombre": "Capilla de San José",
+      "concejo": "Riosa",
+      "localidad": "La Xuncar",
+      "tipo": "arquitectura religiosa rural",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Capilla que el ayuntamiento fecha en 1713 y en cuyo interior describe un retablo con imágenes de la Virgen, San Antonio y San José con el Niño. Forma parte del patrimonio religioso y doméstico del pueblo.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/valle-de-la-xuncar"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se confirma apertura pública ni estado actual del retablo.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-ribera-puente-soto",
+      "nombre": "Puente de piedra de Soto Ribera",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Soto Ribera",
+      "tipo": "puente histórico",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-57-16",
+        "publicacion": "2018-08-25",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.308593,
+        "longitud": -5.87443,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-16.pdf"
+      },
+      "descripcion": "Puente de cuatro arcos sobre el Caudal, construido en 1808 y restaurado en 1864 según la ficha municipal. Sus pilas y apartaderos forman parte de un paso histórico que conecta las orillas en la capital del concejo.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-16.pdf"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Puente_de_piedra_de_Soto_de_Ribera.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/4/48/Puente_de_piedra_de_Soto_de_Ribera.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "EQUIPO: CASTIELLOS",
+        "licencia": "Public domain",
+        "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-SpanishGov",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 865022660,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=865022660",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": false
+        },
+        "pie": "Puente sobre el Caudal en Soto Ribera, fotografiado en 1997."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-ribera-san-juan-mata",
+      "nombre": "Capilla de San Juan de Mata",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Bueño / Güeñu",
+      "tipo": "arquitectura religiosa popular",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-57-01",
+        "publicacion": "2018-08-25",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.316447,
+        "longitud": -5.895986,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-01.pdf"
+      },
+      "descripcion": "Pequeña capilla de planta rectangular y cabecera plana, con acceso en arco de medio punto y espadaña de un hueco. Se integra en el caserío tradicional de Bueño y en su recorrido de patrimonio etnográfico.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-01.pdf"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Capilla_de_San_Juan_de_Mata_en_Bue%C3%B1o.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/4/48/Capilla_de_San_Juan_de_Mata_en_Bue%C3%B1o.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Consejería de Educación y Cultura del Principado de Asturias",
+        "licencia": "Public domain",
+        "enlaceLicencia": "https://commons.wikimedia.org/wiki/Template:PD-SpanishGov",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 847792337,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=847792337",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": false
+        },
+        "pie": "Capilla de San Juan de Mata, en Bueño."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La ficha municipal fecha el edificio en 1929; no se ha contrastado si corresponde a reconstrucción o a fábrica original. Se omite la cronología hasta resolverlo."
+      ]
+    },
+    {
+      "id": "pat-ribera-castillo-soto-rei",
+      "nombre": "Castillo de Soto o de Doña Urraca",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Soto Rei",
+      "tipo": "fortificación y ruinas medievales",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-57-07",
+        "publicacion": "2018-08-25",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.306921,
+        "longitud": -5.860067,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-07.pdf"
+      },
+      "descripcion": "Restos de una construcción medieval de la que la ficha municipal destaca el muro norte, vanos y una puerta de arco de medio punto. No debe confundirse con la torre o castillo de Soto, en Aller.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-07.pdf"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica.",
+        "No se ha comprobado un acceso público acondicionado. El nombre «de Doña Urraca» no acredita por sí solo esa atribución histórica."
+      ]
+    },
+    {
+      "id": "pat-ribera-san-saturnino",
+      "nombre": "Iglesia de San Saturnino",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Soto Ribera",
+      "tipo": "iglesia parroquial del siglo XX",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-57-15",
+        "publicacion": "2018-08-25",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.311468,
+        "longitud": -5.879343,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-15.pdf"
+      },
+      "descripcion": "Templo parroquial fechado en 1931, con planta de cruz latina, cabecera plana y torre campanario. La ficha municipal lo sitúa entre los elementos de interés de Soto Ribera y señala su restauración en 2006.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-15.pdf"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-ribera-casa-prieto",
+      "nombre": "Casa del Licenciado Carlos Prieto",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Bueño / Güeñu",
+      "tipo": "casona y carpintería tradicional",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "Casona de Bueño que el ayuntamiento destaca por el trabajo de madera de la galería y el alero. Complementa el conjunto de hórreos y permite observar otras formas de arquitectura doméstica tradicional del pueblo.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "La ficha no acredita un uso cultural o una visita interior actuales. No se identifica automáticamente con otros equipamientos de Bueño.",
+        "Protección legal individual no comprobada. El valor null no significa que el bien carezca de protección urbanística o patrimonial.",
+        "Coordenadas exactas del bien pendientes de contraste; no se sustituyen por el centro del pueblo ni por la posición de una cámara.",
+        "No se ha verificado una fotografía libre en Commons que identifique este bien concreto; foto pendiente, sin sustituirla por una imagen genérica."
+      ]
+    },
+    {
+      "id": "pat-ribera-santa-leocadia",
+      "nombre": "Iglesia de Santa Leocadia",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Palombar / Palomar",
+      "tipo": "iglesia y arquitectura popular",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-57-06",
+        "publicacion": "2018-08-25",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.310648,
+        "longitud": -5.91326,
+        "referencia": "Punto identificador del IPCA: conversión de ETRS89 / UTM 30 (EPSG:25830) a WGS84 con PROJ; no delimita el bien",
+        "fuente": "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-06.pdf"
+      },
+      "descripcion": "Iglesia del siglo XVIII, de planta de cruz griega y cabecera plana, con capillas laterales y espadaña de tres huecos. Su composición y sus materiales muestran soluciones habituales de la arquitectura religiosa rural del concejo.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8",
+        "https://sig.asturias.es/HIPERVINCULOS/IPCA/FichasIPCA/Fichas/IPCA-EI-57-06.pdf"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Palomar.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/6/67/Iglesia_de_Palomar.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "autor": "Minuties",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-04",
+          "metodo": "API de Commons: metadatos imageinfo/extmetadata y lectura del wikitext de la misma ficha con revisions; plantilla de licencia contrastada.",
+          "revisionPagina": 1257097069,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1257097069",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Identificación por título, descripción y ficha del archivo. Encuadre y presencia de personas pendientes de revisión visual antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Iglesia de Santa Leocadia, en Palombar."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "No se reproduce la atribución municipal de unas pinturas al prerrománico: necesita un informe que respalde esa cronología en un edificio descrito como del siglo XVIII."
+      ]
     }
   ]
 }
