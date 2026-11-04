@@ -1,5 +1,8 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionBeforeChangeHook, CollectionConfig, CollectionSlug, Payload, PayloadRequest } from 'payload';
-import { editorialUser, relationID } from './access';
+import { adminOnly, editorialUser, relationID } from './access';
+import { createPendingNotice } from './responsables';
+
+const adminOnlyField = ({ req }: { req: PayloadRequest }) => adminOnly({ req });
 
 /**
  * Registro de auditoría (inmutable) y avisos para Planta 14.
@@ -31,11 +34,14 @@ export const AuditLog: CollectionConfig = {
 
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
-  labels: { singular: 'Aviso municipal', plural: 'Avisos municipales' },
-  admin: { useAsTitle: 'title', defaultColumns: ['createdAt', 'title', 'space', 'reviewed', 'emailStatus'] },
+  labels: { singular: 'Pendiente de revisar', plural: 'Pendientes de revisar' },
+  admin: { useAsTitle: 'title', defaultColumns: ['createdAt', 'title', 'kind', 'assignedTo', 'reviewed', 'emailStatus'],
+    description: 'Lo que llega de fuera (publicaciones de los ayuntamientos, fiestas enviadas…), asignado al periodista responsable del concejo. Márcalo como revisado cuando lo hayas atendido.' },
   access: { read: editorialUser, create: () => false, update: editorialUser, delete: () => false },
   fields: [
-    { name: 'kind', type: 'select', required: true, defaultValue: 'municipal-publication', options: ['municipal-publication'], access: { update: () => false } },
+    { name: 'kind', type: 'select', required: true, defaultValue: 'municipal-publication', options: ['municipal-publication', 'festival-submission'], access: { update: () => false } },
+    // Periodista responsable del concejo (Concejos → Periodista responsable) cuando llegó el aviso.
+    { name: 'assignedTo', label: 'Asignado a', type: 'relationship', relationTo: 'users', index: true, access: { update: adminOnlyField } },
     { name: 'content', type: 'relationship', relationTo: 'municipal-content', access: { update: () => false } },
     { name: 'space', type: 'relationship', relationTo: 'municipal-spaces', index: true, access: { update: () => false } },
     { name: 'title', type: 'text', required: true, access: { update: () => false } },
@@ -105,8 +111,12 @@ export const auditAfterChange: CollectionAfterChangeHook = async ({ collection, 
     const spaceID = relationID(doc.space);
     const space = spaceID ? await req.payload.findByID({ collection: 'municipal-spaces', id: spaceID, depth: 0, overrideAccess: true, req }) : null;
     const emailStatus = await sendMunicipalNoticeEmail(req.payload, { title: doc.title, spaceName: space?.name });
-    await req.payload.create({ collection: 'notifications', overrideAccess: true, req, data: {
-      kind: 'municipal-publication', content: doc.id, space: spaceID ?? undefined, title: doc.title, publishedBy: req.user.id, emailStatus } });
+    // Pendiente asignado al periodista responsable del concejo, que recibe además un correo.
+    const townID = relationID(space?.town);
+    const town = townID ? await req.payload.findByID({ collection: 'towns', id: townID, depth: 0, overrideAccess: true, req }) : null;
+    await createPendingNotice(req.payload, req, { kind: 'municipal-publication', title: doc.title, townID, townName: town?.name, fallbackEmailStatus: emailStatus,
+      detail: `${space?.name || 'Un ayuntamiento'} ha publicado en su espacio de Planta 14: «${doc.title}».`,
+      data: { content: doc.id, space: spaceID ?? undefined, publishedBy: req.user.id } });
   }
   return doc;
 };

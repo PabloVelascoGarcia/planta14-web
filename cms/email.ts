@@ -12,3 +12,20 @@ export function smtpOptions(env: NodeJS.ProcessEnv = process.env) {
     },
   };
 }
+
+import { appendFileSync } from 'node:fs';
+import type { EmailAdapter } from 'payload';
+
+/**
+ * Solo pruebas automáticas: con PLANTA14_TEST_EMAIL_OUTBOX, los correos se escriben (JSON por línea) en ese archivo
+ * en vez de enviarse. Nunca se configura en producción (no está en infra/.env.production.example).
+ */
+export function testOutboxAdapter(file: string): EmailAdapter {
+  return () => ({ name: 'planta14-test-outbox', defaultFromAddress: 'avisos@planta14.com', defaultFromName: 'Planta 14',
+    sendEmail: async (message) => { appendFileSync(file, `${JSON.stringify(message)}\n`); return {}; } });
+}
+
+/** ¿Hay correo de verdad (SMTP de avisos@planta14.com) o el buzón de pruebas? Sin él, nada se envía. */
+export function emailAvailable(env: NodeJS.ProcessEnv = process.env) {
+  return Boolean(env.PLANTA14_TEST_EMAIL_OUTBOX) || (env.SMTP_ENABLED === 'true' && env.CMS_ENABLED === 'true');
+}

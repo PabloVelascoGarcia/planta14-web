@@ -18,6 +18,7 @@
     "test:cms:integration": "payload run scripts/cms-integration.mjs",
     "cms:import:municipal": "payload run scripts/import-municipal.ts",
     "cms:structure": "payload run scripts/load-structure.ts",
+    "cms:responsables": "payload run scripts/responsables.ts",
     "cms:ensayo:cargar": "node scripts/ensayo-run.mjs cargar",
     "cms:ensayo:retirar": "node scripts/ensayo-run.mjs retirar",
     "test:block2": "payload run scripts/block2-integration.mjs",
@@ -27,7 +28,8 @@
     "test:instalacion": "payload run scripts/instalacion-integration.mjs",
     "test:ensayo": "payload run scripts/ensayo-integration.mjs",
     "test:formulario": "payload run scripts/formulario-integration.mjs",
-    "test:portada": "payload run scripts/portada-integration.mjs"
+    "test:portada": "payload run scripts/portada-integration.mjs",
+    "test:participacion": "payload run scripts/participacion-integration.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1161.0",

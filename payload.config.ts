@@ -9,7 +9,7 @@ import { cmsEnvironment } from './cms/environment';
 import { Articles, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent } from './cms/content-collections';
 import { AuditLog, Notifications } from './cms/activity';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
-import { smtpOptions } from './cms/email';
+import { smtpOptions, testOutboxAdapter } from './cms/email';
 import { withMaintenanceGuard } from './cms/maintenance';
 import { withSpanishLabels } from './cms/labels';
 import { es } from '@payloadcms/translations/languages/es';
@@ -20,7 +20,7 @@ const smtp = smtpOptions();
 
 export default buildConfig({
   secret: settings.secret,
-  email: smtp ? nodemailerAdapter(smtp) : undefined,
+  email: process.env.PLANTA14_TEST_EMAIL_OUTBOX ? testOutboxAdapter(process.env.PLANTA14_TEST_EMAIL_OUTBOX) : smtp ? nodemailerAdapter(smtp) : undefined,
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3000',
   // CMS solo en español.
   i18n: { supportedLanguages: { es }, fallbackLanguage: 'es' },

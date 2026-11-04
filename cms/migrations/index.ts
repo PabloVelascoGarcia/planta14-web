@@ -8,6 +8,7 @@ import * as migration_20261103_000335_identidad_espacios from './20261103_000335
 import * as migration_20261103_001210_creado_por from './20261103_001210_creado_por';
 import * as migration_20261103_081533_lote_ensayo from './20261103_081533_lote_ensayo';
 import * as migration_20261103_121545_formulario_noticias from './20261103_121545_formulario_noticias';
+import * as migration_20261104_195227_responsables from './20261104_195227_responsables';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20261103_121545_formulario_noticias.up,
     down: migration_20261103_121545_formulario_noticias.down,
-    name: '20261103_121545_formulario_noticias'
+    name: '20261103_121545_formulario_noticias',
+  },
+  {
+    up: migration_20261104_195227_responsables.up,
+    down: migration_20261104_195227_responsables.down,
+    name: '20261104_195227_responsables'
   },
 ];

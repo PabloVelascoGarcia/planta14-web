@@ -370,6 +370,10 @@ export interface Town {
   name: string;
   comarca: 'Caudal' | 'Nalón';
   visible?: boolean | null;
+  /**
+   * Recibe por correo y en «Pendientes de revisar» lo que llega de fuera de este concejo (fiestas enviadas, publicaciones del ayuntamiento…). Solo lo cambia la administración.
+   */
+  responsible?: (number | null) | User;
   provenance?: string | null;
   sourceUrl?: string | null;
   updatedAt: string;
@@ -559,12 +563,15 @@ export interface MunicipalContent {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Lo que llega de fuera (publicaciones de los ayuntamientos, fiestas enviadas…), asignado al periodista responsable del concejo. Márcalo como revisado cuando lo hayas atendido.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "notifications".
  */
 export interface Notification {
   id: number;
-  kind: 'municipal-publication';
+  kind: 'municipal-publication' | 'festival-submission';
+  assignedTo?: (number | null) | User;
   content?: (number | null) | MunicipalContent;
   space?: (number | null) | MunicipalSpace;
   title: string;
@@ -895,6 +902,7 @@ export interface TownsSelect<T extends boolean = true> {
   name?: T;
   comarca?: T;
   visible?: T;
+  responsible?: T;
   provenance?: T;
   sourceUrl?: T;
   updatedAt?: T;
@@ -1013,6 +1021,7 @@ export interface MunicipalContentSelect<T extends boolean = true> {
  */
 export interface NotificationsSelect<T extends boolean = true> {
   kind?: T;
+  assignedTo?: T;
   content?: T;
   space?: T;
   title?: T;

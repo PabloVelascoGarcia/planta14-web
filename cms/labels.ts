@@ -12,7 +12,7 @@ const collectionLabels: Record<string, [string, string]> = {
   towns: ['Concejo', 'Concejos'],
   'municipal-spaces': ['Espacio municipal', 'Espacios municipales'],
   'municipal-content': ['Contenido municipal', 'Contenidos municipales'],
-  notifications: ['Aviso municipal', 'Avisos municipales'],
+  notifications: ['Pendiente de revisar', 'Pendientes de revisar'],
   'audit-log': ['Registro de auditoría', 'Auditoría'],
   'public-media-ops': ['Operación de copia pública', 'Operaciones de copias públicas'],
 };
@@ -46,7 +46,7 @@ const optionLabels: Record<string, string> = {
   propia: 'Propia', licencia: 'Con licencia (p. ej. Creative Commons)', 'autorización': 'Cedida con autorización', institucional: 'Institucional',
   'status.demo': 'Demostración', active: 'Activo', inactive: 'Inactivo',
   news: 'Noticia', notice: 'Aviso', event: 'Agenda', grant: 'Ayuda o subvención', announcement: 'Tablón de anuncios', municipality: 'Ayuntamiento',
-  'emailStatus.disabled': 'Desactivado', sent: 'Enviado', 'emailStatus.failed': 'Fallido', 'municipal-publication': 'Publicación municipal',
+  'emailStatus.disabled': 'Desactivado', sent: 'Enviado', 'emailStatus.failed': 'Fallido', 'municipal-publication': 'Publicación municipal', 'festival-submission': 'Fiesta enviada',
   'action.create': 'Creación', 'action.update': 'Edición', publish: 'Publicación', unpublish: 'Despublicación', withdraw: 'Retirada',
   reinstate: 'Restitución', 'action.delete': 'Borrado',
   'public-media-ops.kind.create': 'Crear copia', 'public-media-ops.kind.delete': 'Borrar copia', pending: 'Pendiente', applied: 'Aplicada',

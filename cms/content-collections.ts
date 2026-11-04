@@ -94,7 +94,13 @@ export const Towns: CollectionConfig = {
   access: { read: notMunicipal, create: adminOnly, update: adminOnly, delete: adminOnly },
   fields: [key, { name: 'slug', type: 'text', unique: true, required: true }, text('name', true),
     { name: 'comarca', type: 'select', required: true, options: ['Caudal', 'Nalón'] },
-    { name: 'visible', type: 'checkbox', defaultValue: true }, ...provenance],
+    { name: 'visible', type: 'checkbox', defaultValue: true },
+    // Periodista responsable: recibe lo que llega de fuera de este concejo. Lo elige la administración; no es público.
+    { name: 'responsible', label: 'Periodista responsable', type: 'relationship', relationTo: 'users', index: true,
+      filterOptions: { role: { in: ['editor', 'admin'] } },
+      access: { read: editorialUser, create: adminOnly, update: adminOnly },
+      admin: { description: 'Recibe por correo y en «Pendientes de revisar» lo que llega de fuera de este concejo (fiestas enviadas, publicaciones del ayuntamiento…). Solo lo cambia la administración.' } },
+    ...provenance],
 };
 
 export const Authors: CollectionConfig = {

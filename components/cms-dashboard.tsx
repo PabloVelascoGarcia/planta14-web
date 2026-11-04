@@ -11,16 +11,18 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
   const [drafts, publishedToday, unreviewed] = await Promise.all([
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "draft" } }, { createdBy: { equals: user.id } }] } }),
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "published" } }, { date: { equals: today } }] } }),
-    user.role === "admin" ? payload.count({ collection: "notifications", overrideAccess: true, where: { reviewed: { equals: false } } }) : null,
+    // Pendientes de revisar: lo que llega de fuera. La redacción ve lo asignado a ella; la administración, todo.
+    payload.count({ collection: "notifications", overrideAccess: true, where: user.role === "admin" ? { reviewed: { equals: false } } : { and: [{ reviewed: { equals: false } }, { assignedTo: { equals: user.id } }] } }),
   ]);
   const list = "/cms/collections/articles";
   const links: { href: string; title: string; text: string; value?: number; id: string }[] = [
     { id: "nueva", href: `${list}/create`, title: "Nueva noticia", text: "Escribe y publica, o guarda como borrador." },
     { id: "borradores", href: `${list}?where[and][0][_status][equals]=draft&where[and][1][createdBy][equals]=${user.id}`, title: "Mis borradores", text: "Noticias que has creado y aún no están publicadas.", value: drafts.totalDocs },
     { id: "hoy", href: `${list}?where[and][0][_status][equals]=published&where[and][1][date][equals]=${today}`, title: "Publicadas hoy", text: `Noticias publicadas con fecha de hoy (${today.split("-").reverse().join("/")}).`, value: publishedToday.totalDocs },
+    { id: "pendientes", href: user.role === "admin" ? "/cms/collections/notifications?where[reviewed][equals]=false" : `/cms/collections/notifications?where[and][0][reviewed][equals]=false&where[and][1][assignedTo][equals]=${user.id}`,
+      title: "Pendientes de revisar", text: user.role === "admin" ? "Lo que ha llegado de fuera (ayuntamientos, fiestas enviadas…) y aún no está revisado." : "Lo que ha llegado de fuera de tus concejos (ayuntamientos, fiestas enviadas…) y aún no has revisado.", value: unreviewed.totalDocs },
   ];
   if (user.role === "admin") links.push(
-    { id: "avisos", href: "/cms/collections/notifications?where[reviewed][equals]=false", title: "Avisos municipales sin revisar", text: "Publicaciones de los ayuntamientos pendientes de revisar.", value: unreviewed?.totalDocs ?? 0 },
     { id: "espacios", href: "/cms/collections/municipal-spaces", title: "Espacios municipales", text: "Estado, contacto e identidad visual (foto, lema, escudo y colores)." },
     { id: "usuarios", href: "/cms/collections/users", title: "Usuarios", text: "Cuentas de la redacción y de los ayuntamientos." },
   );

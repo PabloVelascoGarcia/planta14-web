@@ -260,12 +260,12 @@ try {
   const dashboard = async cookie => (await (await fetch(`${cms}/cms`, as(cookie))).text()).replaceAll('<!-- -->', '');
   const editorHome = await dashboard(editorCookie), adminHome = await dashboard(adminCookie);
   assert.ok(editorHome.includes('data-cms-dashboard="editor"'), 'editor dashboard');
-  for (const link of ['nueva', 'borradores', 'hoy']) assert.ok(editorHome.includes(`data-dashboard-link="${link}"`), `editor sees ${link}`);
-  for (const link of ['avisos', 'espacios', 'usuarios']) assert.ok(!editorHome.includes(`data-dashboard-link="${link}"`), `editor does not see ${link}`);
+  for (const link of ['nueva', 'borradores', 'hoy', 'pendientes']) assert.ok(editorHome.includes(`data-dashboard-link="${link}"`), `editor sees ${link}`);
+  for (const link of ['espacios', 'usuarios']) assert.ok(!editorHome.includes(`data-dashboard-link="${link}"`), `editor does not see ${link}`);
   assert.ok(editorHome.includes(`createdBy][equals]=${editor.id}`), '«Mis borradores» filters by the session user');
   assert.match(editorHome, />1<\/span><strong[^>]*>Mis borradores/, 'one draft of mine');
-  for (const link of ['nueva', 'borradores', 'hoy', 'avisos', 'espacios', 'usuarios']) assert.ok(adminHome.includes(`data-dashboard-link="${link}"`), `admin sees ${link}`);
-  passed('CMS home: shortcuts «Nueva noticia», «Mis borradores» and «Publicadas hoy» with counts; the administration also sees municipal notices, spaces and users');
+  for (const link of ['nueva', 'borradores', 'hoy', 'pendientes', 'espacios', 'usuarios']) assert.ok(adminHome.includes(`data-dashboard-link="${link}"`), `admin sees ${link}`);
+  passed('CMS home: shortcuts «Nueva noticia», «Mis borradores», «Publicadas hoy» and «Pendientes de revisar» with counts; the administration also sees spaces and users');
 
   // --- Formulario de noticia: texto enriquecido, slug automático y fechas con selector.
   const { sql: q } = await import('@payloadcms/db-postgres');
