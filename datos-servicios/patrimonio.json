@@ -1,0 +1,554 @@
+{
+  "version": 1,
+  "consulta": "2026-11-04",
+  "alcance": "Selección documentada de patrimonio destacado; no es el inventario íntegro de bienes ni un catálogo urbanístico.",
+  "criterios": {
+    "descripcion": "Redacción original, máximo 100 palabras por bien.",
+    "coordenadas": "Se conserva el sistema publicado; las referencias a centros o áreas próximas están identificadas. null significa no comprobado.",
+    "proteccion": "BIC e IPCA son figuras diferentes. Una protección no contrastada queda en null, nunca como «sin protección». Las fechas de publicación no se confunden con las de declaración.",
+    "fotos": "Solo enlaces a Wikimedia Commons. Atribuir autor y licencia, enlazar ficha, indicar cambios y respetar CompartirIgual cuando corresponda. No se descargan imágenes al repositorio."
+  },
+  "registros": [
+    {
+      "id": "pat-mieres-bustiello",
+      "nombre": "Poblado minero de Bustiello",
+      "concejo": "Mieres",
+      "localidad": "Bustiello, parroquia de Santa Cruz",
+      "tipo": "conjunto histórico y patrimonio minero",
+      "proteccionLegal": {
+        "figura": "BIC, conjunto histórico",
+        "norma": "Decreto 70/2017, de 25 de octubre",
+        "fuente": "https://www.boe.es/buscar/doc.php?id=BOE-A-2017-14599"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.188344,
+        "longitud": -5.768397,
+        "referencia": "Centro de interpretación; no delimita el conjunto BIC",
+        "fuente": "https://www.turismoasturias.es/en/descubre/cultura/museos-y-espacios-culturales/otros-espacios/centro-de-interpretacion-poblado-minero-de-bustiello"
+      },
+      "descripcion": "El poblado reúne viviendas y equipamientos vinculados a la organización de la vida minera. Su trazado permite reconocer la relación entre trabajo, residencia y servicios. La protección comprende también los cuarteles de Santa Bárbara, el hospital de la Sociedad Hullera Española y la mina Dos Amigos.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-industrial/poblado-minero-de-bustiello/",
+        "https://www.boe.es/buscar/doc.php?id=BOE-A-2017-14599"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/2/23/Bustiello.Panor%C3%A1mica.Anne_Vero_Columbier._Asociaci%C3%B3n_Semeya.jpg",
+        "autor": "Anne Vero Columbier. Asociación Semeya",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 1102161918,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1102161918",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Vista panorámica del poblado minero de Bustiello, en Mieres."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-mieres-santa-barbara",
+      "nombre": "Pozu Santa Bárbara",
+      "concejo": "Mieres",
+      "localidad": "La Rebaldana, Turón",
+      "tipo": "patrimonio minero",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicaciones": [
+          "2010-02-08",
+          "2025-10-07"
+        ],
+        "nota": "El listado oficial recoge una modificación de la declaración en 2025; consultar su delimitación vigente para actuaciones.",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.213727,
+        "longitud": -5.718853,
+        "referencia": "Bien o punto de visita indicado por la fuente",
+        "fuente": "https://www.turismoasturias.es/descubre/cultura/patrimonio-industrial/recursos-y-equipamientos/pozu-santa-barbara"
+      },
+      "descripcion": "El conjunto conserva castilletes y edificios de servicio que explican el funcionamiento de una explotación de carbón. Las instalaciones principales se construyeron entre 1913 y 1920. Es una referencia para conocer el paisaje industrial del valle de Turón.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/descubre/cultura/patrimonio-industrial/recursos-y-equipamientos/pozu-santa-barbara",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pozu_Santa_Barbara_(01).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/86/Pozu_Santa_Barbara_%2801%29.jpg",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 661864172,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=661864172",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Pozo Santa Bárbara, en La Rebaldana, Turón, concejo de Mieres."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-mieres-santa-eulalia-uxo",
+      "nombre": "Iglesia de Santa Eulalia de Uxo",
+      "concejo": "Mieres",
+      "localidad": "Uxo",
+      "tipo": "iglesia románica y neorrománica",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1923-06-27",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": null,
+      "descripcion": "La iglesia conserva elementos de su origen románico integrados en una construcción reformada en 1924. Se encuentra en el núcleo urbano de Uxo, junto a la vía ferroviaria. La portada y la cabecera permiten seguir la continuidad entre el templo medieval y sus transformaciones posteriores.",
+      "fuentesOficiales": [
+        "https://www.mieres.es/turismo/patrimonio/patrimonio-artistico/iglesia-de-santa-eulalia-de-ujo/",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ujo_(Mieres,_Asturias).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Ujo_%28Mieres%2C_Asturias%29.jpg",
+        "autor": "Carmenmoran",
+        "licencia": "CC BY 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 1211400776,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1211400776",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Edificio religioso en Ujo, en el concejo de Mieres."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: coordenadas del edificio pendientes de contrastar en una fuente oficial; no se ha usado la posición de la cámara de la fotografía."
+      ]
+    },
+    {
+      "id": "pat-lena-santa-cristina",
+      "nombre": "Santa Cristina de Lena",
+      "concejo": "Lena",
+      "localidad": "La Vega'l Rei",
+      "tipo": "iglesia prerrománica",
+      "proteccionLegal": {
+        "figura": "BIC, monumento",
+        "norma": "Declaración de monumento de 24 de agosto de 1885; entorno por Decreto 55/2009",
+        "fuente": "https://www.asturias.es/bopa/2009/07/09/2009-16916.pdf",
+        "reconocimiento": "Integrada en el bien Patrimonio Mundial Monumentos de Oviedo y del Reino de Asturias",
+        "fuenteReconocimiento": "https://whc.unesco.org/en/list/312/"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.128594,
+        "longitud": -5.813222,
+        "referencia": "Bien o punto de visita indicado por la fuente",
+        "fuente": "https://www.turismoasturias.es/descubre/cultura/prerromanico/santa-cristina-de-lena"
+      },
+      "descripcion": "Esta iglesia del prerrománico asturiano destaca por la disposición de sus espacios interiores y por la arquería que separa el presbiterio de la nave. Su emplazamiento elevado permite contemplar el valle. No se atribuye una fecha exacta de construcción, que no está documentada.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/descubre/cultura/prerromanico/santa-cristina-de-lena",
+        "https://www.asturias.es/bopa/2009/07/09/2009-16916.pdf",
+        "https://whc.unesco.org/en/list/312/"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santa_Cristina_de_Lena_1.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Santa_Cristina_de_Lena_1.jpg",
+        "autor": "Uviein",
+        "licencia": "CC BY 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 1177685872,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1177685872",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Exterior de la iglesia de Santa Cristina de Lena."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-lena-benduenos",
+      "nombre": "Santuario de Bendueños",
+      "concejo": "Lena",
+      "localidad": "Bendueños, parroquia de Herías/Erías",
+      "tipo": "santuario",
+      "proteccionLegal": {
+        "figura": "BIC, monumento",
+        "norma": "Decreto 53/2019, de 3 de julio",
+        "fuente": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2019-11714"
+      },
+      "coordenadas": {
+        "sistema": "ETRS89 / UTM huso 30",
+        "x": 270550.315,
+        "y": 4774701.7856,
+        "referencia": "Coordenada publicada en el anexo de la declaración",
+        "fuente": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2019-11714"
+      },
+      "descripcion": "El santuario conserva una larga vinculación con las peregrinaciones que cruzan Lena hacia Oviedo. Su interés reúne arquitectura religiosa, decoración interior y relación con el paisaje. La declaración de protección describe tanto el inmueble como su entorno.",
+      "fuentesOficiales": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2019-11714",
+        "https://www.aytolena.es/historico-y-cultural"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santuariu_de_Bendue%C3%B1os_(18).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/94/Santuariu_de_Bendue%C3%B1os_%2818%29.jpg",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "revisionCommons": 793122633,
+        "comprobada": "2026-11-04",
+        "pie": "Santuariu de Bendueños (18)"
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-aller-serrapio",
+      "nombre": "Iglesia de San Vicente de Serrapio",
+      "concejo": "Aller",
+      "localidad": "El Fueyu, Serrapio",
+      "tipo": "iglesia románica",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1983-11-15",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.167114725752,
+        "longitud": -5.6342289326842,
+        "referencia": "Bien o punto de visita indicado por la fuente",
+        "fuente": "https://visitaaller.es/iglesia-de-san-vicente-de-serrapio"
+      },
+      "descripcion": "El templo domina el valle medio de Aller y conserva arquitectura románica, pinturas murales y piezas epigráficas. Entre ellas figura un ara dedicada a Júpiter. La visita permite reconocer las distintas etapas de uso del lugar sin convertir las hipótesis sobre sus orígenes en hechos.",
+      "fuentesOficiales": [
+        "https://visitaaller.es/iglesia-de-san-vicente-de-serrapio",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:San_Vicente_de_Serrapio_(03).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/e/ed/San_Vicente_de_Serrapio_%2803%29.jpg",
+        "autor": "Xuliu Pombar",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "revisionCommons": 735249043,
+        "comprobada": "2026-11-04",
+        "pie": "San Vicente de Serrapio (03)"
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-aller-torre-soto",
+      "nombre": "Torre del castillo de Soto",
+      "concejo": "Aller",
+      "localidad": "Soto",
+      "tipo": "arquitectura defensiva",
+      "proteccionLegal": {
+        "figura": "BIC, castillo de Soto y entorno",
+        "publicacion": "1975-09-02",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.163343733572,
+        "longitud": -5.644321003911,
+        "referencia": "Bien o punto de visita indicado por la fuente",
+        "fuente": "https://visitaaller.com/torre-de-soto"
+      },
+      "descripcion": "Los restos del castillo conservan parte de la torre y del recinto que la rodeaba. La fábrica visible ha sufrido reformas y reconstrucciones. Su posición sobre el valle ayuda a entender el papel territorial de la arquitectura defensiva medieval.",
+      "fuentesOficiales": [
+        "https://visitaaller.com/torre-de-soto",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Torre_de_Soto,_Asturies.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Torre_de_Soto%2C_Asturies.jpg",
+        "autor": "Bernardo Montes",
+        "licencia": "CC BY-SA 2.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/2.0",
+        "revisionCommons": 1220395829,
+        "comprobada": "2026-11-04",
+        "pie": "Restos de la torre del castillo de Soto, Aller."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-aller-miravalles",
+      "nombre": "Santuario de Nuestra Señora de Miravalles",
+      "concejo": "Aller",
+      "localidad": "Miravalles, junto a Soto",
+      "tipo": "santuario barroco",
+      "proteccionLegal": {
+        "figura": "Inventario del Patrimonio Cultural de Asturias",
+        "codigo": "IPCA-EI-02-28",
+        "publicacion": "2018-04-25",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.1598,
+        "longitud": -5.641644,
+        "referencia": "Área recreativa junto al santuario; posición orientativa de visita",
+        "fuente": "https://www.turismoasturias.es/pt/descubre/naturaleza/otros-espacios/areas-recreativas/miravalles"
+      },
+      "descripcion": "El santuario barroco del siglo XVIII se sitúa junto a una zona arbolada próxima a Soto. El entorno forma parte de la celebración local de Miravalles. Su inclusión en el inventario cultural se distingue de una declaración de Bien de Interés Cultural.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/pt/descubre/naturaleza/otros-espacios/areas-recreativas/miravalles",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_IPCA_Asturias.pdf/6e80f0b2-d0a1-f6c5-b71c-db25cb232ce8"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Santuario_Miravalles-frontal_sur.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/82/Santuario_Miravalles-frontal_sur.jpg",
+        "autor": "Adolfobrigido",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "revisionCommons": 1219530210,
+        "comprobada": "2026-11-04",
+        "pie": "Santuario Miravalles-frontal sur"
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-morcin-penerudes",
+      "nombre": "Torre de Peñerudes",
+      "concejo": "Morcín",
+      "localidad": "Campo, parroquia de Peñerúes",
+      "tipo": "arquitectura defensiva",
+      "proteccionLegal": {
+        "figura": "BIC, monumento",
+        "registro": "RI-51-0001636",
+        "norma": "Orden de 16 de marzo de 1965",
+        "fuente": "https://sig.asturias.es/hipervinculos/Bienes_Interes_Cultural/Fichas_BICs/380304001000BIC.pdf"
+      },
+      "coordenadas": {
+        "sistema": "UTM huso 30",
+        "x": 261911.3025,
+        "y": 4797176.047,
+        "datum": null,
+        "fuente": "https://sig.asturias.es/hipervinculos/Bienes_Interes_Cultural/Fichas_BICs/380304001000BIC.pdf"
+      },
+      "descripcion": "La torre medieval se alza sobre un promontorio en la parroquia de Peñerúes. Sus restos son uno de los principales testimonios de arquitectura defensiva de Morcín. La fotografía muestra el entorno de la torre, no una reconstrucción de su aspecto original.",
+      "fuentesOficiales": [
+        "https://www.morcin.es/ast/",
+        "https://sig.asturias.es/hipervinculos/Bienes_Interes_Cultural/Fichas_BICs/380304001000BIC.pdf"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Pe%C3%B1erudes_(Morc%C3%ADn,_Asturias).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/1/11/Pe%C3%B1erudes_%28Morc%C3%ADn%2C_Asturias%29.jpg",
+        "autor": "Carmenmoran",
+        "licencia": "CC BY 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 1059619508,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1059619508",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Paisaje de Peñerudes y su torre, en el concejo de Morcín."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: la ficha ofrece coordenadas UTM en huso 30 sin identificar claramente el datum; se conservan en origen y no se convierten a WGS84."
+      ]
+    },
+    {
+      "id": "pat-morcin-santiago",
+      "nombre": "Ermita de Santiago del Monsacro",
+      "concejo": "Morcín",
+      "localidad": "Monsacro",
+      "tipo": "ermita medieval",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1992-05-08",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.261573,
+        "longitud": -5.890862,
+        "referencia": "Bien o punto de visita indicado por la fuente",
+        "fuente": "https://www.turismoasturias.es/en/descubre/cultura/patrimonio-religioso/ermita-de-santiago-morcin"
+      },
+      "descripcion": "La capilla de arriba destaca por su planta octogonal y su ábside semicircular. Forma, junto a la Magdalena, el conjunto religioso del Monsacro. Las tradiciones sobre reliquias se presentan como leyendas y no como episodios históricos demostrados.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/en/descubre/cultura/patrimonio-religioso/ermita-de-santiago-morcin",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ermita_de_Santiago_(Monsacro).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/8/87/Ermita_de_Santiago_%28Monsacro%29.jpg",
+        "autor": "D.Rovchak",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 1232171255,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1232171255",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Ermita de Santiago, en el Monsacro, Morcín."
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-morcin-magdalena",
+      "nombre": "Ermita de la Magdalena del Monsacro",
+      "concejo": "Morcín",
+      "localidad": "Monsacro",
+      "tipo": "ermita medieval",
+      "proteccionLegal": {
+        "figura": "BIC",
+        "publicacion": "1992-05-08",
+        "fuente": "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      },
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.264808,
+        "longitud": -5.889414,
+        "referencia": "Bien o punto de visita indicado por la fuente",
+        "fuente": "https://www.turismoasturias.es/descubre/cultura/patrimonio-religioso/ermita-de-la-magdalena-morcin"
+      },
+      "descripcion": "La capilla de abajo se integra en los pastos altos del Monsacro. Junto a la ermita de Santiago constituye un hito religioso y paisajístico de Morcín. Su visita requiere una aproximación a pie por terreno de montaña.",
+      "fuentesOficiales": [
+        "https://www.turismoasturias.es/descubre/cultura/patrimonio-religioso/ermita-de-la-magdalena-morcin",
+        "https://www.asturias.es/documents/4911212/4919507/2025-10_BICs-asturias.pdf/db09cb99-c696-9953-57f8-e376a32f97cb"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ermita_de_la_Magdalena_(Monsacro).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Ermita_de_la_Magdalena_%28Monsacro%29.jpg",
+        "autor": "D.Rovchak",
+        "licencia": "CC BY-SA 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "revisionCommons": 1232172852,
+        "comprobada": "2026-11-04",
+        "pie": "Ermita de la Magdalena (Monsacro)"
+      },
+      "estado": "comprobado",
+      "dudas": []
+    },
+    {
+      "id": "pat-riosa-texeo-rioseco",
+      "nombre": "Minas de Texeo y poblado de Rioseco",
+      "concejo": "Riosa",
+      "localidad": "Rioseco y ladera del Aramo",
+      "tipo": "patrimonio minero y arqueológico",
+      "proteccionLegal": null,
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.1861145,
+        "longitud": -5.8856085,
+        "referencia": "Marcador del portal comarcal para la actividad; no es la delimitación del yacimiento ni una indicación de entrada a galerías",
+        "fuente": "https://puertadeasturias.es/actividad/minas-de-texeo-riosa/"
+      },
+      "descripcion": "El conjunto reúne antiguas labores de cobre y restos de las instalaciones industriales de Rioseco. Las viviendas y lavaderos permiten reconocer una etapa reciente de explotación, distinta de las labores prehistóricas de la montaña. La fotografía corresponde a los lavaderos, no al interior de las minas.",
+      "fuentesOficiales": [
+        "https://www.ayuntamientoriosa.com/antiguas-minas-de-cobre-del-aramo-riosa",
+        "https://www.turismoasturias.es/senderismo/rutas/senderistas/minas-texeo",
+        "https://puertadeasturias.es/actividad/minas-de-texeo-riosa/"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:RiosecoRiosaAsturiasLavaderosCobre.jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/0/04/RiosecoRiosaAsturiasLavaderosCobre.jpg",
+        "autor": "Arbeyu",
+        "licencia": "CC BY 2.5",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by/2.5",
+        "revisionCommons": 1243156116,
+        "comprobada": "2026-11-04",
+        "pie": "RiosecoRiosaAsturiasLavaderosCobre"
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: figura concreta de protección legal no contrastada. No equivale a ausencia de protección.",
+        "La ficha municipal contiene una fecha aparentemente errónea (1987 en un pasaje sobre el siglo XIX); no se incorpora al dato."
+      ]
+    },
+    {
+      "id": "pat-ribera-horreos-bueno",
+      "nombre": "Conjunto de hórreos y paneras de Bueño",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Güeñu/Bueño",
+      "tipo": "patrimonio etnográfico",
+      "proteccionLegal": null,
+      "coordenadas": {
+        "sistema": "WGS84",
+        "latitud": 43.317469,
+        "longitud": -5.887102,
+        "referencia": "Centro de interpretación, punto de información del recorrido; los hórreos están repartidos por el pueblo",
+        "fuente": "https://www.turismoasturias.es/en/descubre/cultura/museos-y-espacios-culturales/otros-espacios/centro-de-interpretacion-del-horreo"
+      },
+      "descripcion": "Los hórreos y paneras forman parte de las casas y quintanas de Bueño. Una ruta interpretada explica sus piezas y usos agrícolas, con apoyo del Centro de Interpretación del Hórreo. El interés del conjunto está en la relación entre estas construcciones y la vida del pueblo.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/centro-de-interpretaci%C3%B3n-del-h%C3%B3rreo",
+        "https://www.turismoasturias.es/en/descubre/cultura/museos-y-espacios-culturales/otros-espacios/centro-de-interpretacion-del-horreo"
+      ],
+      "foto": null,
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: pendiente verificar la protección individual y antigüedad de cada hórreo; no se etiqueta todo el pueblo como BIC.",
+        "Foto pendiente: los resultados de Commons comprobados corresponden a Palombar, no a Bueño; se evita una atribución geográfica falsa."
+      ]
+    },
+    {
+      "id": "pat-ribera-san-pedro-ferreros",
+      "nombre": "Iglesia de San Pedro de Ferreros",
+      "concejo": "Ribera de Arriba",
+      "localidad": "Ferreros",
+      "tipo": "iglesia de arquitectura popular",
+      "proteccionLegal": null,
+      "coordenadas": null,
+      "descripcion": "La iglesia parroquial presenta una nave de planta rectangular, cabecera plana y dependencias adosadas. La espadaña de dos huecos y los recercados de piedra contrastan con los muros revocados. El ayuntamiento la incluye entre los elementos de arquitectura popular del concejo.",
+      "fuentesOficiales": [
+        "https://www.ayto-riberadearriba.es/museos-y-patrimonio"
+      ],
+      "foto": {
+        "paginaCommons": "https://commons.wikimedia.org/wiki/File:Ferreros_(Ribera_de_Arriba,_Asturias).jpg",
+        "archivoOriginal": "https://upload.wikimedia.org/wikipedia/commons/9/90/Ferreros_%28Ribera_de_Arriba%2C_Asturias%29.jpg",
+        "autor": "Carmenmoran",
+        "licencia": "CC BY 4.0",
+        "enlaceLicencia": "https://creativecommons.org/licenses/by/4.0",
+        "verificacion": {
+          "fecha": "2026-11-03",
+          "metodo": "API de Commons: imageinfo/extmetadata de la ficha y comprobación de la licencia en el HTML de esa misma página con action=parse.",
+          "revisionPagina": 1251432157,
+          "urlRevision": "https://commons.wikimedia.org/w/index.php?oldid=1251432157",
+          "licenciaEnPagina": true,
+          "inspeccionVisual": "Miniatura revisada: horizontal, sin personas reconocibles en primer plano. Revisar de nuevo el recorte antes de publicar.",
+          "anchoMinimo1600": true
+        },
+        "pie": "Edificio religioso en Ferreros, concejo de Ribera de Arriba."
+      },
+      "estado": "comprobado_con_pendientes",
+      "dudas": [
+        "Dudoso: coordenadas exactas y figura concreta de protección pendientes de fuente oficial."
+      ]
+    }
+  ]
+}
