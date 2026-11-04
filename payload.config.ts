@@ -12,6 +12,7 @@ import { Festivals } from './cms/festivals';
 import { Subscribers } from './cms/subscribers';
 import { BreakingNews } from './cms/breaking-news';
 import { Letters } from './cms/letters';
+import { Suggestions } from './cms/suggestions';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { smtpOptions, testOutboxAdapter } from './cms/email';
 import { withMaintenanceGuard } from './cms/maintenance';
@@ -32,7 +33,7 @@ export default buildConfig({
   // Fechas del CMS (listas, «Última modificación», versiones) como dd/MM/yyyy HH:mm.
   admin: { dateFormat: 'dd/MM/yyyy HH:mm', user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
-  collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Subscribers, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
+  collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Subscribers, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   globals: [BreakingNews],
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({

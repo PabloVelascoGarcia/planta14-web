@@ -227,3 +227,7 @@
 .municipal-text-link{display:inline-flex;align-items:center;min-height:44px;margin-top:12px;padding:0;background:none;border:0;font-size:13px;font-weight:700;color:#a4522d;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .municipal-form-help{font-size:14px;line-height:1.6;color:#5d5348;margin:0 0 4px}
 .aller-theme .municipal-text-link{color:#315c49}
+/* Buzón de sugerencias y bloques de abajo del panel municipal. */
+.municipal-panel-extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:40px;margin-top:48px;padding-top:32px;border-top:1px solid #d8cebf}
+.municipal-check{display:flex!important;flex-direction:row!important;align-items:center;gap:10px;min-height:44px;font-size:14px!important;font-weight:400!important;margin-top:0!important}
+.municipal-check input{width:20px;height:20px;flex:none}

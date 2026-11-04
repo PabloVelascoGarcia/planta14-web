@@ -78,6 +78,7 @@ export interface Config {
     'municipal-spaces': MunicipalSpace;
     'municipal-content': MunicipalContent;
     notifications: Notification;
+    suggestions: Suggestion;
     subscribers: Subscriber;
     'audit-log': AuditLog;
     'public-media-ops': PublicMediaOp;
@@ -99,6 +100,7 @@ export interface Config {
     'municipal-spaces': MunicipalSpacesSelect<false> | MunicipalSpacesSelect<true>;
     'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    suggestions: SuggestionsSelect<false> | SuggestionsSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'public-media-ops': PublicMediaOpsSelect<false> | PublicMediaOpsSelect<true>;
@@ -726,6 +728,25 @@ export interface Notification {
   createdAt: string;
 }
 /**
+ * Sugerencias de los ayuntamientos desde su panel. Las ven la administración y el periodista responsable del concejo.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suggestions".
+ */
+export interface Suggestion {
+  id: number;
+  summary?: string | null;
+  space?: (number | null) | MunicipalSpace;
+  town?: (number | null) | Town;
+  services?:
+    ('publicidad' | 'boletin' | 'estadisticas' | 'cobertura' | 'agenda' | 'formacion' | 'avisos-urgentes')[] | null;
+  text?: string | null;
+  assignedTo?: (number | null) | User;
+  createdBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Altas del boletín (doble confirmación por correo). Solo las «confirmadas» reciben el boletín. Para borrar los datos de alguien, elimina su registro.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -873,6 +894,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'notifications';
         value: number | Notification;
+      } | null)
+    | ({
+        relationTo: 'suggestions';
+        value: number | Suggestion;
       } | null)
     | ({
         relationTo: 'subscribers';
@@ -1286,6 +1311,21 @@ export interface NotificationsSelect<T extends boolean = true> {
   publishedBy?: T;
   emailStatus?: T;
   reviewed?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suggestions_select".
+ */
+export interface SuggestionsSelect<T extends boolean = true> {
+  summary?: T;
+  space?: T;
+  town?: T;
+  services?: T;
+  text?: T;
+  assignedTo?: T;
+  createdBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -6,6 +6,7 @@ import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 import { sections, type MunicipalSpace } from "@/lib/demo/municipal";
 import type { PanelItem, PanelState } from "@/lib/municipal-panel";
 import { MunicipalMasthead } from "./municipal-masthead";
+import { MunicipalSuggestions } from "./municipal-suggestions";
 
 type ContentType = PanelItem["type"];
 const types = sections.filter(s => s.id !== "contact") as { id: ContentType; label: string }[];
@@ -173,6 +174,9 @@ export function MunicipalCmsPanel({ space, state, maintenance = null }: { space:
               </div>
             </article>)}
           </aside>
+        </div>
+        <div className="municipal-panel-extra">
+          <MunicipalSuggestions disabled={Boolean(maintenance)} />
         </div>
       </> : null}
     </div>
