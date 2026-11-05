@@ -15,12 +15,13 @@ export const metadata: Metadata = { title: "Página no encontrada | Planta 14", 
 
 export default async function GlobalNotFound() {
   const navigation = contentSource() === "payload" ? await (await import("@/lib/payload-content")).payloadNavigation().catch(() => ({})) : {};
+  const texts = await (await import("@/lib/site-texts")).getSiteTexts().catch(() => null);
   return (
     <html lang="es">
       <body className="min-h-screen antialiased">
-        <Header {...navigation} demo={contentSource() === "demo"} />
+        <Header {...navigation} demo={contentSource() === "demo"} tagline={texts?.underMasthead} sideNote={texts?.sideNote} />
         <main id="contenido"><NotFoundContent /></main>
-        <Footer cookieSettings={false} />
+        <Footer cookieSettings={false} motto={texts?.footer} whatsapp={texts?.whatsapp ?? null} />
       </body>
     </html>
   );

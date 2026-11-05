@@ -18,6 +18,7 @@ import * as migration_20261104_210500_estadisticas from './20261104_210500_estad
 import * as migration_20261104_215338_util from './20261104_215338_util';
 import * as migration_20261104_221803_util_ocultar from './20261104_221803_util_ocultar';
 import * as migration_20261105_081647_correcciones from './20261105_081647_correcciones';
+import * as migration_20261105_092717_pie from './20261105_092717_pie';
 
 export const migrations = [
   {
@@ -119,5 +120,10 @@ export const migrations = [
     up: migration_20261105_081647_correcciones.up,
     down: migration_20261105_081647_correcciones.down,
     name: '20261105_081647_correcciones',
+  },
+  {
+    up: migration_20261105_092717_pie.up,
+    down: migration_20261105_092717_pie.down,
+    name: '20261105_092717_pie',
   },
 ];

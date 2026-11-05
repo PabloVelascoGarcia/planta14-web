@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getArticles();
   const authors = await getAuthors();
   const spaces = await (await import('@/lib/payload-content')).payloadSpaces();
-  const staticRoutes = ["", "/opinion", "/agenda", "/publicidad", "/contacto"].map((route) => ({
+  const staticRoutes = ["", "/opinion", "/agenda", "/publicidad", "/contacto", "/principios"].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date()
   }));

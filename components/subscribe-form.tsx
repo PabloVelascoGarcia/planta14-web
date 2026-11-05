@@ -42,7 +42,9 @@ export function SubscribeForm({ source, variant = "full", tone = "dark" }: { sou
       {error("email")}
       {variant === "compact" ? <details className="mt-2" open={Boolean(state.errors?.topics)}><summary className="flex min-h-11 cursor-pointer items-center text-[14px] font-bold">Elegir concejos y contenidos</summary>{options}</details> : options}
       <label className="mt-3 flex items-start gap-3 text-[14px] leading-6"><input type="checkbox" name="consent" required defaultChecked={v?.consent} className="mt-1 h-5 w-5 shrink-0" />
-        <span>Acepto recibir el boletín de Planta 14 por correo. Me podré dar de baja con un clic desde cada correo. <Link href="/privacidad" className="py-1 font-bold underline">Política de privacidad</Link>.</span></label>
+        <span>Acepto recibir el boletín de Planta 14 por correo, según la política de privacidad. Me podré dar de baja con un clic desde cada correo.</span></label>
+      {/* Enlace en su propia línea: zona táctil de 44 px también en móvil. */}
+      <Link href="/privacidad" className="ml-8 inline-flex min-h-11 items-center text-[14px] font-bold underline">Política de privacidad</Link>
       {error("consent")}
       {state.message && !state.ok ? <p role="alert" className="mt-2 text-[14px] font-bold">{state.message}</p> : null}
     </form>

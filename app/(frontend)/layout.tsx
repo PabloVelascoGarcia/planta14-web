@@ -52,15 +52,16 @@ export default async function RootLayout({
   // GA4 only exists when configured, and is only loaded in the browser after explicit consent.
   const gaId = analyticsId();
   // «Última hora» (CMS): solo con contenido real; caduca sola (la web se pinta en cada petición).
+  const texts = await (await import('@/lib/site-texts')).getSiteTexts();
   const breaking = contentSource() === 'payload' ? activeBreakingNews(await (await (await import('@/lib/payload-content')).contentClient()).findGlobal({ slug: 'breaking-news', overrideAccess: false, depth: 0 }).catch(() => null)) : null;
   return (
     <html lang="es">
       <body className="min-h-screen antialiased">
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
-        <Header {...navigation} demo={contentSource() === "demo"} />
+        <Header {...navigation} demo={contentSource() === "demo"} tagline={texts.underMasthead} sideNote={texts.sideNote} />
         {breaking ? <BreakingNewsBar text={breaking.text} link={breaking.link} townSlugs={"townSlugs" in navigation ? (navigation.townSlugs as string[]) : undefined} /> : null}
         <main id="contenido">{children}</main>
-        <Footer cookieSettings={Boolean(gaId)} />
+        <Footer cookieSettings={Boolean(gaId)} motto={texts.footer} whatsapp={texts.whatsapp} />
         {gaId ? <CookieConsent gaId={gaId} /> : null}
         {/* Estadísticas propias, sin cookies: solo con contenido real. */}
         {contentSource() === 'payload' ? <StatsBeacon /> : null}

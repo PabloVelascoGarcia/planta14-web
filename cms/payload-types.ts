@@ -123,9 +123,15 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'breaking-news': BreakingNew;
+    mottos: Motto;
+    'footer-settings': FooterSetting;
+    principles: Principle;
   };
   globalsSelect: {
     'breaking-news': BreakingNewsSelect<false> | BreakingNewsSelect<true>;
+    mottos: MottosSelect<false> | MottosSelect<true>;
+    'footer-settings': FooterSettingsSelect<false> | FooterSettingsSelect<true>;
+    principles: PrinciplesSelect<false> | PrinciplesSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1866,6 +1872,73 @@ export interface BreakingNew {
   createdAt?: string | null;
 }
 /**
+ * Los tres lemas de Planta 14 y dónde va cada uno. Sin punto final, como criterio. Solo la administración.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mottos".
+ */
+export interface Motto {
+  id: number;
+  lema1: string;
+  lema2: string;
+  lema3: string;
+  /**
+   * La línea bajo «Planta 14» en todas las páginas.
+   */
+  underMasthead: 'lema1' | 'lema2' | 'lema3';
+  /**
+   * La frase pequeña a la izquierda de «Planta 14» (en escritorio).
+   */
+  sideNote: 'lema1' | 'lema2' | 'lema3';
+  /**
+   * Bajo «Planta 14» en el pie.
+   */
+  footer: 'lema1' | 'lema2' | 'lema3';
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Enlaces opcionales del pie. Solo la administración.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer-settings".
+ */
+export interface FooterSetting {
+  id: number;
+  /**
+   * Vacío: el enlace «WhatsApp» no sale en el pie. Por ejemplo, el canal de Planta 14 (https://whatsapp.com/channel/…) o un número (https://wa.me/34…).
+   */
+  whatsapp?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Texto de /principios (enlazado en el pie). Solo la administración.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "principles".
+ */
+export interface Principle {
+  id: number;
+  /**
+   * Quítalo cuando el texto esté revisado y sea el definitivo.
+   */
+  provisional?: boolean | null;
+  intro?: string | null;
+  sections?:
+    | {
+        heading: string;
+        /**
+         * Párrafos separados por una línea en blanco.
+         */
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "breaking-news_select".
  */
@@ -1874,6 +1947,49 @@ export interface BreakingNewsSelect<T extends boolean = true> {
   text?: T;
   link?: T;
   expiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mottos_select".
+ */
+export interface MottosSelect<T extends boolean = true> {
+  lema1?: T;
+  lema2?: T;
+  lema3?: T;
+  underMasthead?: T;
+  sideNote?: T;
+  footer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer-settings_select".
+ */
+export interface FooterSettingsSelect<T extends boolean = true> {
+  whatsapp?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "principles_select".
+ */
+export interface PrinciplesSelect<T extends boolean = true> {
+  provisional?: T;
+  intro?: T;
+  sections?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
