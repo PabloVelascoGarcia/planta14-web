@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`684c7870909483032c3a6706d919d4a7f2670593`** (`684c787`, rama `desarrollo/planta14-v2-participacion`). Desplegada el **5 de noviembre de 2026 a las 08:48** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `af0924b`, y `deploy.sh` la conserva para poder volver a ella.
+**`36c43c4bde21a96d0216b81d59334d3fbdf98588`** (`36c43c4`, rama `desarrollo/planta14-v2-util-activacion`, que incluye correcciones y pie). Desplegada el **5 de noviembre de 2026 a las 13:10** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `684c787`, y `deploy.sh` la conserva para poder volver a ella.
 
 ## Cuentas de la redacción en /cms
 
@@ -33,6 +33,47 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a 36c43c4: correcciones, pie y «Útil» por concejo activo (5 de noviembre de 2026)
+
+Guías seguidas, en este orden: `docs/INSTALAR-V2-CORRECCIONES.md`, `docs/INSTALAR-V2-PIE.md` y `docs/INSTALAR-V2-UTIL-ACTIVACION.md`. Se hizo un solo despliegue del commit final y después los pasos posteriores de los tres.
+
+Conexiones SSH: tres.
+- Una, solo de lectura, para ver los espacios activos antes de desplegar.
+- Otra para el despliegue y todos los pasos.
+- Otra, solo de lectura, para revisar la página de un concejo inactivo.
+
+No se han tocado el DNS, los buckets, los secretos ni el `.env`. La clave de AEMET ya estaba. No se ha cambiado ningún espacio municipal: se comprobó antes y después del despliegue. **El ensayo no se ha retirado.**
+
+**Espacios municipales:**
+- Activos: Mieres, Lena, Aller y Riosa.
+- Inactivos: Morcín y Ribera de Arriba.
+
+| Paso | Resultado |
+|---|---|
+| Estado previo | `684c787`, `/api/health: ok` y mantenimiento desactivado. `AEMET_API_KEY` con valor en el `.env` (1) |
+| `deploy.sh … 36c43c4…` | **Código 0, «Desplegada».** Construcción de 8 minutos y copia previa `…20261105T121016Z.dump.age` (412K). Migraciones aplicadas: `20261105_081647_correcciones`, `20261105_092717_pie` y `20261105_102329_util_activacion`. El mantenimiento duró 18 segundos. Registro: `/srv/planta14/state/deploy-36c43c4.log` |
+| AEMET en el contenedor | «AEMET_API_KEY definida (303 caracteres)» y «AEMET: 200 exito». El bloque del tiempo sale en `/util` |
+| Servicios (`bcc03e0`) | La comprobación dio 7 por crear, 66 existentes y 40 farmacias sin importar, sin errores. **Creados los 7**: el centro del Hórreo y seis puntos limpios. La repetición crearía 0. **73 en la base, sin duplicados** |
+| Fiestas (`034b853`, catálogo) | La comprobación dio «Formato: catálogo» y 46, de ellas 35 con «Fecha pendiente» y 11 con «Fecha orientativa (2025)». **Creadas las 46 como borrador**, ninguna con fecha de inicio. La repetición diría «Ya existían 46». No salen en `/`, `/fiestas` ni `/agenda`, y la API pública devuelve 0 |
+| Caché de fuentes | Nueve filas, todas sin error y con `attempts` a 0: `bdns:abiertas`, `boe:empleo`, `dgt:pajares` y seis `aemet:…`. **La BDNS ya no da 429.** Tras 15 visitas a `/util`, a los concejos y a las listas, ningún `checked_at` cambió: **las visitas no consultan las fuentes** |
+| Páginas | Responden 200: `/`, `/principios`, `/util`, `/util/subvenciones`, `/util/empleo`, `/fiestas`, `/agenda`, `/aller` y `/aller/util/servicios`, `/patrimonio`, `/rutas`, `/subvenciones` y `/empleo` |
+| Concejo inactivo (Morcín y Ribera de Arriba) | Su página solo tiene la cabecera y «Noticias del concejo». No hay «Fiestas esta semana» porque no hay fiestas confirmadas. Sin «Útil», tarjetas «todo el año», «Historias del Caudal» ni tablón. `/morcin/util/servicios`, `/patrimonio`, `/rutas`, `/subvenciones` y `/empleo` dan **404** |
+
+**Memoria de la compilación**, medida cada segundo durante `deploy.sh`, con 471 muestras. Registro: `/srv/planta14/state/memoria-compilacion-36c43c4.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.071 MiB al empezar; **máximo 2.397 MiB** (+1.326 MiB durante la compilación) |
+| Swap (4.095 MiB en total) | 57 MiB al empezar; **máximo 785 MiB**; 69 MiB al terminar |
+| RSS máximo de los procesos `node` de la compilación (sin la app) | 626 MiB |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:**
+- comprobaciones en el navegador de los tres documentos;
+- revisar y confirmar las fechas de las 46 fiestas antes de publicarlas;
+- textos legales provisionales: normas de las cartas y política de privacidad;
+- vigilar la BDNS por si vuelve el 429.
 
 ### Actualización a 684c787: participación, cartas, estadísticas y «Útil» (5 de noviembre de 2026)
 
