@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`36c43c4bde21a96d0216b81d59334d3fbdf98588`** (`36c43c4`, rama `desarrollo/planta14-v2-util-activacion`, que incluye correcciones y pie). Desplegada el **5 de noviembre de 2026 a las 13:10** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `684c787`, y `deploy.sh` la conserva para poder volver a ella.
+**`a66deb2356e6c3d398aac6b455fa53d4991ce7aa`** (`a66deb2`, rama `desarrollo/planta14-v2-pulido`). Desplegada el **5 de noviembre de 2026 a las 22:53** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `36c43c4`, y `deploy.sh` la conserva para poder volver a ella.
 
 ## Cuentas de la redacción en /cms
 
@@ -33,6 +33,39 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a a66deb2: pulido de «Útil», pie, cabecera y cartas desactivadas (5 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-PULIDO.md` (`ee2d9a1`). Todo se hizo en una sola conexión SSH. No se han tocado el DNS, los buckets, las claves, el `.env` ni el ensayo. **No se han importado fiestas.**
+
+**Espacios municipales:** sin cambios, comprobado antes y después. Activos: Mieres, Lena, Aller y Riosa. Inactivos: Morcín y Ribera de Arriba.
+
+| Paso | Resultado |
+|---|---|
+| Estado previo | `36c43c4` (versión de vuelta atrás), `/api/health: ok` y mantenimiento desactivado |
+| `deploy.sh … a66deb2…` | **Código 0, «Desplegada».** Construcción de 8 minutos y copia previa `…20261105T215248Z.dump.age` (456K). Migración aplicada: `20261105_143455_cartas_activas`. El mantenimiento duró 19 segundos. Registro: `/srv/planta14/state/deploy-a66deb2.log` |
+| Paso 4 del documento | «HTTP 200 sin Grado · AEMET al final». No hizo falta volver atrás |
+| Empleo público | En `/util`, `/util/empleo`, `/aller`, `/aller/util/empleo` y `/lena` solo aparecen ayuntamientos de los seis concejos. Grado no sale |
+| El tiempo en `/util` | Es una franja antes de las cajas, con los 6 concejos y 12 iconos (hoy y mañana). «© AEMET» sale una sola vez. En `/aller` sigue en su caja, también con una atribución |
+| Pie | Columnas: Planta 14, Participa, Proyecto y Boletín, sin «Concejos». «Cuéntanos algo» lleva a `/contacto` |
+| Cartas | `/cartas`, `/cartas/enviar`, `/cartas/confirmar` y `/normas-cartas` dan **404**. No hay enlaces a cartas en la portada, `/opinion`, `/principios`, `/contacto`, `/util` ni el pie, ni cartas en el sitemap. La tarea de las 04:20 sigue en el crontab |
+| Contacto | Muestra la línea con info@planta14.com. El único formulario de la página es el del boletín del pie |
+| Páginas | Responden 200: `/`, `/util`, `/aller`, `/aller/util/servicios`, `/aller/util/empleo`, `/util/empleo`, `/fiestas`, `/principios`, `/contacto`, `/opinion` y `/api/health` |
+
+**Memoria de la compilación**, medida cada segundo, con 502 muestras. Registro: `/srv/planta14/state/memoria-compilacion-a66deb2.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.065 MiB al empezar; **máximo 2.421 MiB** |
+| Swap (4.095 MiB en total) | 61 MiB al empezar; **máximo 687 MiB**; 66 MiB al terminar |
+| RSS máximo de los procesos `node` de la compilación | 638 MiB |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:**
+- las comprobaciones en el navegador de `docs/INSTALAR-V2-PULIDO.md`;
+- la importación del archivo nuevo de fiestas de GPT, en el siguiente encargo;
+- revisar las fechas de las 46 fiestas en borrador;
+- los textos legales provisionales.
 
 ### Actualización a 36c43c4: correcciones, pie y «Útil» por concejo activo (5 de noviembre de 2026)
 
