@@ -113,9 +113,10 @@ try {
   const latest = (await payload.db.drizzle.execute(rawSql`SELECT count(*)::int AS n FROM _municipal_spaces_v v JOIN municipal_spaces s ON s.id = v.parent_id WHERE v.latest AND v.version_identity_title = s.identity_title`)).rows[0].n;
   assert.equal(latest, towns.length, 'the latest version (opened by the CMS) carries the same identity');
   const lenaHTML = await page(`${cms}/lena`);
-  for (const piece of ['aller-theme', 'src="/lena/escudo.svg"', 'Escudo: Manuelfb55 · CC BY-SA 4.0', 'Licencia de la fotografía', 'Lena, todo el año', 'Santa Cristina de Lena']) assert.ok(lenaHTML.includes(piece), `inactive /lena keeps «${piece}»`);
-  assert.ok(!lenaHTML.includes('aller-hero'), 'inactive page without hero, as before');
-  passed('municipal identity in the CMS: the six Caudal spaces get the current values (new installs from the structure load; existing ones from the migration, latest version included); the inactive page keeps crest, colours, credits and stories');
+  for (const piece of ['aller-theme', 'src="/lena/escudo.svg"', 'Escudo: Manuelfb55 · CC BY-SA 4.0', 'Licencia de la fotografía']) assert.ok(lenaHTML.includes(piece), `inactive /lena keeps «${piece}»`);
+  // Concejo no activo: solo la cabecera (con su identidad) y las noticias; sin foto de cabecera ni tarjetas «todo el año».
+  assert.ok(!lenaHTML.includes('aller-hero') && !lenaHTML.includes('Lena, todo el año') && !lenaHTML.includes('aller-discover'), 'inactive page without hero or stories');
+  passed('municipal identity in the CMS: the six Caudal spaces get the current values (new installs from the structure load; existing ones from the migration, latest version included); the inactive page keeps crest, colours and credits (its stories only show with an active space)');
 
   // Campos vacíos → diseño neutro; parciales → solo lo que hay.
   const riosa = await spaceBy('riosa');
@@ -126,7 +127,7 @@ try {
   const morcin = await spaceBy('morcin');
   await payload.update({ collection: 'municipal-spaces', id: morcin.id, overrideAccess: true, data: { identity: { colors: { accent: '#123456', dark: null, soft: null, border: null } } } });
   const partial = await page(`${cms}/morcin`);
-  assert.ok(!partial.includes('aller-theme') && partial.includes('aller-crest') && partial.includes('Morcín, todo el año'), 'incomplete colours → neutral theme, other pieces kept');
+  assert.ok(!partial.includes('aller-theme') && partial.includes('aller-crest') && partial.includes('aller-asset-credit'), 'incomplete colours → neutral theme, other pieces kept');
   passed('empty identity fields keep the page working with the neutral design (no theme, crest placeholder, no credits or stories); partial identity shows only what exists');
 
   // Permisos: solo administración; la cuenta municipal lo ve en solo lectura; validaciones.
