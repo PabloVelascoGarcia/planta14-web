@@ -61,7 +61,7 @@ export default async function RootLayout({
         <Header {...navigation} demo={contentSource() === "demo"} tagline={texts.underMasthead} sideNote={texts.sideNote} />
         {breaking ? <BreakingNewsBar text={breaking.text} link={breaking.link} townSlugs={"townSlugs" in navigation ? (navigation.townSlugs as string[]) : undefined} /> : null}
         <main id="contenido">{children}</main>
-        <Footer cookieSettings={Boolean(gaId)} motto={texts.footer} whatsapp={texts.whatsapp} />
+        <Footer cookieSettings={Boolean(gaId)} motto={texts.footer} whatsapp={texts.whatsapp} letters={texts.letters} />
         {gaId ? <CookieConsent gaId={gaId} /> : null}
         {/* Estadísticas propias, sin cookies: solo con contenido real. */}
         {contentSource() === 'payload' ? <StatsBeacon /> : null}

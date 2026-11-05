@@ -125,7 +125,22 @@ export async function refreshDueSources() {
   running = true;
   try {
     for (const def of utilSources()) if (isDue(await readRow(def.key), def.intervalMs)) await refreshSource(def);
+    await eraseLettersDaily();
   } finally { running = false; }
+}
+/**
+ * Una vez al día (y al arrancar), borra DNI y teléfono de las cartas de hace más de 24 meses, también con las cartas
+ * desactivadas: ya no llegan cartas nuevas que lo disparen y puede quedar algún dato antiguo.
+ */
+async function eraseLettersDaily() {
+  const flags = globalThis as typeof globalThis & { __planta14LettersErasedAt?: number };
+  if (Date.now() - (flags.__planta14LettersErasedAt ?? 0) < 24 * HOUR) return;
+  flags.__planta14LettersErasedAt = Date.now();
+  try {
+    const { payload } = await db();
+    const erased = await (await import("../cms/letters")).eraseExpiredPersonalData(payload);
+    if (erased) console.log(`Cartas: DNI y teléfono borrados en ${erased} (más de 24 meses).`);
+  } catch (error) { console.warn(`Cartas: no se ha podido hacer el borrado diario de DNI y teléfono: ${error instanceof Error ? error.message : error}`); }
 }
 /**
  * Arranca, una sola vez por proceso, el refresco en segundo plano: comprueba cada minuto (UTIL_REFRESH_CHECK_SECONDS)

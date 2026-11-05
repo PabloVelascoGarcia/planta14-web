@@ -3,7 +3,7 @@ import { getPrinciples } from "@/lib/site-texts";
 
 export const metadata: Metadata = {
   title: "Principios editoriales",
-  description: "Cómo trabaja la redacción de Planta 14: independencia, separación entre información, opinión y publicidad, rectificaciones y cartas de los lectores.",
+  description: "Cómo trabaja la redacción de Planta 14: independencia, separación entre información, opinión y publicidad, contenido institucional, rectificaciones y protección de las fuentes.",
   alternates: { canonical: "/principios" },
 };
 

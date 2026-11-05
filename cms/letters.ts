@@ -2,6 +2,7 @@ import { createCipheriv, createDecipheriv, createHmac, hkdfSync, randomBytes } f
 import { APIError, type CollectionAfterChangeHook, type CollectionBeforeChangeHook, type CollectionConfig, type FieldHook, type Payload, type PayloadRequest } from 'payload';
 import { adminOnly, editorialUser, relationID } from './access';
 import { emailAvailable } from './email';
+import { lettersEnabled } from './site-globals';
 
 // Cartas de los lectores. Llegan por /cartas/enviar (confirmación del correo con enlace), entran como pendiente para
 // el periodista responsable del concejo, que las aprueba (y edita) o las rechaza con un motivo que se envía al autor.
@@ -103,8 +104,9 @@ export const Letters: CollectionConfig = {
   labels: { singular: 'Carta', plural: 'Cartas de los lectores' },
   access: {
     // El público solo ve las aprobadas (y solo nombre, apellidos, concejo, título, texto y fecha).
-    read: (args) => editorialUser(args) || { status: { equals: 'aprobada' } },
-    create: () => false, update: editorialUser, delete: adminOnly,
+    // Con «Cartas activas» desactivado solo la administración la ve (la redacción ni siquiera la tiene en el menú).
+    read: async (args) => adminOnly(args) || (await lettersEnabled(args.req.payload) && (editorialUser(args) || { status: { equals: 'aprobada' } })),
+    create: () => false, update: async (args) => adminOnly(args) || (editorialUser(args) && await lettersEnabled(args.req.payload)), delete: adminOnly,
   },
   admin: { useAsTitle: 'summary', defaultColumns: ['summary', 'town', 'status', 'createdAt'],
     description: 'Cartas enviadas desde /cartas/enviar. Al confirmar el correo llegan a «Pendientes de revisar» del periodista del concejo. Apruébala (puedes editar el texto) o recházala con un motivo, que se envía al autor.' },

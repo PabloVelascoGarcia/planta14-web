@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { lettersActive } from "@/lib/letters";
 import { ConfirmLetter } from "./confirm-letter";
 
 export const metadata: Metadata = { title: "Confirma tu carta", robots: { index: false, follow: false } };
 
 export default async function ConfirmarCarta({ searchParams }: { searchParams: Promise<{ t?: string }> }) {
+  if (!(await lettersActive())) notFound();
   const { t } = await searchParams;
   return <div className="container-p14 max-w-3xl py-12">
     <p className="editorial-kicker">Cartas de los lectores</p>

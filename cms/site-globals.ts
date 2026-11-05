@@ -1,4 +1,4 @@
-import type { GlobalConfig } from 'payload';
+import type { GlobalConfig, Payload } from 'payload';
 import { adminOnly, editorialUser } from './access';
 
 // Ajustes globales del sitio, visibles y editables solo por la administración (la web los lee en el servidor).
@@ -77,3 +77,26 @@ export const FiestasSettings: GlobalConfig = {
       admin: { description: 'Una fiesta sale desde estos días antes de empezar hasta su último día. Solo fiestas publicadas y con fecha confirmada.' } },
   ],
 };
+
+/**
+ * «Cartas activas» (solo administración). Desactivado por defecto: /cartas, /cartas/enviar, /cartas/confirmar y
+ * /normas-cartas dan 404, no se aceptan envíos ni confirmaciones, no hay enlaces ni bloques de cartas en la web y la
+ * colección queda oculta para la redacción. El código y las cartas guardadas se conservan; el borrado de DNI y teléfono
+ * a los 24 meses sigue funcionando.
+ */
+export const LettersSettings: GlobalConfig = {
+  slug: 'letters-settings',
+  label: 'Cartas activas',
+  access: { read: () => true, update: adminOnly },
+  admin: { description: 'Cartas de los lectores en la web. Desactivadas: no se ven ni se pueden enviar. Solo la administración.' },
+  hooks: { afterChange: [async ({ doc }) => { const { revalidateSite } = await import('./revalidate'); await revalidateSite(); return doc; }] },
+  fields: [
+    { name: 'active', label: 'Cartas de los lectores activas', type: 'checkbox', defaultValue: false,
+      admin: { description: 'Márcalo para volver a publicar las cartas, el formulario «Envía tu carta» y sus normas.' } },
+  ],
+};
+/** ¿Están activas las cartas? Sin el ajuste guardado, no. */
+export async function lettersEnabled(payload: Payload): Promise<boolean> {
+  const doc = await payload.findGlobal({ slug: 'letters-settings', depth: 0, overrideAccess: true }).catch(() => null);
+  return (doc as { active?: boolean } | null)?.active === true;
+}

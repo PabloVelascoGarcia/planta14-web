@@ -455,6 +455,22 @@ Aparece una barra roja bajo la cabecera de todas las páginas, salvo las de conc
 
 ## 19. Cartas de los lectores
 
+> **Ahora están desactivadas.** Mientras el ajuste **«Cartas activas»** esté sin marcar (es lo normal desde esta versión), las cartas no existen para los lectores:
+> - `/cartas`, `/cartas/enviar`, `/cartas/confirmar` y `/normas-cartas` dan «Página no encontrada» y no están en el sitemap;
+> - no hay enlaces ni bloques de cartas en el pie, la portada, Opinión ni `/principios` (su apartado «Cartas de los lectores» sigue guardado en el CMS, pero no sale);
+> - el formulario no acepta envíos ni confirmaciones, y la redacción no ve la colección en el CMS. La administración sí, por si quedara alguna carta antigua;
+> - en el pie, «Participa» lleva **«Cuéntanos algo»**, que abre Contacto, y Contacto dice que para avisos, historias o sugerencias se escriba a info@planta14.com.
+>
+> El DNI y el teléfono de cartas antiguas se siguen borrando a los 24 meses: una vez al día en el servidor, al abrir el CMS y con `npm run cms:cartas:caducar`.
+>
+> **Para reactivarlas en el futuro** (solo administración):
+> 1. Revisa antes las **normas** (`/normas-cartas`, texto provisional pendiente del abogado) y la **política de privacidad**. El texto de las normas está en `app/(frontend)/normas-cartas/page.tsx` y se cambia con un despliegue.
+> 2. Comprueba que el correo funciona (`SMTP_ENABLED=true`): el autor confirma su carta por correo.
+> 3. En el CMS: Globales → **Cartas activas** → marca **«Cartas de los lectores activas»** y guarda. Se ve al momento, sin desplegar.
+> 4. Comprueba `/cartas/enviar`, el enlace «Envía tu carta» del pie (sale junto a «Cuéntanos algo») y el bloque de Opinión. Para volver a apagarlas, desmarca la casilla.
+
+Con las cartas activas, funcionan así:
+
 **En la web:**
 - **Enviar una carta:** `/cartas/enviar`.
 - **Normas:** `/normas-cartas`. El texto es provisional, pendiente de revisión.

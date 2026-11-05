@@ -16,7 +16,7 @@ export async function run(ctx) {
   const footer = footerOf(home);
   for (const col of ['planta14', 'participa', 'proyecto', 'boletin']) assert.ok(footer.includes(`data-footer-col="${col}"`), `column ${col}`);
   assert.ok(!footer.includes('data-footer-col="concejos"') && !footer.includes('>Concejos<') && !/href="\/(mieres|lena|aller|morcin|riosa|ribera-de-arriba)"/.test(footer), 'no «Concejos» column');
-  for (const [label, href] of [['Envía tu carta', '/cartas/enviar'], ['Envía tu fiesta', '/fiestas/enviar'], ['Principios editoriales', '/principios'], ['Publicidad', '/publicidad'], ['Agenda', '/agenda'], ['Útil', '/util'], ['Contacto', '/contacto']]) assert.ok(footer.includes(`href="${href}"`) && footer.includes(`>${label}</a>`), `${label} → ${href}`);
+  for (const [label, href] of [['Cuéntanos algo', '/contacto'], ['Envía tu fiesta', '/fiestas/enviar'], ['Principios editoriales', '/principios'], ['Publicidad', '/publicidad'], ['Agenda', '/agenda'], ['Útil', '/util'], ['Contacto', '/contacto']]) assert.ok(footer.includes(`href="${href}"`) && footer.includes(`>${label}</a>`), `${label} → ${href}`);
   assert.ok(!footer.includes('data-footer-whatsapp') && !/>Redacción</.test(footer) && !footer.includes('El Caudal, Asturias.'), 'no WhatsApp without a link; no «Redacción» column');
   assert.ok(footer.includes('data-subscribe-form="pie"') && footer.includes('name="email"') && footer.includes('name="towns"') && footer.includes('name="topics"') && footer.includes('name="consent"') && footer.includes('href="/privacidad"'), 'full newsletter form');
   assert.ok(footer.includes('Planta 14, medio editado por ASSA') && footer.includes('href="/aviso-legal"'), 'bottom strip kept');
@@ -41,7 +41,8 @@ export async function run(ctx) {
   // /principios: aviso provisional que se quita desde el CMS (solo administración).
   const principles = await page(`${web}/principios`);
   assert.ok(principles.includes('data-principles-provisional') && principles.includes('Texto provisional pendiente de revisión.'), 'provisional notice');
-  for (const h of ['Independencia editorial', 'Información, opinión y publicidad, separadas', 'Contenido institucional identificado', 'Rectificaciones', 'Cartas de los lectores', 'Protección de las fuentes']) assert.ok(principles.includes(`<h2>${h}</h2>`), h);
+  for (const h of ['Independencia editorial', 'Información, opinión y publicidad, separadas', 'Contenido institucional identificado', 'Rectificaciones', 'Protección de las fuentes']) assert.ok(principles.includes(`<h2>${h}</h2>`), h);
+  assert.ok(!principles.includes('<h2>Cartas de los lectores</h2>'), 'with letters off, no letters section (it stays in the CMS)');
   assert.equal((await setGlobal('principles', { provisional: false }, editorCookie)).status, 403);
   assert.equal((await setGlobal('principles', { provisional: false, intro: 'Entradilla revisada.' })).status, 200);
   const revised = await page(`${web}/principios`);

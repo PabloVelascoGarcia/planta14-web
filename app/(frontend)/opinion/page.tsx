@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArticleListPage } from "@/components/article-list-page";
 import { getArticles } from "@/lib/cms";
 import { LettersBlock } from "@/components/letters-block";
-import { getLetters } from "@/lib/letters";
+import { getLetters, lettersActive } from "@/lib/letters";
 import { contentSource } from "@/lib/content-source";
 
 export const dynamic = "force-dynamic";
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 export default async function OpinionPage() {
   const articles = await getArticles();
 
-  // Cartas de los lectores: solo con contenido real (la demo no tiene cartas).
-  const letters = contentSource() === "payload" ? await getLetters(5) : null;
+  // Cartas de los lectores: solo con contenido real (la demo no tiene cartas) y con el ajuste «Cartas activas».
+  const letters = contentSource() === "payload" && await lettersActive() ? await getLetters(5) : null;
   return (
     <>
       <ArticleListPage

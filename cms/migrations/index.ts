@@ -20,6 +20,7 @@ import * as migration_20261104_221803_util_ocultar from './20261104_221803_util_
 import * as migration_20261105_081647_correcciones from './20261105_081647_correcciones';
 import * as migration_20261105_092717_pie from './20261105_092717_pie';
 import * as migration_20261105_102329_util_activacion from './20261105_102329_util_activacion';
+import * as migration_20261105_143455_cartas_activas from './20261105_143455_cartas_activas';
 
 export const migrations = [
   {
@@ -131,5 +132,10 @@ export const migrations = [
     up: migration_20261105_102329_util_activacion.up,
     down: migration_20261105_102329_util_activacion.down,
     name: '20261105_102329_util_activacion',
+  },
+  {
+    up: migration_20261105_143455_cartas_activas.up,
+    down: migration_20261105_143455_cartas_activas.down,
+    name: '20261105_143455_cartas_activas',
   },
 ];

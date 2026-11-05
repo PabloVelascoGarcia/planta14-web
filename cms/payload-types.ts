@@ -127,6 +127,7 @@ export interface Config {
     'footer-settings': FooterSetting;
     principles: Principle;
     'fiestas-settings': FiestasSetting;
+    'letters-settings': LettersSetting;
   };
   globalsSelect: {
     'breaking-news': BreakingNewsSelect<false> | BreakingNewsSelect<true>;
@@ -134,6 +135,7 @@ export interface Config {
     'footer-settings': FooterSettingsSelect<false> | FooterSettingsSelect<true>;
     principles: PrinciplesSelect<false> | PrinciplesSelect<true>;
     'fiestas-settings': FiestasSettingsSelect<false> | FiestasSettingsSelect<true>;
+    'letters-settings': LettersSettingsSelect<false> | LettersSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1956,6 +1958,21 @@ export interface FiestasSetting {
   createdAt?: string | null;
 }
 /**
+ * Cartas de los lectores en la web. Desactivadas: no se ven ni se pueden enviar. Solo la administración.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "letters-settings".
+ */
+export interface LettersSetting {
+  id: number;
+  /**
+   * Márcalo para volver a publicar las cartas, el formulario «Envía tu carta» y sus normas.
+   */
+  active?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "breaking-news_select".
  */
@@ -2017,6 +2034,16 @@ export interface PrinciplesSelect<T extends boolean = true> {
  */
 export interface FiestasSettingsSelect<T extends boolean = true> {
   daysBefore?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "letters-settings_select".
+ */
+export interface LettersSettingsSelect<T extends boolean = true> {
+  active?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { lettersActive } from "@/lib/letters";
 import Link from "next/link";
 import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = { title: "Normas de las cartas de los lectores", alternates: { canonical: "/normas-cartas" } };
 
 // TEXTO PROVISIONAL: pendiente de revisión por el abogado de Planta 14.
-export default function NormasCartas() {
+export default async function NormasCartas() {
+  if (!(await lettersActive())) notFound();
   return <LegalPage title="Normas de las cartas de los lectores">
     <p data-provisional><strong>Texto provisional, pendiente de revisión jurídica.</strong></p>
     <h2>Quién puede escribir</h2>

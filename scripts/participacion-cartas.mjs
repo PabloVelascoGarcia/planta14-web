@@ -6,6 +6,45 @@ export async function run(ctx) {
   const raw = async id => (await payload.db.findOne({ collection: 'letters', where: { id: { equals: id } } }));
   const body = 'Quiero agradecer a los vecinos de Campomanes el trabajo de estas semanas en la limpieza del río.\n\nEs un ejemplo de lo que podemos hacer juntos.';
 
+  // «Cartas activas» desactivado (por defecto): nada de cartas en la web, sin envíos y oculto para la redacción.
+  const status = async path => (await fetch(`${web}${path}`, { redirect: 'manual' })).status;
+  const json = { 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' };
+  const adminCookie = await signIn(users.admin.email), editorCookie = await signIn(users.editor.email);
+  const setLetters = (active, cookie = adminCookie) => fetch(`${web}/api/cms/globals/letters-settings`, { method: 'POST', headers: { ...json, Cookie: cookie }, body: JSON.stringify({ active }) });
+  const off = async () => {
+    for (const path of ['/cartas', '/cartas/enviar', '/cartas/confirmar?t=x', '/normas-cartas']) assert.equal(await status(path), 404, `letters off: ${path} → 404`);
+    const home = await page(`${web}/`), footer = home.split('data-site-footer')[1] ?? '';
+    assert.ok(!footer.includes('/cartas/enviar') && !footer.includes('Envía tu carta') && /href="\/contacto"[^>]*>Cuéntanos algo</.test(footer), 'footer: «Cuéntanos algo» → /contacto, no «Envía tu carta»');
+    assert.ok(!/href="\/(cartas|normas-cartas)/.test(home) && !(await page(`${web}/opinion`)).includes('data-letters') && !/href="\/(cartas|normas-cartas)/.test(await page(`${web}/opinion`)), 'no letters links or blocks (home, Opinión)');
+    assert.ok(!(await page(`${web}/principios`)).includes('Cartas de los lectores'), '/principios without the letters section');
+    const editorAccess = await (await fetch(`${web}/api/cms/access`, { headers: { ...json, Cookie: editorCookie } })).json();
+    { const read = editorAccess.collections?.letters?.read; assert.ok(!read || read === false || read.permission === false, `hidden in the CMS for the newsroom: ${JSON.stringify(editorAccess.collections?.letters)}`); assert.ok(editorAccess.collections?.articles, 'the access answer is the real one'); }
+    assert.equal((await fetch(`${web}/api/cms/letters`, { headers: { ...json, Cookie: editorCookie } })).status, 403, 'newsroom cannot read letters');
+    assert.equal((await fetch(`${web}/api/cms/letters?where[status][equals]=aprobada`)).status, 403, 'nor the public API');
+    assert.equal((await fetch(`${web}/api/cms/letters`, { headers: { ...json, Cookie: adminCookie } })).status, 200, 'the administration still sees them');
+  };
+  await off();
+  const contact = await page(`${web}/contacto`);
+  assert.ok(contact.includes('data-contact-line') && contact.replaceAll('<!-- -->', '').includes('Para avisos, historias o sugerencias, escríbenos a') && contact.includes('mailto:info@planta14.com') && !contact.split('data-site-footer')[0].includes('<form') , 'Contacto: one line with info@planta14.com, no form');
+  assert.equal((await setLetters(true, editorCookie)).status, 403, 'only the administration turns letters on');
+  // Con la página del formulario abierta, se desactivan: el envío no se acepta.
+  assert.equal((await setLetters(true)).status, 200);
+  {
+    const closedTab = await (await browser.newContext()).newPage();
+    await closedTab.goto(`${web}/cartas/enviar`);
+    assert.equal((await setLetters(false)).status, 200);
+    await closedTab.fill('[name="firstName"]', 'Ana'); await closedTab.fill('[name="lastName"]', 'Pérez Díaz'); await closedTab.fill('[name="dni"]', '12345678Z');
+    await closedTab.fill('[name="phone"]', '600 000 000'); await closedTab.fill('[name="email"]', 'ana-cerrado@example.org'); await closedTab.selectOption('select[name="town"]', 'lena');
+    await closedTab.fill('[name="body"]', body); await closedTab.check('input[name="rules"]'); await closedTab.check('input[name="privacy"]');
+    await closedTab.click('button:has-text("Enviar la carta")');
+    await closedTab.getByText('Ahora mismo Planta 14 no recibe cartas de los lectores.', { exact: false }).waitFor();
+    assert.equal((await letters({ email: { equals: 'ana-cerrado@example.org' } })).length, 0, 'the form does not accept letters while off');
+    await closedTab.context().close();
+  }
+  passed('letters off by default («Cartas activas», administration only): /cartas, /cartas/enviar, /cartas/confirmar and /normas-cartas give 404, no letters links or blocks (footer, home, Opinión, /principios), the form and its actions accept nothing, the collection is hidden from the newsroom and the public API; «Cuéntanos algo» in the footer leads to Contacto, which has one line with info@planta14.com and no form');
+  assert.equal((await setLetters(true)).status, 200, 'turned on again from the CMS');
+  assert.ok((await page(`${web}/`)).split('data-site-footer')[1].includes('href="/cartas/enviar"'), 'on: «Envía tu carta» back in the footer');
+
   // Normas (texto provisional) y formulario.
   assert.ok((await page(`${web}/normas-cartas`)).includes('Texto provisional, pendiente de revisión jurídica.'), 'provisional rules page');
   const context = await browser.newContext();
@@ -76,6 +115,9 @@ export async function run(ctx) {
   assert.ok(!(await page(`${web}/opinion`)).includes('Pedro Gómez'), 'rejected not published');
   passed('letters: DNI and phone visible only to the administration and the concejo journalist (never to other journalists, the public or the API in clear); approve with edits (original text kept) or reject with a reason emailed to the author; «Cartas de los lectores» in Opinión and /cartas with name, surnames, concejo and «Planta 14 no comparte necesariamente las opiniones de los lectores»');
 
+  // Se vuelven a desactivar (como quedan en producción); el borrado a los 24 meses sigue funcionando.
+  assert.equal((await setLetters(false)).status, 200);
+  await off();
   // Borrado automático a los 24 meses.
   const { eraseExpiredPersonalData } = await import('../cms/letters.ts');
   const old = new Date(); old.setMonth(old.getMonth() - 25);
@@ -85,5 +127,5 @@ export async function run(ctx) {
   assert.ok(erased.dniEnc === null && erased.phoneEnc === null && erased.personalDataErasedAt, 'erased after 24 months');
   assert.equal((await read(users.admin.email)).dni, undefined);
   assert.equal(await eraseExpiredPersonalData(payload), 0, 'idempotent');
-  passed('letters: DNI and phone erased automatically after 24 months (on new letters, on opening the CMS and with npm run cms:cartas:caducar); the letter stays published');
+  passed('letters: DNI and phone erased automatically after 24 months (on new letters, on opening the CMS, once a day in the server and with npm run cms:cartas:caducar), also with letters off; the letter stays stored');
 }

@@ -13,7 +13,7 @@ const link = "footer-link hover:text-white";
  * cabecera. En tableta, dos columnas; en móvil, todo apilado con zonas táctiles de 44 px. El lema y el enlace de
  * WhatsApp salen del CMS.
  */
-export function Footer({ cookieSettings = false, motto = "Orgullo de historia. Mirada al futuro", whatsapp = null }: { cookieSettings?: boolean; motto?: string; whatsapp?: string | null }) {
+export function Footer({ cookieSettings = false, motto = "Orgullo de historia. Mirada al futuro", whatsapp = null, letters = false }: { cookieSettings?: boolean; motto?: string; whatsapp?: string | null; letters?: boolean }) {
   // Enlace y aviso de la demo solo con CONTENT_SOURCE=demo.
   const demo = contentSource() === "demo";
   return (
@@ -27,7 +27,9 @@ export function Footer({ cookieSettings = false, motto = "Orgullo de historia. M
         <nav aria-labelledby="pie-participa" className="text-sm" data-footer-col="participa">
             <p id="pie-participa" className={heading}>Participa</p>
             <ul className="footer-list">
-              <li><Link href="/cartas/enviar" className={link}>Envía tu carta</Link></li>
+              <li><Link href="/contacto" className={link}>Cuéntanos algo</Link></li>
+              {/* «Envía tu carta» solo con el ajuste «Cartas activas». */}
+              {letters ? <li><Link href="/cartas/enviar" className={link}>Envía tu carta</Link></li> : null}
               <li><Link href="/fiestas/enviar" className={link}>Envía tu fiesta</Link></li>
               {whatsapp ? <li><a href={whatsapp} className={link} target="_blank" rel="noopener noreferrer" data-footer-whatsapp>WhatsApp</a></li> : null}
             </ul>

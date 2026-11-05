@@ -7,7 +7,12 @@ export type LetterState = { ok: boolean; message?: string; errors?: Record<strin
 const text = (form: FormData, name: string, max: number) => String(form.get(name) ?? "").trim().slice(0, max);
 
 /** «Escribe una carta»: queda sin confirmar hasta que el autor abre el enlace del correo y pulsa el botón. */
+const CLOSED = "Ahora mismo Planta 14 no recibe cartas de los lectores. Para avisos, historias o sugerencias, escríbenos a info@planta14.com.";
+/** Con «Cartas activas» desactivado no se acepta nada (ni envíos ni confirmaciones), aunque alguien llame a la acción. */
+const closed = async () => !(await (await import("@/lib/letters")).lettersActive());
+
 export async function sendLetter(_previous: LetterState, form: FormData): Promise<LetterState> {
+  if (await closed()) return { ok: false, message: CLOSED };
   if (text(form, "web", 200)) return { ok: true, message: "Gracias. Te hemos enviado un correo para confirmar la carta." };
   const [{ emailAvailable }, letters] = await Promise.all([import("@/cms/email"), import("@/cms/letters")]);
   if (!emailAvailable()) return { ok: false, message: "Ahora mismo no podemos recibir cartas por este formulario. Inténtalo más tarde." };
@@ -61,6 +66,7 @@ export type ConfirmLetterState = { ok: boolean; message: string };
 
 /** Botón de /cartas/confirmar: la carta pasa a «pendiente» y se avisa al periodista responsable del concejo. */
 export async function confirmLetter(_previous: ConfirmLetterState, form: FormData): Promise<ConfirmLetterState> {
+  if (await closed()) return { ok: false, message: CLOSED };
   const token = String(form.get("t") ?? "");
   const [{ contentClient }, { hashToken }, { createPendingNotice }] = await Promise.all([import("@/lib/payload-content"), import("@/cms/festivals"), import("@/cms/responsables")]);
   const payload = await contentClient();

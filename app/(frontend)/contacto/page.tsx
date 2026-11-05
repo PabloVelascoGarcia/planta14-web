@@ -19,10 +19,10 @@ export default function ContactPage() {
       <div className="mt-8 grid gap-8 md:grid-cols-[1fr_1fr]">
         <section className="space-y-3 text-coal-800">
           <h2 className="font-serif text-3xl font-black text-coal-950">Una redacción cerca de ti</h2>
-          <p>Noticias, historias locales, convocatorias y propuestas de colaboración.</p>
+          {/* Sin formulario: una línea con el correo. */}
           {contentSource() === "demo"
             ? <p>Los canales de contacto estarán disponibles con el lanzamiento de Planta 14. Esta edición de demostración no recoge mensajes ni datos personales.</p>
-            : <p>Escríbenos a <a href="mailto:info@planta14.com" className="underline">info@planta14.com</a>.</p>}
+            : <p data-contact-line>Para avisos, historias o sugerencias, escríbenos a <a href="mailto:info@planta14.com" className="font-bold underline">info@planta14.com</a>.</p>}
         </section>
       </div>
     </div>
