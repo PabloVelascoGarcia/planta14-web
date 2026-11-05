@@ -30,7 +30,7 @@ export function UtilPlace({ doc, kind, photo }: { doc: Doc; kind: "patrimonio" |
     <div className="util-place-body">
       <div>{kind === "patrimonio" ? photo ? <figure className="util-photo" data-util-photo><img src={photo.url} srcSet={photo.srcSet} sizes="(min-width: 1024px) 700px, calc(100vw - 32px)" alt={photo.alt} decoding="async" />
           <figcaption>Foto: {photo.source ? <a href={photo.source} {...out}>{photo.credit}</a> : photo.credit}</figcaption></figure>
-        : <div className="util-neutral" data-util-neutral aria-hidden="true">{town?.name ?? "Patrimonio"}</div> : null}{String(doc.description ?? "").split(/\n\s*\n/).filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
+        : null : null}{String(doc.description ?? "").split(/\n\s*\n/).filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
         {doc.gpxUrl ? <p data-util-download><a href={doc.gpxUrl} {...out} className="municipal-read-link">{doc.gpxLabel || "Descarga oficial del track"} ({host(doc.gpxUrl)}) ↗</a></p> : null}
         {doc.protectionUrl ? <p><a href={doc.protectionUrl} {...out} className="municipal-read-link">Norma de protección ↗</a></p> : null}
         {doc.sources?.length ? <p className="util-source" data-util-sources>Fuentes: {doc.sources.map((s, i) => <span key={s.url}>{i ? " · " : ""}<a href={s.url} {...out}>{host(s.url)}</a></span>)}. Texto de Planta 14.</p> : null}</div>

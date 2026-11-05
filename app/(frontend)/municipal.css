@@ -242,6 +242,8 @@
 /* Cajas en columnas (tipo «masonry», sin huecos): el orden del HTML se lee de arriba abajo en cada columna. */
 .util-grid{columns:3 300px;column-gap:22px}
 .util-block{border:1px solid #d8cebf;background:#fffdf9;padding:20px;min-width:0;break-inside:avoid;margin:0 0 22px;display:block;width:100%}
+.util-grid.is-placed{columns:auto;position:relative}
+.util-grid.is-placed>.util-block{position:absolute;margin:0}
 .util-more{display:inline-flex;align-items:center;min-height:44px;font-weight:700}
 .util-block>h3{font-family:var(--font-serif,Gelasio,serif);font-size:24px;font-weight:900;line-height:1.1;margin:4px 0 12px}
 .util-block p,.util-block li{font-size:15px;line-height:1.5}
@@ -293,10 +295,8 @@
 .util-photo img{width:100%;height:auto;max-height:520px;object-fit:cover;background:#ece6dc}
 .util-photo figcaption{font-size:13px;color:#6d6155;margin-top:6px}
 .util-photo figcaption a{text-decoration:underline}
-.util-neutral{display:flex;align-items:flex-end;aspect-ratio:16/7;background:linear-gradient(135deg,#efe7da,#e1d5c3);color:#8a6a4a;padding:18px;margin:0 0 20px;font-family:var(--font-serif,Gelasio,serif);font-size:15px;letter-spacing:.08em;text-transform:uppercase}
 .util-places li:has(> .util-thumb){display:grid;grid-template-columns:88px 1fr;gap:12px;align-items:start}
 .util-places .util-thumb{width:88px;height:66px;object-fit:cover;background:#ece6dc}
-.util-places .util-thumb.is-neutral{display:block;background:linear-gradient(135deg,#efe7da,#e1d5c3)}
 .util-review-public{font-size:13px;color:#6d6155}
 /* Páginas «Ver todos» de «Útil»: búsqueda sencilla y lista a una columna, cómoda en el móvil. */
 .util-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:640px}
@@ -307,3 +307,4 @@
 .util-full-list.util-services li,.util-full-list.util-list li{font-size:16px;line-height:1.55}
 .util-hours{white-space:pre-line}
 .municipal-columns.is-single{grid-template-columns:minmax(0,1fr)}
+.util-source-end{border-top:1px solid #e7ddcf;padding-top:10px;margin-top:6px}

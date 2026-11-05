@@ -21,7 +21,11 @@ export async function run(ctx) {
   assert.equal((full.match(/<li data-util-service/g) ?? []).length, services, 'the full list');
   assert.ok(full.includes('data-util-filter') && full.includes('href="/lena/util/servicios?tipo=deportes"') && /<form[^>]*action="\/lena\/util\/servicios" method="get"/.test(full), `simple filters: ${full.slice(full.indexOf('<form'), full.indexOf('<form') + 900)}`);
   assert.equal(((await page(`${web}/lena/util/servicios?tipo=deportes`)).match(/<li data-util-service/g) ?? []).length, 3, 'filter by type');
-  assert.equal(((await page(`${web}/lena/util/servicios?q=prueba%207`)).match(/<li data-util-service/g) ?? []).length, 1, 'search');
+  const searched = await page(`${web}/lena/util/servicios?q=prueba%207`);
+  assert.equal((searched.match(/<li data-util-service/g) ?? []).length, 1, 'search');
+  assert.ok(searched.replaceAll('<!-- -->', '').includes(`<strong>1 de ${services}</strong> en Lena`) && /<a[^>]*data-util-clear[^>]*href="\/lena\/util\/servicios"/.test(searched), `with a search: «1 de n en Lena» and a link to remove it: ${searched.slice(searched.indexOf('data-util-count') - 20, searched.indexOf('data-util-count') + 500)}`);
+  assert.ok((await page(`${web}/lena/util/servicios?tipo=deportes`)).replaceAll('<!-- -->', '').includes(`<strong>3 de ${services}</strong>`), 'with a filter too');
+  assert.ok(full.replaceAll('<!-- -->', '').includes(`${services} elementos en Lena`) && !full.includes('data-util-clear'), 'without a filter: the total');
   assert.ok((await page(`${web}/lena/util/patrimonio`)).includes('Santa Cristina de Lena') && (await page(`${web}/lena/util/rutas`)).includes('Ruta de ejemplo en Aller'), 'heritage and routes, also shared routes');
   for (const type of ['subvenciones', 'empleo']) assert.equal(await status(`/lena/util/${type}`), 200, type);
   assert.equal(await status('/lena/util/otra-cosa'), 404, 'unknown type');
@@ -56,21 +60,31 @@ export async function run(ctx) {
   assert.ok(again.includes('data-municipal-active="true"') && again.includes('data-municipal-util') && (await status('/aller/util/rutas')) === 200 && (await page(`${web}/util`)).includes('data-util="concejo-aller"'), 'activated: visible at once, without redeploying');
   passed('activation per concejo: an inactive concejo shows only its masthead, Planta 14 news and fiestas (no Útil, notices, agenda, board or other services); its /[concejo]/util pages and cards give 404 and stay out of the sitemap; /util always shows the regional part and one block per active concejo; activating or deactivating in the CMS shows at once; imported data stays in the CMS');
 
-  // 4. Maquetación: /util y los seis concejos a 1440, 1024, 768 y 390 px, en columnas sin huecos y sin desbordar.
+  // 4. Maquetación: /util y los seis concejos a 2133 (el caso de /aller), 1440, 1024, 768 y 390 px. Cada caja va a la
+  // columna más corta: columnas igualadas, sin huecos, orden de lectura (cada caja empieza a la altura de la anterior o
+  // más abajo) y sin desbordar.
+  const widths = [2133, 1440, 1024, 768, 390];
   const measures = [];
-  for (const width of [1440, 1024, 768, 390]) {
+  for (const width of widths) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 1, isMobile: width < 500, hasTouch: width < 500 });
     const tab = await context.newPage();
     for (const path of ['/util', ...ctx.SIX.map(t => `/${t}`)]) {
-      await tab.goto(`${web}${path}`, { waitUntil: 'domcontentloaded' });
+      await tab.goto(`${web}${path}`, { waitUntil: 'networkidle' });
+      await tab.waitForFunction(() => document.querySelector('[data-util-grid]')?.dataset.utilColumns);
+      await tab.evaluate(() => document.fonts.ready);
+      await tab.waitForTimeout(150);
       const r = await tab.evaluate(() => {
         const grid = document.querySelector('[data-util-grid]');
-        const blocks = [...grid.querySelectorAll(':scope > .util-block')].map(b => { const r = b.getBoundingClientRect(); return { x: Math.round(r.left), top: Math.round(r.top), bottom: Math.round(r.bottom) }; });
+        const blocks = [...grid.querySelectorAll(':scope > .util-block')].map(b => { const r = b.getBoundingClientRect(); return { x: Math.round(r.left), top: Math.round(r.top), bottom: Math.round(r.bottom), h: Math.round(r.height) }; });
         const columns = [...new Set(blocks.map(b => b.x))].sort((a, b) => a - b);
+        const byColumn = columns.map(x => blocks.filter(b => b.x === x).sort((a, b) => a.top - b.top));
         // Hueco vertical entre cajas seguidas de la misma columna (debe ser el margen, 22 px).
-        const gaps = columns.flatMap(x => { const col = blocks.filter(b => b.x === x).sort((a, b) => a.top - b.top); return col.slice(1).map((b, i) => b.top - col[i].bottom); });
-        const order = blocks.map((b, i) => i === 0 || b.x > blocks[i - 1].x || (b.x === blocks[i - 1].x && b.top > blocks[i - 1].top));
-        return { columns: columns.length, maxGap: Math.max(0, ...gaps), order: order.every(Boolean), overflow: document.scrollingElement.scrollWidth > window.innerWidth + 1, blocks: blocks.length,
+        const gaps = byColumn.flatMap(col => col.slice(1).map((b, i) => b.top - col[i].bottom));
+        const ends = byColumn.map(col => col[col.length - 1].bottom);
+        const longest = byColumn[ends.indexOf(Math.max(...ends))];
+        return { columns: columns.length, maxGap: Math.max(0, ...gaps), order: blocks.every((b, i) => i === 0 || b.top >= blocks[i - 1].top - 1),
+          imbalance: Math.max(...ends) - Math.min(...ends), lastHeight: longest[longest.length - 1].h,
+          overflow: document.scrollingElement.scrollWidth > window.innerWidth + 1, blocks: blocks.length,
           wide: [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > window.innerWidth + 1).slice(-3).map(e => `${e.tagName}.${e.className} ${Math.round(e.getBoundingClientRect().right)}: ${(e.textContent || '').slice(0, 60)}`) };
       });
       measures.push({ width, path, ...r });
@@ -80,12 +94,16 @@ export async function run(ctx) {
   for (const m of measures) {
     assert.ok(!m.overflow, `${m.path} at ${m.width}: no horizontal overflow ${JSON.stringify(m.wide)}`);
     assert.ok(m.maxGap <= 24, `${m.path} at ${m.width}: no gaps between boxes (${m.maxGap} px)`);
-    assert.ok(m.order, `${m.path} at ${m.width}: reading order kept (top to bottom, column by column)`);
+    assert.ok(m.order, `${m.path} at ${m.width}: reading order kept (each box starts at or below the previous one)`);
+    // Columnas igualadas: la diferencia entre la columna más larga y la más corta no pasa de su última caja (si pasara,
+    // esa caja cabría mejor en la corta).
+    if (m.columns > 1) assert.ok(m.imbalance <= m.lastHeight + 2, `${m.path} at ${m.width}: balanced columns (difference ${m.imbalance} px, last box ${m.lastHeight} px)`);
     if (m.width === 390) assert.equal(m.columns, 1, `${m.path} on mobile: one column`);
     if (m.width >= 1024 && m.blocks >= 3) assert.ok(m.columns >= 2, `${m.path} at ${m.width}: several columns (${m.columns})`);
   }
-  console.log(`MEDIDA: columnas de «Útil» por ancho: ${[1440, 1024, 768, 390].map(w => `${w} px → ${[...new Set(measures.filter(m => m.width === w).map(m => m.columns))].join('/')}`).join(', ')}`);
-  passed('Útil layout: boxes in columns without gaps (CSS columns, reading order kept) on /util and the six concejos at 1440, 1024, 768 and 390 px, one column on mobile, no horizontal overflow');
+  const allerWide = measures.find(m => m.path === '/aller' && m.width === 2133);
+  console.log(`MEDIDA: columnas de «Útil» por ancho: ${widths.map(w => `${w} px → ${[...new Set(measures.filter(m => m.width === w).map(m => m.columns))].join('/')}`).join(', ')}; /aller a 2133 px: diferencia entre columnas ${allerWide.imbalance} px; máxima en todas las páginas y anchos: ${Math.max(...measures.filter(m => m.columns > 1).map(m => m.imbalance))} px`);
+  passed('Útil layout: each box goes to the shortest column (balanced columns, no gaps, reading order kept; the HTML order is unchanged) on /util and the six concejos at 2133, 1440, 1024, 768 and 390 px, one column on mobile, no horizontal overflow');
 
   for (const doc of extra) await payload.delete({ collection: 'municipal-services', id: doc.id, overrideAccess: true });
   await ctx.activate(['lena', 'mieres']);

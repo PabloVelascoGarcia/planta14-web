@@ -59,7 +59,9 @@ export async function UtilListPage({ town, type, params }: { town: string | null
     <header className="max-w-3xl border-b-2 border-coal-950 pb-5">
       <p className="editorial-kicker"><Link href={town ? `/${town}#util` : "/util"} className="inline-flex min-h-11 items-center">Útil · {where}</Link></p>
       <h1 className="mt-1 font-serif text-4xl font-black leading-none sm:text-5xl">{UTIL_LIST_TYPES[type]}</h1>
-      <p className="mt-3 text-coal-800">{total === 1 ? "1 elemento" : `${total} elementos`} en {where}.</p>
+      {/* Con búsqueda o filtro: «2 de 18 en Aller» y un enlace para quitarlo. */}
+      {q || filter ? <p className="mt-3 text-coal-800" data-util-count><strong>{list.length} de {total}</strong> en {where}. <Link href={base} className="ml-1 inline-flex min-h-11 items-center font-bold text-copper underline" data-util-clear>Quitar el filtro</Link></p>
+        : <p className="mt-3 text-coal-800" data-util-count>{total === 1 ? "1 elemento" : `${total} elementos`} en {where}.</p>}
     </header>
     <form method="get" action={base} className="util-filter mt-6" role="search" aria-label={`Buscar en ${UTIL_LIST_TYPES[type].toLowerCase()}`}>
       <label htmlFor="util-q">Buscar</label>

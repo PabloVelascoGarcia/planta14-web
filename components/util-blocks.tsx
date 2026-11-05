@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { UTIL_BOX_LIMIT, UTIL_LINKS, type UtilData } from "@/lib/util";
 import { townName, UTIL_TOWNS, type Cached } from "@/lib/util-sources";
 import { formatDate } from "@/lib/utils";
+import { UtilGrid } from "./util-grid";
 
 // Bloques de la sección «Útil» (servidor). Cada dato automático (DGT, AEMET, BDNS, BOE) lleva la atribución que piden
 // sus condiciones y la hora de consulta; si una fuente falla se enseña el último dato bueno con su hora, o un aviso, y el
@@ -31,15 +32,35 @@ function Official({ href, children }: { href: string; children: ReactNode }) {
   return <p className="util-official" data-util-link><a href={href} {...out} className="municipal-read-link">{children} ↗</a></p>;
 }
 
+/** «AAAA-MM-DDTHH:MM…» de AEMET (hora peninsular) → «DD/MM/AAAA HH:MM». */
+const aemetTime = (iso: string) => iso.replace(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}).*$/, "$3/$2/$1 $4:$5");
+/** Una hora o, si los concejos difieren, el intervalo («entre … y …»). */
+function span(values: string[], format: (v: string) => string | null) {
+  const sorted = [...new Set(values)].sort();
+  if (!sorted.length) return null;
+  return sorted.length === 1 ? format(sorted[0]) : `entre ${format(sorted[0])} y ${format(sorted[sorted.length - 1])}`;
+}
+/**
+ * Atribución de AEMET, una sola vez al final del bloque del tiempo, como piden sus condiciones de reutilización: autoría
+ * («© AEMET»), «Información elaborada por la Agencia Estatal de Meteorología» con enlace, y la fecha de elaboración y la
+ * de consulta de los datos.
+ */
+function AemetSource({ forecasts }: { forecasts: Cached<{ issued: string | null }>[] }) {
+  const issued = span(forecasts.flatMap(f => f.data?.issued ? [f.data.issued] : []), aemetTime);
+  const checked = span(forecasts.flatMap(f => f.fetchedAt ? [f.fetchedAt] : []), time);
+  return <p className="util-source util-source-end" data-util-source data-util-aemet>© AEMET. <a href={UTIL_LINKS.aemet} {...out}>Información elaborada por la Agencia Estatal de Meteorología</a>
+    {issued ? <> · Elaborada: {issued} (hora peninsular)</> : null}{checked ? <> · Consultado: {checked}</> : null}.</p>;
+}
+
 /** «Ver todos (n)»: página propia con la lista completa de ese tipo y concejo. */
 function More({ href, count, label = "Ver todos" }: { href: string; count: number; label?: string }) {
   return <Link href={href} className="municipal-read-link util-more" data-util-more>{label} ({count}) ↗</Link>;
 }
 const isTown = (scope: string) => UTIL_TOWNS.some(t => t.slug === scope);
 
-/** Miniatura de la foto o, sin foto, el diseño neutro. */
+/** Miniatura de la foto. Sin foto no se reserva hueco: el elemento va solo con texto, a todo el ancho. */
 export function Thumb({ photo }: { photo: UtilData["heritage"][number]["photo"] }) {
-  return photo ? <img className="util-thumb" src={photo.url} alt="" loading="lazy" decoding="async" /> : <span className="util-thumb is-neutral" aria-hidden="true" data-util-neutral />;
+  return photo ? <img className="util-thumb" src={photo.url} alt="" loading="lazy" decoding="async" width={88} height={66} /> : null;
 }
 
 type Service = UtilData["services"][number]; type Place = UtilData["heritage"][number];
@@ -79,7 +100,7 @@ export function UtilBlocks({ data }: { data: UtilData }) {
   // En /util, las ayudas y el empleo de los ayuntamientos van en el bloque de cada concejo activo.
   const grants = data.grants.data?.filter(g => town || !isTown(g.scope)) ?? null;
   const jobs = data.jobs.data?.filter(j => town || !isTown(j.scope)) ?? null;
-  return <div className="util-grid" data-util-grid>
+  return <UtilGrid>
     {show("invierno") && winter ? <Block id="invierno" title="Puertos y estaciones de esquí" kicker="Invierno">
       {lenaWinter ? <div className="util-card" data-util-pajares>
         <h4>Puerto de Pajares (N-630)</h4>
@@ -100,9 +121,9 @@ export function UtilBlocks({ data }: { data: UtilData }) {
         {!town ? <h4>{townName(slug)}</h4> : null}
         {forecast.data ? <ol>{forecast.data.days.slice(0, town ? 4 : 2).map(d => <li key={d.day}><strong>{weekday(d.day)}</strong><span>{d.sky}</span>
           <span>{d.max ?? "–"}° / {d.min ?? "–"}°</span>{d.rain !== null ? <span>Lluvia {d.rain}%</span> : null}{d.snowLevel ? <span>Cota de nieve {d.snowLevel} m</span> : null}</li>)}</ol> : <Unavailable cached={forecast} what="la predicción" />}
-        <p className="util-source" data-util-source>© AEMET. <a href={UTIL_LINKS.aemet} {...out}>Información elaborada por la Agencia Estatal de Meteorología</a>
-          {forecast.data?.issued ? <> · Elaborada: {forecast.data.issued.replace(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}).*$/, "$3/$2/$1 $4:$5")} (hora peninsular)</> : null}<Checked at={forecast.fetchedAt} /><Stale error={forecast.data ? forecast.error : null} /></p>
+        {forecast.data && forecast.error ? <p className="util-source"><Stale error={forecast.error} /></p> : null}
       </div>)}
+      <AemetSource forecasts={forecasts.map(f => f.forecast)} />
     </Block> : null}
 
     {show("farmacias") ? <Block id="farmacias" title="Farmacias de guardia" kicker="Salud">
@@ -149,7 +170,7 @@ export function UtilBlocks({ data }: { data: UtilData }) {
 
     {!town ? data.activeTowns.length ? UTIL_TOWNS.filter(t => data.activeTowns.includes(t.slug)).map(t => <TownCard key={t.slug} data={data} slug={t.slug} name={t.name} />)
       : null : null}
-  </div>;
+  </UtilGrid>;
 }
 
 /** En /util, un bloque por cada concejo con el espacio municipal activo, con lo que ese ayuntamiento publica. */

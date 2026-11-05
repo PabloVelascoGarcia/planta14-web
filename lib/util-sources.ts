@@ -258,8 +258,24 @@ const tidy = (text: string) => {
   const letters = t.replace(/[^A-Za-zÁÉÍÓÚÑÜáéíóúñü]/g, "");
   return letters && letters.replace(/[^A-ZÁÉÍÓÚÑÜ]/g, "").length / letters.length > 0.7 ? t.charAt(0) + t.slice(1).toLowerCase() : t;
 };
+/**
+ * Título de una convocatoria. La BDNS guarda el título oficial cortado a 255 caracteres (también en el detalle) y a
+ * veces empieza en minúscula («convocan subvenciones…»): primera letra en mayúscula y, si es largo o viene cortado,
+ * corte en un límite de palabra con puntos suspensivos.
+ */
+export function grantTitle(raw: string, max = 180): string {
+  let t = tidy(raw).replace(/[\s.,;:]+$/, "");
+  const truncated = raw.trim().length >= 250 && !/[.)»"]$/.test(raw.trim());
+  if (t.length > max || truncated) {
+    let cut = t.length > max ? t.slice(0, max + 1).replace(/\s+\S*$/, "") : t.replace(/\s+\S*$/, "");
+    // Sin terminar en «de», «y», «del»… ni en signos de puntuación.
+    while (/\s(?:a|al|con|de|del|e|el|en|la|las|lo|los|o|para|por|que|se|su|sus|u|un|una|y)$/i.test(cut)) cut = cut.replace(/\s+\S+$/, "");
+    t = `${cut.replace(/[\s.,;:(«"-]+$/, "")}…`;
+  }
+  return t.charAt(0).toLocaleUpperCase("es") + t.slice(1);
+}
 type BdnsItem = { numeroConvocatoria: string; descripcion: string; nivel1: string; nivel2: string; nivel3: string; fechaRecepcion: string };
-type BdnsDetail = { abierto?: boolean; tipoConvocatoria?: string; fechaFinSolicitud?: string | null; textFin?: string | null; sedeElectronica?: string | null };
+type BdnsDetail = { descripcion?: string | null; abierto?: boolean; tipoConvocatoria?: string; fechaFinSolicitud?: string | null; textFin?: string | null; sedeElectronica?: string | null };
 /** Ámbito: Estado, Principado, IDEPA o uno de los seis ayuntamientos; null si no interesa (otros ayuntamientos, nominativas, convenios…). */
 export function bdnsScope(item: Pick<BdnsItem, "nivel1" | "nivel2" | "nivel3" | "descripcion">): GrantScope | null {
   if (/nominativa|convenio|propuesta (de )?resoluci|adenda/i.test(item.descripcion)) return null;
@@ -283,7 +299,9 @@ type BdnsCache = { grants: Grant[]; details: Record<string, { detail: BdnsDetail
 /** Lo que leen las páginas: solo la lista (las cachés antiguas eran directamente la lista). */
 export const openGrants = async (): Promise<Cached<Grant[]>> => {
   const cached = await readCache<BdnsCache | Grant[]>("bdns:abiertas");
-  return { ...cached, data: Array.isArray(cached.data) ? cached.data : cached.data?.grants ?? null };
+  const grants = Array.isArray(cached.data) ? cached.data : cached.data?.grants ?? null;
+  // Los títulos de la caché anterior se arreglan también al leer (grantTitle no cambia un título ya arreglado).
+  return { ...cached, data: grants?.map(g => ({ ...g, title: grantTitle(g.title) })) ?? null };
 };
 const pause = (ms: number) => new Promise(r => setTimeout(r, ms));
 /**
@@ -313,12 +331,12 @@ async function fetchGrants(previous: unknown): Promise<BdnsCache> {
       await pause(gap);
       detail = await (await fetchSource(`${BDNS_BASE()}/api/convocatorias?vpd=GE&numConv=${encodeURIComponent(item.numeroConvocatoria)}`)).json() as BdnsDetail;
     }
-    details[item.numeroConvocatoria] = { detail: { abierto: detail.abierto, tipoConvocatoria: detail.tipoConvocatoria, fechaFinSolicitud: detail.fechaFinSolicitud, textFin: detail.textFin, sedeElectronica: detail.sedeElectronica }, at: reuse && detail === reuse.detail ? reuse.at : new Date().toISOString() };
+    details[item.numeroConvocatoria] = { detail: { descripcion: detail.descripcion ?? null, abierto: detail.abierto, tipoConvocatoria: detail.tipoConvocatoria, fechaFinSolicitud: detail.fechaFinSolicitud, textFin: detail.textFin, sedeElectronica: detail.sedeElectronica }, at: reuse && detail === reuse.detail ? reuse.at : new Date().toISOString() };
     {
       if (/directa/i.test(detail.tipoConvocatoria ?? "")) continue;
       const end = detail.fechaFinSolicitud ? String(detail.fechaFinSolicitud).slice(0, 10) : null;
       if (end ? end < today : detail.abierto !== true) continue;
-      grants.push({ id: item.numeroConvocatoria, title: tidy(item.descripcion), organ: tidy(item.nivel3 || item.nivel2), scope, end, endText: detail.textFin ? tidy(detail.textFin) : null,
+      grants.push({ id: item.numeroConvocatoria, title: grantTitle(detail.descripcion || item.descripcion), organ: tidy(item.nivel3 || item.nivel2), scope, end, endText: detail.textFin ? tidy(detail.textFin) : null,
         url: `https://www.infosubvenciones.es/bdnstrans/GE/es/convocatorias/${encodeURIComponent(item.numeroConvocatoria)}`,
         office: detail.sedeElectronica && /^https?:\/\//.test(detail.sedeElectronica) ? detail.sedeElectronica : null });
     }
@@ -330,12 +348,21 @@ async function fetchGrants(previous: unknown): Promise<BdnsCache> {
 
 export type Job = { id: string; title: string; organ: string; scope: string; date: string; url: string };
 const BOE_URL = () => process.env.UTIL_BOE_RSS_URL || "https://www.boe.es/rss/boe.php?s=2B";
-const LOCAL_ORGAN = new RegExp(`Ayuntamiento de (${UTIL_TOWNS.map(t => t.name).join("|")})\\b`, "i");
-/** Convocatorias de los seis ayuntamientos, del Principado o de la Universidad de Oviedo. */
+/** Organismo local que firma el anuncio: «…, del Ayuntamiento de Grado (Asturias), …» → «Grado». */
+const LOCAL_ORGAN = /\b(?:del?|la)\s+(?:Ayuntamiento|Concejo)\s+de\s+([^,(;]+?)\s*(?:\(|,|;|$)/i;
+/**
+ * Convocatorias de los seis ayuntamientos (cada una solo al suyo), del Principado o de la Universidad de Oviedo. Un
+ * anuncio municipal entra solo si lo firma expresamente uno de los seis ayuntamientos; nunca por coincidencias como
+ * «(Asturias)», que el BOE pone a todos los ayuntamientos asturianos, ni por el nombre de una calle o un lugar.
+ */
 export function boeScope(title: string, categories: string[]): string | null {
-  const local = title.match(LOCAL_ORGAN);
-  if (local) return townBySpelling(local[1]);
-  if (categories.some(c => /PRINCIPADO DE ASTURIAS/i.test(c)) || /Universidad de Oviedo|\(Asturias\)|Principado de Asturias/i.test(title)) return "asturias";
+  // Administración local: solo si el ayuntamiento que firma es uno de los seis, y solo para ese concejo.
+  if (categories.some(c => /ADMINISTRACI[OÓ]N LOCAL/i.test(c))) {
+    const organ = title.match(LOCAL_ORGAN)?.[1];
+    return organ ? townBySpelling(organ) : null;
+  }
+  if (categories.some(c => /PRINCIPADO DE ASTURIAS/i.test(c))) return "asturias";
+  if (categories.some(c => /UNIVERSIDAD/i.test(c)) && /\bUniversidad de Oviedo\b/i.test(title)) return "asturias";
   return null;
 }
 export function parseBoe(xml: string): Job[] {
@@ -352,7 +379,12 @@ export function parseBoe(xml: string): Job[] {
   return jobs;
 }
 /** El RSS solo trae el BOE del día: se acumulan las convocatorias de los últimos 45 días. */
-export const publicJobs = () => readCache<Job[]>("boe:empleo");
+/** Vuelve a clasificar con el filtro actual lo guardado antes (p. ej., el anuncio de Grado que entró como «asturias»). */
+const rescope = (jobs: Job[]) => jobs.flatMap(j => { const scope = boeScope(j.title, ["Oposiciones y concursos", j.organ]); return scope ? [{ ...j, scope }] : []; });
+export const publicJobs = async (): Promise<Cached<Job[]>> => {
+  const cached = await readCache<Job[]>("boe:empleo");
+  return { ...cached, data: cached.data ? rescope(cached.data) : null };
+};
 async function fetchJobs(previous: Job[] | null): Promise<Job[]> {
   const response = await fetchSource(BOE_URL());
   const bytes = new Uint8Array(await response.arrayBuffer());
@@ -360,6 +392,6 @@ async function fetchJobs(previous: Job[] | null): Promise<Job[]> {
   const xml = new TextDecoder(/encoding="utf-8"/i.test(head) ? "utf-8" : "latin1").decode(bytes);
   if (!/<rss\b/.test(xml)) throw new Error("BOE: la respuesta no es un RSS");
   const limit = new Date(Date.now() - 45 * 24 * HOUR).toISOString().slice(0, 10);
-  const merged = new Map([...(previous ?? []), ...parseBoe(xml)].filter(j => j.date >= limit).map(j => [j.id, j]));
+  const merged = new Map([...rescope(previous ?? []), ...parseBoe(xml)].filter(j => j.date >= limit).map(j => [j.id, j]));
   return [...merged.values()].sort((a, b) => b.date.localeCompare(a.date));
 }

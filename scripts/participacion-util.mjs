@@ -46,6 +46,7 @@ const BOE = Buffer.from(`<?xml version="1.0" encoding="ISO-8859-1"?><rss version
 ${boeItem('BOE-A-2026-90001', 'Resolución de 20 de octubre de 2026, del Ayuntamiento de Lena (Asturias), referente a la convocatoria para proveer dos plazas de Policía Local.', 'ADMINISTRACIÓN LOCAL')}
 ${boeItem('BOE-A-2026-90002', 'Resolución de 21 de octubre de 2026, de la Consejería de Salud, por la que se convoca proceso selectivo de enfermería.', 'COMUNIDAD AUTÓNOMA DEL PRINCIPADO DE ASTURIAS')}
 ${boeItem('BOE-A-2026-90003', 'Resolución de 22 de octubre de 2026, del Ayuntamiento de Getafe (Madrid), referente a la convocatoria de una plaza.', 'ADMINISTRACIÓN LOCAL')}
+${boeItem('BOE-A-2026-23212', 'Resolución de 30 de octubre de 2026, del Ayuntamiento de Grado (Asturias), referente a la convocatoria para proveer varias plazas.', 'ADMINISTRACIÓN LOCAL')}
 </channel></rss>`, 'latin1');
 
 // Recorridos y fotos simulados para el importador (las descargas reales son de turismoasturias.es, Google Drive y Commons).
@@ -259,9 +260,28 @@ export async function run(ctx) {
     assert.ok(jobs.includes('Ayuntamiento de Lena (Asturias)') && jobs.includes('Consejería de Salud') && !jobs.includes('Getafe') && jobs.includes('BOE-A-2026-90001')
       && jobs.includes('Agencia Estatal Boletín Oficial del Estado') && jobs.includes('el texto auténtico es el publicado en el BOE')
       && jobs.includes('miprincipado.asturias.es/bopa') && jobs.includes('aytolena.es/empleo-y-formacion') && !jobs.includes('mieres.es'), 'BOE with attribution; BOPA and the town hall as links');
+    // Concejo equivocado: el BOE pone «(Asturias)» a todos los ayuntamientos asturianos; Grado no es del Caudal.
+    assert.ok(!jobs.includes('BOE-A-2026-23212') && !jobs.includes('Grado'), 'Grado (Asturias) is not a Caudal concejo');
+    {
+      const { boeScope, bdnsScope, grantTitle } = await import('../lib/util-sources.ts');
+      const local = ['II. Autoridades y personal. - B. Oposiciones y concursos', 'ADMINISTRACIÓN LOCAL'];
+      const ayto = name => `Resolución de 30 de octubre de 2026, del Ayuntamiento de ${name} (Asturias), referente a la convocatoria para proveer varias plazas.`;
+      assert.deepEqual(['Grado', 'Mieres', 'Lena', 'Aller', 'Morcín', 'Morcin', 'Riosa', 'Ribera de Arriba', 'Ribera de Abajo', 'Langreo'].map(n => boeScope(ayto(n), local)),
+        [null, 'mieres', 'lena', 'aller', 'morcin', 'morcin', 'riosa', 'ribera-de-arriba', null, null], 'BOE: only the six town halls, each to its own concejo');
+      assert.equal(boeScope('Resolución de 2 de octubre de 2026, del Ayuntamiento de Gijón (Asturias), plaza en la calle Aller y en Mieres.', local), null, 'never by a street or place name');
+      assert.equal(boeScope('Resolución de 2 de octubre de 2026, de la Mancomunidad Valle del Nalón (Asturias), referente a una plaza.', local), null, 'other local bodies: out');
+      assert.equal(boeScope('Resolución de 21 de octubre de 2026, de la Consejería de Salud, por la que se convoca proceso selectivo.', ['x', 'COMUNIDAD AUTÓNOMA DEL PRINCIPADO DE ASTURIAS']), 'asturias', 'Principado');
+      const bdns = (nivel1, nivel2) => bdnsScope({ nivel1, nivel2, nivel3: `AYUNTAMIENTO DE ${nivel2}`, descripcion: 'Convocatoria de ayudas a asociaciones de Mieres y Lena' });
+      assert.deepEqual([bdns('LOCAL', 'GRADO'), bdns('LOCAL', 'LANGREO'), bdns('LOCAL', 'LENA'), bdns('LOCAL', 'RIBERA DE ARRIBA'), bdns('LOCAL', 'MANCOMUNIDAD VALLE DEL CAUDAL')], [null, null, 'lena', 'ribera-de-arriba', null], 'BDNS: by the granting town hall, never by the text');
+      const cut = grantTitle('convocan subvenciones en régimen de concurrencia competitiva destinadas a la realización de programas de interés general para fines sociales en el Principado de Asturias, financiadas con cargo a la asignación tributaria del 0,7 por ciento del IRPF y del I');
+      assert.ok(cut.startsWith('Convocan subvenciones') && cut.endsWith('…') && cut.length <= 181 && !/\s(de|del|y|la)…$/.test(cut), `grant title: capital letter, cut at a word with an ellipsis: ${cut}`);
+      assert.equal(grantTitle(cut), cut, 'idempotent');
+      assert.equal(grantTitle('Ayudas a la rehabilitación de fachadas.'), 'Ayudas a la rehabilitación de fachadas', 'short titles kept whole');
+    }
     assert.ok(block(lena, 'farmacias').includes('farmasturias.org') && !block(lena, 'farmacias').includes('data-util-source'), 'pharmacies: link only');
     assert.ok(block(lena, 'patrimonio').includes('Santa Cristina de Lena') && block(lena, 'patrimonio').includes('class="util-thumb"') && !block(lena, 'patrimonio').includes('Bustiello'), 'heritage of the concejo, with its photo');
-    assert.ok(block(await page(`${web}/mieres`), 'patrimonio').includes('data-util-neutral'), 'no photo: neutral design');
+    const noPhoto = block(await page(`${web}/mieres`), 'patrimonio');
+    assert.ok(noPhoto.includes('Bustiello') && !noPhoto.includes('util-thumb') && !noPhoto.includes('data-util-neutral'), 'no photo: text only, no empty box');
     assert.ok(block(lena, 'rutas').includes('Ruta de ejemplo en Lena') && block(lena, 'rutas').includes('Ruta de ejemplo en Aller'), 'routes of the concejo, also shared ones');
     const servicesBlock = block(lena, 'servicios');
     assert.ok(servicesBlock.includes('Ayuntamiento de Lena (EJEMPLO)') && servicesBlock.includes('tel:000000001') && servicesBlock.includes('000 00 00 02') && servicesBlock.includes('Cierre anunciado.')
@@ -284,6 +304,10 @@ export async function run(ctx) {
     const util = await page(`${web}/util`);
     assert.ok(block(util, 'invierno').includes('data-util-pajares') && block(util, 'invierno').includes('112asturias.es') && block(util, 'invierno').includes('valgrande-pajares.com') && block(util, 'invierno').includes('fuentesdeinvierno.com'), 'winter: Pajares and three links');
     assert.equal((block(util, 'tiempo').match(/data-util-forecast=/g) ?? []).length, 6, 'forecast for the six concejos');
+    const aemetNotes = block(util, 'tiempo').match(/© AEMET/g) ?? [];
+    const aemetEnd = block(util, 'tiempo').split('data-util-aemet')[1] ?? '';
+    assert.ok(aemetNotes.length === 1 && aemetEnd.includes('Información elaborada por la Agencia Estatal de Meteorología') && aemetEnd.includes('Elaborada: 04/11/2026 19:00') && aemetEnd.includes('Consultado:'),
+      `AEMET attribution once, at the end of the weather block, with issue and download times: ${aemetEnd.slice(0, 400)}`);
     // En /util, lo regional y un bloque por concejo activo con sus listas («Ver todos») y el empleo de su ayuntamiento.
     assert.ok(!util.includes('data-util="patrimonio"') && !util.includes('data-util="servicios"') && block(util, 'concejo-mieres').includes('href="/mieres/util/patrimonio"') && block(util, 'concejo-lena').includes('href="/lena/util/patrimonio"'), 'heritage of each active concejo, in its block');
     assert.ok((block(util, 'empleo').match(/data-util-link/g) ?? []).length === 1 && ctx.SIX.every(t => util.includes(`data-util="concejo-${t}"`)) && util.includes('ayuntamientoriosa.com'), 'BOPA in the regional block; the six town halls in their blocks');
@@ -291,7 +315,7 @@ export async function run(ctx) {
     assert.ok(ficha.includes('data-util-photo') && ficha.includes('Autora de prueba / Wikimedia Commons / CC BY-SA 4.0') && ficha.includes(commons.paginaCommons) && ficha.includes('data-util-map="point"') && ficha.includes('mlat=43.128594') && ficha.includes('Segundo párrafo de ejemplo')
       && ficha.includes('Punto del mapa: EJEMPLO: punto aproximado') && ficha.includes('BIC, monumento · Decreto de prueba') && ficha.includes('turismoasturias.es'), `heritage card with OSM map and sources: ${ficha.slice(ficha.indexOf('data-util-place'), ficha.indexOf('data-util-place') + 2500)}`);
     const bustiello = await page(`${web}/util/patrimonio/poblado-minero-de-bustiello-mieres`);
-    assert.ok(!bustiello.includes('duda interna') && bustiello.includes('data-util-neutral') && !bustiello.includes('data-util-map'), 'no coordinates: listed but not on the map; internal doubts are not public');
+    assert.ok(!bustiello.includes('duda interna') && !bustiello.includes('data-util-neutral') && !bustiello.includes('data-util-photo') && !bustiello.includes('data-util-map'), 'no coordinates: listed but not on the map; no photo: text only; internal doubts are not public');
     const route = await page(`${web}/util/rutas/ruta-de-ejemplo-en-aller-aller`);
     assert.ok(route.includes('9,5 km (ida y vuelta, distancia total)') && route.includes('+450 m / −450 m') && route.includes('PR AS-00') && route.includes('También pasa por') && route.includes('Lena, Oviedo') && route.includes('Track GPX oficial') && route.includes('data-util-map="track"') && /data-track-points="(\d+)"/.test(route), 'route card');
     assert.ok(!(await page(`${web}/util/rutas?concejo=mieres`)).includes('Ruta de ejemplo'), 'routes filtered by concejo');
@@ -316,7 +340,7 @@ export async function run(ctx) {
     await edit.goto(`${origin}/cms/collections/routes`);
     await edit.getByText('Dudoso y coordenadas pendientes').or(edit.getByText('Coordenadas pendientes')).first().waitFor();
     await cms.close();
-    passed('Útil imports (datos-servicios bcc03e0 format): Commons photos into Imágenes with author and licence (neutral design without photo), «coordenadas pendientes» and «dudoso» warnings in the CMS, tracks drawn on OpenStreetMap from direct GPX, the official ZIP (no cycling variant) and WGS 84 PLT, otherwise only the official download link; repeatable without duplicates, filling in what failed before');
+    passed('Útil imports (datos-servicios bcc03e0 format): Commons photos into Imágenes with author and licence (text only without photo), «coordenadas pendientes» and «dudoso» warnings in the CMS, tracks drawn on OpenStreetMap from direct GPX, the official ZIP (no cycling variant) and WGS 84 PLT, otherwise only the official download link; repeatable without duplicates, filling in what failed before');
     passed('Útil on each concejo page and /util: only four automatic sources with their attribution and times (Pajares from the DGT, never «abierto»; AEMET per municipality; BDNS calls of the six town halls, the Principado, the IDEPA and the State, each linked to its official call, plus the IDEPA page; BOE jobs); San Isidro, Valgrande-Pajares, Fuentes de Invierno, pharmacies, BOPA and town hall jobs as links only; heritage and routes with an OSM map; municipal services; external queries cached');
 
     // Una fuente falla: la página sigue, se enseña el último dato con su hora y se avisa a la administración (una vez).
