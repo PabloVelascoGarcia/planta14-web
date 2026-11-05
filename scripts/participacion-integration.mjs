@@ -23,7 +23,9 @@ Object.assign(process.env, { NODE_ENV: 'production', CMS_ENABLED: 'true', CONTEN
   S3_ACCESS_KEY_ID: 'S3RVER', S3_SECRET_ACCESS_KEY: 'S3RVER', PUBLIC_MEDIA_BASE_URL: `http://127.0.0.1:${s3Port}/planta14-participacion-public`, PUBLIC_MEDIA_BUCKET: 'planta14-participacion-public',
   PLANTA14_TEST_EMAIL_OUTBOX: outbox,
   // Las pruebas nunca consultan las fuentes reales de «Útil» (el bloque util usa un servidor simulado).
-  UTIL_DGT_URL: 'http://127.0.0.1:9/sin-red', UTIL_BDNS_URL: 'http://127.0.0.1:9/sin-red', UTIL_BOE_RSS_URL: 'http://127.0.0.1:9/sin-red' });
+  UTIL_DGT_URL: 'http://127.0.0.1:9/sin-red', UTIL_BDNS_URL: 'http://127.0.0.1:9/sin-red', UTIL_BOE_RSS_URL: 'http://127.0.0.1:9/sin-red',
+  // Sin refresco de fuentes en segundo plano salvo en el bloque util (que lo activa con su servidor simulado).
+  UTIL_REFRESH_DISABLED: 'true' });
 for (const key of ['AEMET_API_KEY', 'AEMET_BASE_URL']) delete process.env[key];
 for (const key of ['SITE_INDEXABLE', 'SMTP_ENABLED']) delete process.env[key];
 const reset = new pg.Client({ connectionString: databaseURL });

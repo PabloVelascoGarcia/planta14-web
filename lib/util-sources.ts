@@ -2,9 +2,10 @@
 //   puerto de Pajares (DGT, NAP, DATEX II v3.7, CC BY) · predicción por municipio (AEMET OpenData, clave en AEMET_API_KEY)
 //   · subvenciones (BDNS, infosubvenciones.es) · empleo público (BOE, RSS de la sección II.B).
 // El resto (San Isidro, estaciones de esquí, farmacias, BOPA, empleo municipal) solo se enlaza: ver lib/util.ts.
-// Cada consulta pasa por una caché en la base de datos (tabla external_cache): la web no espera a la fuente salvo la
-// primera vez, una fuente caída no rompe la página (se enseña el último dato con su hora) y se avisa por correo a la
-// administración (como mucho una vez cada 12 horas por fuente).
+// Las visitas NUNCA consultan las fuentes: solo leen la caché de la base de datos (tabla external_cache). La renueva un
+// refresco en el servidor (startUtilRefresher, arrancado en instrumentation.ts) con su intervalo por fuente, reintentos
+// con espera creciente ante 429/5xx y la última copia buena si falla. Se avisa por correo a la administración (como
+// mucho una vez cada 12 horas por fuente).
 
 export const UTIL_TOWNS = [
   { slug: "mieres", name: "Mieres", aemet: "33037" }, { slug: "lena", name: "Lena", aemet: "33033" },
@@ -27,49 +28,113 @@ async function db() {
   return { payload, sql };
 }
 
-/** Descarga con tiempo máximo; un código HTTP que no sea 2xx es un error. */
+/** Error HTTP de una fuente: el código decide si se reintenta (429 y 5xx) y Retry-After cuánto se espera. */
+export class SourceError extends Error {
+  constructor(message: string, readonly status: number, readonly retryAfterMs: number | null = null) { super(message); }
+}
+const retryable = (error: unknown) => error instanceof SourceError ? error.status === 429 || error.status >= 500
+  : error instanceof Error && (error.name === "TimeoutError" || /fetch failed|ECONNRESET|ETIMEDOUT|ECONNREFUSED|socket/i.test(error.message));
+
+/** Descarga con tiempo máximo; un código HTTP que no sea 2xx es un error (SourceError). */
 export async function fetchSource(url: string, init: RequestInit = {}, timeoutMs = 10_000) {
   const response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs), cache: "no-store", headers: { "User-Agent": "Planta14/1.0 (seccion Util)", ...init.headers } });
-  if (!response.ok) throw new Error(`HTTP ${response.status} en ${new URL(url).host}`);
+  if (!response.ok) {
+    const after = Number(response.headers.get("retry-after"));
+    await response.body?.cancel().catch(() => undefined);
+    throw new SourceError(`HTTP ${response.status} en ${new URL(url).host}`, response.status, Number.isFinite(after) && after > 0 ? after * 1000 : null);
+  }
   return response;
 }
 
-const inFlight = new Map<string, Promise<void>>();
-type Row = { value: unknown; fetched_at: Date | string | null; checked_at: Date | string; error: string | null; notified_at: Date | string | null };
+type Row = { value: unknown; fetched_at: Date | string | null; checked_at: Date | string; error: string | null; notified_at: Date | string | null; attempts: number | null };
+const readRow = async (key: string) => {
+  const { payload, sql } = await db();
+  return (await payload.db.drizzle.execute(sql`SELECT value, fetched_at, checked_at, error, notified_at, attempts FROM external_cache WHERE key = ${key}`)).rows[0] as Row | undefined;
+};
+/**
+ * Lectura de la caché (lo único que hacen las páginas): las visitas NUNCA consultan las fuentes externas. El dato lo
+ * renueva el refresco del servidor (startUtilRefresher). Sin dato todavía, el bloque muestra «Consultando…».
+ */
+export async function readCache<T>(key: string): Promise<Cached<T>> {
+  const row = await readRow(key);
+  return { data: (row?.value as T) ?? null, fetchedAt: row?.fetched_at ? new Date(row.fetched_at).toISOString() : null, error: row?.error ?? null };
+}
+
+export type SourceDefinition = { key: string; label: string; intervalMs: number; fetch: (previous: unknown) => Promise<unknown> };
+const envNumber = (name: string, fallback: number) => { const v = Number(process.env[name]); return Number.isFinite(v) && v > 0 ? v : fallback; };
+/** Espera entre reintentos dentro de un mismo refresco (crece: base, base×4…). */
+const retryBaseMs = () => envNumber("UTIL_RETRY_BASE_MS", 15_000);
+/** Tras un refresco fallido, el siguiente intento espera 5, 10, 20, 40… minutos, como mucho el intervalo de la fuente. */
+const backoffMs = (attempts: number, intervalMs: number) => Math.min(intervalMs, envNumber("UTIL_BACKOFF_BASE_MS", 5 * 60_000) * 2 ** Math.max(0, attempts - 1));
+
+/** ¿Toca refrescar esta fuente? (sin dato, dato caducado o, tras un fallo, cuando ha pasado la espera creciente). */
+export function isDue(row: Pick<Row, "fetched_at" | "checked_at" | "error" | "attempts"> | undefined, intervalMs: number, now = Date.now()) {
+  if (!row) return true;
+  if (row.error) return now - new Date(row.checked_at).getTime() >= backoffMs(row.attempts ?? 1, intervalMs);
+  return !row.fetched_at || now - new Date(row.fetched_at).getTime() >= intervalMs;
+}
 
 /**
- * Dato de una fuente externa con caché: si es reciente se devuelve tal cual; si está caducado se devuelve el último
- * y se renueva en segundo plano; si no hay nada se espera a la fuente. Tras un fallo no se reintenta en 10 minutos.
+ * Refresca una fuente: hasta 3 intentos dentro del mismo refresco si responde 429, 5xx o no responde (con espera
+ * creciente y respetando Retry-After hasta 2 minutos). Si falla, se conserva la última copia buena y su fecha, se anota
+ * el error y se avisa a la administración (como mucho cada 12 horas). En el registro solo van la fuente, el código y el
+ * intento: nunca datos personales ni la clave de AEMET (va en una cabecera, no en la dirección).
  */
-export async function cachedSource<T>(key: string, label: string, ttlMs: number, fetcher: (previous: T | null) => Promise<T>): Promise<Cached<T>> {
+export async function refreshSource(def: SourceDefinition) {
   const { payload, sql } = await db();
-  const read = async () => ((await payload.db.drizzle.execute(sql`SELECT value, fetched_at, checked_at, error, notified_at FROM external_cache WHERE key = ${key}`)).rows[0] as Row | undefined);
-  const result = (row: Row | undefined): Cached<T> => ({ data: (row?.value as T) ?? null, fetchedAt: row?.fetched_at ? new Date(row.fetched_at).toISOString() : null, error: row?.error ?? null });
-  const refresh = () => {
-    if (!inFlight.has(key)) inFlight.set(key, (async () => {
-      const previous = await read();
-      try {
-        const value = await fetcher((previous?.value as T) ?? null);
-        await payload.db.drizzle.execute(sql`INSERT INTO external_cache (key, value, fetched_at, checked_at, error) VALUES (${key}, ${JSON.stringify(value)}::jsonb, now(), now(), NULL)
-          ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, fetched_at = now(), checked_at = now(), error = NULL`);
-      } catch (error) {
-        const message = error instanceof Error ? (error.name === "TimeoutError" ? "La fuente no respondió a tiempo" : error.message) : String(error);
-        const notify = !previous?.notified_at || Date.now() - new Date(previous.notified_at).getTime() > 12 * HOUR;
-        await payload.db.drizzle.execute(sql`INSERT INTO external_cache (key, value, checked_at, error, notified_at) VALUES (${key}, NULL, now(), ${message}, ${notify ? new Date().toISOString() : null})
-          ON CONFLICT (key) DO UPDATE SET checked_at = now(), error = EXCLUDED.error, notified_at = COALESCE(EXCLUDED.notified_at, external_cache.notified_at)`);
-        payload.logger.warn({ msg: `Útil: falla la fuente ${label}`, err: message });
-        if (notify) await notifyAdmins(label, message, previous?.fetched_at ?? null).catch(() => undefined);
-      }
-    })().finally(() => inFlight.delete(key)));
-    return inFlight.get(key)!;
-  };
-  const row = await read();
-  const age = row?.fetched_at ? Date.now() - new Date(row.fetched_at).getTime() : Infinity;
-  const retryWait = row?.error && Date.now() - new Date(row.checked_at).getTime() < 10 * 60_000;
-  if (age < ttlMs || retryWait) return result(row);
-  if (row?.value != null) { void refresh(); return result(row); }
-  await refresh();
-  return result(await read());
+  const previous = await readRow(def.key);
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const value = await def.fetch(previous?.value ?? null);
+      await payload.db.drizzle.execute(sql`INSERT INTO external_cache (key, value, fetched_at, checked_at, error, attempts) VALUES (${def.key}, ${JSON.stringify(value)}::jsonb, now(), now(), NULL, 0)
+        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, fetched_at = now(), checked_at = now(), error = NULL, attempts = 0`);
+      if (attempt > 1) payload.logger.info({ msg: `Útil: fuente ${def.label} recuperada`, attempt });
+      return true;
+    } catch (error) {
+      lastError = error;
+      const status = error instanceof SourceError ? error.status : null;
+      payload.logger.warn({ msg: `Útil: falla la fuente ${def.label}`, status, attempt, reason: error instanceof Error ? (error.name === "TimeoutError" ? "sin respuesta a tiempo" : error.message) : String(error) });
+      if (attempt === 3 || !retryable(error)) break;
+      const wait = Math.min(120_000, Math.max(error instanceof SourceError && error.retryAfterMs ? error.retryAfterMs : 0, retryBaseMs() * 4 ** (attempt - 1)));
+      await new Promise(r => setTimeout(r, wait));
+    }
+  }
+  const message = lastError instanceof Error ? (lastError.name === "TimeoutError" ? "La fuente no respondió a tiempo" : lastError.message) : String(lastError);
+  const notify = !previous?.notified_at || Date.now() - new Date(previous.notified_at).getTime() > 12 * HOUR;
+  await payload.db.drizzle.execute(sql`INSERT INTO external_cache (key, value, checked_at, error, notified_at, attempts) VALUES (${def.key}, NULL, now(), ${message}, ${notify ? new Date().toISOString() : null}, 1)
+    ON CONFLICT (key) DO UPDATE SET checked_at = now(), error = EXCLUDED.error, attempts = COALESCE(external_cache.attempts, 0) + 1, notified_at = COALESCE(EXCLUDED.notified_at, external_cache.notified_at)`);
+  if (notify) await notifyAdmins(def.label, message, previous?.fetched_at ?? null).catch(() => undefined);
+  return false;
+}
+
+/** Las fuentes automáticas y cada cuánto se refrescan (BDNS: UTIL_BDNS_REFRESH_HOURS, 6 por defecto). */
+export function utilSources(): SourceDefinition[] {
+  return [
+    { key: "dgt:pajares", label: "DGT: puerto de Pajares", intervalMs: 5 * 60_000, fetch: fetchPajares },
+    { key: "bdns:abiertas", label: "BDNS: subvenciones", intervalMs: envNumber("UTIL_BDNS_REFRESH_HOURS", 6) * HOUR, fetch: fetchGrants },
+    { key: "boe:empleo", label: "BOE: oposiciones y concursos", intervalMs: 3 * HOUR, fetch: previous => fetchJobs(previous as Job[] | null) },
+    ...(aemetEnabled() ? UTIL_TOWNS.map(t => ({ key: `aemet:${t.aemet}`, label: `AEMET: predicción de ${t.name}`, intervalMs: 2 * HOUR, fetch: () => fetchForecast(t) })) : []),
+  ];
+}
+
+let running = false;
+/** Refresca, una tras otra, las fuentes a las que les toca. Nunca dos refrescos a la vez. */
+export async function refreshDueSources() {
+  if (running) return;
+  running = true;
+  try {
+    for (const def of utilSources()) if (isDue(await readRow(def.key), def.intervalMs)) await refreshSource(def);
+  } finally { running = false; }
+}
+let timer: ReturnType<typeof setInterval> | null = null;
+/** Arranca el refresco en segundo plano (instrumentation.ts): comprueba cada minuto (UTIL_REFRESH_CHECK_SECONDS). */
+export function startUtilRefresher() {
+  if (timer) return;
+  const run = () => { refreshDueSources().catch(error => console.warn(`Útil: refresco de fuentes interrumpido: ${error instanceof Error ? error.message : error}`)); };
+  setTimeout(run, envNumber("UTIL_REFRESH_START_SECONDS", 5) * 1000);
+  timer = setInterval(run, envNumber("UTIL_REFRESH_CHECK_SECONDS", 60) * 1000);
+  timer.unref?.();
 }
 
 async function notifyAdmins(label: string, message: string, lastGood: Date | string | null) {
@@ -128,7 +193,8 @@ export function parseDgt(xml: string): { publishedAt: string | null; incidents: 
   return { publishedAt: tag(xml, "com:publicationTime") || null, incidents };
 }
 /** Nunca se afirma «abierto»: solo se dice si la DGT registra o no incidencias, con la hora de su publicación. */
-export const pajaresStatus = () => cachedSource("dgt:pajares", "DGT: puerto de Pajares", 5 * 60_000, async () => parseDgt(await (await fetchSource(DGT_URL(), {}, 20_000)).text()));
+const fetchPajares = async () => parseDgt(await (await fetchSource(DGT_URL(), {}, 20_000)).text());
+export const pajaresStatus = () => readCache<{ publishedAt: string | null; incidents: RoadIncident[] }>("dgt:pajares");
 
 // ---------------------------------------------------------------- AEMET: predicción por municipio
 
@@ -161,14 +227,16 @@ async function aemetJSON(url: string) {
   try { text = new TextDecoder(charset).decode(bytes); } catch { text = new TextDecoder("latin1").decode(bytes); }
   return JSON.parse(text);
 }
+async function fetchForecast(town: typeof UTIL_TOWNS[number]) {
+  const control = await aemetJSON(`${AEMET_BASE()}/api/prediccion/especifica/municipio/diaria/${town.aemet}`) as { estado?: number; datos?: string; descripcion?: string };
+  if (control.estado === 429) throw new SourceError("AEMET: demasiadas peticiones", 429);
+  if (control.estado !== 200 || !control.datos) throw new Error(`AEMET: ${control.descripcion || `estado ${control.estado}`}`);
+  return parseAemet(town.slug, await aemetJSON(control.datos));
+}
 export function aemetForecast(slug: string) {
   const town = UTIL_TOWNS.find(t => t.slug === slug);
   if (!town || !aemetEnabled()) return null;
-  return cachedSource(`aemet:${town.aemet}`, `AEMET: predicción de ${town.name}`, 2 * HOUR, async () => {
-    const control = await aemetJSON(`${AEMET_BASE()}/api/prediccion/especifica/municipio/diaria/${town.aemet}`) as { estado?: number; datos?: string; descripcion?: string };
-    if (control.estado !== 200 || !control.datos) throw new Error(`AEMET: ${control.descripcion || `estado ${control.estado}`}`);
-    return parseAemet(town.slug, await aemetJSON(control.datos));
-  });
+  return readCache<Forecast>(`aemet:${town.aemet}`);
 }
 
 // ---------------------------------------------------------------- BDNS: subvenciones abiertas
@@ -205,8 +273,23 @@ const search = async (params: string) => {
  * Convocatorias abiertas aplicables: las de los seis ayuntamientos, el Principado y el IDEPA (regiones de Asturias) y
  * las de la Administración del Estado de ámbito nacional o asturiano. Se descartan concesiones directas y nominativas.
  */
-export const openGrants = () => cachedSource("bdns:abiertas", "BDNS: subvenciones", 6 * HOUR, async () => {
-  const [asturias, spain] = await Promise.all([search(`regiones=${REGIONS_ASTURIAS}`), search(`regiones=${REGION_SPAIN}&tipoAdministracion=C`)]);
+type BdnsCache = { grants: Grant[]; details: Record<string, { detail: BdnsDetail; at: string }> };
+/** Lo que leen las páginas: solo la lista (las cachés antiguas eran directamente la lista). */
+export const openGrants = async (): Promise<Cached<Grant[]>> => {
+  const cached = await readCache<BdnsCache | Grant[]>("bdns:abiertas");
+  return { ...cached, data: Array.isArray(cached.data) ? cached.data : cached.data?.grants ?? null };
+};
+const pause = (ms: number) => new Promise(r => setTimeout(r, ms));
+/**
+ * Las peticiones a la BDNS van de una en una, con pausa (UTIL_BDNS_PAUSE_MS, 400 ms), y el detalle de cada convocatoria
+ * se reutiliza durante 24 horas: así un refresco hace pocas peticiones y no provoca un 429.
+ */
+async function fetchGrants(previous: unknown): Promise<BdnsCache> {
+  const known = (previous && !Array.isArray(previous) ? (previous as BdnsCache).details : null) ?? {};
+  const gap = envNumber("UTIL_BDNS_PAUSE_MS", 400);
+  const asturias = await search(`regiones=${REGIONS_ASTURIAS}`);
+  await pause(gap);
+  const spain = await search(`regiones=${REGION_SPAIN}&tipoAdministracion=C`);
   const seen = new Set<string>();
   const candidates = [...asturias, ...spain].filter(item => !seen.has(item.numeroConvocatoria) && seen.add(item.numeroConvocatoria))
     .map(item => ({ item, scope: bdnsScope(item) })).filter((c): c is { item: BdnsItem; scope: GrantScope } => c.scope !== null);
@@ -215,12 +298,17 @@ export const openGrants = () => cachedSource("bdns:abiertas", "BDNS: subvencione
   const picked = [...candidates.filter(c => !rank[c.scope]), ...["idepa", "asturias", "estado"].flatMap(scope => candidates.filter(c => c.scope === scope).slice(0, 20))].slice(0, 70);
   const today = madridToday();
   const grants: Grant[] = [];
-  for (let i = 0; i < picked.length; i += 4) {
-    const details = await Promise.all(picked.slice(i, i + 4).map(async ({ item, scope }) => {
-      const detail = await (await fetchSource(`${BDNS_BASE()}/api/convocatorias?vpd=GE&numConv=${encodeURIComponent(item.numeroConvocatoria)}`)).json() as BdnsDetail;
-      return { item, scope, detail };
-    }));
-    for (const { item, scope, detail } of details) {
+  const details: BdnsCache["details"] = {};
+  for (const { item, scope } of picked) {
+    const reuse = known[item.numeroConvocatoria];
+    let detail: BdnsDetail;
+    if (reuse && Date.now() - new Date(reuse.at).getTime() < 24 * HOUR) detail = reuse.detail;
+    else {
+      await pause(gap);
+      detail = await (await fetchSource(`${BDNS_BASE()}/api/convocatorias?vpd=GE&numConv=${encodeURIComponent(item.numeroConvocatoria)}`)).json() as BdnsDetail;
+    }
+    details[item.numeroConvocatoria] = { detail: { abierto: detail.abierto, tipoConvocatoria: detail.tipoConvocatoria, fechaFinSolicitud: detail.fechaFinSolicitud, textFin: detail.textFin, sedeElectronica: detail.sedeElectronica }, at: reuse && detail === reuse.detail ? reuse.at : new Date().toISOString() };
+    {
       if (/directa/i.test(detail.tipoConvocatoria ?? "")) continue;
       const end = detail.fechaFinSolicitud ? String(detail.fechaFinSolicitud).slice(0, 10) : null;
       if (end ? end < today : detail.abierto !== true) continue;
@@ -229,8 +317,8 @@ export const openGrants = () => cachedSource("bdns:abiertas", "BDNS: subvencione
         office: detail.sedeElectronica && /^https?:\/\//.test(detail.sedeElectronica) ? detail.sedeElectronica : null });
     }
   }
-  return grants.sort((a, b) => (a.end ?? "9999").localeCompare(b.end ?? "9999"));
-});
+  return { grants: grants.sort((a, b) => (a.end ?? "9999").localeCompare(b.end ?? "9999")), details };
+}
 
 // ---------------------------------------------------------------- BOE: oposiciones y concursos (II.B)
 
@@ -258,7 +346,8 @@ export function parseBoe(xml: string): Job[] {
   return jobs;
 }
 /** El RSS solo trae el BOE del día: se acumulan las convocatorias de los últimos 45 días. */
-export const publicJobs = () => cachedSource<Job[]>("boe:empleo", "BOE: oposiciones y concursos", 3 * HOUR, async previous => {
+export const publicJobs = () => readCache<Job[]>("boe:empleo");
+async function fetchJobs(previous: Job[] | null): Promise<Job[]> {
   const response = await fetchSource(BOE_URL());
   const bytes = new Uint8Array(await response.arrayBuffer());
   const head = new TextDecoder("latin1").decode(bytes.slice(0, 200));
@@ -267,4 +356,4 @@ export const publicJobs = () => cachedSource<Job[]>("boe:empleo", "BOE: oposicio
   const limit = new Date(Date.now() - 45 * 24 * HOUR).toISOString().slice(0, 10);
   const merged = new Map([...(previous ?? []), ...parseBoe(xml)].filter(j => j.date >= limit).map(j => [j.id, j]));
   return [...merged.values()].sort((a, b) => b.date.localeCompare(a.date));
-});
+}

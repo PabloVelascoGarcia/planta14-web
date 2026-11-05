@@ -78,7 +78,7 @@ export async function run(ctx) {
   const { payload, users, web, origin, passed, assert, browser, signIn, password, mails, page, stop, start, directory } = ctx;
   const { sql } = await import('@payloadcms/db-postgres');
   const db = query => payload.db.drizzle.execute(query);
-  const state = { boe: 'ok', bdns: 'ok', hits: {}, caida: true };
+  const state = { boe: 'ok', bdns: 'ok', hits: {}, caida: true, bdns429: 0, searches: 0, details: 0 };
   const jpeg = await ctx.sharp({ create: { width: 1600, height: 1000, channels: 3, background: '#8a6a4a' } }).jpeg().toBuffer();
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, mock);
@@ -92,12 +92,15 @@ export async function run(ctx) {
     }
     if (url.pathname.startsWith('/aemet-datos/')) return send(200, Buffer.from(JSON.stringify(forecast('Lena')), 'latin1'), 'application/json;charset=ISO-8859-15');
     if (url.pathname === '/bdns/api/convocatorias/busqueda') {
+      state.searches++;
+      if (state.bdns429 > 0) { state.bdns429--; res.writeHead(429, { 'Content-Type': 'text/plain', 'Retry-After': '0' }); return res.end('Too Many Requests'); }
       if (state.bdns !== 'ok') return send(503, 'caída');
       const regiones = url.searchParams.get('regiones');
       if (regiones === '8,9') return send(200, { content: bdnsList });
       if (regiones === '1' && url.searchParams.get('tipoAdministracion') === 'C') return send(200, { content: bdnsSpain });
       return send(400, { error: `regiones ${regiones}` });
     }
+    if (url.pathname === '/bdns/api/convocatorias') state.details++;
     if (url.pathname === '/bdns/api/convocatorias') return send(200, bdnsDetail[url.searchParams.get('numConv')] ?? { abierto: false });
     if (TRACKS[url.pathname]) return send(200, TRACKS[url.pathname], 'application/octet-stream');
     if (url.pathname === '/tracks/caida.gpx') return state.caida ? send(500, 'error') : send(200, gpx(line(43.21, -5.76, 30)), 'application/gpx+xml');
@@ -106,7 +109,10 @@ export async function run(ctx) {
     send(404, 'no');
   });
   await new Promise(r => server.listen(mockPort, '127.0.0.1', r));
-  const sources = { UTIL_DGT_URL: `${mock}/dgt.xml`, AEMET_BASE_URL: `${mock}/aemet`, AEMET_API_KEY: 'clave-de-prueba', UTIL_BDNS_URL: `${mock}/bdns`, UTIL_BOE_RSS_URL: `${mock}/boe.xml` };
+  // El refresco en el servidor, rápido para la prueba: comprueba cada segundo, reintenta tras 100 ms y espera 1,5 s tras un fallo.
+  const sources = { UTIL_DGT_URL: `${mock}/dgt.xml`, AEMET_BASE_URL: `${mock}/aemet`, AEMET_API_KEY: 'clave-de-prueba', UTIL_BDNS_URL: `${mock}/bdns`, UTIL_BOE_RSS_URL: `${mock}/boe.xml`,
+    UTIL_REFRESH_DISABLED: 'false', UTIL_REFRESH_START_SECONDS: '1', UTIL_REFRESH_CHECK_SECONDS: '1', UTIL_RETRY_BASE_MS: '100', UTIL_BACKOFF_BASE_MS: '1500', UTIL_BDNS_PAUSE_MS: '0' };
+  const waitFor = async (check, label, tries = 120) => { for (let i = 0; i < tries; i++) { if (await check()) return; await new Promise(r => setTimeout(r, 250)); } assert.fail(label); };
   try {
     await db(sql`DELETE FROM external_cache`);
     await stop(); await start(sources);
@@ -186,6 +192,25 @@ export async function run(ctx) {
     assert.ok(repeated.stdout.includes('Creados 0 rutas') && repeated.stdout.includes('Completadas 1') && repeated.stdout.includes('Ruta con descarga caída (Mieres): recorrido') && repeated.stdout.includes('Ya existían 6'), repeated.stdout);
     assert.equal((await payload.count({ collection: 'routes', overrideAccess: true })).totalDocs, 7, 'no duplicates');
     assert.ok((await cli('patrimonio', heritageFile)).stdout.includes('Ya existían 4'), 'heritage repeatable');
+    // Validación previa contra el esquema: todos los errores de una vez y nada escrito.
+    const badServices = path.join(directory, 'servicios-mal.json');
+    await writeFile(badServices, JSON.stringify({ registros: [
+      { id: 'mal-1', nombre: 'Horario larguísimo', concejo: 'lena', tipo: 'ayuntamiento', horario: 'h'.repeat(600), telefonos: [] },
+      { id: 'mal-2', nombre: '', concejo: 'lena', tipo: 'nada', telefonos: [] },
+      { id: 'mal-3', nombre: 'Nombre demasiado largo '.repeat(10), concejo: 'Gijón', tipo: 'biblioteca', telefonos: [] },
+      { id: 'ok-306', nombre: 'Centro de interpretación (horario de 306 caracteres)', concejo: 'Ribera de Arriba', tipo: 'oficina_turismo', horario: 'x'.repeat(306), telefonos: [] },
+    ] }));
+    const servicesBefore = (await payload.count({ collection: 'municipal-services', overrideAccess: true })).totalDocs;
+    for (const flags of [['--solo-comprobar'], []]) {
+      const checked = await cli('servicios', badServices, ...flags);
+      assert.ok(checked.status === 1 && checked.stdout.includes('«Horario» tiene 600 caracteres (máximo 500)') && checked.stdout.includes('falta el nombre') && checked.stdout.includes('tipo desconocido «nada»')
+        && checked.stdout.includes('«Nombre» tiene 229 caracteres (máximo 160)') && checked.stdout.includes('concejo desconocido «Gijón»') && !checked.stdout.includes('ok-306'), `all errors at once (${flags}): ${checked.stdout}`);
+    }
+    assert.equal((await payload.count({ collection: 'municipal-services', overrideAccess: true })).totalDocs, servicesBefore, 'nothing written');
+    // Idempotente: si falta uno (como los 7 que no entraron en pruebas), al repetir solo se crea ese.
+    await payload.delete({ collection: 'municipal-services', where: { externalID: { equals: 'ejemplo-lena-salud' } }, overrideAccess: true });
+    const refill = await cli('servicios', 'docs/ejemplos/servicios-municipales.json');
+    assert.ok(refill.stdout.includes('Creados 1 servicios municipales') && refill.stdout.includes('Ya existían 2'), refill.stdout);
     const again = await cli('servicios', 'docs/ejemplos/servicios-municipales.json');
     assert.ok(again.stdout.includes('Creados 0 servicios municipales') && again.stdout.includes('Ya existían 3'), 'repeatable');
     const stdin = await runCli(['scripts/util-run.mjs', 'rutas', '-', '--solo-comprobar'], JSON.stringify({ registros: [{ id: 'stdin-1', nombre: 'Por la entrada estándar', concejo: 'riosa' }] }));
@@ -198,8 +223,11 @@ export async function run(ctx) {
       assert.ok(result.status === 0 && result.stdout.includes('COMPROBACIÓN TERMINADA'), `${file}: ${result.stdout}${result.stderr}`);
       console.log(`MEDIDA: datos-servicios/${file}.json: ${result.stdout.split('\n').filter(l => /^(Se crearían|No se importan|Ya existían)/.test(l)).join(' | ')}`);
     }
-    passed('Útil importers with the datos-servicios format: npm run cms:patrimonio:importar, cms:rutas:importar and cms:servicios:importar (file or stdin, --solo-comprobar, --publicar); everything is validated first, an error imports nothing; repeatable by id; pharmacies are not imported (no reuse permission)');
+    passed('Útil importers validated against the real collection schema (lengths, required fields, select values; all errors at once, also with --solo-comprobar, nothing written); opening hours up to 500 characters; repeatable by id (only the missing records are created). Formats: npm run cms:patrimonio:importar, cms:rutas:importar and cms:servicios:importar (file or stdin, --solo-comprobar, --publicar); everything is validated first, an error imports nothing; repeatable by id; pharmacies are not imported (no reuse permission)');
 
+    // El refresco del servidor llena la caché sin que nadie visite la web.
+    const cacheKeys = ['dgt:pajares', 'bdns:abiertas', 'boe:empleo', ...['33037', '33033', '33002', '33038', '33058', '33057'].map(id => `aemet:${id}`)];
+    await waitFor(async () => (await db(sql`SELECT count(*)::int AS n FROM external_cache WHERE fetched_at IS NOT NULL AND key IN ${cacheKeys}`)).rows[0].n === cacheKeys.length, 'server-side refresh filled the cache', 240);
     // Página del concejo: cada bloque automático con su atribución y su hora; el resto, enlaces a la fuente oficial.
     const lena = await page(`${web}/lena`);
     const block = (html, id) => html.split(`data-util="${id}"`)[1]?.split('</section>')[0] ?? '';
@@ -235,8 +263,18 @@ export async function run(ctx) {
     assert.ok(servicesBlock.includes('Ayuntamiento de Lena (EJEMPLO)') && servicesBlock.includes('tel:000000001') && servicesBlock.includes('000 00 00 02') && servicesBlock.includes('Cierre anunciado.')
       && !servicesBlock.includes('Biblioteca') && !servicesBlock.includes('Farmacia') && !servicesBlock.includes('Dudoso'), `municipal services directory of the concejo: ${servicesBlock}`);
     const hits = { ...state.hits };
-    await page(`${web}/lena`);
-    assert.deepEqual(state.hits, hits, 'cached: a second visit does not query the sources');
+    for (const path of ['/lena', '/util', '/aller', '/mieres', '/lena']) await page(`${web}${path}`);
+    assert.deepEqual(state.hits, hits, 'visits never query the sources: they only read the server cache');
+    // BDNS con 429: el refresco reintenta con espera, respeta Retry-After y reutiliza el detalle de cada convocatoria (24 h).
+    const [searches, details] = [state.searches, state.details];
+    state.bdns429 = 2;
+    await db(sql`UPDATE external_cache SET fetched_at = now() - interval '7 hours' WHERE key = 'bdns:abiertas'`);
+    await waitFor(async () => (await db(sql`SELECT fetched_at > now() - interval '1 minute' AND error IS NULL AS ok FROM external_cache WHERE key = 'bdns:abiertas'`)).rows[0].ok, 'BDNS refreshed after two 429');
+    assert.equal(state.searches - searches, 4, 'two 429 retried, then both searches');
+    assert.equal(state.details, details, 'details reused (no new detail requests within 24 hours)');
+    assert.ok(/falla la fuente BDNS: subvenciones/.test(ctx.logs()) && /429/.test(ctx.logs()) && !ctx.logs().includes('clave-de-prueba'), 'errors logged with the source and the code, without the key');
+    assert.ok(block(await page(`${web}/lena`), 'subvenciones').includes('900001'), 'grants still served');
+    passed('BDNS and the other sources are only queried by the server-side refresh (BDNS at most every UTIL_BDNS_REFRESH_HOURS, 6 by default): visits only read the cache; 429/5xx retried with growing waits (Retry-After honoured), details reused for 24 hours, errors logged without personal data or keys');
 
     // /util general y fichas con mapa.
     const util = await page(`${web}/util`);
@@ -281,7 +319,6 @@ export async function run(ctx) {
     await db(sql`UPDATE external_cache SET fetched_at = now() - interval '5 hours' WHERE key = 'boe:empleo'`);
     const mailsBefore = (await mails()).length;
     assert.ok(block(await page(`${web}/lena`), 'empleo').includes('Ayuntamiento de Lena'), 'stale data while the source is down');
-    const waitFor = async (check, label) => { for (let i = 0; i < 60; i++) { if (await check()) return; await new Promise(r => setTimeout(r, 250)); } assert.fail(label); };
     await waitFor(async () => (await mails()).length > mailsBefore, 'failure email');
     const alert = (await mails()).slice(mailsBefore).find(m => m.subject === 'Útil: no responde la fuente «BOE: oposiciones y concursos»');
     assert.ok(alert && alert.to.includes(users.admin.email) && alert.text.includes('HTTP 500') && alert.text.includes('sigue enseñando el último dato bueno'), 'email to the administration');
@@ -293,6 +330,7 @@ export async function run(ctx) {
     assert.equal((await mails()).length, mailsBefore + 1, 'no second email within 12 hours');
     state.bdns = 'fail';
     await db(sql`DELETE FROM external_cache WHERE key = 'bdns:abiertas'`);
+    await waitFor(async () => (await db(sql`SELECT count(*)::int AS n FROM external_cache WHERE key = 'bdns:abiertas' AND error IS NOT NULL`)).rows[0].n === 1, 'BDNS failure recorded');
     const down = await page(`${web}/lena`);
     assert.ok(block(down, 'subvenciones').includes('data-util-unavailable') && block(down, 'tiempo').includes('Nieve débil'), 'a source without data: notice in its block, the rest of the page works');
     await waitFor(async () => (await mails()).some(m => m.subject === 'Útil: no responde la fuente «BDNS: subvenciones»' && m.text.includes('ese bloque enseña un aviso')), 'second source email');
