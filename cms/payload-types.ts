@@ -82,6 +82,7 @@ export interface Config {
     heritage: Heritage;
     routes: Route;
     'municipal-services': MunicipalService;
+    'util-visibility': UtilVisibility;
     subscribers: Subscriber;
     'audit-log': AuditLog;
     'public-media-ops': PublicMediaOp;
@@ -107,6 +108,7 @@ export interface Config {
     heritage: HeritageSelect<false> | HeritageSelect<true>;
     routes: RoutesSelect<false> | RoutesSelect<true>;
     'municipal-services': MunicipalServicesSelect<false> | MunicipalServicesSelect<true>;
+    'util-visibility': UtilVisibilitySelect<false> | UtilVisibilitySelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'public-media-ops': PublicMediaOpsSelect<false> | PublicMediaOpsSelect<true>;
@@ -970,6 +972,22 @@ export interface MunicipalService {
   createdAt: string;
 }
 /**
+ * Servicios de «Útil» que no salen en un concejo. Cada ayuntamiento los elige desde su panel; en los concejos sin espacio municipal activo, decide la administración. Las noticias y lo editorial no se pueden ocultar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "util-visibility".
+ */
+export interface UtilVisibility {
+  id: number;
+  summary?: string | null;
+  town: number | Town;
+  hidden?:
+    ('invierno' | 'tiempo' | 'farmacias' | 'servicios' | 'patrimonio' | 'rutas' | 'subvenciones' | 'empleo')[] | null;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Altas del boletín (doble confirmación por correo). Solo las «confirmadas» reciben el boletín. Para borrar los datos de alguien, elimina su registro.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1133,6 +1151,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'municipal-services';
         value: number | MunicipalService;
+      } | null)
+    | ({
+        relationTo: 'util-visibility';
+        value: number | UtilVisibility;
       } | null)
     | ({
         relationTo: 'subscribers';
@@ -1654,6 +1676,18 @@ export interface MunicipalServicesSelect<T extends boolean = true> {
   doubts?: T;
   externalID?: T;
   order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "util-visibility_select".
+ */
+export interface UtilVisibilitySelect<T extends boolean = true> {
+  summary?: T;
+  town?: T;
+  hidden?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }

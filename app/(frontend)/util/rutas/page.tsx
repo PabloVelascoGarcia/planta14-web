@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StatsScope } from "@/components/stats-beacon";
-import { getPlaces } from "@/lib/util";
+import { getPlaces, hiddenByConcejo } from "@/lib/util";
 import { UTIL_TOWNS } from "@/lib/util-sources";
 
 export const metadata: Metadata = { title: "Rutas de las Cuencas", alternates: { canonical: "/util/rutas" } };
@@ -9,7 +9,9 @@ export const metadata: Metadata = { title: "Rutas de las Cuencas", alternates: {
 export default async function Page({ searchParams }: { searchParams: Promise<{ concejo?: string }> }) {
   const { concejo = "" } = await searchParams;
   const town = UTIL_TOWNS.find(t => t.slug === concejo)?.slug ?? null;
-  const list = await getPlaces("routes", town);
+  const hidden = await hiddenByConcejo();
+  // Lo de un concejo que ha ocultado «rutas» en «Útil» no sale.
+  const list = (await getPlaces("routes", town)).filter(p => !(hidden[p.town] ?? []).includes("rutas"));
   return <div className="container-p14 py-8 util-page">
     <StatsScope town={town ?? ""} section="util" />
     <header className="max-w-3xl border-b-2 border-coal-950 pb-5"><p className="editorial-kicker"><Link href="/util">Útil</Link></p>

@@ -41,10 +41,14 @@ export function UtilBlocks({ data }: { data: UtilData }) {
   const town = data.town;
   const pajares = data.pajares;
   const forecasts = data.forecasts?.filter(f => f.forecast.data || f.forecast.error) ?? null;
-  const winter = !town || town === "lena" || town === "aller";
+  // En /util, lo del concejo que ha ocultado un servicio no sale (Pajares y Valgrande son de Lena; San Isidro y Fuentes, de Aller).
+  const townShows = (key: string, slug: string) => !(data.hiddenByTown[slug] ?? []).includes(key);
+  const lenaWinter = town ? town === "lena" : townShows("invierno", "lena");
+  const allerWinter = town ? town === "aller" : townShows("invierno", "aller");
+  const winter = lenaWinter || allerWinter;
   return <div className="util-grid">
     {show("invierno") && winter ? <Block id="invierno" title="Puertos y estaciones de esquí" kicker="Invierno">
-      {!town || town === "lena" ? <div className="util-card" data-util-pajares>
+      {lenaWinter ? <div className="util-card" data-util-pajares>
         <h4>Puerto de Pajares (N-630)</h4>
         {pajares.data ? pajares.data.incidents.length ? <><p className="util-status is-aviso">La DGT registra {pajares.data.incidents.length === 1 ? "una incidencia" : `${pajares.data.incidents.length} incidencias`}:</p>
           <ul className="util-list">{pajares.data.incidents.map(i => <li key={i.id} data-util-incident><strong>N-630{i.km !== null ? `, km ${String(i.km).replace(".", ",")}` : ""}</strong> ({townName(i.town)}){i.direction ? ` · sentido ${i.direction.toLowerCase()}` : ""}: {i.what}
@@ -53,9 +57,9 @@ export function UtilBlocks({ data }: { data: UtilData }) {
         <p className="util-source" data-util-source>Fuente: <a href="https://nap.dgt.es/es/dataset/incidencias-dgt-datex2-v3-7" {...out}>Dirección General de Tráfico (DGT), Punto de Acceso Nacional</a>, licencia CC BY
           <Checked at={pajares.data?.publishedAt ?? null} label="Parte de la DGT" /><Checked at={pajares.fetchedAt} /><Stale error={pajares.data ? pajares.error : null} /></p>
       </div> : null}
-      {!town || town === "aller" ? <div className="util-card"><h4>Puerto de San Isidro (AS-112)</h4><Official href={UTIL_LINKS.sanIsidro}>Estado de las carreteras en 112 Asturias</Official></div> : null}
-      {!town || town === "lena" ? <div className="util-card"><h4>Estación de Valgrande-Pajares</h4><Official href={UTIL_LINKS.valgrande}>Parte de nieve oficial de la estación</Official></div> : null}
-      {!town || town === "aller" ? <div className="util-card"><h4>Estación de Fuentes de Invierno</h4><Official href={UTIL_LINKS.fuentes}>Parte oficial de la estación</Official></div> : null}
+      {allerWinter ? <div className="util-card"><h4>Puerto de San Isidro (AS-112)</h4><Official href={UTIL_LINKS.sanIsidro}>Estado de las carreteras en 112 Asturias</Official></div> : null}
+      {lenaWinter ? <div className="util-card"><h4>Estación de Valgrande-Pajares</h4><Official href={UTIL_LINKS.valgrande}>Parte de nieve oficial de la estación</Official></div> : null}
+      {allerWinter ? <div className="util-card"><h4>Estación de Fuentes de Invierno</h4><Official href={UTIL_LINKS.fuentes}>Parte oficial de la estación</Official></div> : null}
     </Block> : null}
 
     {show("tiempo") && forecasts?.length ? <Block id="tiempo" title="El tiempo" kicker="Predicción">
@@ -112,7 +116,7 @@ export function UtilBlocks({ data }: { data: UtilData }) {
       <p className="util-source" data-util-source>Fuente: <a href="https://www.boe.es/" {...out}>Agencia Estatal Boletín Oficial del Estado</a> (RSS de oposiciones y concursos, sección II.B). Selección por concejo de Planta 14;
         el texto auténtico es el publicado en el BOE<Checked at={data.jobs.fetchedAt} /><Stale error={data.jobs.data ? data.jobs.error : null} />.</p>
       <Official href={UTIL_LINKS.bopa}>Empleo en el BOPA (Boletín Oficial del Principado de Asturias)</Official>
-      {(town ? [town] : Object.keys(UTIL_LINKS.empleoMunicipal)).map(slug => UTIL_LINKS.empleoMunicipal[slug] ? <Official key={slug} href={UTIL_LINKS.empleoMunicipal[slug]}>Empleo en el Ayuntamiento de {townName(slug)}</Official> : null)}
+      {(town ? [town] : Object.keys(UTIL_LINKS.empleoMunicipal).filter(slug => townShows("empleo", slug))).map(slug => UTIL_LINKS.empleoMunicipal[slug] ? <Official key={slug} href={UTIL_LINKS.empleoMunicipal[slug]}>Empleo en el Ayuntamiento de {townName(slug)}</Official> : null)}
     </Block> : null}
   </div>;
 }

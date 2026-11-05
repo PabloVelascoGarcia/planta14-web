@@ -1,4 +1,5 @@
-import { APIError, type Access, type CollectionBeforeChangeHook, type CollectionConfig, type Field, type PayloadRequest } from 'payload';
+import { APIError, type Access, type CollectionBeforeChangeHook, type CollectionConfig, type Endpoint, type Field, type PayloadRequest } from 'payload';
+import { UTIL_SERVICES } from '../lib/util-services';
 import { adminOnly, editorialUser, municipalSpaceOf, relationID } from './access';
 import { auditAfterChange, auditAfterDelete } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete } from './media-rights';
@@ -179,5 +180,56 @@ export const MunicipalServices: CollectionConfig = {
     { name: 'doubts', label: 'Dudas pendientes (no se publica)', type: 'textarea', access: editorialOnly },
     { name: 'externalID', label: 'Identificador de importación', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true } },
     { name: 'order', label: 'Orden', type: 'number', defaultValue: 100, admin: { position: 'sidebar', description: 'Los números más bajos salen antes dentro de su tipo.' } },
+  ],
+};
+
+// Servicios de «Útil» ocultos en un concejo. Lo decide el ayuntamiento desde su panel (solo su concejo y solo con el
+// espacio municipal activo); en los concejos sin espacio activo, la administración (aquí o en el CMS).
+const utilServiceOptions = UTIL_SERVICES.map(s => ({ label: s.label, value: s.key }));
+const visibilityEndpoint: Endpoint = {
+  path: '/concejo', method: 'post',
+  handler: async (req) => {
+    const body = await req.json?.().catch(() => null) as { hidden?: unknown; town?: unknown } | null;
+    const hidden = Array.isArray(body?.hidden) ? [...new Set(body!.hidden.map(String))] : null;
+    if (!hidden || hidden.some(key => !UTIL_SERVICES.some(s => s.key === key))) return Response.json({ error: 'Servicios no válidos' }, { status: 400 });
+    let town: number | null;
+    if (adminOnly({ req })) town = relationID(body?.town);
+    else {
+      const space = municipalSpaceOf(req);
+      if (space === null) return Response.json({ error: 'No autorizado' }, { status: req.user ? 403 : 401 });
+      const doc = await req.payload.findByID({ collection: 'municipal-spaces', id: space, depth: 0, overrideAccess: true, req }).catch(() => null);
+      const sub = doc?.subscription;
+      const now = new Date();
+      const active = sub?.status === 'demo' || (sub?.status === 'active' && (!sub.startsAt || new Date(sub.startsAt) <= now) && (!sub.endsAt || new Date(sub.endsAt) >= now));
+      if (!active) return Response.json({ error: 'Con el espacio municipal inactivo, lo decide la administración' }, { status: 403 });
+      town = relationID(doc?.town);
+    }
+    if (town === null) return Response.json({ error: 'Concejo no válido' }, { status: 400 });
+    const existing = (await req.payload.find({ collection: 'util-visibility', where: { town: { equals: town } }, limit: 1, depth: 0, overrideAccess: true, req })).docs[0];
+    const data = { town, hidden: hidden as never, updatedBy: req.user!.id };
+    if (existing) await req.payload.update({ collection: 'util-visibility', id: existing.id, data, overrideAccess: true, req });
+    else await req.payload.create({ collection: 'util-visibility', data, overrideAccess: true, req });
+    return Response.json({ hidden });
+  },
+};
+
+export const UtilVisibility: CollectionConfig = {
+  slug: 'util-visibility',
+  labels: { singular: 'Útil: servicios ocultos', plural: 'Útil: servicios ocultos' },
+  access: { read: () => true, create: adminOnly, update: adminOnly, delete: adminOnly },
+  admin: { useAsTitle: 'summary', defaultColumns: ['town', 'hidden', 'updatedBy', 'updatedAt'],
+    description: 'Servicios de «Útil» que no salen en un concejo. Cada ayuntamiento los elige desde su panel; en los concejos sin espacio municipal activo, decide la administración. Las noticias y lo editorial no se pueden ocultar.' },
+  endpoints: [visibilityEndpoint],
+  hooks: { beforeChange: [async ({ data, originalDoc, req }) => {
+    const townID = relationID(data.town ?? originalDoc?.town);
+    const town = townID ? await req.payload.findByID({ collection: 'towns', id: townID, depth: 0, overrideAccess: true, req }).catch(() => null) : null;
+    data.summary = town?.name ?? 'Concejo';
+    return data;
+  }], afterChange: [auditAfterChange] },
+  fields: [
+    { name: 'summary', type: 'text', admin: { hidden: true } },
+    { name: 'town', label: 'Concejo', type: 'relationship', relationTo: 'towns', required: true, unique: true, index: true },
+    { name: 'hidden', label: 'Servicios ocultos en este concejo', type: 'select', hasMany: true, options: utilServiceOptions },
+    { name: 'updatedBy', label: 'Cambiado por', type: 'relationship', relationTo: 'users', admin: { readOnly: true } },
   ],
 };

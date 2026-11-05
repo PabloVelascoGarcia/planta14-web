@@ -9,6 +9,7 @@ import { MunicipalMasthead } from "./municipal-masthead";
 import { MunicipalSuggestions } from "./municipal-suggestions";
 import { StatsReportView } from "./stats-report-view";
 import { MunicipalServicesEditor } from "./municipal-services-editor";
+import { MunicipalUtilVisibility } from "./municipal-util-visibility";
 
 type ContentType = PanelItem["type"];
 const types = sections.filter(s => s.id !== "contact") as { id: ContentType; label: string }[];
@@ -178,6 +179,7 @@ export function MunicipalCmsPanel({ space, state, maintenance = null }: { space:
           </aside>
         </div>
         <div className="municipal-panel-extra">
+          <MunicipalUtilVisibility hidden={state.utilHidden} territory={space.territory} disabled={Boolean(maintenance)} />
           <MunicipalServicesEditor services={state.services} disabled={Boolean(maintenance)} />
           <MunicipalSuggestions disabled={Boolean(maintenance)} />
           {state.stats ? <section className="municipal-form municipal-stats" aria-label="Visitas de tu concejo" data-municipal-stats>

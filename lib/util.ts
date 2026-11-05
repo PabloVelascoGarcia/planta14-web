@@ -4,20 +4,10 @@ import { aemetEnabled, aemetForecast, openGrants, pajaresStatus, publicJobs, UTI
   type Cached, type Forecast, type Grant, type Job, type RoadIncident } from "./util-sources";
 
 // Sección «Útil»: qué se enseña en /util y en la página de cada concejo. Cada servicio sale por defecto en todos los
-// concejos; un ayuntamiento puede ocultarlo en su concejo desde su panel (bloque 5).
+// concejos; un ayuntamiento puede ocultarlo en su concejo desde su panel (en /util se quita lo de ese concejo).
 // Solo cuatro fuentes son automáticas (DGT/Pajares, AEMET, BDNS y BOE); el resto son enlaces a la fuente oficial.
 
-export const UTIL_SERVICES = [
-  { key: "invierno", label: "Puertos y estaciones de esquí" },
-  { key: "tiempo", label: "El tiempo (AEMET)" },
-  { key: "farmacias", label: "Farmacias de guardia" },
-  { key: "servicios", label: "Directorio de servicios municipales" },
-  { key: "patrimonio", label: "Patrimonio" },
-  { key: "rutas", label: "Rutas" },
-  { key: "subvenciones", label: "Subvenciones abiertas" },
-  { key: "empleo", label: "Empleo público" },
-] as const;
-export type UtilService = typeof UTIL_SERVICES[number]["key"];
+export { UTIL_SERVICES, type UtilService } from "./util-services";
 
 /** Enlaces a la fuente oficial (sin extraer datos). Comprobados el 04/11/2026 (datos-servicios/fuentes-automaticas.md). */
 export const UTIL_LINKS = {
@@ -40,7 +30,7 @@ export type Place = { slug: string; name: string; town: string; townName: string
 export type Service = { id: number; name: string; town: string; category: string; place: string | null; address: string | null; phone: string | null; email: string | null;
   web: string | null; hours: string | null; notes: string | null; sourceUrl: string | null };
 export type UtilData = {
-  town: string | null; hidden: string[];
+  town: string | null; hidden: string[]; hiddenByTown: Record<string, string[]>;
   pajares: Cached<{ publishedAt: string | null; incidents: RoadIncident[] }>;
   forecasts: { town: string; forecast: Cached<Forecast> }[] | null;
   grants: Cached<Grant[]>; jobs: Cached<Job[]>;
@@ -60,25 +50,29 @@ const summary = (text: string | null | undefined) => {
 /** Datos de «Útil» de un concejo (o de todos con town = null). Nunca lanza: cada bloque trae su error. */
 export async function getUtilData(town: string | null): Promise<UtilData> {
   const empty = { data: null, fetchedAt: null, error: null };
-  if (contentSource() !== "payload") return { town, hidden: [], pajares: empty, forecasts: null, grants: empty, jobs: empty, heritage: [], routes: [], services: [] };
+  if (contentSource() !== "payload") return { town, hidden: [], hiddenByTown: {}, pajares: empty, forecasts: null, grants: empty, jobs: empty, heritage: [], routes: [], services: [] };
   const { contentClient } = await import("./payload-content");
   const payload = await contentClient();
   const townWhere: Where = town ? { "town.slug": { equals: town } } : {};
   const towns = town ? UTIL_TOWNS.filter(t => t.slug === town) : UTIL_TOWNS;
   const showsPajares = !town || town === "lena";
-  const [pajares, grants, jobs, forecasts, heritage, routes, services, hidden] = await Promise.all([
+  const [pajares, grants, jobs, forecasts, heritage, routes, services, hiddenByTown] = await Promise.all([
     showsPajares ? safe(pajaresStatus()) : Promise.resolve(empty), safe(openGrants()), safe(publicJobs()),
     aemetEnabled() ? Promise.all(towns.map(async t => ({ town: t.slug, forecast: await safe(aemetForecast(t.slug)!) }))) : Promise.resolve(null),
     getPlaces("heritage", town), getPlaces("routes", town),
     town ? payload.find({ collection: "municipal-services", depth: 1, pagination: false, sort: "order", overrideAccess: false, where: townWhere }).then(r => r.docs).catch(() => []) : Promise.resolve([]),
-    town ? hiddenServices(town) : Promise.resolve([] as string[]),
+    hiddenByConcejo(),
   ]);
+  const hidden = town ? hiddenByTown[town] ?? [] : [];
+  // En /util (todos los concejos) se quita de cada servicio lo del concejo que lo ha ocultado.
+  // (En la página de un concejo cuenta solo lo que ha ocultado ese concejo: `hidden`.)
+  const shown = (key: string, scope: string) => Boolean(town) || !(hiddenByTown[scope] ?? []).includes(key);
   const inTown = (scope: string) => !town || scope === town || !UTIL_TOWNS.some(t => t.slug === scope);
   return {
-    town, hidden, pajares, forecasts,
-    grants: { ...grants, data: grants.data?.filter(g => inTown(g.scope)) ?? null },
-    jobs: { ...jobs, data: jobs.data?.filter(j => inTown(j.scope)) ?? null },
-    heritage, routes,
+    town, hidden, hiddenByTown, pajares, forecasts: forecasts?.filter(f => shown("tiempo", f.town)) ?? null,
+    grants: { ...grants, data: grants.data?.filter(g => inTown(g.scope) && shown("subvenciones", g.scope)) ?? null },
+    jobs: { ...jobs, data: jobs.data?.filter(j => inTown(j.scope) && shown("empleo", j.scope)) ?? null },
+    heritage: heritage.filter(p => shown("patrimonio", p.town)), routes: routes.filter(p => shown("rutas", p.town)),
     services: services.map(doc => ({ id: doc.id, name: doc.name, town: townOf(doc).slug, category: doc.category, place: doc.place || null, address: doc.address || null,
       phone: doc.phone || null, email: doc.email || null, web: doc.web || null, hours: doc.hours || null, notes: doc.notes || null, sourceUrl: doc.sourceUrl || null })),
   };
@@ -109,10 +103,13 @@ export async function photoOf(value: unknown): Promise<Photo | null> {
   return { url, srcSet: imageSrcSet(media), alt: media?.alt || "", credit: media?.credit || "", source: media?.sourceURL || null };
 }
 
-/** Servicios de «Útil» que un concejo ha ocultado (bloque 5). */
-export async function hiddenServices(town: string): Promise<string[]> {
-  void town;
-  return [];
+/** Servicios de «Útil» ocultos en cada concejo (slug del concejo → claves). */
+export async function hiddenByConcejo(): Promise<Record<string, string[]>> {
+  if (contentSource() !== "payload") return {};
+  const { contentClient } = await import("./payload-content");
+  const payload = await contentClient();
+  const docs = await payload.find({ collection: "util-visibility", depth: 1, pagination: false, overrideAccess: true }).then(r => r.docs).catch(() => []);
+  return Object.fromEntries(docs.filter(d => typeof d.town === "object" && d.town).map(d => [(d.town as { slug: string }).slug, (d.hidden ?? []) as string[]]));
 }
 
 export async function getPlace(collection: "heritage" | "routes", slug: string) {
