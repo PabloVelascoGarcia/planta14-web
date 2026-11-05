@@ -560,13 +560,29 @@ export interface Festival {
    */
   town: number | Town;
   /**
-   * Día en que empieza.
+   * Día en que empieza. Obligatorio con la fecha confirmada.
    */
-  startDate: string;
+  startDate?: string | null;
   /**
    * Día en que termina (el mismo si dura un día).
    */
-  endDate: string;
+  endDate?: string | null;
+  /**
+   * Solo con «Confirmada» y las fechas rellenas se puede publicar. Las fiestas del catálogo entran con «Fecha pendiente» o «Fecha orientativa (2025)».
+   */
+  dateStatus: 'confirmada' | 'pendiente' | 'orientativa';
+  /**
+   * Solo de referencia: fechas documentadas en 2025. No se publican ni se trasladan a otro año.
+   */
+  referenceDates?: string | null;
+  /**
+   * Cuándo se celebra normalmente, según las fuentes (no se publica).
+   */
+  usualDates?: string | null;
+  /**
+   * Una o dos frases sobre la fiesta. Sale en la ficha.
+   */
+  description?: string | null;
   /**
    * Actos por días y horas. Puedes usar negrita, listas y enlaces.
    */
@@ -614,6 +630,18 @@ export interface Festival {
     tokenHash?: string | null;
     tokenExpiresAt?: string | null;
   };
+  sources?:
+    | {
+        url: string;
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Actos habituales, carteles, dudas y verificación según el catálogo de fiestas.
+   */
+  catalogNotes?: string | null;
+  externalID?: string | null;
   /**
    * Se crea sola: nombre, pueblo y año.
    */
@@ -956,6 +984,9 @@ export interface MunicipalService {
   phone?: string | null;
   email?: string | null;
   web?: string | null;
+  /**
+   * Hasta 500 caracteres.
+   */
   hours?: string | null;
   notes?: string | null;
   /**
@@ -1351,6 +1382,10 @@ export interface FestivalsSelect<T extends boolean = true> {
   town?: T;
   startDate?: T;
   endDate?: T;
+  dateStatus?: T;
+  referenceDates?: T;
+  usualDates?: T;
+  description?: T;
   program?: T;
   image?: T;
   chronicle?: T;
@@ -1368,6 +1403,15 @@ export interface FestivalsSelect<T extends boolean = true> {
         tokenHash?: T;
         tokenExpiresAt?: T;
       };
+  sources?:
+    | T
+    | {
+        url?: T;
+        title?: T;
+        id?: T;
+      };
+  catalogNotes?: T;
+  externalID?: T;
   slug?: T;
   startDay?: T;
   endDay?: T;

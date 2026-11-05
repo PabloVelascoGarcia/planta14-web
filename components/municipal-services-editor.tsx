@@ -55,7 +55,7 @@ export function MunicipalServicesEditor({ services, disabled = false }: { servic
       <label>Teléfono<input value={form.phone} onChange={e => set({ phone: e.target.value })} maxLength={60} inputMode="tel" /></label>
       <label>Correo<input type="email" value={form.email} onChange={e => set({ email: e.target.value })} maxLength={120} /></label>
       <label>Web<input value={form.web} onChange={e => set({ web: e.target.value })} maxLength={300} placeholder="https://" /></label>
-      <label>Horario<input value={form.hours} onChange={e => set({ hours: e.target.value })} maxLength={200} /></label>
+      <label>Horario<textarea value={form.hours} onChange={e => set({ hours: e.target.value })} maxLength={500} rows={2} /></label>
       <label>Observaciones<textarea value={form.notes} onChange={e => set({ notes: e.target.value })} maxLength={600} rows={2} /></label>
       <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={locked}>{form.id ? "Guardar los cambios ↗" : "Añadir al directorio ↗"}</button>
         {form.id ? <button type="button" className="municipal-text-link" onClick={() => setForm(blank)}>Cancelar</button> : null}</div>

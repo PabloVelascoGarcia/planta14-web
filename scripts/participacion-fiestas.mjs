@@ -1,4 +1,4 @@
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -157,4 +157,66 @@ export async function run(ctx) {
   assert.deepEqual([again.creadas.length, again.existentes.length], [0, 2], 'repeatable');
   assert.ok((await page(`${web}/fiestas?concejo=aller`)).includes('Nuestra Señora'), 'imported fiesta published');
   passed('npm run cms:fiestas:importar: validates the whole JSON first (nothing imported on error), --solo-comprobar, drafts or --publicar, repeatable without duplicates; unknown options rejected');
+
+  // Catálogo de fiestas (formato de contenido-ensayo/fiestas-caudal.json): todo borrador, sin fechas inventadas.
+  {
+  const real = spawnSync('git', ['show', '034b853:contenido-ensayo/fiestas-caudal.json'], { encoding: 'utf8', maxBuffer: 1 << 24 });
+  const catalog = real.status === 0 ? JSON.parse(real.stdout) : { fiestas: [
+    { id: 'prueba-con-2025', nombre: 'Fiesta de prueba', pueblo_o_parroquia: 'Pueblo', concejo: 'Lena', fechas_habituales: { texto: 'Septiembre' }, fechas_2025: { inicio: '2025-09-26', fin: '2025-09-28', dias_confirmados: [], estado: 'confirmado' },
+      descripcion: 'Descripción.', actos_tipicos: { actos: ['Misa'] }, organizador: { nombre: 'Comisión' }, se_repite_cada_ano: { valor: true }, fuentes_consultadas: [{ entidad: 'Ayuntamiento', titulo: 'Ficha', url: 'https://example.org/' }], carteles: [], dudas: [], verificacion: 'ok' },
+    { id: 'prueba-sin-fecha', nombre: 'Otra fiesta', pueblo_o_parroquia: 'Aldea', concejo: 'Riosa', fechas_habituales: { texto: 'Agosto' }, fechas_2025: { inicio: null, fin: null, dias_confirmados: [], estado: 'no_localizado' },
+      descripcion: 'Otra.', actos_tipicos: { actos: [] }, organizador: { nombre: null }, se_repite_cada_ano: { valor: true }, fuentes_consultadas: [], carteles: [], dudas: ['Fecha sin localizar'], verificacion: 'ok' },
+  ] };
+  if (real.status !== 0) console.log('AVISO: no está el commit 034b853; se prueba el catálogo con dos fiestas de ejemplo');
+  const total = catalog.fiestas.length;
+  const sinFecha = catalog.fiestas.filter(f => !f.fechas_2025?.inicio && !f.fechas_2025?.fin && !(f.fechas_2025?.dias_confirmados ?? []).length && !f.fechas_2025?.dia_principal && !f.fechas_2025?.festivo_laboral).length;
+  const catalogFile = path.join(directory, 'fiestas-caudal.json');
+  await writeFile(catalogFile, JSON.stringify(catalog));
+  const run = (...args) => new Promise(resolve => {
+    const child = spawn(process.execPath, ['scripts/fiestas-run.mjs', ...args], { env: process.env });
+    let out = ''; child.stdout.on('data', b => { out += b; }); child.stderr.on('data', b => { out += b; });
+    child.on('close', status => resolve({ status, out }));
+  });
+  const before = (await payload.count({ collection: 'festivals', overrideAccess: true })).totalDocs;
+  const dry = await run(catalogFile, '--solo-comprobar');
+  assert.ok(dry.status === 0 && dry.out.includes('Formato: catálogo de fiestas') && dry.out.includes(`Se crearían ${total} fiestas como borrador`)
+    && dry.out.includes(`De ellas: ${sinFecha} con «Fecha pendiente» y ${total - sinFecha} con «Fecha orientativa (2025)»`), dry.out);
+  assert.equal((await payload.count({ collection: 'festivals', overrideAccess: true })).totalDocs, before, 'dry run writes nothing');
+  const rejected = await run(catalogFile, '--publicar');
+  assert.ok(rejected.status === 1 && rejected.out.includes('El catálogo entra siempre como borrador'), rejected.out);
+  const broken = path.join(directory, 'fiestas-mal.json');
+  await writeFile(broken, JSON.stringify({ fiestas: [{ ...catalog.fiestas[0], id: 'mal-1', concejo: 'Gijón', descripcion: 'x'.repeat(1200) }, { ...catalog.fiestas[0], id: 'mal-2', nombre: '' }] }));
+  const wrong = await run(broken, '--solo-comprobar');
+  assert.ok(wrong.status === 1 && wrong.out.includes('concejo desconocido «Gijón»') && wrong.out.includes('«Descripción» tiene 1200 caracteres (máximo 1000)') && wrong.out.includes('falta «Nombre de la fiesta»'), `all errors at once: ${wrong.out}`);
+  const done = await run(catalogFile);
+  assert.ok(done.status === 0 && done.out.includes(`Creadas ${total} fiestas como borrador`), done.out);
+  const repeated = await run(catalogFile);
+  assert.ok(repeated.out.includes('Creadas 0 fiestas') && repeated.out.includes(`Ya existían ${total}`), 'repeatable by catalogue id');
+  const imported2 = (await payload.find({ collection: 'festivals', where: { externalID: { exists: true } }, pagination: false, draft: true, overrideAccess: true, depth: 1 })).docs;
+  assert.equal(imported2.length, total);
+  assert.ok(imported2.every(f => f._status === 'draft' && !f.startDate && !f.startDay && f.dateStatus !== 'confirmada'), 'all drafts, no dates, never confirmed');
+  assert.equal(imported2.filter(f => f.dateStatus === 'pendiente').length, sinFecha, '«Fecha pendiente»');
+  const withRef = imported2.find(f => f.dateStatus === 'orientativa');
+  assert.ok(withRef.referenceDates.startsWith('Fecha orientativa (2025):') && withRef.referenceDates.includes('/2025') && !/2026|2027/.test(withRef.referenceDates.replace('No es una fecha de 2026', '')), `2025 dates kept as a reference only: ${withRef.referenceDates}`);
+  assert.ok(imported2.every(f => f.town && f.village && f.description), 'concejo, village and description kept');
+  assert.ok(imported2.some(f => (f.sources ?? []).length), 'sources kept');
+  // Nunca en la web pública ni en la agenda; tampoco por la API anónima.
+  const name = withRef.name;
+  for (const url of ['/fiestas', `/fiestas?concejo=${withRef.town.slug}`, '/agenda', `/${withRef.town.slug}`, '/']) assert.ok(!(await page(`${web}${url}`)).includes(`>${name}<`), `${name} not public in ${url}`);
+  const anon = await (await fetch(`${web}/api/cms/festivals?where[name][equals]=${encodeURIComponent(name)}&limit=100&draft=true`)).json();
+  assert.equal(anon.totalDocs, 0, `not readable anonymously: ${JSON.stringify(anon).slice(0, 200)}`);
+  // No se puede publicar sin confirmar la fecha; al confirmarla, sí.
+  const editorCookie = await ctx.signIn(ctx.users.editor.email);
+  const headers = { Cookie: editorCookie, 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' };
+  const refused = await fetch(`${web}/api/cms/festivals/${withRef.id}`, { method: 'PATCH', headers, body: JSON.stringify({ _status: 'published' }) });
+  assert.ok(refused.status === 400 && (await refused.text()).includes('confirma sus fechas'), 'cannot publish without a confirmed date');
+  const confirmedNow = await fetch(`${web}/api/cms/festivals/${withRef.id}`, { method: 'PATCH', headers, body: JSON.stringify({ dateStatus: 'confirmada', startDate: `${shift(today, 30)}T12:00:00.000Z`, endDate: `${shift(today, 31)}T12:00:00.000Z`, _status: 'published' }) });
+  assert.equal(confirmedNow.status, 200, await confirmedNow.clone().text());
+  assert.ok((await page(`${web}/fiestas`)).includes(name), 'published once the date is confirmed');
+  await payload.update({ collection: 'festivals', id: withRef.id, overrideAccess: true, data: { _status: 'draft' } });
+  // En el CMS: columna y filtro «Estado de la fecha».
+  const list = await (await fetch(`${web}/api/cms/festivals?where[dateStatus][equals]=pendiente&limit=0&draft=true`, { headers })).json();
+  assert.equal(list.totalDocs, sinFecha, 'filterable by «Fecha pendiente»');
+  passed(`fiestas catalogue (034b853, ${total} fiestas): converted with --solo-comprobar first (all errors at once), always drafts (--publicar refused), 2025 dates only as «Fecha orientativa (2025)», ${sinFecha} with «Fecha pendiente» (filterable in the CMS), concejo, village, description and sources kept; never public nor in the agenda until a journalist confirms the date; repeatable by id`);
+  }
 }

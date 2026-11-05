@@ -174,7 +174,7 @@ export const MunicipalServices: CollectionConfig = {
       { name: 'email', label: 'Correo', type: 'text', maxLength: 120 },
     ] },
     { name: 'web', label: 'Web', type: 'text', maxLength: 300, validate: (value: unknown) => !value || /^https?:\/\/\S+$/.test(String(value)) || 'La web debe empezar por https://' },
-    { name: 'hours', label: 'Horario', type: 'text', maxLength: 200 },
+    { name: 'hours', label: 'Horario', type: 'textarea', maxLength: 500, admin: { description: 'Hasta 500 caracteres.' } },
     { name: 'notes', label: 'Observaciones', type: 'textarea', maxLength: 600 },
     { name: 'sourceUrl', label: 'Fuente', type: 'text', maxLength: 300, admin: { description: 'Página oficial de la que sale el dato.' } },
     { name: 'doubts', label: 'Dudas pendientes (no se publica)', type: 'textarea', access: editorialOnly },

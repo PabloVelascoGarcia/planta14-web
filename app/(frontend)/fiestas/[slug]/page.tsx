@@ -47,7 +47,7 @@ export default async function FiestaPage({ params }: Props) {
             </figure> : null}
             <h2 className="font-serif text-3xl font-black">Programa</h2>
             <div className="mt-4 space-y-4 font-serif text-lg leading-8 text-coal-900">
-              {fiesta.program ? <RichText value={fiesta.program} /> : <p>El programa se publicará en cuanto lo tengamos.</p>}
+              {fiesta.description ? <p data-fiesta-description>{fiesta.description}</p> : null}{fiesta.program ? <RichText value={fiesta.program} /> : <p>El programa se publicará en cuanto lo tengamos.</p>}
             </div>
           </div>
           {fiesta.chronicle ? <p className="mt-8 border-t border-coal-900/15 pt-4"><Link href={`/noticia/${fiesta.chronicle.slug}`} className="inline-flex min-h-11 items-center text-lg font-bold text-copper hover:underline">Crónica: {fiesta.chronicle.title} ↗</Link></p> : null}

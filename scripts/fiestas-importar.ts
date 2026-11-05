@@ -18,10 +18,14 @@ try {
     process.exitCode = 1;
   } else {
     const verb = opts.soloComprobar ? 'Se crearían' : 'Creadas';
+    console.log(`Formato: ${report.formato === 'catalogo' ? 'catálogo de fiestas (todas como borrador, sin fechas publicables)' : 'lista de fiestas con fecha'}`);
     console.log(`${verb} ${report.creadas.length} fiestas${opts.publicar ? ' publicadas' : ' como borrador'}${report.creadas.length ? `:\n  ${report.creadas.join('\n  ')}` : '.'}`);
+    if (report.formato === 'catalogo') console.log(`De ellas: ${report.pendientes} con «Fecha pendiente» y ${report.orientativas} con «Fecha orientativa (2025)».`);
     console.log(`Ya existían ${report.existentes.length}${report.existentes.length ? ` (no se tocan):\n  ${report.existentes.join('\n  ')}` : '.'}`);
     console.log(opts.soloComprobar ? 'COMPROBACIÓN TERMINADA (sin cambios)' : 'IMPORTACIÓN TERMINADA');
   }
 } finally {
   await payload.destroy();
 }
+// `payload run` no respeta process.exitCode: con errores se sale con 1 explícitamente.
+if (process.exitCode) process.exit(process.exitCode);

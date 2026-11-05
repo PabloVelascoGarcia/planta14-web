@@ -4,7 +4,7 @@ import type { LexicalState } from "./rich-text";
 /** Fiesta tal como la usa la web pública (solo publicadas; sin organizador ni contacto). */
 export type Fiesta = {
   slug: string; name: string; village: string; town: string; townSlug: string;
-  startDay: string; endDay: string; program?: LexicalState; recurring: boolean;
+  startDay: string; endDay: string; program?: LexicalState; recurring: boolean; description?: string;
   image?: { url: string; srcSet?: string; alt: string; credit: string };
   chronicle?: { slug: string; title: string };
 };

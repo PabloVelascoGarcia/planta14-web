@@ -1,5 +1,6 @@
 import type { Payload, Where } from 'payload';
 import { slugText } from './content-collections';
+import { validateRecord } from './import-validate';
 import { reducirFoto } from './ensayo';
 import { download, trackFrom, type Track } from './util-tracks';
 
@@ -42,6 +43,10 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
   const townOf = (value: unknown) => towns.find(t => t.slug === normal(value) || normal(t.name) === normal(value));
   const report = { creadas: [] as string[], existentes: [] as string[], completadas: [] as string[], omitidas: [] as string[], avisos: [] as string[], errores: [] as string[] };
   const admin = (await payload.find({ collection: 'users', where: { role: { equals: 'admin' } }, sort: 'id', limit: 1, depth: 0, overrideAccess: true })).docs[0];
+  const collection = kind === 'patrimonio' ? 'heritage' : kind === 'rutas' ? 'routes' : 'municipal-services';
+  // 1. Se construyen todos los registros (sin descargas) y se validan contra el esquema real de la colección.
+  //    Si hay algún error, se informan todos y no se escribe nada.
+  const seen = new Set<string>();
   const valid = items.map((raw, index) => {
     const item = (raw ?? {}) as Item;
     const name = text(item.nombre), id = text(item.id);
@@ -52,21 +57,25 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
     const lat = wgs ? num(coords.latitud) : null, lon = wgs ? num(coords.longitud) : null;
     const type = normal(item.tipo);
     const skip = kind === 'servicios' && type === 'farmacia';
+    const where = `#${index + 1}${name ? ` «${name}»` : ''}${id ? ` (${id})` : ''}`;
     const problems = skip ? [] : [
-      !name && 'falta el nombre', !id && 'falta el id', !town && `concejo desconocido «${item.concejo ?? ''}»`,
+      !name && 'falta el nombre', !id && 'falta el id', id && seen.has(id) && 'id repetido en el archivo', !town && `concejo desconocido «${item.concejo ?? ''}»`,
       (lat !== null && !(lat > 42 && lat < 44.5)) && 'latitud fuera de Asturias', (lon !== null && !(lon > -7.5 && lon < -4.5)) && 'longitud fuera de Asturias',
       (lat === null) !== (lon === null) && 'falta latitud o longitud',
       kind === 'servicios' && !SERVICE_TYPES[type] && `tipo desconocido «${item.tipo ?? ''}»`,
       kind === 'rutas' && item.distanciaKm != null && !Number.isFinite(num(item.distanciaKm)) && 'distanciaKm no es un número',
-    ].filter(Boolean);
-    if (problems.length) report.errores.push(`#${index + 1}${name ? ` «${name}»` : ''}: ${problems.join(', ')}`);
-    return { item, name: name!, id: id!, town: town!, lat, lon, type, skip };
+    ].filter(Boolean) as string[];
+    if (id) seen.add(id);
+    const data = skip || !name ? null : build(item, name, id ?? '', town ?? { id: undefined as unknown as number, slug: '' }, lat, lon, type);
+    if (data) problems.push(...validateRecord(payload, collection, data, ['slug', 'image', 'track', 'trackNote', 'gpxLabel', 'review', 'reviewed']));
+    if (problems.length) report.errores.push(`${where}: ${problems.join('; ')}`);
+    return { item, name: name!, id: id!, town: town!, type, skip, data: data! };
   });
   if (report.errores.length) return report;
-  const collection = kind === 'patrimonio' ? 'heritage' : kind === 'rutas' ? 'routes' : 'municipal-services';
   const farmacias = valid.filter(v => v.skip).length;
   if (farmacias) report.omitidas.push(`${farmacias} farmacias (el Colegio de Farmacéuticos no ha confirmado permiso de reutilización: «Útil» enlaza su buscador)`);
-  for (const { item, name, id, town, lat, lon, type, skip } of valid) {
+  // 2. Escritura idempotente por «id»: lo que ya existe no se duplica ni se pisa (solo se completan foto o recorrido).
+  for (const { item, name, id, town, skip, data } of valid) {
     if (skip) continue;
     const label = `${name} (${town.name})`;
     const where: Where = { externalID: { equals: id } };
@@ -74,7 +83,6 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
     const foto = kind === 'patrimonio' ? (item.foto as Item | null) : null;
     const trackURL = kind === 'rutas' ? (urls(item.gpxOficial)[0] ?? urls(item.enlaceAlternativo).find(u => !/wikiloc\./i.test(u)) ?? null) : null;
     if (existing) {
-      // Solo se completa lo que falte (foto o recorrido), nunca se pisa lo editado en el CMS.
       const patch: Record<string, unknown> = {};
       if (foto && !existing.image && !opts.soloComprobar) { const image = await photo(foto, name); if (image) patch.image = image; }
       if (trackURL && !(Array.isArray(existing.track) && existing.track.length) && !opts.soloComprobar) {
@@ -86,40 +94,46 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
     }
     report.creadas.push(label);
     if (opts.soloComprobar) continue;
-    const sources = urls(item.fuentesOficiales ?? item.fuentes).map(url => ({ url }));
-    const dudoso = doubts(item.dudas) ?? (/pendientes/.test(String(item.estado ?? '')) ? 'Marcado como «comprobado con pendientes» en datos-servicios.' : null);
-    let data: Record<string, unknown>;
-    if (kind === 'patrimonio') {
-      const protection = (item.proteccionLegal ?? {}) as Item;
-      const coords = (item.coordenadas ?? {}) as Item;
-      const utm = lat === null && coords.sistema && !/^WGS/i.test(String(coords.sistema)) ? `Pendiente de convertir a WGS84 (origen en ${coords.sistema}: ${Object.entries(coords).filter(([k]) => !['sistema', 'referencia', 'fuente'].includes(k)).map(([k, v]) => `${k} ${v}`).join(', ')})` : null;
-      data = { name, town: town.id, kind: text(item.tipo), place: text(item.localidad), description: text(item.descripcion),
-        protection: [text(protection.figura), text(protection.norma)].filter(Boolean).join(' · ') || null, protectionUrl: urls(protection.fuente)[0] ?? null,
-        lat, lon, coordinatesNote: [text(coords.referencia), utm].filter(Boolean).join(' · ') || null, sources, doubts: dudoso, externalID: id, published: opts.publicar,
-        image: foto ? await photo(foto, name) : null, slug: slugText(`${name} ${town.slug}`).slice(0, 90) };
-    } else if (kind === 'rutas') {
-      const elevation = (item.desnivel ?? {}) as Item;
-      const otherNames = ((item.otrosConcejos as unknown[]) ?? []).map(t => text(t)).filter((t): t is string => Boolean(t));
-      const others = otherNames.map(t => townOf(t)?.id).filter((t): t is number => typeof t === 'number' && t !== town.id);
+    if (kind === 'patrimonio') data.image = foto ? await photo(foto, name) : null;
+    if (kind === 'rutas') {
       const t = trackURL ? await route(trackURL, name) : { track: null, note: '' };
       const first = t.track?.[0]?.[0];
-      const link = urls(item.gpxOficial)[0] ?? urls(item.enlaceAlternativo)[0] ?? null;
-      data = { name, town: town.id, code: text(item.codigo), otherTowns: others, alsoIn: otherNames.join(', ') || null, start: text(item.inicio), end: text(item.fin),
-        distanceKm: num(item.distanciaKm), distanceNote: text(item.distanciaCorrespondeA), elevationUp: num(elevation.positivoMetros), elevationDown: num(elevation.negativoMetros),
-        difficulty: text(item.dificultad), duration: text(item.tiempo), description: text(item.descripcion),
-        gpxUrl: link, gpxLabel: !link ? null : /wikiloc\./i.test(link) ? 'Ver la ruta en Wikiloc (enlace de la fuente)' : t.note.includes('PLT') || /PLT/.test(JSON.stringify(item.dudas ?? '')) ? 'Descarga oficial del track (OziExplorer PLT)' : t.note.startsWith('ZIP') ? 'Descarga oficial de los tracks (ZIP)' : 'Track GPX oficial',
-        track: t.track, trackNote: t.note || null, lat: lat ?? first?.[0] ?? null, lon: lon ?? first?.[1] ?? null,
-        sources, doubts: dudoso, externalID: id, published: opts.publicar, slug: slugText(`${name} ${town.slug}`).slice(0, 90) };
-    } else {
-      const phones = (Array.isArray(item.telefonos) ? item.telefonos : [item.telefonos]).map(text).filter(Boolean) as string[];
-      data = { name, town: town.id, category: SERVICE_TYPES[type], place: text(item.localidad), address: text(item.direccion),
-        phone: phones.map(p => p.replace(/^(\d{3})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4')).join(' · ') || null, email: text(item.correo), web: urls(item.web)[0] ?? null,
-        hours: text(item.horario), notes: OPERATIONAL[normal(item.estadoOperativo)] ?? null, sourceUrl: urls(item.fuentes)[0] ?? null,
-        doubts: doubts(item.dudas), externalID: id, order: type === 'ayuntamiento' ? 1 : 100 };
+      const link = data.gpxUrl as string | null;
+      Object.assign(data, { track: t.track, trackNote: t.note || null, lat: data.lat ?? first?.[0] ?? null, lon: data.lon ?? first?.[1] ?? null,
+        gpxLabel: !link ? null : /wikiloc\./i.test(link) ? 'Ver la ruta en Wikiloc (enlace de la fuente)' : t.note.includes('PLT') || /PLT/.test(JSON.stringify(item.dudas ?? '')) ? 'Descarga oficial del track (OziExplorer PLT)' : t.note.startsWith('ZIP') ? 'Descarga oficial de los tracks (ZIP)' : 'Track GPX oficial' });
     }
     await payload.create({ collection, overrideAccess: true, data: data as never });
   }
   return report;
+
+  /** Datos del registro tal como se guardarán (sin foto ni recorrido, que se descargan al escribir). */
+  function build(item: Item, name: string, id: string, town: { id: number; slug: string }, lat: number | null, lon: number | null, type: string): Record<string, unknown> {
+    const sources = urls(item.fuentesOficiales ?? item.fuentes).map(url => ({ url }));
+    const dudoso = doubts(item.dudas) ?? (/pendientes/.test(String(item.estado ?? '')) ? 'Marcado como «comprobado con pendientes» en datos-servicios.' : null);
+    if (kind === 'patrimonio') {
+      const protection = (item.proteccionLegal ?? {}) as Item;
+      const coords = (item.coordenadas ?? {}) as Item;
+      const utm = lat === null && coords.sistema && !/^WGS/i.test(String(coords.sistema)) ? `Pendiente de convertir a WGS84 (origen en ${coords.sistema}: ${Object.entries(coords).filter(([k]) => !['sistema', 'referencia', 'fuente'].includes(k)).map(([k, v]) => `${k} ${v}`).join(', ')})` : null;
+      return { name, town: town.id, kind: text(item.tipo), place: text(item.localidad), description: text(item.descripcion),
+        protection: [text(protection.figura), text(protection.norma)].filter(Boolean).join(' · ') || null, protectionUrl: urls(protection.fuente)[0] ?? null,
+        lat, lon, coordinatesNote: [text(coords.referencia), utm].filter(Boolean).join(' · ') || null, sources, doubts: dudoso, externalID: id, published: opts.publicar,
+        slug: slugText(`${name} ${town.slug}`).slice(0, 90) };
+    }
+    if (kind === 'rutas') {
+      const elevation = (item.desnivel ?? {}) as Item;
+      const otherNames = ((item.otrosConcejos as unknown[]) ?? []).map(t => text(t)).filter((t): t is string => Boolean(t));
+      const others = otherNames.map(t => townOf(t)?.id).filter((t): t is number => typeof t === 'number' && t !== town.id);
+      return { name, town: town.id, code: text(item.codigo), otherTowns: others, alsoIn: otherNames.join(', ') || null, start: text(item.inicio), end: text(item.fin),
+        distanceKm: num(item.distanciaKm), distanceNote: text(item.distanciaCorrespondeA), elevationUp: num(elevation.positivoMetros), elevationDown: num(elevation.negativoMetros),
+        difficulty: text(item.dificultad), duration: text(item.tiempo), description: text(item.descripcion), gpxUrl: urls(item.gpxOficial)[0] ?? urls(item.enlaceAlternativo)[0] ?? null,
+        lat, lon, sources, doubts: dudoso, externalID: id, published: opts.publicar, slug: slugText(`${name} ${town.slug}`).slice(0, 90) };
+    }
+    const phones = (Array.isArray(item.telefonos) ? item.telefonos : [item.telefonos]).map(text).filter(Boolean) as string[];
+    return { name, town: town.id, category: SERVICE_TYPES[type], place: text(item.localidad), address: text(item.direccion),
+      phone: phones.map(p => p.replace(/^(\d{3})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4')).join(' · ') || null, email: text(item.correo), web: urls(item.web)[0] ?? null,
+      hours: text(item.horario), notes: OPERATIONAL[normal(item.estadoOperativo)] ?? null, sourceUrl: urls(item.fuentes)[0] ?? null,
+      doubts: doubts(item.dudas), externalID: id, order: type === 'ayuntamiento' ? 1 : 100 };
+  }
 
   /** Foto de Commons → Imágenes (o la que ya exista con la misma página de Commons). Si falla, la ficha queda sin foto. */
   async function photo(foto: Item, name: string): Promise<number | null> {
