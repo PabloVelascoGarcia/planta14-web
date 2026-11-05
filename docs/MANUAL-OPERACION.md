@@ -583,3 +583,21 @@ npm run cms:servicios:importar -- servicios-municipales.json
 - Las noticias y el contenido de Planta 14 no se pueden ocultar.
 - En los concejos **sin espacio municipal activo** decide la administración, en CMS → **Útil: servicios ocultos**.
 
+
+## 23. Lemas, enlace de WhatsApp y principios editoriales (solo administración)
+
+Los tres se cambian en el CMS, en la barra lateral, sección **Globales**. La redacción no puede cambiarlos.
+
+**Lemas** (Globales → **Lemas**):
+- **Lema 1, Lema 2 y Lema 3:** los textos. Valores iniciales: «Una voz para las Cuencas», «Donde otros no llegan» y «Orgullo de historia. Mirada al futuro». Se escriben **sin punto final**, todos igual.
+- **Dónde va cada uno:** elige qué lema sale **bajo la cabecera** (debajo de «Planta 14», en todas las páginas), en la **frase lateral** (a la izquierda de «Planta 14», solo en pantallas grandes) y en el **pie**.
+- Pulsa **Guardar**: el cambio se ve al momento.
+- Las páginas de cada concejo, los correos y la imagen para redes mantienen «Una voz para las Cuencas».
+
+**Enlace de WhatsApp** (Globales → **Pie de página**):
+- Pega el enlace del canal o del grupo de Planta 14 (`https://whatsapp.com/channel/…`, `https://chat.whatsapp.com/…` o `https://wa.me/34…`) y guarda. Aparece «WhatsApp» en la columna **Participa** del pie.
+- Si lo dejas vacío, el enlace no sale. Solo se admiten enlaces de WhatsApp.
+
+**Principios editoriales** (Globales → **Principios editoriales**, página `/principios`, enlazada en el pie):
+- **Entradilla** y **Principios** (título y texto de cada uno; párrafos separados por una línea en blanco). Puedes añadir, quitar y reordenar principios.
+- El texto inicial es **provisional** y sale con el aviso «Texto provisional pendiente de revisión.». Cuando esté revisado, desmarca **Mostrar el aviso** y guarda.
