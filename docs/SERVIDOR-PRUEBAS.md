@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`af0924bf8fda3bfb66c971675969b39de6f9fe3f`** (`af0924b`, rama `desarrollo/planta14-v2-recuperacion-contrasena`). Desplegada el **4 de noviembre de 2026 a las 21:21** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `9c19b92`, y `deploy.sh` la conserva para poder volver a ella.
+**`684c7870909483032c3a6706d919d4a7f2670593`** (`684c787`, rama `desarrollo/planta14-v2-participacion`). Desplegada el **5 de noviembre de 2026 a las 08:48** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `af0924b`, y `deploy.sh` la conserva para poder volver a ella.
 
 ## Cuentas de la redacción en /cms
 
@@ -33,6 +33,52 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a 684c787: participación, cartas, estadísticas y «Útil» (5 de noviembre de 2026)
+
+Guía seguida: `docs/V2-PARTICIPACION.md` (commit `2422ffa` de la misma rama). Todo se hizo en una conexión SSH, más una segunda solo de lectura para ver el error de la importación de servicios. No se han tocado el DNS, los buckets ni los demás secretos. Solo se ha añadido `AEMET_API_KEY` al `.env.production`, pasada por la entrada estándar. No hizo falta ninguna contraseña ni sudo interactivo. **El ensayo no se ha retirado.**
+
+| Paso | Resultado |
+|---|---|
+| Clave de AEMET | Añadida al `.env.production` (de 146 a 147 líneas; permisos `-rw-------` sin cambios). **No llega a la web**: ver «Fallos» |
+| Estado previo (`status.sh`) | Correcto. Versión `af0924b`, `/api/health: ok` y mantenimiento desactivado |
+| `git fetch` y `checkout --detach 684c787` | Correcto. `infra/test/out` estaba vacía |
+| `deploy.sh … 684c787…` | **Código 0, «Desplegada».** Construcción de 10 minutos y copia previa `…20261105T074813Z.dump.age` (252K). **Las nueve migraciones están aplicadas**, de `20261104_195227_responsables` a `20261104_221803_util_ocultar`. El mantenimiento duró 17 segundos. Registro: `/srv/planta14/state/deploy-684c787.log` |
+| `cms:responsables` | «RESPONSABLES CARGADOS». Las cuentas de Andrés y Juanfran ya existían y no se han tocado. Andrés lleva Aller, Mieres y Morcín, y Juanfran, Lena, Riosa y Ribera de Arriba |
+| Comprobación de datos de servicios (`bcc03e0`, `--solo-comprobar`) | Lo esperado: 48 fichas de patrimonio, 34 rutas y 73 servicios municipales, con «No se importan: 40 farmacias» |
+| Importación de patrimonio (`--publicar`) | **48 creadas y publicadas.** Las 33 fotos de Commons se descargaron, sin ningún fallo |
+| Importación de rutas (`--publicar`) | **34 creadas y publicadas**, 15 de ellas con recorrido dibujado |
+| Importación de servicios | **Falló (código 1)** después de crear 66 de los 73: ver «Fallos». No se ha repetido |
+| Fiestas (`contenido-ensayo/fiestas-caudal.json`, `034b853`) | **`--solo-comprobar` falló (código 1)** con «El JSON debe ser una lista de fiestas». No se ha importado nada |
+| Tarea nocturna de cartas | Añadida al crontab de `planta14` (todos los días a las 04:20), con el registro en `/var/log/planta14-cartas.log`. Ese archivo se creó con `sudo -n`. Lanzada a mano: «Cartas con DNI y teléfono borrados (más de 24 meses): 0», código 0 |
+| Páginas | Responden 200: `/util`, `/lena`, `/mieres`, `/aller`, `/fiestas`, `/cartas`, `/cartas/enviar`, `/normas-cartas`, `/util/patrimonio`, `/util/rutas`, fichas y rutas con y sin foto o recorrido, y `/api/health` |
+| Fuentes en vivo, según la app | DGT (Pajares): **responde**. BOE: **responde**. BDNS: **no responde a la app**: «HTTP 429 en www.infosubvenciones.es», aunque una consulta suelta con `curl` dio 200. AEMET: **sin datos**, porque la app no tiene la clave |
+
+**Fallos (para Code nube; no se ha cambiado código):**
+1. **AEMET:**
+   - `infra/compose.production.yaml` no pasa `AEMET_API_KEY` a la app: no está en `x-app-env`. La clave está en el `.env.production`, pero dentro del contenedor la variable no existe, así que el bloque del tiempo no sale.
+   - Hay que añadir `AEMET_API_KEY: ${AEMET_API_KEY:-}` y volver a desplegar.
+   - `infra/compose.staging.yaml` tampoco la pasa.
+2. **Servicios municipales:**
+   - El registro `serv-ribera-ci-horreo` tiene un horario de 326 caracteres, y el campo «Horario» admite como mucho 200. Payload lo rechaza con «El siguiente campo es inválido: Horario».
+   - La validación previa del importador no mira las longitudes, así que la importación se cortó a mitad: quedaron 66 servicios creados y faltan 7.
+   - Hay que acortar ese horario en los datos o ampliar el campo, y validar las longitudes antes de crear nada. Después se repite la importación, que solo creará los que faltan.
+3. **Fiestas:**
+   - `contenido-ensayo/fiestas-caudal.json` es un catálogo documental: un objeto con `fiestas`, con 46 fichas. Usa `pueblo_o_parroquia`, `fechas_habituales` y `fechas_2025`, y en 35 fichas no hay fecha de 2025 localizada.
+   - El importador espera la lista de `docs/ejemplos/fiestas.json`: `nombre`, `pueblo`, `concejo`, `inicio`, `fin`…
+   - Hay que convertir el catálogo al formato del importador, decidiendo qué hacer con las fiestas sin fecha, o adaptar el importador.
+4. **BDNS:** la app recibe un 429 de infosubvenciones.es. Puede ser por las varias peticiones seguidas (búsquedas y detalle de cada convocatoria). La app lo reintenta según su caché. Hay que vigilar si se mantiene.
+
+**Pendiente de comprobar en el navegador:** el apartado 10 de `docs/V2-PARTICIPACION.md`:
+- contraseña;
+- cartas;
+- sugerencias;
+- estadísticas;
+- «Útil»;
+- ocultar servicios;
+- responsables;
+- boletín;
+- última hora.
 
 ### Actualización a af0924b: recuperación de contraseña (4 de noviembre de 2026)
 
