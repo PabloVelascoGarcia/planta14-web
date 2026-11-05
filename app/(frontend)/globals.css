@@ -93,7 +93,7 @@ img {
 .territory-name { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; color: #a4522d; }
 .territory-towns { display: flex; flex-wrap: wrap; gap: 7px 12px; font-size: 11px; font-weight: 600; }
 .territory-towns a:hover, .topic-nav a:hover, .desktop-topics a:hover { color: #a4522d; }
-.desktop-topics { display: flex; justify-content: center; gap: 30px; padding: 13px 0; border-bottom: 1px solid #1c191730; font-size: 12px; }
+.desktop-topics { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 30px; padding: 13px 0; border-bottom: 1px solid #1c191730; font-size: 12px; }
 .section-menu { display: none; }
 .editorial-kicker { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .17em; color: #a4522d; }
 .front-opening { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 36px; padding-top: 32px; padding-bottom: 30px; border-bottom: 1px solid #1c191730; }
@@ -115,7 +115,7 @@ img {
 @media (max-width: 1000px) {
   .front-opening { grid-template-columns: minmax(0, 1fr) 270px; gap: 24px; }
   .opening-sidebar { padding-left: 20px; }
-  .desktop-topics { gap: 22px; }
+  .desktop-topics { gap: 4px 22px; }
 }
 @media (max-width: 767px) {
   .masthead { grid-template-columns: 1fr auto; padding-top: 20px; }

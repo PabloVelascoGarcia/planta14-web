@@ -44,5 +44,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const municipalRoutes = spaces.map(space => ({ url: `${baseUrl}/${encodeURIComponent(space.id)}` }));
-  return [...staticRoutes, ...articleRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes, ...municipalRoutes];
+  // «Útil»: lo general siempre; las páginas «Ver todos» solo de los concejos con el espacio activo y el servicio visible.
+  const { activeTowns, hiddenByConcejo, UTIL_LIST_TYPES } = await import("@/lib/util");
+  const [active, hidden] = await Promise.all([activeTowns(), hiddenByConcejo()]);
+  const utilRoutes = [
+    ...["/util", "/util/patrimonio", "/util/rutas", "/util/subvenciones", "/util/empleo"].map(route => ({ url: `${baseUrl}${route}` })),
+    ...[...active].flatMap(town => Object.keys(UTIL_LIST_TYPES).filter(type => !(hidden[town] ?? []).includes(type)).map(type => ({ url: `${baseUrl}/${town}/util/${type}` }))),
+  ];
+  return [...staticRoutes, ...utilRoutes, ...articleRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes, ...municipalRoutes];
 }

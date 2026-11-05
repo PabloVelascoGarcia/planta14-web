@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload';
-import { adminOnly } from './access';
+import { adminOnly, editorialUser } from './access';
 
 // Ajustes globales del sitio, visibles y editables solo por la administración (la web los lee en el servidor).
 
@@ -62,5 +62,18 @@ export const Principles: GlobalConfig = {
         { name: 'heading', label: 'Título', type: 'text', required: true, maxLength: 120 },
         { name: 'body', label: 'Texto', type: 'textarea', required: true, maxLength: 2000, admin: { description: 'Párrafos separados por una línea en blanco.' } },
       ] },
+  ],
+};
+
+/** Días antes del comienzo con los que una fiesta entra en «Fiestas esta semana» (portada y página del concejo). */
+export const DEFAULT_FIESTAS_DAYS_BEFORE = 7;
+export const FiestasSettings: GlobalConfig = {
+  slug: 'fiestas-settings',
+  label: 'Fiestas en portada',
+  access: { read: () => true, update: editorialUser },
+  admin: { description: 'Bloque «Fiestas esta semana» de la portada y de la página de cada concejo. Lo cambia la redacción.' },
+  fields: [
+    { name: 'daysBefore', label: 'Días antes del comienzo', type: 'number', required: true, min: 0, max: 30, defaultValue: DEFAULT_FIESTAS_DAYS_BEFORE,
+      admin: { description: 'Una fiesta sale desde estos días antes de empezar hasta su último día. Solo fiestas publicadas y con fecha confirmada.' } },
   ],
 };

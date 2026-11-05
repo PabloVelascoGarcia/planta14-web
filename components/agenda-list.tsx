@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { voiceDemoEnabled } from "@/lib/site-config";
-import { municipalContents, getMunicipalSpace } from "@/lib/demo/municipal";
+import { municipalContents, getMunicipalSpace, spaceIsActive } from "@/lib/demo/municipal";
 import { agenda } from "@/lib/mock-data";
 import { formatDate, slugify } from "@/lib/utils";
 import { getArticles } from "@/lib/cms";
@@ -15,8 +15,9 @@ async function payloadAgenda(limit: number): Promise<AgendaItem[]> {
   // PLANTA14_TEST_TODAY (AAAA-MM-DD) solo para pruebas con fecha fija.
   const today = process.env.PLANTA14_TEST_TODAY || new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());
   const municipal = await Promise.all((await getMunicipalContents()).filter(c => c.type === 'event' && c.eventAt).map(async c => {
+    // Solo los eventos de concejos con el espacio municipal activo (los inactivos no publican agenda municipal).
     const space = await getSpace(c.space);
-    return space ? { title: c.title, date: c.eventAt!.slice(0, 10), time: c.eventAt!.slice(11, 16) || undefined, place: c.place || '', concejo: space.name.replace('Ayuntamiento de ', ''), description: 'Publica el ayuntamiento', sort: c.eventAt! } : null;
+    return space && spaceIsActive(space) ? { title: c.title, date: c.eventAt!.slice(0, 10), time: c.eventAt!.slice(11, 16) || undefined, place: c.place || '', concejo: space.name.replace('Ayuntamiento de ', ''), description: 'Publica el ayuntamiento', sort: c.eventAt! } : null;
   }));
   const general = (await getArticles()).filter(a => a.eventAt && slugify(a.topic) === 'agenda').map(a => ({
     title: a.title, date: a.eventAt!.slice(0, 10), time: a.eventAt!.slice(11, 16) || undefined, place: a.eventPlace || '', concejo: a.concejo,

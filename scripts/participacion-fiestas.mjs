@@ -61,8 +61,30 @@ export async function run(ctx) {
   await payload.create({ collection: 'articles', overrideAccess: true, data: { title: 'Noticia de prueba para la portada', excerpt: 'Entradilla.', body: ['Texto.'], author: author.id, town: mieres.id, section: section.id, _status: 'published' } });
   const home = await page(`${web}/`);
   const block = home.slice(home.indexOf('data-block="fiestas"'), home.indexOf('id="concejos"'));
-  assert.ok(block.includes('De fiesta este fin de semana') && block.includes(`href="/fiestas/${sanJuan.slug}"`) && !block.includes('<img'), `home: text-only weekend block: ${block.slice(0, 600) || home.slice(0, 300)}`);
-  passed('fiestas: /fiestas with «Este fin de semana», calendar by month and concejo filter (past ones hidden, no posters); fiesta page with programme, Event data and a small framed poster (≤ 220 px, 160 px on mobile); organizer and contact never public; also in the agenda, on the concejo page and as a text-only home block');
+  assert.ok(block.includes('Fiestas esta semana') && block.includes(`href="/fiestas/${sanJuan.slug}"`) && !block.includes(carmen.slug) && !block.includes('<img'), `home: text-only «Fiestas esta semana» block: ${block.slice(0, 600) || home.slice(0, 300)}`);
+  assert.ok(lenaPage.includes('Fiestas esta semana') && !(await page(`${web}/mieres`)).includes('data-municipal-fiestas'), 'concejo page: only this week; hidden when there are none');
+  // «Fiestas esta semana»: desde N días antes (7 por defecto) hasta el último día; nunca borradores ni «Fecha pendiente».
+  const { thisWeek } = await import('../lib/fiestas-dates.ts');
+  const f = (slug, startDay, endDay) => ({ slug, name: slug, village: '', town: '', townSlug: '', startDay, endDay, recurring: false });
+  const day = '2026-08-10';
+  assert.deepEqual(thisWeek([f('a', shift(day, 7), shift(day, 8)), f('b', shift(day, 8), shift(day, 9)), f('c', shift(day, -3), day), f('d', shift(day, -3), shift(day, -1))], day, 7).map(x => x.slug), ['c', 'a'],
+    'from 7 days before until its last day');
+  assert.deepEqual(thisWeek([f('a', shift(day, 3), shift(day, 3))], day, 2), [], 'configurable number of days');
+  const lejana = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta lejana', village: 'Ujo', town: mieres.id, dateStatus: 'confirmada', startDate: `${shift(today, 20)}T12:00:00.000Z`, endDate: `${shift(today, 21)}T12:00:00.000Z`, recurring: true, _status: 'published' } });
+  const homeBlock = html => html.slice(html.indexOf('data-block="fiestas"'), html.indexOf('id="concejos"'));
+  assert.ok(!homeBlock(await page(`${web}/`)).includes(lejana.slug), 'in 20 days: not yet with 7 days');
+  const settings = body => async cookie => fetch(`${web}/api/cms/globals/fiestas-settings`, { method: 'POST', headers: { Cookie: cookie, 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  assert.equal((await (settings({ daysBefore: 40 }))(await signIn(users.lena.email))).status, 403, 'town halls cannot change it');
+  assert.equal((await (settings({ daysBefore: 31 }))(await signIn(users.editor.email))).status, 400, 'at most 30 days');
+  assert.equal((await (settings({ daysBefore: 30 }))(await signIn(users.editor.email))).status, 200, 'the newsroom changes it from the CMS');
+  const pendiente = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta sin fecha', village: 'Ujo', town: mieres.id, dateStatus: 'pendiente', recurring: true } });
+  const borrador = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta en borrador', village: 'Ujo', town: mieres.id, dateStatus: 'confirmada', startDate: `${today}T12:00:00.000Z`, endDate: `${today}T12:00:00.000Z`, _status: 'draft' } });
+  const wider = await page(`${web}/`);
+  const widerBlock = wider.slice(wider.indexOf('data-block="fiestas"'), wider.indexOf('id="concejos"'));
+  assert.ok(widerBlock.includes(lejana.slug) && !widerBlock.includes(carmen.slug) && !widerBlock.includes('Fiesta sin fecha') && !widerBlock.includes('Fiesta en borrador'), 'with 30 days the one in 20 days enters (El Carmen, in 35, does not); never drafts nor «Fecha pendiente»');
+  assert.equal((await (settings({ daysBefore: 7 }))(await signIn(users.editor.email))).status, 200);
+  for (const doc of [pendiente, borrador, lejana]) await payload.delete({ collection: 'festivals', id: doc.id, overrideAccess: true });
+  passed('fiestas: /fiestas with «Este fin de semana», calendar by month and concejo filter (past ones hidden, no posters); fiesta page with programme, Event data and a small framed poster (≤ 220 px, 160 px on mobile); organizer and contact never public; also in the agenda; «Fiestas esta semana» (text only) on the home page and on the concejo page, from N days before (7 by default, editable by the newsroom, at most 30) until the last day, hidden when empty, never drafts nor «Fecha pendiente»');
 
   // Formulario público: confirmación por correo y borrador asignado al responsable del concejo.
   const pendingBefore = (await all('notifications')).length;

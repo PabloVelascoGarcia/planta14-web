@@ -7,7 +7,7 @@ import { visibleTowns } from "@/lib/demo/territories";
 import { MunicipalPage } from "@/components/municipal-page";
 import { municipalMetadata } from "@/lib/seo";
 import { contentSource } from "@/lib/content-source";
-import { getFiestas, upcoming } from "@/lib/fiestas";
+import { fiestasDaysBefore, getFiestas, madridToday, thisWeek } from "@/lib/fiestas";
 import { StatsScope } from "@/components/stats-beacon";
 import { UtilBlocks } from "@/components/util-blocks";
 import { getUtilData } from "@/lib/util";
@@ -30,9 +30,13 @@ export default async function Page({ params }: { params: Promise<{ municipality:
   // With real content the server drops expired items (Madrid date); the demo keeps its client-side behaviour.
   // PLANTA14_TEST_TODAY (AAAA-MM-DD) only for tests that compare with the demo's fixed date.
   const today = process.env.PLANTA14_TEST_TODAY || new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
-  const contents = (await getMunicipalContents()).filter(c => c.space === space.id && (demo || !c.expiresAt || c.expiresAt >= today));
-  const fiestas = upcoming(await getFiestas()).filter(f => f.townSlug === space.territory).slice(0, 5);
-  // «Útil» solo con contenido real (las fuentes automáticas usan la caché de la base de datos).
-  const util = demo ? null : <UtilBlocks data={await getUtilData(space.territory)} />;
-  return <><StatsScope town={space.territory} section="concejo" /><MunicipalPage space={space} active={spaceIsActive(space)} contents={contents} articles={await getArticlesByConcejo(space.territory)} fiestas={fiestas} demo={demo} util={util} /></>;
+  // Concejo sin espacio municipal activo: solo la cabecera, las noticias de Planta 14 de ese concejo y «Fiestas esta
+  // semana» (las fiestas son contenido editorial). Nada de avisos, agenda municipal, tablón, sugerencias ni «Útil».
+  const active = spaceIsActive(space);
+  const contents = active ? (await getMunicipalContents()).filter(c => c.space === space.id && (demo || !c.expiresAt || c.expiresAt >= today)) : [];
+  const [allFiestas, daysBefore] = await Promise.all([getFiestas(), fiestasDaysBefore()]);
+  const fiestas = thisWeek(allFiestas.filter(f => f.townSlug === space.territory), madridToday(), daysBefore).slice(0, 5);
+  // «Útil» solo con contenido real (las fuentes automáticas usan la caché de la base de datos) y con el espacio activo.
+  const util = demo || !active ? null : <UtilBlocks data={await getUtilData(space.territory)} />;
+  return <><StatsScope town={space.territory} section="concejo" /><MunicipalPage space={space} active={active} contents={contents} articles={await getArticlesByConcejo(space.territory)} fiestas={fiestas} demo={demo} util={util} /></>;
 }

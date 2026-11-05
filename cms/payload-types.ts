@@ -126,12 +126,14 @@ export interface Config {
     mottos: Motto;
     'footer-settings': FooterSetting;
     principles: Principle;
+    'fiestas-settings': FiestasSetting;
   };
   globalsSelect: {
     'breaking-news': BreakingNewsSelect<false> | BreakingNewsSelect<true>;
     mottos: MottosSelect<false> | MottosSelect<true>;
     'footer-settings': FooterSettingsSelect<false> | FooterSettingsSelect<true>;
     principles: PrinciplesSelect<false> | PrinciplesSelect<true>;
+    'fiestas-settings': FiestasSettingsSelect<false> | FiestasSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1939,6 +1941,21 @@ export interface Principle {
   createdAt?: string | null;
 }
 /**
+ * Bloque «Fiestas esta semana» de la portada y de la página de cada concejo. Lo cambia la redacción.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiestas-settings".
+ */
+export interface FiestasSetting {
+  id: number;
+  /**
+   * Una fiesta sale desde estos días antes de empezar hasta su último día. Solo fiestas publicadas y con fecha confirmada.
+   */
+  daysBefore: number;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "breaking-news_select".
  */
@@ -1990,6 +2007,16 @@ export interface PrinciplesSelect<T extends boolean = true> {
         body?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiestas-settings_select".
+ */
+export interface FiestasSettingsSelect<T extends boolean = true> {
+  daysBefore?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

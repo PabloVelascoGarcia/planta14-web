@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { UTIL_LINKS, type UtilData } from "@/lib/util";
+import { UTIL_BOX_LIMIT, UTIL_LINKS, type UtilData } from "@/lib/util";
 import { townName, UTIL_TOWNS, type Cached } from "@/lib/util-sources";
 import { formatDate } from "@/lib/utils";
 
@@ -31,9 +31,39 @@ function Official({ href, children }: { href: string; children: ReactNode }) {
   return <p className="util-official" data-util-link><a href={href} {...out} className="municipal-read-link">{children} ↗</a></p>;
 }
 
+/** «Ver todos (n)»: página propia con la lista completa de ese tipo y concejo. */
+function More({ href, count, label = "Ver todos" }: { href: string; count: number; label?: string }) {
+  return <Link href={href} className="municipal-read-link util-more" data-util-more>{label} ({count}) ↗</Link>;
+}
+const isTown = (scope: string) => UTIL_TOWNS.some(t => t.slug === scope);
+
 /** Miniatura de la foto o, sin foto, el diseño neutro. */
 export function Thumb({ photo }: { photo: UtilData["heritage"][number]["photo"] }) {
   return photo ? <img className="util-thumb" src={photo.url} alt="" loading="lazy" decoding="async" /> : <span className="util-thumb is-neutral" aria-hidden="true" data-util-neutral />;
+}
+
+type Service = UtilData["services"][number]; type Place = UtilData["heritage"][number];
+type Grant = NonNullable<UtilData["grants"]["data"]>[number]; type Job = NonNullable<UtilData["jobs"]["data"]>[number];
+/** Elementos de las listas (cajas de «Útil» y páginas «Ver todos»). `town`: página de un concejo (no repite el concejo). */
+export function ServiceItem({ s }: { s: Service }) {
+  return <li data-util-service><strong>{s.name}</strong>
+    {s.address || s.place ? <span>{[s.address, s.address?.includes(s.place ?? "@@") ? null : s.place].filter(Boolean).join(", ")}</span> : null}
+    {s.phone ? <span>Tel. {s.phone.split(" · ").map((p, i) => <span key={p}>{i ? " · " : ""}<a href={`tel:${p.replace(/[^\d+]/g, "")}`}>{p}</a></span>)}</span> : null}
+    {s.email ? <span><a href={`mailto:${s.email}`}>{s.email}</a></span> : null}{s.hours ? <span className="util-hours">{s.hours}</span> : null}
+    {s.web ? <span><a href={s.web} {...out}>Web ↗</a></span> : null}{s.notes ? <small>{s.notes}</small> : null}</li>;
+}
+export function PlaceItem({ p, kind, town }: { p: Place; kind: "patrimonio" | "rutas"; town: string | null }) {
+  return <li>{kind === "patrimonio" ? <Thumb photo={p.photo} /> : null}<Link href={`/util/${kind}/${p.slug}`}><strong>{p.name}</strong><small>{[!town ? p.townName : null, p.detail].filter(Boolean).join(" · ")}</small>{p.summary ? <span>{p.summary}</span> : null}</Link></li>;
+}
+export function GrantItem({ g, town }: { g: Grant; town: string | null }) {
+  return <li data-util-grant={g.scope}><a href={g.url} {...out}>{g.title}</a>
+    <small>{g.organ}{g.scope === "estado" ? " · Administración del Estado" : isTown(g.scope) && !town ? ` · ${townName(g.scope)}` : ""}
+      {g.end ? ` · Solicitudes hasta el ${formatDate(g.end)}` : g.endText ? ` · ${g.endText}` : " · Plazo: consulta la convocatoria"}
+      {g.office ? <> · <a href={g.office} {...out}>Sede electrónica ↗</a></> : null}</small></li>;
+}
+export function JobItem({ j, town }: { j: Job; town: string | null }) {
+  return <li data-util-job><a href={j.url} {...out}>{j.title}</a>
+    <small>BOE del {formatDate(j.date)} · {j.id}{isTown(j.scope) && !town ? ` · ${townName(j.scope)}` : ""}</small></li>;
 }
 
 export function UtilBlocks({ data }: { data: UtilData }) {
@@ -41,12 +71,15 @@ export function UtilBlocks({ data }: { data: UtilData }) {
   const town = data.town;
   const pajares = data.pajares;
   const forecasts = data.forecasts?.filter(f => f.forecast.data || f.forecast.error) ?? null;
-  // En /util, lo del concejo que ha ocultado un servicio no sale (Pajares y Valgrande son de Lena; San Isidro y Fuentes, de Aller).
-  const townShows = (key: string, slug: string) => !(data.hiddenByTown[slug] ?? []).includes(key);
-  const lenaWinter = town ? town === "lena" : townShows("invierno", "lena");
-  const allerWinter = town ? town === "aller" : townShows("invierno", "aller");
+  // En /util todo lo regional (Pajares, estaciones, el tiempo, farmacias, ayudas y empleo generales); en cada concejo, lo suyo.
+  const lenaWinter = town ? town === "lena" : true;
+  const allerWinter = town ? town === "aller" : true;
   const winter = lenaWinter || allerWinter;
-  return <div className="util-grid">
+  const base = town ? `/${town}/util` : "/util";
+  // En /util, las ayudas y el empleo de los ayuntamientos van en el bloque de cada concejo activo.
+  const grants = data.grants.data?.filter(g => town || !isTown(g.scope)) ?? null;
+  const jobs = data.jobs.data?.filter(j => town || !isTown(j.scope)) ?? null;
+  return <div className="util-grid" data-util-grid>
     {show("invierno") && winter ? <Block id="invierno" title="Puertos y estaciones de esquí" kicker="Invierno">
       {lenaWinter ? <div className="util-card" data-util-pajares>
         <h4>Puerto de Pajares (N-630)</h4>
@@ -78,31 +111,26 @@ export function UtilBlocks({ data }: { data: UtilData }) {
     </Block> : null}
 
     {show("servicios") && town ? <Block id="servicios" title="Servicios municipales" kicker="Directorio">
-      {data.services.length ? <ul className="util-services">{data.services.map(s => <li key={s.id} data-util-service><strong>{s.name}</strong>
-        {s.address || s.place ? <span>{[s.address, s.address?.includes(s.place ?? "@@") ? null : s.place].filter(Boolean).join(", ")}</span> : null}
-        {s.phone ? <span>Tel. {s.phone.split(" · ").map((p, i) => <span key={p}>{i ? " · " : ""}<a href={`tel:${p.replace(/[^\d+]/g, "")}`}>{p}</a></span>)}</span> : null}
-        {s.email ? <span><a href={`mailto:${s.email}`}>{s.email}</a></span> : null}{s.hours ? <span>{s.hours}</span> : null}
-        {s.web ? <span><a href={s.web} {...out}>Web ↗</a></span> : null}{s.notes ? <small>{s.notes}</small> : null}</li>)}</ul>
+      {data.services.length ? <ul className="util-services">{data.services.slice(0, UTIL_BOX_LIMIT).map(s => <ServiceItem key={s.id} s={s} />)}</ul>
         : <p className="util-empty">Todavía no hay servicios en el directorio de este concejo.</p>}
+      {data.services.length ? <More href={`${base}/servicios`} count={data.services.length} /> : null}
     </Block> : null}
 
-    {show("patrimonio") && data.heritage.length ? <Block id="patrimonio" title="Patrimonio" kicker="Conoce">
-      <ul className="util-places">{data.heritage.slice(0, town ? 12 : 8).map(p => <li key={p.slug}><Thumb photo={p.photo} /><Link href={`/util/patrimonio/${p.slug}`}><strong>{p.name}</strong><small>{[!town ? p.townName : null, p.detail].filter(Boolean).join(" · ")}</small>{p.summary ? <span>{p.summary}</span> : null}</Link></li>)}</ul>
-      <Link href={`/util/patrimonio${town ? `?concejo=${town}` : ""}`} className="municipal-read-link">Todo el patrimonio ↗</Link>
+    {show("patrimonio") && town && data.heritage.length ? <Block id="patrimonio" title="Patrimonio" kicker="Conoce">
+      <ul className="util-places">{data.heritage.slice(0, UTIL_BOX_LIMIT).map(p => <PlaceItem key={p.slug} p={p} kind="patrimonio" town={town} />)}</ul>
+      <More href={`${base}/patrimonio`} count={data.heritage.length} />
     </Block> : null}
 
-    {show("rutas") && data.routes.length ? <Block id="rutas" title="Rutas" kicker="Sal al monte">
-      <ul className="util-places">{data.routes.slice(0, town ? 12 : 8).map(p => <li key={p.slug}><Link href={`/util/rutas/${p.slug}`}><strong>{p.name}</strong><small>{[!town ? p.townName : null, p.detail].filter(Boolean).join(" · ")}</small>{p.summary ? <span>{p.summary}</span> : null}</Link></li>)}</ul>
-      <Link href={`/util/rutas${town ? `?concejo=${town}` : ""}`} className="municipal-read-link">Todas las rutas ↗</Link>
+    {show("rutas") && town && data.routes.length ? <Block id="rutas" title="Rutas" kicker="Sal al monte">
+      <ul className="util-places">{data.routes.slice(0, UTIL_BOX_LIMIT).map(p => <PlaceItem key={p.slug} p={p} kind="rutas" town={town} />)}</ul>
+      <More href={`${base}/rutas`} count={data.routes.length} label="Ver todas" />
     </Block> : null}
 
     {show("subvenciones") ? <Block id="subvenciones" title="Subvenciones abiertas" kicker="Ayudas">
-      {data.grants.data ? data.grants.data.length ? <ul className="util-list">{data.grants.data.slice(0, 15).map(g => <li key={g.id} data-util-grant={g.scope}><a href={g.url} {...out}>{g.title}</a>
-        <small>{g.organ}{g.scope === "estado" ? " · Administración del Estado" : UTIL_TOWNS.some(t => t.slug === g.scope) && !town ? ` · ${townName(g.scope)}` : ""}
-          {g.end ? ` · Solicitudes hasta el ${formatDate(g.end)}` : g.endText ? ` · ${g.endText}` : " · Plazo: consulta la convocatoria"}
-          {g.office ? <> · <a href={g.office} {...out}>Sede electrónica ↗</a></> : null}</small></li>)}</ul>
-        : <p>No encontramos convocatorias abiertas ahora mismo {town ? "del ayuntamiento, del Principado, del IDEPA ni del Estado" : "de estos ayuntamientos, del Principado, del IDEPA ni del Estado"}.</p>
+      {grants ? grants.length ? <ul className="util-list">{grants.slice(0, UTIL_BOX_LIMIT).map(g => <GrantItem key={g.id} g={g} town={town} />)}</ul>
+        : <p>No encontramos convocatorias abiertas ahora mismo {town ? "del ayuntamiento, del Principado, del IDEPA ni del Estado" : "del Principado, del IDEPA ni del Estado"}.</p>
         : <Unavailable cached={data.grants} what="la Base de Datos Nacional de Subvenciones" />}
+      {grants?.length ? <More href={`${base}/subvenciones`} count={grants.length} label="Ver todas" /> : null}
       <Official href={UTIL_LINKS.idepa}>Ayudas del IDEPA (Busca financiación)</Official>
       <p className="util-source" data-util-source>Fuente: <a href="https://www.infosubvenciones.es/bdnstrans/GE/es/index" {...out}>Base de Datos Nacional de Subvenciones</a> (Sistema Nacional de Publicidad de Subvenciones y Ayudas Públicas, IGAE).
         Selección de Planta 14; los datos pueden cambiar: la convocatoria oficial es la que vale<Checked at={data.grants.fetchedAt} /><Stale error={data.grants.data ? data.grants.error : null} />.
@@ -110,13 +138,37 @@ export function UtilBlocks({ data }: { data: UtilData }) {
     </Block> : null}
 
     {show("empleo") ? <Block id="empleo" title="Empleo público" kicker="Oposiciones y bolsas">
-      {data.jobs.data ? data.jobs.data.length ? <ul className="util-list">{data.jobs.data.slice(0, 12).map(j => <li key={j.id} data-util-job><a href={j.url} {...out}>{j.title}</a>
-        <small>BOE del {formatDate(j.date)} · {j.id}{UTIL_TOWNS.some(t => t.slug === j.scope) && !town ? ` · ${townName(j.scope)}` : ""}</small></li>)}</ul>
-        : <p>En los últimos 45 días el BOE no ha publicado convocatorias {town ? "de este ayuntamiento ni del Principado" : "de estos ayuntamientos ni del Principado"}.</p> : <Unavailable cached={data.jobs} what="el BOE" />}
+      {jobs ? jobs.length ? <ul className="util-list">{jobs.slice(0, UTIL_BOX_LIMIT).map(j => <JobItem key={j.id} j={j} town={town} />)}</ul>
+        : <p>En los últimos 45 días el BOE no ha publicado convocatorias {town ? "de este ayuntamiento ni del Principado" : "del Principado"}.</p> : <Unavailable cached={data.jobs} what="el BOE" />}
+      {jobs?.length ? <More href={`${base}/empleo`} count={jobs.length} label="Ver todas" /> : null}
       <p className="util-source" data-util-source>Fuente: <a href="https://www.boe.es/" {...out}>Agencia Estatal Boletín Oficial del Estado</a> (RSS de oposiciones y concursos, sección II.B). Selección por concejo de Planta 14;
         el texto auténtico es el publicado en el BOE<Checked at={data.jobs.fetchedAt} /><Stale error={data.jobs.data ? data.jobs.error : null} />.</p>
       <Official href={UTIL_LINKS.bopa}>Empleo en el BOPA (Boletín Oficial del Principado de Asturias)</Official>
-      {(town ? [town] : Object.keys(UTIL_LINKS.empleoMunicipal).filter(slug => townShows("empleo", slug))).map(slug => UTIL_LINKS.empleoMunicipal[slug] ? <Official key={slug} href={UTIL_LINKS.empleoMunicipal[slug]}>Empleo en el Ayuntamiento de {townName(slug)}</Official> : null)}
+      {town && UTIL_LINKS.empleoMunicipal[town] ? <Official href={UTIL_LINKS.empleoMunicipal[town]}>Empleo en el Ayuntamiento de {townName(town)}</Official> : null}
     </Block> : null}
+
+    {!town ? data.activeTowns.length ? UTIL_TOWNS.filter(t => data.activeTowns.includes(t.slug)).map(t => <TownCard key={t.slug} data={data} slug={t.slug} name={t.name} />)
+      : null : null}
   </div>;
+}
+
+/** En /util, un bloque por cada concejo con el espacio municipal activo, con lo que ese ayuntamiento publica. */
+function TownCard({ data, slug, name }: { data: UtilData; slug: string; name: string }) {
+  const hidden = data.hiddenByTown[slug] ?? [];
+  const on = (key: string) => !hidden.includes(key);
+  const heritage = data.heritage.filter(p => p.town === slug), routes = data.routes.filter(p => p.town === slug);
+  const grants = data.grants.data?.filter(g => g.scope === slug) ?? [], jobs = data.jobs.data?.filter(j => j.scope === slug) ?? [];
+  const services = data.servicesByTown[slug] ?? 0;
+  const items = [
+    on("servicios") && services ? [`/${slug}/util/servicios`, `Servicios municipales (${services})`] : null,
+    on("patrimonio") && heritage.length ? [`/${slug}/util/patrimonio`, `Patrimonio (${heritage.length})`] : null,
+    on("rutas") && routes.length ? [`/${slug}/util/rutas`, `Rutas (${routes.length})`] : null,
+    on("subvenciones") && grants.length ? [`/${slug}/util/subvenciones`, `Ayudas del ayuntamiento (${grants.length})`] : null,
+    on("empleo") && jobs.length ? [`/${slug}/util/empleo`, `Empleo del ayuntamiento (${jobs.length})`] : null,
+  ].filter((x): x is string[] => Boolean(x));
+  return <Block id={`concejo-${slug}`} title={name} kicker="Tu concejo">
+    {items.length ? <ul className="util-list" data-util-town-links>{items.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul> : <p className="util-empty">Todavía no hay servicios publicados.</p>}
+    {on("empleo") && UTIL_LINKS.empleoMunicipal[slug] ? <Official href={UTIL_LINKS.empleoMunicipal[slug]}>Empleo en el Ayuntamiento de {name}</Official> : null}
+    <Link href={`/${slug}#util`} className="municipal-read-link">Todo lo útil de {name} ↗</Link>
+  </Block>;
 }

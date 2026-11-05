@@ -24,6 +24,12 @@ export const overlaps = (f: Pick<Fiesta, "startDay" | "endDay">, from: string, t
 /** Las que aún no han terminado. */
 export const upcoming = (fiestas: Fiesta[], today = madridToday()) => fiestas.filter(f => f.endDay >= today);
 
+/** «Fiestas esta semana»: desde `daysBefore` días antes de empezar hasta su último día, por fecha de inicio. */
+export const thisWeek = (fiestas: Fiesta[], today = madridToday(), daysBefore = 7) => {
+  const until = shift(today, Math.max(0, daysBefore));
+  return fiestas.filter(f => f.startDay <= until && f.endDay >= today).sort((a, b) => a.startDay.localeCompare(b.startDay) || a.name.localeCompare(b.name, "es"));
+};
+
 const dayMonth = new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "long", timeZone: "UTC" });
 const dayOnly = new Intl.DateTimeFormat("es-ES", { day: "numeric", timeZone: "UTC" });
 const weekdayName = new Intl.DateTimeFormat("es-ES", { weekday: "long", timeZone: "UTC" });

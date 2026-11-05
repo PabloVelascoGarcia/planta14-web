@@ -231,6 +231,8 @@ export async function run(ctx) {
     const cacheKeys = ['dgt:pajares', 'bdns:abiertas', 'boe:empleo', ...['33037', '33033', '33002', '33038', '33058', '33057'].map(id => `aemet:${id}`)];
     await waitFor(async () => (await db(sql`SELECT count(*)::int AS n FROM external_cache WHERE fetched_at IS NOT NULL AND key IN ${cacheKeys}`)).rows[0].n === cacheKeys.length, 'server-side refresh filled the cache', 240);
     // Página del concejo: cada bloque automático con su atribución y su hora; el resto, enlaces a la fuente oficial.
+    // Aquí, los seis espacios activos (la activación se prueba aparte, en participacion-activacion.mjs).
+    await ctx.activate(ctx.SIX);
     const lena = await page(`${web}/lena`);
     const block = (html, id) => html.split(`data-util="${id}"`)[1]?.split('</section>')[0] ?? '';
     assert.ok(lena.includes('data-municipal-util') && lena.includes('href="#util"') && !lena.includes('data-util="carreteras"'), 'Útil section on the concejo page');
@@ -282,8 +284,9 @@ export async function run(ctx) {
     const util = await page(`${web}/util`);
     assert.ok(block(util, 'invierno').includes('data-util-pajares') && block(util, 'invierno').includes('112asturias.es') && block(util, 'invierno').includes('valgrande-pajares.com') && block(util, 'invierno').includes('fuentesdeinvierno.com'), 'winter: Pajares and three links');
     assert.equal((block(util, 'tiempo').match(/data-util-forecast=/g) ?? []).length, 6, 'forecast for the six concejos');
-    assert.ok(block(util, 'patrimonio').includes('Bustiello') && block(util, 'patrimonio').includes('Santa Cristina'), 'heritage of all concejos');
-    assert.ok((block(util, 'empleo').match(/data-util-link/g) ?? []).length === 7, 'BOPA and the six town halls');
+    // En /util, lo regional y un bloque por concejo activo con sus listas («Ver todos») y el empleo de su ayuntamiento.
+    assert.ok(!util.includes('data-util="patrimonio"') && !util.includes('data-util="servicios"') && block(util, 'concejo-mieres').includes('href="/mieres/util/patrimonio"') && block(util, 'concejo-lena').includes('href="/lena/util/patrimonio"'), 'heritage of each active concejo, in its block');
+    assert.ok((block(util, 'empleo').match(/data-util-link/g) ?? []).length === 1 && ctx.SIX.every(t => util.includes(`data-util="concejo-${t}"`)) && util.includes('ayuntamientoriosa.com'), 'BOPA in the regional block; the six town halls in their blocks');
     const ficha = await page(`${web}/util/patrimonio/santa-cristina-de-lena-lena`);
     assert.ok(ficha.includes('data-util-photo') && ficha.includes('Autora de prueba / Wikimedia Commons / CC BY-SA 4.0') && ficha.includes(commons.paginaCommons) && ficha.includes('data-util-map="point"') && ficha.includes('mlat=43.128594') && ficha.includes('Segundo párrafo de ejemplo')
       && ficha.includes('Punto del mapa: EJEMPLO: punto aproximado') && ficha.includes('BIC, monumento · Decreto de prueba') && ficha.includes('turismoasturias.es'), `heritage card with OSM map and sources: ${ficha.slice(ficha.indexOf('data-util-place'), ficha.indexOf('data-util-place') + 2500)}`);

@@ -1,4 +1,5 @@
 import { APIError, type Access, type CollectionBeforeChangeHook, type CollectionConfig, type Endpoint, type Field, type PayloadRequest } from 'payload';
+import { revalidateAfterChange, revalidateAfterDelete } from './revalidate';
 import { UTIL_SERVICES } from '../lib/util-services';
 import { adminOnly, editorialUser, municipalSpaceOf, relationID } from './access';
 import { auditAfterChange, auditAfterDelete } from './activity';
@@ -131,13 +132,8 @@ export const Routes: CollectionConfig = {
   ],
 };
 
-export const serviceCategories = [
-  { label: 'Ayuntamiento y atención', value: 'ayuntamiento' }, { label: 'Salud', value: 'salud' }, { label: 'Servicios sociales', value: 'social' },
-  { label: 'Educación', value: 'educacion' }, { label: 'Cultura y bibliotecas', value: 'cultura' }, { label: 'Deportes', value: 'deportes' },
-  { label: 'Emergencias y seguridad', value: 'emergencias' }, { label: 'Transporte', value: 'transporte' }, { label: 'Puntos limpios y residuos', value: 'medio-ambiente' },
-  { label: 'Turismo', value: 'turismo' },
-  { label: 'Otros', value: 'otros' },
-] as const;
+export { serviceCategories } from './util-options';
+import { serviceCategories } from './util-options';
 
 /** Administración: todo. Cuenta municipal: solo los servicios de su concejo (no puede cambiar el concejo). */
 const servicesWrite: Access = async (args) => {
@@ -225,7 +221,7 @@ export const UtilVisibility: CollectionConfig = {
     const town = townID ? await req.payload.findByID({ collection: 'towns', id: townID, depth: 0, overrideAccess: true, req }).catch(() => null) : null;
     data.summary = town?.name ?? 'Concejo';
     return data;
-  }], afterChange: [auditAfterChange] },
+  }], afterChange: [auditAfterChange, revalidateAfterChange], afterDelete: [revalidateAfterDelete] },
   fields: [
     { name: 'summary', type: 'text', admin: { hidden: true } },
     { name: 'town', label: 'Concejo', type: 'relationship', relationTo: 'towns', required: true, unique: true, index: true },

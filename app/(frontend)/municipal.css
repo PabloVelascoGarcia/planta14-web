@@ -239,8 +239,10 @@
 .municipal-util{border-top:2px solid #28241f;margin-top:45px;padding-top:28px}
 .municipal-util-link{margin-left:auto;font-weight:700;color:#a4522d;display:inline-flex;align-items:center;min-height:44px}
 .municipal-util .municipal-section-heading a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
-.util-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:22px;align-items:start}
-.util-block{border:1px solid #d8cebf;background:#fffdf9;padding:20px;min-width:0}
+/* Cajas en columnas (tipo «masonry», sin huecos): el orden del HTML se lee de arriba abajo en cada columna. */
+.util-grid{columns:3 300px;column-gap:22px}
+.util-block{border:1px solid #d8cebf;background:#fffdf9;padding:20px;min-width:0;break-inside:avoid;margin:0 0 22px;display:block;width:100%}
+.util-more{display:inline-flex;align-items:center;min-height:44px;font-weight:700}
 .util-block>h3{font-family:var(--font-serif,Gelasio,serif);font-size:24px;font-weight:900;line-height:1.1;margin:4px 0 12px}
 .util-block p,.util-block li{font-size:15px;line-height:1.5}
 .util-card{border-top:1px solid #e7ddcf;padding:12px 0}
@@ -296,3 +298,12 @@
 .util-places .util-thumb{width:88px;height:66px;object-fit:cover;background:#ece6dc}
 .util-places .util-thumb.is-neutral{display:block;background:linear-gradient(135deg,#efe7da,#e1d5c3)}
 .util-review-public{font-size:13px;color:#6d6155}
+/* Páginas «Ver todos» de «Útil»: búsqueda sencilla y lista a una columna, cómoda en el móvil. */
+.util-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:640px}
+.util-filter label{font-weight:700;width:100%}
+.util-filter input{flex:1 1 220px;min-height:44px;border:1px solid #bfb2a0;background:#fffdf9;padding:0 12px;font-size:16px}
+.util-filter button{min-height:44px;min-width:44px;padding:0 18px;background:#28241f;color:#fffdf9;font-weight:700;border:0;cursor:pointer}
+.util-full-list{max-width:760px}
+.util-full-list.util-services li,.util-full-list.util-list li{font-size:16px;line-height:1.55}
+.util-hours{white-space:pre-line}
+.municipal-columns.is-single{grid-template-columns:minmax(0,1fr)}

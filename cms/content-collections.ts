@@ -1,4 +1,5 @@
 import { APIError, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field, type FieldHook } from 'payload';
+import { revalidateAfterChange, revalidateAfterDelete } from './revalidate';
 import { BlockquoteFeature, BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { toLexical } from '../lib/rich-text';
 import { adminOnly, articlesRead, editorialContentRead, editorialUser, editorialVersions, municipalContentCreate, municipalContentRead, municipalContentUpdate,
@@ -281,7 +282,7 @@ export const MunicipalSpaces: CollectionConfig = {
   versions: { drafts: true },
   access: { read: municipalSpaceRead, readVersions: editorialVersions, create: adminOnly, update: adminOnly, delete: adminOnly },
   // Las fotos de la identidad de un espacio publicado son públicas (copia pública, como las de las noticias).
-  hooks: { beforeChange: [validateImages], afterChange: [syncLinkedMedia], afterDelete: [syncLinkedMediaAfterDelete] },
+  hooks: { beforeChange: [validateImages], afterChange: [syncLinkedMedia, revalidateAfterChange], afterDelete: [syncLinkedMediaAfterDelete, revalidateAfterDelete] },
   fields: [key, text('name', true), { name: 'town', type: 'relationship', relationTo: 'towns', required: true, unique: true },
     text('medium', true),
     { name: 'subscription', type: 'group', fields: [

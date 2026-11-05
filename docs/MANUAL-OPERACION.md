@@ -601,3 +601,29 @@ Los tres se cambian en el CMS, en la barra lateral, sección **Globales**. La re
 **Principios editoriales** (Globales → **Principios editoriales**, página `/principios`, enlazada en el pie):
 - **Entradilla** y **Principios** (título y texto de cada uno; párrafos separados por una línea en blanco). Puedes añadir, quitar y reordenar principios.
 - El texto inicial es **provisional** y sale con el aviso «Texto provisional pendiente de revisión.». Cuando esté revisado, desmarca **Mostrar el aviso** y guarda.
+
+
+## 24. Concejo activo o no activo, «Útil» por concejo y «Fiestas esta semana»
+
+**Activar o desactivar un concejo** (solo administración): CMS → **Municipal Spaces** → el del concejo → **Subscription**. **Status:** `active` (con **Starts At** y, si lo hay, **Ends At**) o `inactive`. Pulsa **Publish changes**: el cambio se ve en la web al momento, sin desplegar. Lo importado (servicios, patrimonio, rutas) **se queda en el CMS** aunque el concejo esté inactivo; solo cambia lo que se publica.
+
+| | Concejo **activo** | Concejo **no activo** |
+|---|---|---|
+| Página del concejo (`/<concejo>`) | Todo: foto de cabecera, avisos, agenda municipal, tablón, ayudas, tarjetas fijas, «Útil» y «Fiestas esta semana» | Solo la cabecera, las **noticias de Planta 14** de ese concejo y «Fiestas esta semana» |
+| «Útil» del concejo (`/<concejo>/util/…`, fichas de patrimonio y rutas) | Sí, salvo lo que haya ocultado (apartado 22) | **No**: esas páginas dan «no encontrada» (404) y no están en el sitemap |
+| Bloque del concejo en `/util` | Sí | No |
+| Agenda municipal en `/agenda` | Sí | No |
+| Panel del ayuntamiento | Sí | No se abre |
+| Fiestas | Sí: son contenido de la redacción | Sí, igual |
+
+**`/util` siempre** muestra lo regional: Pajares (DGT), el tiempo (AEMET), las ayudas y el empleo generales (BDNS y BOE: Principado, IDEPA y Estado) y el enlace de farmacias. Debajo, un bloque por cada concejo **activo**, con sus listas y el empleo de su ayuntamiento.
+
+**Cajas de «Útil»:** cada caja enseña como mucho **5** elementos (primero los más completos: con foto, con recorrido o mapa) y debajo **«Ver todos (n)»**, que lleva a la lista completa de ese tipo en ese concejo, con búsqueda y filtro por tipo:
+- `/<concejo>/util/servicios`, `/<concejo>/util/patrimonio`, `/<concejo>/util/rutas`, `/<concejo>/util/subvenciones` y `/<concejo>/util/empleo`;
+- las ayudas y el empleo generales, en `/util/subvenciones` y `/util/empleo`.
+
+**«Fiestas esta semana»** (portada y página de cada concejo):
+- Sale cada fiesta desde **7 días antes** de empezar hasta su último día. Si no hay ninguna, el bloque no sale.
+- Solo fiestas **publicadas** y con **fecha confirmada**: nunca borradores ni «Fecha pendiente».
+- Los días se cambian en CMS → Globales → **Fiestas en portada** (de 0 a 30). Lo puede cambiar la redacción.
+- Las fiestas siguen en `/fiestas` y en la agenda como siempre.
