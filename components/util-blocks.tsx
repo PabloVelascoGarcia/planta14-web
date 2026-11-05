@@ -4,6 +4,7 @@ import { UTIL_BOX_LIMIT, UTIL_LINKS, type UtilData } from "@/lib/util";
 import { townName, UTIL_TOWNS, type Cached } from "@/lib/util-sources";
 import { formatDate } from "@/lib/utils";
 import { UtilGrid } from "./util-grid";
+import { WeatherIcon } from "./weather-icon";
 
 // Bloques de la sección «Útil» (servidor). Cada dato automático (DGT, AEMET, BDNS, BOE) lleva la atribución que piden
 // sus condiciones y la hora de consulta; si una fuente falla se enseña el último dato bueno con su hora, o un aviso, y el
@@ -50,6 +51,36 @@ function AemetSource({ forecasts }: { forecasts: Cached<{ issued: string | null 
   const checked = span(forecasts.flatMap(f => f.fetchedAt ? [f.fetchedAt] : []), time);
   return <p className="util-source util-source-end" data-util-source data-util-aemet>© AEMET. <a href={UTIL_LINKS.aemet} {...out}>Información elaborada por la Agencia Estatal de Meteorología</a>
     {issued ? <> · Elaborada: {issued} (hora peninsular)</> : null}{checked ? <> · Consultado: {checked}</> : null}.</p>;
+}
+
+/**
+ * /util: el tiempo de los seis concejos en una franja a todo el ancho, bajo el título. Cada concejo: icono, cielo,
+ * máxima y mínima de hoy, probabilidad de lluvia y mañana en pequeño. Cota de nieve y atribución de AEMET, una vez al final.
+ */
+export function WeatherStrip({ data }: { data: UtilData }) {
+  const forecasts = data.forecasts?.filter(f => f.forecast.data || f.forecast.error) ?? [];
+  if (!forecasts.length) return null;
+  const snow = forecasts.flatMap(f => f.forecast.data?.days[0]?.snowLevel ? [`${townName(f.town)}, ${f.forecast.data.days[0].snowLevel} m`] : []);
+  return <section className="util-weather" data-util="tiempo" data-util-weather-strip aria-labelledby="util-tiempo">
+    <h2 id="util-tiempo" className="util-weather-title">El tiempo hoy</h2>
+    <ul className="util-weather-towns">
+      {forecasts.map(({ town: slug, forecast }) => {
+        const [today, tomorrow] = forecast.data?.days ?? [];
+        return <li key={slug} className="util-weather-town" data-util-forecast={slug}>
+          <h3>{townName(slug)}</h3>
+          {today ? <>
+            <div className="util-weather-now"><WeatherIcon sky={today.sky} /><span className="util-weather-temps"><strong>{today.max ?? "–"}°</strong> <span>{today.min ?? "–"}°</span></span></div>
+            <p className="util-weather-sky">{today.sky || "Sin estado del cielo"}</p>
+            {today.rain !== null ? <p className="util-weather-rain">Lluvia {today.rain}%</p> : null}
+            {tomorrow ? <p className="util-weather-tomorrow" data-util-tomorrow><WeatherIcon sky={tomorrow.sky} size={20} /><span>Mañana{tomorrow.sky ? <span className="sr-only">: {tomorrow.sky}</span> : null}</span> <span>{tomorrow.max ?? "–"}° / {tomorrow.min ?? "–"}°</span></p> : null}
+            {forecast.error ? <p className="util-source"><Stale error={forecast.error} /></p> : null}
+          </> : <Unavailable cached={forecast} what="la predicción" />}
+        </li>;
+      })}
+    </ul>
+    {snow.length ? <p className="util-weather-snow" data-util-snow>Cota de nieve hoy: {snow.join(" · ")}.</p> : null}
+    <AemetSource forecasts={forecasts.map(f => f.forecast)} />
+  </section>;
 }
 
 /** «Ver todos (n)»: página propia con la lista completa de ese tipo y concejo. */
@@ -116,7 +147,8 @@ export function UtilBlocks({ data }: { data: UtilData }) {
       {allerWinter ? <div className="util-card"><h4>Estación de Fuentes de Invierno</h4><Official href={UTIL_LINKS.fuentes}>Parte oficial de la estación</Official></div> : null}
     </Block> : null}
 
-    {show("tiempo") && forecasts?.length ? <Block id="tiempo" title="El tiempo" kicker="Predicción">
+    {/* En /util el tiempo va en una franja propia (WeatherStrip), fuera de la rejilla. */}
+    {town && show("tiempo") && forecasts?.length ? <Block id="tiempo" title="El tiempo" kicker="Predicción">
       {forecasts.map(({ town: slug, forecast }) => <div key={slug} className="util-forecast" data-util-forecast={slug}>
         {!town ? <h4>{townName(slug)}</h4> : null}
         {forecast.data ? <ol>{forecast.data.days.slice(0, town ? 4 : 2).map(d => <li key={d.day}><strong>{weekday(d.day)}</strong><span>{d.sky}</span>

@@ -8,6 +8,19 @@ import news from "@/lib/demo/data/news.json";
 
 const demoTopics = topics.filter(topic => topic === "Agenda" || news.some(article => article.topic === topic));
 
+/**
+ * La frase lateral en dos líneas, como era antes de los lemas editables («Donde otros<br />no llegan»): el corte va
+ * tras un punto interior si lo hay; si no, en el espacio más cercano a la mitad.
+ */
+function twoLines(text: string) {
+  const sentence = text.match(/^(.+?\.)\s+(.+)$/);
+  if (sentence) return <>{sentence[1]}<br />{sentence[2]}</>;
+  const spaces = [...text.matchAll(/ /g)].map(m => m.index ?? 0);
+  if (!spaces.length) return text;
+  const cut = spaces.reduce((best, i) => Math.abs(i - text.length / 2) < Math.abs(best - text.length / 2) ? i : best);
+  return <>{text.slice(0, cut)}<br />{text.slice(cut + 1)}</>;
+}
+
 export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories, demo = true, tagline = "Una voz para las Cuencas", sideNote = "Donde otros no llegan" }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]>; demo?: boolean; tagline?: string; sideNote?: string }) {
   const pathname = usePathname();
   if (townSlugs.some(slug => pathname === `/${slug}` || pathname === `/${slug}/panel`)) return null;
@@ -19,7 +32,7 @@ export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().m
           {demo ? <span>Edición de demostración</span> : null}
         </div>
         <div className="masthead">
-          <p className="masthead-note" data-motto="lateral">{sideNote}</p>
+          <p className="masthead-note" data-motto="lateral">{twoLines(sideNote)}</p>
           <Link href="/" className="brand" aria-label="Planta 14 — Portada">Planta <span>14</span></Link>
           <Link href="/buscar" className="search-link"><span aria-hidden="true">⌕</span> Buscar</Link>
         </div>

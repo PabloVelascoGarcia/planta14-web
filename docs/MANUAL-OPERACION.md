@@ -522,7 +522,7 @@ Está en **`/util`** (enlace «Útil» en el menú) y al final de la página de 
 | Puerto de Pajares (N-630) | DGT, Punto de Acceso Nacional (licencia CC BY) | Dice si la DGT registra incidencias en la N-630 de Lena y Villamanín, con la hora del parte. **Nunca dice «abierto».** Se consulta cada 5 minutos como mucho. |
 | El tiempo | AEMET OpenData, predicción por municipio | Solo sale si hay **`AEMET_API_KEY`** en el `.env` del servidor. Las claves nuevas de AEMET duran tres meses: renuévala a tiempo. |
 | Subvenciones abiertas | Base de Datos Nacional de Subvenciones | Convocatorias abiertas de los seis ayuntamientos, del Principado, del IDEPA y de la Administración del Estado. No incluye concesiones directas ni nominativas. Cada una enlaza a su convocatoria oficial. Hay además un enlace fijo a las ayudas del IDEPA. |
-| Empleo público | BOE (sección II.B) | Convocatorias de los seis ayuntamientos y del Principado de los últimos 45 días. |
+| Empleo público | BOE (sección II.B) | Convocatorias de los seis ayuntamientos y del Principado de los últimos 45 días. Un anuncio municipal solo entra si lo firma uno de los seis ayuntamientos («del Ayuntamiento de Lena…») y solo sale en ese concejo; otros ayuntamientos asturianos (Grado, Langreo…) no entran aunque el BOE ponga «(Asturias)». |
 
 **Solo enlaces a la fuente oficial,** sin datos copiados: puerto de San Isidro (112 Asturias), Valgrande-Pajares, Fuentes de Invierno, farmacias de guardia (Colegio de Farmacéuticos), empleo en el BOPA y empleo en cada ayuntamiento. No se copian porque no hay permiso de reutilización confirmado o no hay una fuente automática fiable.
 
@@ -538,7 +538,7 @@ Está en **`/util`** (enlace «Útil» en el menú) y al final de la página de 
 - **Mapa:** de OpenStreetMap.
   - Patrimonio: un punto.
   - Rutas: el recorrido dibujado, si hay track oficial; si no, solo el enlace de descarga.
-- **Foto de patrimonio:** viene de Wikimedia Commons, con autor y licencia. Sin foto, se usa un diseño neutro.
+- **Foto de patrimonio:** viene de Wikimedia Commons, con autor y licencia. Sin foto, la ficha y su elemento en las listas van solo con texto, sin hueco.
 - **Columna «Revisión» y aviso arriba de la ficha:**
   - **Coordenadas pendientes:** sale en la lista, pero no en el mapa. Completa latitud y longitud (WGS84) cuando estén comprobadas.
   - **Dudoso:** hay dudas por revisar (campo «Dudas pendientes», que no se publica). Cuando estén comprobadas, marca **«Dudas revisadas»**.
@@ -616,7 +616,7 @@ Los tres se cambian en el CMS, en la barra lateral, sección **Globales**. La re
 | Panel del ayuntamiento | Sí | No se abre |
 | Fiestas | Sí: son contenido de la redacción | Sí, igual |
 
-**`/util` siempre** muestra lo regional: Pajares (DGT), el tiempo (AEMET), las ayudas y el empleo generales (BDNS y BOE: Principado, IDEPA y Estado) y el enlace de farmacias. Debajo, un bloque por cada concejo **activo**, con sus listas y el empleo de su ayuntamiento.
+**`/util` siempre** muestra lo regional: el tiempo de los seis concejos en una franja bajo el título (AEMET), Pajares (DGT), las ayudas y el empleo generales (BDNS y BOE: Principado, IDEPA y Estado) y el enlace de farmacias. Debajo, un bloque por cada concejo **activo**, con sus listas y el empleo de su ayuntamiento.
 
 **Cajas de «Útil»:** cada caja enseña como mucho **5** elementos (primero los más completos: con foto, con recorrido o mapa) y debajo **«Ver todos (n)»**, que lleva a la lista completa de ese tipo en ese concejo, con búsqueda y filtro por tipo:
 - `/<concejo>/util/servicios`, `/<concejo>/util/patrimonio`, `/<concejo>/util/rutas`, `/<concejo>/util/subvenciones` y `/<concejo>/util/empleo`;

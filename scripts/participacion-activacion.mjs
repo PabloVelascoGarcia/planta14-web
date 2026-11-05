@@ -5,6 +5,8 @@ export async function run(ctx) {
   const block = (html, id) => html.split(`data-util="${id}"`)[1]?.split('</section>')[0] ?? null;
   const status = async path => (await fetch(`${web}${path}`, { redirect: 'manual' })).status;
   await ctx.activate(ctx.SIX);
+  // Con clave de AEMET (solo se lee la predicción que dejó en caché el bloque util) para ver la franja del tiempo.
+  await ctx.stop(); await ctx.start({ AEMET_API_KEY: 'clave-de-prueba' });
 
   // 1. Cajas de 5 como máximo, con «Ver todos (n)» a su página; la página completa filtra por tipo y por texto.
   const lena = await town('lena');
@@ -82,7 +84,11 @@ export async function run(ctx) {
         const gaps = byColumn.flatMap(col => col.slice(1).map((b, i) => b.top - col[i].bottom));
         const ends = byColumn.map(col => col[col.length - 1].bottom);
         const longest = byColumn[ends.indexOf(Math.max(...ends))];
-        return { columns: columns.length, maxGap: Math.max(0, ...gaps), order: blocks.every((b, i) => i === 0 || b.top >= blocks[i - 1].top - 1),
+        const strip = document.querySelector('[data-util-weather-strip]');
+        const towns = strip ? [...strip.querySelectorAll('[data-util-forecast]')].map(t => Math.round(t.getBoundingClientRect().top)) : [];
+        const weather = strip ? { perRow: towns.filter(t => Math.abs(t - towns[0]) < 3).length, towns: towns.length, aboveGrid: strip.getBoundingClientRect().bottom <= grid.getBoundingClientRect().top,
+          fullWidth: Math.abs(strip.getBoundingClientRect().width - grid.getBoundingClientRect().width) < 2, inGrid: Boolean(grid.querySelector('[data-util="tiempo"]')) } : null;
+        return { weather, columns: columns.length, maxGap: Math.max(0, ...gaps), order: blocks.every((b, i) => i === 0 || b.top >= blocks[i - 1].top - 1),
           imbalance: Math.max(...ends) - Math.min(...ends), lastHeight: longest[longest.length - 1].h,
           overflow: document.scrollingElement.scrollWidth > window.innerWidth + 1, blocks: blocks.length,
           wide: [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > window.innerWidth + 1).slice(-3).map(e => `${e.tagName}.${e.className} ${Math.round(e.getBoundingClientRect().right)}: ${(e.textContent || '').slice(0, 60)}`) };
@@ -95,16 +101,21 @@ export async function run(ctx) {
     assert.ok(!m.overflow, `${m.path} at ${m.width}: no horizontal overflow ${JSON.stringify(m.wide)}`);
     assert.ok(m.maxGap <= 24, `${m.path} at ${m.width}: no gaps between boxes (${m.maxGap} px)`);
     assert.ok(m.order, `${m.path} at ${m.width}: reading order kept (each box starts at or below the previous one)`);
-    // Columnas igualadas: la diferencia entre la columna más larga y la más corta no pasa de su última caja (si pasara,
+    // Columnas igualadas: la diferencia entre la columna más larga y la más corta no pasa de su última caja más el margen de 22 px (si pasara,
     // esa caja cabría mejor en la corta).
-    if (m.columns > 1) assert.ok(m.imbalance <= m.lastHeight + 2, `${m.path} at ${m.width}: balanced columns (difference ${m.imbalance} px, last box ${m.lastHeight} px)`);
+    if (m.columns > 1) assert.ok(m.imbalance <= m.lastHeight + 24, `${m.path} at ${m.width}: balanced columns (difference ${m.imbalance} px, last box ${m.lastHeight} px)`);
     if (m.width === 390) assert.equal(m.columns, 1, `${m.path} on mobile: one column`);
+    if (m.path === '/util') {
+      assert.ok(m.weather && m.weather.towns === 6 && m.weather.aboveGrid && m.weather.fullWidth && !m.weather.inGrid, `/util at ${m.width}: weather strip, full width, above the boxes ${JSON.stringify(m.weather)}`);
+      assert.equal(m.weather.perRow, m.width >= 1024 ? 6 : m.width >= 640 ? 3 : 2, `/util at ${m.width}: concejos per row in the weather strip`);
+    } else assert.equal(m.weather, null, `${m.path}: the weather stays a box on the concejo page`);
     if (m.width >= 1024 && m.blocks >= 3) assert.ok(m.columns >= 2, `${m.path} at ${m.width}: several columns (${m.columns})`);
   }
   const allerWide = measures.find(m => m.path === '/aller' && m.width === 2133);
   console.log(`MEDIDA: columnas de «Útil» por ancho: ${widths.map(w => `${w} px → ${[...new Set(measures.filter(m => m.width === w).map(m => m.columns))].join('/')}`).join(', ')}; /aller a 2133 px: diferencia entre columnas ${allerWide.imbalance} px; máxima en todas las páginas y anchos: ${Math.max(...measures.filter(m => m.columns > 1).map(m => m.imbalance))} px`);
-  passed('Útil layout: each box goes to the shortest column (balanced columns, no gaps, reading order kept; the HTML order is unchanged) on /util and the six concejos at 2133, 1440, 1024, 768 and 390 px, one column on mobile, no horizontal overflow');
+  passed('Útil weather on /util: full-width strip under the title, six concejos in a row (three on tablet, two on mobile), outside the box grid; on concejo pages still a box. Útil layout: each box goes to the shortest column (balanced columns, no gaps, reading order kept; the HTML order is unchanged) on /util and the six concejos at 2133, 1440, 1024, 768 and 390 px, one column on mobile, no horizontal overflow');
 
   for (const doc of extra) await payload.delete({ collection: 'municipal-services', id: doc.id, overrideAccess: true });
   await ctx.activate(['lena', 'mieres']);
+  await ctx.stop(); await ctx.start();
 }

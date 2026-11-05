@@ -308,3 +308,21 @@
 .util-hours{white-space:pre-line}
 .municipal-columns.is-single{grid-template-columns:minmax(0,1fr)}
 .util-source-end{border-top:1px solid #e7ddcf;padding-top:10px;margin-top:6px}
+/* /util: el tiempo, franja a todo el ancho bajo el título. Seis concejos en fila; tres en tableta; dos en el móvil. */
+.util-weather{margin-top:24px;border:1px solid #d8cebf;background:#fffdf9;padding:18px 20px 14px}
+.util-weather-title{font-family:var(--font-serif,Gelasio,serif);font-size:24px;font-weight:900;line-height:1.1;margin:0 0 14px}
+.util-weather-towns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px}
+@media(min-width:640px){.util-weather-towns{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1024px){.util-weather-towns{grid-template-columns:repeat(6,minmax(0,1fr))}.util-weather-town+.util-weather-town{border-left:1px solid #e7ddcf;padding-left:16px}}
+.util-weather-town{min-width:0}
+.util-weather-town h3{font-weight:800;font-size:15px;margin:0 0 6px}
+.util-weather-now{display:flex;align-items:center;gap:10px;color:#28241f}
+.util-weather-now .weather-icon{color:#a4522d;flex:none}
+.util-weather-temps strong{font-family:var(--font-serif,Gelasio,serif);font-size:26px;font-weight:900}
+.util-weather-temps span{font-size:16px;color:#6d6155}
+.util-weather-sky{font-size:14px;line-height:1.35;margin:6px 0 2px}
+.util-weather-rain{font-size:14px;color:#3d5a73;margin:0}
+.util-weather-tomorrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:#6d6155;margin:8px 0 0;border-top:1px solid #efe6d8;padding-top:6px}
+.util-weather-tomorrow .weather-icon{color:#8b7761}
+.util-weather-snow{font-size:14px;margin:14px 0 0}
+.util-weather .util-source-end{margin-top:10px}

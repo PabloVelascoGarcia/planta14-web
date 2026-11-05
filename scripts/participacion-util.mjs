@@ -304,6 +304,10 @@ export async function run(ctx) {
     const util = await page(`${web}/util`);
     assert.ok(block(util, 'invierno').includes('data-util-pajares') && block(util, 'invierno').includes('112asturias.es') && block(util, 'invierno').includes('valgrande-pajares.com') && block(util, 'invierno').includes('fuentesdeinvierno.com'), 'winter: Pajares and three links');
     assert.equal((block(util, 'tiempo').match(/data-util-forecast=/g) ?? []).length, 6, 'forecast for the six concejos');
+    const strip = block(util, 'tiempo');
+    assert.ok(util.includes('data-util-weather-strip') && util.indexOf('data-util-weather-strip') < util.indexOf('data-util-grid'), 'weather strip before the boxes');
+    assert.ok((strip.match(/data-weather-icon=/g) ?? []).length === 12 && (strip.match(/data-util-tomorrow/g) ?? []).length === 6 && strip.includes('Lluvia 80%') && strip.includes('9°') && strip.includes('1°'), `each concejo: icon, sky, today max/min, rain and tomorrow with icon: ${strip.slice(0, 1200)}`);
+    assert.equal((strip.match(/Cota de nieve/g) ?? []).length, 1, 'snow level once, at the end');
     const aemetNotes = block(util, 'tiempo').match(/© AEMET/g) ?? [];
     const aemetEnd = block(util, 'tiempo').split('data-util-aemet')[1] ?? '';
     assert.ok(aemetNotes.length === 1 && aemetEnd.includes('Información elaborada por la Agencia Estatal de Meteorología') && aemetEnd.includes('Elaborada: 04/11/2026 19:00') && aemetEnd.includes('Consultado:'),
