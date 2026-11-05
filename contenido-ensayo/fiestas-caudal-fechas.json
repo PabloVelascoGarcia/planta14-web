@@ -471,7 +471,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-martires-valdecuna",
@@ -565,7 +566,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-folixa",
@@ -649,7 +651,9 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "Fiesta popular de primavera dedicada a la cultura asturiana; se clasifica el conjunto festivo, aunque incluya conciertos y otras actividades culturales."
     },
     {
       "id": "mieres-antroxu",
@@ -745,7 +749,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-cristo-turon",
@@ -832,7 +837,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-antroxu-turon",
@@ -924,7 +930,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-antroxu",
@@ -1001,7 +1008,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-pascua-campomanes",
@@ -1074,7 +1082,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-la-flor",
@@ -1181,7 +1190,9 @@
           "nota": "Fecha pendiente: las formulaciones municipales sobre Pascua no son unívocas y el catálogo de origen ya advertía una discrepancia. No se calcula un intervalo ni se utiliza el festivo laboral como programa."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "Se clasifica la romería y celebración tradicional de La Flor en su conjunto; el mercado incluido en su programa no cambia el tipo principal de esta ficha."
     },
     {
       "id": "lena-corderu",
@@ -1265,7 +1276,9 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "Fiesta campestre tradicional con misa, música y baile, además de comida compartida; no es únicamente una jornada gastronómica."
     },
     {
       "id": "lena-la-corrona",
@@ -1338,7 +1351,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-payares",
@@ -1404,7 +1418,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-escanda",
@@ -1477,7 +1492,9 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "El calendario municipal la presenta como fiesta de la localidad de Xomezana. Se clasifica la celebración popular, aunque su nombre aluda a un cereal y los actos concretos estén poco documentados."
     },
     {
       "id": "lena-cristo-amparo",
@@ -1551,7 +1568,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-corpus-rospaso",
@@ -1627,7 +1645,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "lena-les-feries",
@@ -1715,7 +1734,9 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "Fiestas de Nuestra Señora del Rosario en La Pola: la feria ganadera forma parte de un programa festivo más amplio. No se clasifica solo el mercado o la exposición de ganado."
     },
     {
       "id": "lena-mercau-seruenda",
@@ -1790,7 +1811,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "lena-amaguestu",
@@ -1859,7 +1881,9 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "Celebración tradicional comunitaria del otoño con castañas y sidra dulce; se distingue de unas jornadas gastronómicas comerciales."
     },
     {
       "id": "aller-humanitarios",
@@ -1934,12 +1958,13 @@
         {
           "entidad": "Turespaña / Spain.info",
           "titulo": "Fiesta de los Humanitarios / San Martín",
-          "url": "https://www.spain.info/it/eventi/festa-san-martin-humanitarios/",
+          "url": "https://www.spain.info/es/agenda/fiesta-san-martin-humanitarios/",
           "fecha_consulta": "2026-11-05",
           "nota": "El portal oficial de turismo español publica expresamente 11 de noviembre de 2026. Se confirma este día; no se extiende al 12 por una cabecera discrepante de otra agenda."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-miravalles",
@@ -2019,7 +2044,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-toreu-santu",
@@ -2100,7 +2126,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-carmin-felechosa",
@@ -2171,7 +2198,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-san-mames-bustiye",
@@ -2250,7 +2278,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-rosario",
@@ -2321,7 +2350,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-cordero-coto-bello",
@@ -2390,7 +2420,9 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "La referencia municipal histórica describe una fiesta campestre con comida y verbena. Se clasifica como fiesta, sin que ello confirme continuidad ni fechas futuras."
     },
     {
       "id": "morcin-san-anton",
@@ -2465,7 +2497,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "morcin-afuegal-pitu",
@@ -2539,7 +2572,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "morcin-madalena-santiago",
@@ -2613,7 +2647,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "morcin-nieves-argame",
@@ -2682,7 +2717,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "morcin-asuncion-monsacro",
@@ -2756,7 +2792,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "morcin-virgen-probe",
@@ -2824,7 +2861,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "morcin-mercao-otono",
@@ -2894,7 +2932,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "riosa-san-antonio",
@@ -2980,7 +3019,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "riosa-san-pedro",
@@ -3055,7 +3095,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "riosa-felechu",
@@ -3132,7 +3173,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "riosa-remedios",
@@ -3209,7 +3251,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "riosa-san-adriano",
@@ -3287,7 +3330,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "riosa-rosario",
@@ -3376,7 +3420,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-san-juan-mata",
@@ -3443,7 +3488,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-santo-angel",
@@ -3516,7 +3562,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-san-nicolas",
@@ -3583,7 +3630,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-san-antonio",
@@ -3650,7 +3698,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-nuestra-senora-luz",
@@ -3717,7 +3766,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-carmen",
@@ -3784,7 +3834,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-santiago",
@@ -3851,7 +3902,8 @@
           "nota": "Consultado el calendario o la documentación de referencia y buscada la siguiente edición. No se ha localizado una convocatoria inequívoca de 2026 aún por celebrar o de 2027. No se trasladan las fechas de 2025 ni se equipara el festivo laboral al programa festivo."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "ribera-santa-lucia",
@@ -3934,7 +3986,8 @@
           "nota": "El BOPA fija el 14 de diciembre de 2026 como festivo laboral de Santa Lucía en Ribera de Arriba. Esto NO confirma el día ni el intervalo de los actos; fecha_inicio y fecha_fin permanecen pendientes."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-santa-barbara",
@@ -4019,7 +4072,9 @@
           "nota": "El texto indexado de la publicación municipal identifica actos el 4 de diciembre de 2025. La web migrada puede remitir a la agenda general; no se considera programa de 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta",
+      "nota_tipo": "Fiesta popular documentada por el Ayuntamiento como Fiestas de Santa Bárbara 2025, con pregón y actuación musical el 3 de diciembre en el parque Xovellanos, organizada por la Asociación Cultural y Minera Santa Bárbara. No equivale a festivo laboral ni confirma el programa de 2026. Fuente de esta clasificación, consultada el 2026-11-05: https://www.mieres.es/eventos/-/calendarsuite/event/fiestas-de-santa-barbara-2025/364366/e20aADaGPQJD"
     },
     {
       "id": "mieres-santa-barbara-bustiello",
@@ -4083,7 +4138,9 @@
           "nota": "La fuente acredita diciembre y la localidad, no el 4 de diciembre como fecha de sus actos ni un programa de 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Se clasifica provisionalmente como evento de conmemoración minera: la documentación disponible en esta ficha no acredita un programa de fiesta popular o patronal como el de Mieres del Camín. No se deduce el tipo de unas celebraciones a partir de otras; revisar si aparece un programa local. No equivale a festivo laboral ni confirma una convocatoria."
     },
     {
       "id": "mieres-santa-barbara-brananoveles-tablao",
@@ -4147,7 +4204,9 @@
           "nota": "La fuente acredita diciembre y la localidad, no el 4 de diciembre como fecha de sus actos ni un programa de 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Se clasifica provisionalmente como evento de conmemoración minera: la documentación disponible en esta ficha no acredita un programa de fiesta popular o patronal como el de Mieres del Camín. No se deduce el tipo de unas celebraciones a partir de otras; revisar si aparece un programa local. No equivale a festivo laboral ni confirma una convocatoria."
     },
     {
       "id": "aller-santa-barbara",
@@ -4220,7 +4279,9 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Se clasifica provisionalmente como evento de conmemoración minera: la documentación disponible en esta ficha no acredita un programa de fiesta popular o patronal como el de Mieres del Camín. No se deduce el tipo de unas celebraciones a partir de otras; revisar si aparece un programa local. No equivale a festivo laboral ni confirma una convocatoria."
     },
     {
       "id": "lena-santa-barbara",
@@ -4286,7 +4347,9 @@
           "nota": "GRUCOMI documenta exposiciones de Santa Bárbara en Pola de Lena en 2019 y 2023. Son referencias históricas de una muestra itinerante, no prueba de fiesta anual ni de actos el 4 de diciembre de 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "La documentación de esta ficha acredita exposiciones de memoria minera, no una fiesta patronal local. Se clasifica como evento cultural; la próxima convocatoria sigue pendiente."
     },
     {
       "id": "morcin-santa-barbara",
@@ -4352,7 +4415,9 @@
           "nota": "La publicación del cronista de Riosa, de 20 de mayo de 2026, acredita la nueva asociación y la interrupción de la antigua celebración. No anuncia fecha. Esta ficha y la del otro concejo siguen una misma celebración compartida, no dos programas independientes."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Se clasifica provisionalmente como evento de conmemoración minera: la documentación disponible en esta ficha no acredita un programa de fiesta popular o patronal como el de Mieres del Camín. No se deduce el tipo de unas celebraciones a partir de otras; revisar si aparece un programa local. No equivale a festivo laboral ni confirma una convocatoria."
     },
     {
       "id": "riosa-santa-barbara",
@@ -4418,7 +4483,9 @@
           "nota": "La publicación del cronista de Riosa, de 20 de mayo de 2026, acredita la nueva asociación y la interrupción de la antigua celebración. No anuncia fecha. Esta ficha y la del otro concejo siguen una misma celebración compartida, no dos programas independientes."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Se clasifica provisionalmente como evento de conmemoración minera: la documentación disponible en esta ficha no acredita un programa de fiesta popular o patronal como el de Mieres del Camín. No se deduce el tipo de unas celebraciones a partir de otras; revisar si aparece un programa local. No equivale a festivo laboral ni confirma una convocatoria."
     },
     {
       "id": "ribera-santa-barbara",
@@ -4484,7 +4551,9 @@
           "nota": "El calendario municipal consultado no recoge Santa Bárbara. No se infiere una fiesta de la tradición minera general ni se atribuye un programa a este ayuntamiento."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Ficha de seguimiento sin celebración local acreditada. Se clasifica temáticamente como evento de conmemoración minera; no prueba que exista una convocatoria ni una fiesta patronal."
     },
     {
       "id": "mieres-san-anton-carcarosa",
@@ -4548,7 +4617,8 @@
           "nota": "El calendario acredita enero y localidad; no se localiza convocatoria de enero de 2027 ni regla explícita para su día."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-santa-apolonia-pedroso",
@@ -4612,7 +4682,8 @@
           "nota": "El calendario municipal solo concreta febrero. No se convierte el día del santoral en fecha de los actos de 2027."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "mieres-feria-navidad",
@@ -4676,7 +4747,8 @@
           "nota": "Publicación municipal del 16 de diciembre de 2025 sobre la edición anterior. No se trasladan su apertura, cierre ni horarios a 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "mieres-papanoelada-motera",
@@ -4740,7 +4812,9 @@
           "nota": "El título y el contenido se refieren a 2026 aunque la URL conserva 2025. El contador incrustado no se transforma en fecha confirmada sin texto o programa que la respalde."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Ruta motera navideña organizada: evento participativo, aunque se repita en Navidad; no es fiesta patronal ni romería."
     },
     {
       "id": "mieres-visita-anguleru",
@@ -4804,7 +4878,9 @@
           "nota": "La noticia municipal del 11 de diciembre de 2025 acredita la actividad en la Navidad 2025–2026. No confirma la Navidad 2026–2027; sus días no se extrapolan."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Recepción infantil dentro de la programación navideña. El personaje tradicional no convierte esta actividad concreta en una fiesta patronal o de pueblo."
     },
     {
       "id": "mieres-visita-papa-noel",
@@ -4868,7 +4944,8 @@
           "nota": "La noticia municipal del 11 de diciembre de 2025 acredita la actividad en la Navidad 2025–2026. No confirma la Navidad 2026–2027; sus días no se extrapolan."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "mieres-nochevieja-infantil",
@@ -4932,7 +5009,9 @@
           "nota": "La noticia municipal del 11 de diciembre de 2025 acredita la actividad en la Navidad 2025–2026. No confirma la Navidad 2026–2027; sus días no se extrapolan."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Actividad infantil organizada del programa navideño; se clasifica la sesión concreta, no la celebración general de la Nochevieja."
     },
     {
       "id": "mieres-principe-aliatar",
@@ -4996,7 +5075,8 @@
           "nota": "La noticia municipal del 11 de diciembre de 2025 acredita la actividad en la Navidad 2025–2026. No confirma la Navidad 2026–2027; sus días no se extrapolan."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "mieres-cabalgata-reyes",
@@ -5060,7 +5140,8 @@
           "nota": "La fuente municipal documenta el 5 de enero de 2026. No se trata de una convocatoria de enero de 2027 ni de una regla explícita sin excepciones."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "lena-mercau-navidenu-tios",
@@ -5124,7 +5205,8 @@
           "nota": "Noticia del 22 de noviembre de 2025: su programa corresponde a 20 y 21 de diciembre de 2025, no de 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "lena-cuentos-navidad-campumanes",
@@ -5188,7 +5270,8 @@
           "nota": "Fecha, hora (17:00) y lugar expresos en la programación del Principado de Asturias. No se presupone repetición anual."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "lena-cabalgata-reyes",
@@ -5252,7 +5335,8 @@
           "nota": "Noticia publicada el 29 de diciembre de 2025 sobre el desfile del 5 de enero de 2026. No acredita la nueva edición de 2027."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "riosa-cabalgata-reyes",
@@ -5323,7 +5407,8 @@
           "advertencia": "Por regla, sin confirmar. No es un programa anunciado para esa edición."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "aller-san-silvestre",
@@ -5387,7 +5472,8 @@
           "nota": "Noticia del 29 de diciembre de 2025 sobre la prueba del 31 de diciembre de 2025. No anuncia la edición de 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "morcin-san-silvestre",
@@ -5453,7 +5539,8 @@
           "nota": "Noticia publicada el 16 de diciembre de 2025. Hay una incoherencia: llama sábado al 28 de diciembre, que en 2025 fue domingo; podría contener material de 2024. No se asigna fecha a 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "aller-antroxu-moreda",
@@ -5517,7 +5604,8 @@
           "nota": "Noticia del 9 de febrero de 2026 para el 21 de febrero de ese año, ya pasado. No se localiza convocatoria de 2027."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "fiesta"
     },
     {
       "id": "aller-dia-cancion-asturiana",
@@ -5583,7 +5671,9 @@
           "nota": "El título y el mes identifican la celebración, pero el cuerpo de la ficha describe unas jornadas de la matanza. Dato dudoso: no se mezclan ambos acontecimientos ni se inventa una fecha."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Actividad cultural. La discordancia entre título y cuerpo de la fuente sigue pendiente de aclarar; clasificarla no valida su programa ni sus fechas."
     },
     {
       "id": "aller-jornadas-caza",
@@ -5647,7 +5737,8 @@
           "nota": "La ficha sin año menciona febrero y marzo y un establecimiento concreto. No acredita continuidad de la iniciativa ni convocatoria en 2027."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "mieres-jornadas-pote-turon",
@@ -5720,7 +5811,8 @@
           "nota": "Acredita la edición XXXIV de 2025, rotulada 28NOV/8DIC. No confirma 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "aller-jornadas-matanza",
@@ -5786,7 +5878,8 @@
           "nota": "La ficha consultada muestra expresamente 6–8 de diciembre de 2025 y Felechosa. No es un programa de 2026 ni una regla de celebración cada 6–8 de diciembre."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "lena-san-silvestre",
@@ -5852,7 +5945,8 @@
           "nota": "La noticia fechada el 24 de diciembre de 2025 en este archivo anuncia la XXX edición para el domingo 28 de diciembre de 2025. No se extrapola ese día a 2026."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento"
     },
     {
       "id": "mieres-santa-barbara-turon",
@@ -5922,7 +6016,9 @@
           "nota": "La fuente describe misa, procesión y ofrenda dentro de la celebración en torno a Santa Bárbara. No proporciona un día ni un programa de 2026 para esos actos. No se duplican las jornadas gastronómicas: esta ficha sigue únicamente la conmemoración minera."
         }
       ],
-      "fecha_consulta": "2026-11-05"
+      "fecha_consulta": "2026-11-05",
+      "tipo": "evento",
+      "nota_tipo": "Se clasifica provisionalmente como evento de conmemoración minera: la documentación disponible en esta ficha no acredita un programa de fiesta popular o patronal como el de Mieres del Camín. No se deduce el tipo de unas celebraciones a partir de otras; revisar si aparece un programa local. No equivale a festivo laboral ni confirma una convocatoria."
     }
   ]
 }
