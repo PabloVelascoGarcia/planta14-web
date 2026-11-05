@@ -1,6 +1,6 @@
 import type { Where } from "payload";
 import { contentSource } from "./content-source";
-import { aemetEnabled, aemetForecast, openGrants, pajaresStatus, publicJobs, UTIL_TOWNS,
+import { aemetEnabled, aemetForecast, ensureUtilRefresher, openGrants, pajaresStatus, publicJobs, UTIL_TOWNS,
   type Cached, type Forecast, type Grant, type Job, type RoadIncident } from "./util-sources";
 
 // Sección «Útil»: qué se enseña en /util y en la página de cada concejo. Cada servicio sale por defecto en todos los
@@ -51,6 +51,7 @@ const summary = (text: string | null | undefined) => {
 export async function getUtilData(town: string | null): Promise<UtilData> {
   const empty = { data: null, fetchedAt: null, error: null };
   if (contentSource() !== "payload") return { town, hidden: [], hiddenByTown: {}, pajares: empty, forecasts: null, grants: empty, jobs: empty, heritage: [], routes: [], services: [] };
+  ensureUtilRefresher();
   const { contentClient } = await import("./payload-content");
   const payload = await contentClient();
   const townWhere: Where = town ? { "town.slug": { equals: town } } : {};

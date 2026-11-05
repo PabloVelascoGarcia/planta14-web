@@ -3,7 +3,7 @@
 //   · subvenciones (BDNS, infosubvenciones.es) · empleo público (BOE, RSS de la sección II.B).
 // El resto (San Isidro, estaciones de esquí, farmacias, BOPA, empleo municipal) solo se enlaza: ver lib/util.ts.
 // Las visitas NUNCA consultan las fuentes: solo leen la caché de la base de datos (tabla external_cache). La renueva un
-// refresco en el servidor (startUtilRefresher, arrancado en instrumentation.ts) con su intervalo por fuente, reintentos
+// refresco en el servidor (ensureUtilRefresher, arrancado por /api/health y al leer «Útil») con su intervalo por fuente, reintentos
 // con espera creciente ante 429/5xx y la última copia buena si falla. Se avisa por correo a la administración (como
 // mucho una vez cada 12 horas por fuente).
 
@@ -53,7 +53,7 @@ const readRow = async (key: string) => {
 };
 /**
  * Lectura de la caché (lo único que hacen las páginas): las visitas NUNCA consultan las fuentes externas. El dato lo
- * renueva el refresco del servidor (startUtilRefresher). Sin dato todavía, el bloque muestra «Consultando…».
+ * renueva el refresco del servidor (ensureUtilRefresher). Sin dato todavía, el bloque muestra «Consultando…».
  */
 export async function readCache<T>(key: string): Promise<Cached<T>> {
   const row = await readRow(key);
@@ -127,14 +127,20 @@ export async function refreshDueSources() {
     for (const def of utilSources()) if (isDue(await readRow(def.key), def.intervalMs)) await refreshSource(def);
   } finally { running = false; }
 }
-let timer: ReturnType<typeof setInterval> | null = null;
-/** Arranca el refresco en segundo plano (instrumentation.ts): comprueba cada minuto (UTIL_REFRESH_CHECK_SECONDS). */
-export function startUtilRefresher() {
-  if (timer) return;
+/**
+ * Arranca, una sola vez por proceso, el refresco en segundo plano: comprueba cada minuto (UTIL_REFRESH_CHECK_SECONDS)
+ * qué fuentes toca renovar. Se llama desde /api/health (lo consulta deploy.sh nada más desplegar y luego el monitor) y
+ * al leer «Útil»; nunca durante la compilación ni sin CMS. Sin instrumentation.ts: compilarlo arrastraba todo Payload
+ * a una entrada aparte y la compilación de la imagen se quedaba sin memoria.
+ */
+export function ensureUtilRefresher() {
+  if (process.env.NEXT_PHASE === "phase-production-build" || process.env.CONTENT_SOURCE !== "payload" || process.env.CMS_ENABLED !== "true" || process.env.UTIL_REFRESH_DISABLED === "true") return;
+  const flags = globalThis as typeof globalThis & { __planta14UtilRefresher?: boolean };
+  if (flags.__planta14UtilRefresher) return;
+  flags.__planta14UtilRefresher = true;
   const run = () => { refreshDueSources().catch(error => console.warn(`Útil: refresco de fuentes interrumpido: ${error instanceof Error ? error.message : error}`)); };
-  setTimeout(run, envNumber("UTIL_REFRESH_START_SECONDS", 5) * 1000);
-  timer = setInterval(run, envNumber("UTIL_REFRESH_CHECK_SECONDS", 60) * 1000);
-  timer.unref?.();
+  setTimeout(run, envNumber("UTIL_REFRESH_START_SECONDS", 5) * 1000).unref?.();
+  setInterval(run, envNumber("UTIL_REFRESH_CHECK_SECONDS", 60) * 1000).unref?.();
 }
 
 async function notifyAdmins(label: string, message: string, lastGood: Date | string | null) {

@@ -225,7 +225,9 @@ export async function run(ctx) {
     }
     passed('Útil importers validated against the real collection schema (lengths, required fields, select values; all errors at once, also with --solo-comprobar, nothing written); opening hours up to 500 characters; repeatable by id (only the missing records are created). Formats: npm run cms:patrimonio:importar, cms:rutas:importar and cms:servicios:importar (file or stdin, --solo-comprobar, --publicar); everything is validated first, an error imports nothing; repeatable by id; pharmacies are not imported (no reuse permission)');
 
-    // El refresco del servidor llena la caché sin que nadie visite la web.
+    // El refresco del servidor llena la caché sin que nadie visite la web: lo arranca /api/health, que deploy.sh
+    // consulta nada más desplegar (y luego el monitor).
+    assert.equal((await fetch(`${web}/api/health`)).status, 200);
     const cacheKeys = ['dgt:pajares', 'bdns:abiertas', 'boe:empleo', ...['33037', '33033', '33002', '33038', '33058', '33057'].map(id => `aemet:${id}`)];
     await waitFor(async () => (await db(sql`SELECT count(*)::int AS n FROM external_cache WHERE fetched_at IS NOT NULL AND key IN ${cacheKeys}`)).rows[0].n === cacheKeys.length, 'server-side refresh filled the cache', 240);
     // Página del concejo: cada bloque automático con su atribución y su hora; el resto, enlaces a la fuente oficial.
