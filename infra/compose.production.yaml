@@ -41,6 +41,9 @@ x-app-env: &app-env
   GA4_MEASUREMENT_ID: ${GA4_MEASUREMENT_ID:-}
   MUNICIPAL_NOTICE_EMAIL_ENABLED: ${MUNICIPAL_NOTICE_EMAIL_ENABLED:-false}
   MUNICIPAL_NOTICE_EMAIL_TO: ${MUNICIPAL_NOTICE_EMAIL_TO:-}
+  # Sección «Útil»: clave de AEMET OpenData (vacía = sin bloque del tiempo) y cada cuántas horas se refresca la BDNS.
+  AEMET_API_KEY: ${AEMET_API_KEY:-}
+  UTIL_BDNS_REFRESH_HOURS: ${UTIL_BDNS_REFRESH_HOURS:-6}
 
 services:
   app:

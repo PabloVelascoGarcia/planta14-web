@@ -39,6 +39,13 @@ x-app-env: &app-env
   CDN_PURGE_ENABLED: ${CDN_PURGE_ENABLED:-false}
   CDN_PURGE_URL: ${CDN_PURGE_URL:-}
   CDN_PURGE_TOKEN: ${CDN_PURGE_TOKEN:-}
+  SMTP_ENABLED: ${SMTP_ENABLED:-false}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+  MUNICIPAL_NOTICE_EMAIL_ENABLED: ${MUNICIPAL_NOTICE_EMAIL_ENABLED:-false}
+  MUNICIPAL_NOTICE_EMAIL_TO: ${MUNICIPAL_NOTICE_EMAIL_TO:-}
+  # Sección «Útil»: clave de AEMET OpenData (vacía = sin bloque del tiempo) y cada cuántas horas se refresca la BDNS.
+  AEMET_API_KEY: ${AEMET_API_KEY:-}
+  UTIL_BDNS_REFRESH_HOURS: ${UTIL_BDNS_REFRESH_HOURS:-6}
 
 services:
   app:
