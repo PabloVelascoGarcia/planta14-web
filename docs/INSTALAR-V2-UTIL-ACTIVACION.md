@@ -1,10 +1,10 @@
 # Instalar «Útil» por concejo, la activación de concejos y «Fiestas esta semana»
 
-Rama **`desarrollo/planta14-v2-util-activacion`**, creada desde `desarrollo/planta14-v2-pie` (`6541bf7`). **Commit a instalar: `@COMMIT@`** (`@COMMIT_LARGO@`). El commit siguiente solo añade documentación: este documento. No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
+Rama **`desarrollo/planta14-v2-util-activacion`**, creada desde `desarrollo/planta14-v2-pie` (`6541bf7`). **Commit a instalar: `36c43c4`** (`36c43c4bde21a96d0216b81d59334d3fbdf98588`). El commit siguiente solo completa este documento. No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
 
 Incluye todo lo de `desarrollo/planta14-v2-pie` y `desarrollo/planta14-v2-correcciones`. **Si en pruebas todavía no está instalado `c708a4e`**, puedes desplegar directamente este commit: aplica también las migraciones anteriores. Si vienes de antes de `1e0985a`, haz además los pasos 4 a 8 de `docs/INSTALAR-V2-CORRECCIONES.md` (variables, importaciones de servicios y fiestas).
 
-> @BATERIA_RESUMEN@
+> **Batería completa: pasada una vez sobre `96dde5a`.** Todo correcto salvo `test:instalacion`, que esperaba todavía las tarjetas «todo el año» en un concejo inactivo, justo lo que el encargo quita. `36c43c4` solo corrige esa prueba (el código de la web es el mismo que en `96dde5a`) y la repetí: correcta.
 
 ## Qué cambia
 
@@ -50,7 +50,7 @@ git fetch origin desarrollo/planta14-v2-util-activacion
 ```
 
 ```bash
-git checkout --detach @COMMIT_LARGO@
+git checkout --detach 36c43c4bde21a96d0216b81d59334d3fbdf98588
 ```
 
 ```bash
@@ -58,7 +58,7 @@ git log -1 --format='%h %s'
 ```
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production @COMMIT_LARGO@
+bash infra/deploy/deploy.sh --env-file infra/.env.production 36c43c4bde21a96d0216b81d59334d3fbdf98588
 ```
 
 ```bash
@@ -110,7 +110,20 @@ La migración nueva solo **crea** una tabla de ajuste que la versión anterior n
 
 ## Resultados de la batería completa
 
-@BATERIA@
+**Batería completa sobre `96dde5a`:**
+
+| Prueba | Resultado |
+|---|---|
+| `production-deploy-test.sh` | **SUPERADO**: construye la imagen y aplica la migración nueva. Las dos líneas «FALLO: /api/health no responde» son los dos escenarios de vuelta atrás que la prueba provoca a propósito. Sin volúmenes nuevos. |
+| `npm test`, `typecheck`, `lint`, `build` | Correctos; lint con 0 errores y 16 avisos de estilo (los de antes) |
+| `test:block2` / `block3` / `launch` / `ensayo` / `formulario` | Correctos |
+| `test:portada` | Correcto (9 PASS) |
+| `test:participacion` | **Correcto**, con el bloque nuevo de activación y maquetación. Columnas medidas: 1440 px → 3, 1024 px → 3, 768 px → 2, 390 px → 1, sin huecos ni desbordes en `/util` y los seis concejos. «Fiestas esta semana» con días configurables. |
+| `test:instalacion` | **Falló** en «inactive /lena keeps «Lena, todo el año»»: la prueba esperaba las tarjetas fijas en un concejo inactivo |
+| shellcheck, Caddy (acme e internal), `common-test`, `staging-config-test`, `monitor-test`, `memory-test`, `staging-guard-test` | Correctos |
+| `restore-test.sh` (tres variantes), `offsite-immutable-test`, `pruebas-config-test`, `preproduccion-test`, `postgres-roles-test`, `staging-e2e.sh` | SUPERADAS, sin volúmenes nuevos ni restos |
+
+**Arreglo y repetición (`36c43c4`):** la prueba comprueba ahora que el concejo inactivo mantiene la cabecera con su escudo, colores y créditos, y que **no** muestra la foto de cabecera ni las tarjetas «todo el año». Repetida `test:instalacion`: 16 PASS.
 
 ## Dudas resueltas por prudencia
 
