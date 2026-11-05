@@ -153,7 +153,9 @@ dc --profile migrate run --rm -T -e NODE_ENV=development -e IMPORT_MUNICIPAL_DEM
 # completa las secciones que falten sin duplicar ni tocar lo existente.
 dc --profile migrate run --rm -T migrate npm run cms:structure > "$ws/estructura.log" 2>&1 || true
 check "carga de estructura en el contenedor de producción (npm run cms:structure)" grep -q 'Estructura cargada. Creados: 4 secciones, 0 concejos, 0 espacios' "$ws/estructura.log"
-counts() { docker exec -i "$project-postgres-1" psql -U planta14 -d planta14 -XAtq < "$root/infra/test/count-rows.sql" | grep -v '^public.public_media_ops|'; }
+# Sin las tablas que no son contenido: operaciones de copias públicas, caché de las fuentes de «Útil» y contadores de
+# visitas (se escriben al servir páginas públicas, también en mantenimiento).
+counts() { docker exec -i "$project-postgres-1" psql -U planta14 -d planta14 -XAtq < "$root/infra/test/count-rows.sql" | grep -Ev '^public\.(public_media_ops|external_cache|stats_daily)\|'; }
 titles() { docker exec "$project-postgres-1" psql -U planta14 -d planta14 -XAtc "SELECT md5(string_agg(title, '|' ORDER BY id)) FROM municipal_content"; }
 counts > "$ws/filas-antes.txt"
 check "datos de ensayo cargados" test "$(grep -c '' "$ws/filas-antes.txt")" -gt 10

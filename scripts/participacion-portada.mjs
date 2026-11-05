@@ -53,9 +53,12 @@ export async function run(ctx) {
   await tab.goto(`${ctx.origin}/cms/collections/notifications`);
   const cell = tab.locator('td.cell-createdAt').first();
   await cell.waitFor();
+  // La lista se pinta primero con «Cargando...»: se espera a la fecha.
+  await tab.waitForFunction(() => /\d{2}\/\d{2}\/\d{4}/.test(document.querySelector('td.cell-createdAt')?.textContent ?? ''), null, { timeout: 30_000 }).catch(() => undefined);
   const shown = (await cell.innerText()).trim();
   await tab.goto(`${ctx.origin}/cms/collections/festivals`);
   await tab.locator('td.cell-startDate').first().waitFor();
+  await tab.waitForFunction(() => /\d{2}\/\d{2}\/\d{4}/.test(document.querySelector('td.cell-startDate')?.textContent ?? ''), null, { timeout: 30_000 }).catch(() => undefined);
   const festivalDate = (await tab.locator('td.cell-startDate').first().innerText()).trim();
   await context.close();
   assert.match(shown, /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/, `list dates as dd/MM/yyyy HH:mm (${shown})`);
