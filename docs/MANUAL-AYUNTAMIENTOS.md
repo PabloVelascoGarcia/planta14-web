@@ -9,6 +9,11 @@ Guía rápida para el personal del ayuntamiento. Si tienes dudas, escribe a **in
 
 La cuenta te la da Planta 14 y es solo para ti: no la compartas. Si crees que alguien conoce tu contraseña, avísanos.
 
+**¿Has olvidado tu contraseña?**
+1. En la pantalla de entrada, pulsa **«¿Has olvidado tu contraseña?»** y escribe tu correo.
+2. Recibirás un correo de Planta 14 con un enlace. Sirve una vez y caduca en una hora; si no lo ves, mira en el correo no deseado.
+3. El enlace abre tu panel. Escribe la contraseña nueva dos veces (al menos 12 caracteres) y entrarás directamente.
+
 ![Pantalla de entrada al panel](img/manual-ayuntamientos/01-entrar.png)
 
 ## 2. Publicar un aviso
@@ -58,7 +63,16 @@ Planta 14 puede retirar una publicación si incumple las condiciones de uso o la
 
 ![Publicación retirada con su motivo](img/manual-ayuntamientos/05-retirado.png)
 
-## 6. Buenas prácticas
+## 6. Más herramientas del panel
+
+Debajo de tus publicaciones encontrarás:
+
+- **Servicios de «Útil» en tu concejo.** La página de tu concejo tiene una sección «Útil»: el tiempo, puertos y estaciones de esquí, farmacias de guardia, directorio de servicios municipales, patrimonio, rutas, subvenciones y empleo público. Por defecto salen todos. Desmarca los que no quieras mostrar y pulsa **Guardar**. Las noticias y los contenidos de Planta 14 no se pueden ocultar.
+- **Directorio de servicios municipales.** Añade, corrige o quita los teléfonos, direcciones y horarios de los servicios del ayuntamiento. Los cambios salen al momento en «Útil».
+- **Buzón de sugerencias.** Marca los servicios de Planta 14 que os interesarían y cuéntanos lo que quieras. Lo leen la administración y el periodista de vuestro concejo.
+- **Visitas de tu concejo este mes.** Visitas por día, páginas más vistas y de dónde llegan (buscadores, redes, WhatsApp…). Solo de tu concejo. Se pueden descargar en CSV (Excel) o en PDF. No usamos cookies ni guardamos datos personales de quien visita.
+
+## 7. Buenas prácticas
 
 - Escribe para los vecinos: claro, corto y con fecha, hora y lugar.
 - No publiques datos personales que no hagan falta (teléfonos particulares, DNI, direcciones).

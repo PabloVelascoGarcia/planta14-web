@@ -357,7 +357,7 @@ Los carga, una vez, `npm run cms:responsables` (lo hace Code local al instalar; 
 
 Cada entrada crea un aviso en **Pendientes de revisar** (antes «Avisos municipales»), asignado al responsable, que además recibe un **correo** con el enlace (desde avisos@planta14.com, si el correo está activado). Cuando lo hayas atendido, abre el pendiente y marca **Revisado**. Si un concejo no tiene responsable, el pendiente queda sin asignar y solo lo ve la administración.
 
-Las **cartas** todavía no tienen formulario en la web. Cuando lo tengan, seguirán este mismo camino.
+Las **cartas de los lectores** siguen este mismo camino (apartado 19).
 
 ## 15. Fiestas de las Cuencas
 
@@ -443,3 +443,143 @@ El **envío del boletín** todavía no existe: llegará en un encargo posterior.
 - **Se quita sola el:** opcional; fecha y hora de caducidad.
 
 Aparece una barra roja bajo la cabecera de todas las páginas, salvo las de concejo, que tienen su propia cabecera. Desaparece a la hora de caducidad o al desmarcarla. La puede activar cualquier persona de la redacción.
+
+## 18. Contraseñas: mínimo 12 caracteres y «¿Has olvidado tu contraseña?»
+
+- **Mínimo:** el servidor rechaza cualquier contraseña de menos de **12 caracteres**, en todas las cuentas (redacción, administración y ayuntamientos), tanto al crearla como al cambiarla o al restablecerla.
+- **Redacción y administración:** en `/cms`, «¿Olvidaste tu contraseña?». El enlace lleva a `/cms/reset/…`.
+- **Ayuntamientos:** en su panel (`/<concejo>/panel`), **«¿Has olvidado tu contraseña?»**. El correo («Planta 14: cambia tu contraseña») lleva a `/<concejo>/panel/restablecer`, con la imagen del concejo. Al guardar la contraseña nueva, entra directamente en su panel.
+- **El enlace** sirve **una vez** y **caduca en una hora**. Si alguien pide el correo con una dirección que no tiene cuenta, la web responde lo mismo y no se envía nada.
+- **Con el modo mantenimiento activado**, no se puede pedir el correo ni cambiar la contraseña.
+- **Correo:** necesita el SMTP de avisos@planta14.com activado (`SMTP_ENABLED=true`).
+
+## 19. Cartas de los lectores
+
+**En la web:**
+- **Enviar una carta:** `/cartas/enviar`.
+- **Normas:** `/normas-cartas`. El texto es provisional, pendiente de revisión.
+- **Dónde salen:** en Opinión, en el bloque **«Cartas de los lectores»**, y en `/cartas`. De cada carta se publican nombre, apellidos, concejo y texto, con el aviso «Planta 14 no comparte necesariamente las opiniones de los lectores».
+
+**Qué piden:**
+- nombre, apellidos, DNI o NIE, teléfono, correo y concejo (obligatorio);
+- el texto, de hasta 2000 caracteres;
+- aceptar las normas y la política de privacidad.
+
+Solo se admite **una carta al mes por persona**: se comprueba por el DNI y por el correo.
+
+**Recorrido:**
+1. La persona recibe un correo y confirma con el enlace, que caduca en 7 días. Sin confirmar, la carta no llega a nadie.
+2. Al confirmar, queda **Pendiente de revisar** y se crea un pendiente para el periodista responsable del concejo, que recibe un correo.
+3. En el CMS (**Cartas**), el periodista puede:
+   - **aprobarla:** se publica;
+   - **corregirla:** erratas o recortes. El texto original queda guardado;
+   - **rechazarla:** con un **motivo obligatorio**, que se envía por correo a quien la escribió.
+
+   Al aprobarla, la persona recibe también un correo.
+
+**Datos personales:**
+- **Quién los ve:** el DNI y el teléfono se guardan **cifrados** y solo los ven la administración y el periodista responsable de ese concejo. Nunca se publican.
+- **Borrado:** se borran solos a los **24 meses**. Ocurre al recibir cartas y al abrir el CMS. Para hacerlo a mano o desde una tarea programada:
+
+```bash
+npm run cms:cartas:caducar
+```
+
+## 20. Buzón de sugerencias de los ayuntamientos
+
+En su panel, cada ayuntamiento tiene un **Buzón de sugerencias**:
+- casillas con servicios que le interesarían: publicidad institucional, boletín para sus vecinos, informes de visitas, cobertura de actos, agenda ampliada, formación y avisos urgentes;
+- un texto libre.
+
+**Dónde llegan:**
+- En el CMS, en **Sugerencias**. Las ve la administración, y cada periodista ve las de los concejos de los que es responsable.
+- Además, llega un correo a la administración y al periodista responsable.
+
+## 21. Estadísticas propias (sin cookies)
+
+**Qué se cuenta:** visitas por **día, página, concejo, sección y procedencia** (buscadores, redes sociales, WhatsApp, directo, otras webs, desde Planta 14).
+- **Solo contadores sumados:** no se guarda IP, navegador ni ningún identificador, y no se usan cookies.
+- **No cuentan:** robots, vistas previas de enlaces (WhatsApp, Telegram…), personas con sesión en el CMS y zonas privadas (CMS, paneles, vistas previas, confirmaciones).
+- **Sin efecto en la carga:** el aviso de visita sale cuando el navegador está libre y no frena la página.
+
+**Dónde verlas:**
+- **Administración:** `/cms/estadisticas` (enlace **Estadísticas** en la portada del CMS). Muestra:
+  - visitas por día;
+  - páginas más vistas;
+  - procedencia, concejos y secciones.
+
+  Se puede elegir el mes y el concejo, y exportar el mes en **CSV** (se abre en Excel) o en **PDF** sencillo. La redacción no las ve.
+- **Ayuntamientos:** en su panel, las visitas de **su concejo** del mes, con las mismas exportaciones. Solo pueden ver su concejo, aunque pidan otro.
+
+## 22. Sección «Útil»
+
+Está en **`/util`** (enlace «Útil» en el menú) y al final de la página de cada concejo (`/<concejo>#util`). Cada dato automático lleva su **fuente** y la **hora** a la que se consultó.
+
+**Datos automáticos.** Son cuatro fuentes, con permiso de reutilización comprobado:
+
+| Bloque | Fuente | Detalles |
+|---|---|---|
+| Puerto de Pajares (N-630) | DGT, Punto de Acceso Nacional (licencia CC BY) | Dice si la DGT registra incidencias en la N-630 de Lena y Villamanín, con la hora del parte. **Nunca dice «abierto».** Se consulta cada 5 minutos como mucho. |
+| El tiempo | AEMET OpenData, predicción por municipio | Solo sale si hay **`AEMET_API_KEY`** en el `.env` del servidor. Las claves nuevas de AEMET duran tres meses: renuévala a tiempo. |
+| Subvenciones abiertas | Base de Datos Nacional de Subvenciones | Convocatorias abiertas de los seis ayuntamientos, del Principado, del IDEPA y de la Administración del Estado. No incluye concesiones directas ni nominativas. Cada una enlaza a su convocatoria oficial. Hay además un enlace fijo a las ayudas del IDEPA. |
+| Empleo público | BOE (sección II.B) | Convocatorias de los seis ayuntamientos y del Principado de los últimos 45 días. |
+
+**Solo enlaces a la fuente oficial,** sin datos copiados: puerto de San Isidro (112 Asturias), Valgrande-Pajares, Fuentes de Invierno, farmacias de guardia (Colegio de Farmacéuticos), empleo en el BOPA y empleo en cada ayuntamiento. No se copian porque no hay permiso de reutilización confirmado o no hay una fuente automática fiable.
+
+**Si una fuente falla:**
+- La página sigue funcionando: se ve el último dato bueno, con su hora y la nota «No se ha podido actualizar ahora», o un aviso en ese bloque.
+- La administración recibe un correo («Útil: no responde la fuente…»), como mucho uno cada 12 horas por fuente.
+- Se reintenta sola.
+
+**Las consultas se guardan en caché:** la web no espera a la fuente salvo la primera vez.
+
+**Patrimonio y Rutas** (CMS → Patrimonio / Rutas):
+- **Ficha:** cada una tiene su página (`/util/patrimonio/…`, `/util/rutas/…`) y salen en la lista de su concejo. En Rutas, también en la de los otros concejos de las Cuencas por los que pasan.
+- **Mapa:** de OpenStreetMap.
+  - Patrimonio: un punto.
+  - Rutas: el recorrido dibujado, si hay track oficial; si no, solo el enlace de descarga.
+- **Foto de patrimonio:** viene de Wikimedia Commons, con autor y licencia. Sin foto, se usa un diseño neutro.
+- **Columna «Revisión» y aviso arriba de la ficha:**
+  - **Coordenadas pendientes:** sale en la lista, pero no en el mapa. Completa latitud y longitud (WGS84) cuando estén comprobadas.
+  - **Dudoso:** hay dudas por revisar (campo «Dudas pendientes», que no se publica). Cuando estén comprobadas, marca **«Dudas revisadas»**.
+- **Publicado:** casilla en la barra lateral.
+
+**Directorio de servicios municipales** (CMS → Servicios municipales):
+- Lo editan la administración y cada ayuntamiento, el de su concejo, desde su panel.
+- Sale en el bloque «Servicios municipales» de la página de cada concejo.
+- No incluye farmacias, porque el permiso de reutilización no está confirmado. Las guardias se consultan en el enlace del Colegio.
+
+**Importar desde `datos-servicios`** (rama `desarrollo/planta14-contenido-ensayo`, commit `bcc03e0`). Comprueba siempre antes con `--solo-comprobar`; los comandos completos en el servidor están en el documento de la versión.
+
+```bash
+npm run cms:patrimonio:importar -- patrimonio.json --solo-comprobar
+```
+
+```bash
+npm run cms:patrimonio:importar -- patrimonio.json --publicar
+```
+
+```bash
+npm run cms:rutas:importar -- rutas.json --publicar
+```
+
+```bash
+npm run cms:servicios:importar -- servicios-municipales.json
+```
+
+- **Repetible:** cada registro tiene un `id`. Lo que ya existe no se duplica ni se modifica, así que se puede volver a importar cuando se amplíen los datos.
+- **Si una foto o un recorrido no se pudo descargar**, se completa al repetir la importación. Los avisos salen al final, en «AVISOS».
+- **Errores:** primero se revisa todo el archivo; si hay un error, no se importa nada.
+- **Recorridos:**
+  - se usa el GPX directo;
+  - del ZIP oficial del GR 206 se toman los GPX de las etapas a pie, sin la variante ciclista;
+  - los PLT de OziExplorer se convierten solo si declaran WGS 84;
+  - los enlaces de Wikiloc solo se enlazan.
+- **Necesita salida a internet** hacia `www.turismoasturias.es`, `drive.google.com`, `drive.usercontent.google.com` y `upload.wikimedia.org`.
+
+**Ocultar servicios en un concejo:**
+- Cada ayuntamiento elige en su panel qué servicios de «Útil» salen en su concejo. Por defecto salen todos.
+- Lo que oculta también desaparece de `/util` para su concejo.
+- Las noticias y el contenido de Planta 14 no se pueden ocultar.
+- En los concejos **sin espacio municipal activo** decide la administración, en CMS → **Útil: servicios ocultos**.
+
