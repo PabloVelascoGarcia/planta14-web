@@ -179,8 +179,11 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
         if (size > 0 && size < 13) out.push(`texto ${size}px «${node.textContent.trim().slice(0, 30)}»`);
       }
       for (const e of document.querySelectorAll('a, button, summary, select, input')) {
-        if (!visible(e)) continue;
-        const r = e.getBoundingClientRect();
+        // El campo trampa contra robots está fuera de pantalla y oculto a los lectores de pantalla.
+        if (!visible(e) || e.closest('[aria-hidden="true"]')) continue;
+        // En casillas y botones de opción, la zona de toque es su etiqueta (pulsarla marca la casilla).
+        const target = /^(checkbox|radio)$/.test(e.getAttribute('type') || '') && e.closest('label') ? e.closest('label') : e;
+        const r = target.getBoundingClientRect();
         const inSentence = getComputedStyle(e).display === 'inline' || !!e.closest('.aller-asset-credit, figcaption');
         const min = inSentence ? 24 : 44;
         if (r.height < min || (r.width < min && !inSentence)) out.push(`toque ${Math.round(r.width)}×${Math.round(r.height)} «${(e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 30)}»`);
@@ -198,5 +201,5 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
     await context.close();
     assert.ok(width[0] <= width[1] + 1, `${path} overflows on mobile: ${width}`);
   }
-  passed('mobile: home, article, 404 and agenda without horizontal overflow; concejo page (Mieres and Lena): no horizontal overflow, no text under 13 px; links and buttons at least 44 px (credits inside a sentence, 24 px)');
+  passed('mobile: home, article, 404 and agenda without horizontal overflow; concejo page (Mieres and Lena, with Útil and the newsletter form): no horizontal overflow, no text under 13 px; links and buttons at least 44 px (credits inside a sentence, 24 px; checkboxes through their label)');
 }

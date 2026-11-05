@@ -237,7 +237,8 @@
 
 /* Sección «Útil» (/util y página del concejo). */
 .municipal-util{border-top:2px solid #28241f;margin-top:45px;padding-top:28px}
-.municipal-util-link{margin-left:auto;font-weight:700;color:#a4522d}
+.municipal-util-link{margin-left:auto;font-weight:700;color:#a4522d;display:inline-flex;align-items:center;min-height:44px}
+.municipal-util .municipal-section-heading a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
 .util-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:22px;align-items:start}
 .util-block{border:1px solid #d8cebf;background:#fffdf9;padding:20px;min-width:0}
 .util-block>h3{font-family:var(--font-serif,Gelasio,serif);font-size:24px;font-weight:900;line-height:1.1;margin:4px 0 12px}
