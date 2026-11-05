@@ -62,7 +62,7 @@ export async function run(ctx) {
         if (s.visibility === 'hidden' || s.display === 'none' || !r0.width || e.closest('[aria-hidden="true"]')) continue;
         const target = /^(checkbox|radio)$/.test(e.getAttribute('type') || '') && e.closest('label') ? e.closest('label') : e;
         const r = target.getBoundingClientRect();
-        if (r.height < 44) small.push(`${(e.textContent || e.getAttribute('name') || '').trim().slice(0, 25)} ${Math.round(r.width)}×${Math.round(r.height)}`);
+        if (r.height < 44 || (r.width < 44 && getComputedStyle(e).display !== 'inline')) small.push(`${(e.textContent || e.getAttribute('name') || '').trim().slice(0, 25)} ${Math.round(r.width)}×${Math.round(r.height)}`);
       }
       // Contraste de los títulos de columna (color con transparencia mezclado sobre el fondo del pie).
       const parse = c => c.match(/[\d.]+/g).map(Number);

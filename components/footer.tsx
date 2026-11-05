@@ -6,7 +6,7 @@ import { contentSource } from "@/lib/content-source";
 const TOWNS = [["Mieres", "mieres"], ["Lena", "lena"], ["Aller", "aller"], ["Morcín", "morcin"], ["Riosa", "riosa"], ["Ribera de Arriba", "ribera-de-arriba"]];
 // Títulos de columna: gris claro sobre el negro del pie, contraste ≥ 7:1 (AA y AAA para texto pequeño en negrita).
 const heading = "text-sm font-bold uppercase tracking-[0.18em] text-paper/80";
-const link = "inline-flex min-h-11 items-center hover:text-white";
+const link = "inline-flex min-h-11 min-w-11 items-center hover:text-white";
 
 /**
  * Pie de la web: cuatro columnas (Planta 14 y su lema; Concejos; Participa y Proyecto; Boletín). En tableta, dos
