@@ -99,7 +99,9 @@ try {
   assert.equal(notices[0].assignedTo.id, users.juanfran.id, 'assigned to the responsible of Lena');
   assert.equal(notices[0].emailStatus, 'sent');
   const mail = (await mails()).find(m => m.to === 'juansantospolalena@gmail.com');
-  assert.ok(mail && mail.subject === 'Pendiente de revisar: Corte de agua en Campomanes' && mail.text.includes(`${origin}/cms/collections/notifications/${notices[0].id}`) && mail.text.includes('responsable de Lena'), 'email to the responsible');
+  // Un correo por publicación con su título, su tipo y su enlace en la web (y cómo retirarla desde «Mis concejos»).
+  assert.ok(mail && mail.subject === `${lenaSpace.name} ha publicado: Corte de agua en Campomanes` && mail.text.includes('Tipo: Aviso') && mail.text.includes('Título: Corte de agua en Campomanes')
+    && /En la web: https?:\/\/\S+\/lena\?seccion=notice/.test(mail.text) && mail.text.includes(`${origin}/cms/mis-concejos`) && mail.text.includes('responsable de Lena') && mail.text.includes('Avisos por correo'), `email to the responsible: ${JSON.stringify(mail)}`);
   ctx.notices = notices;
   // Deja activos exactamente esos espacios municipales (los demás, inactivos). Por defecto, Lena y Mieres.
   ctx.activate = async slugs => {
@@ -107,7 +109,7 @@ try {
       data: { subscription: { status: slugs.includes(s.legacyID) ? 'active' : 'inactive', startsAt: '2026-01-01', endsAt: null } } });
   };
   ctx.SIX = ['mieres', 'lena', 'aller', 'morcin', 'riosa', 'ribera-de-arriba'];
-  passed('responsables: npm run cms:responsables creates Andrés (Aller, Mieres, Morcín) and Juanfran Santos (Lena, Riosa, Ribera de Arriba) as newsroom accounts and assigns them; repeatable, never overrides a later choice; only the administration changes it and it is not public; a Lena publication becomes a pending item assigned to Juanfran with an email linking it');
+  passed('responsables: npm run cms:responsables creates Andrés (Aller, Mieres, Morcín) and Juanfran Santos (Lena, Riosa, Ribera de Arriba) as newsroom accounts and assigns them; repeatable, never overrides a later choice; only the administration changes it and it is not public; a Lena publication becomes a pending item assigned to Juanfran with an email (title, type and web link)');
 
   await start();
   const signIn = async email => {
@@ -125,7 +127,7 @@ try {
   assert.ok(juanfranHome.includes(`assignedTo][equals]=${users.juanfran.id}`), 'link filtered to the user');
   passed('«Pendientes de revisar» in the CMS home: each journalist sees what was assigned to them (Juanfran 1, Andrés 0), linked to the filtered list');
 
-  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs'];
+  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs', 'participacion-redaccion.mjs'];
   // PARTICIPACION_BLOQUES=contrasena,cartas… para pasar solo algunos (pruebas rápidas); por defecto, todos.
   const only = (process.env.PARTICIPACION_BLOQUES || '').split(',').filter(Boolean);
   for (const file of blocks.filter(f => !only.length || only.some(o => f === `participacion-${o}.mjs`))) {

@@ -2,6 +2,9 @@ import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionBe
 import { adminOnly, editorialUser, relationID } from './access';
 import { createPendingNotice } from './responsables';
 
+/** Nombre de cada tipo de publicación municipal, como en el panel y la web. */
+export const municipalTypeLabels: Record<string, string> = { news: 'Noticia', notice: 'Aviso', event: 'Agenda', grant: 'Ayudas y subvenciones', announcement: 'Tablón de anuncios' };
+
 const adminOnlyField = ({ req }: { req: PayloadRequest }) => adminOnly({ req });
 
 /**
@@ -116,8 +119,20 @@ export const auditAfterChange: CollectionAfterChangeHook = async ({ collection, 
     // Pendiente asignado al periodista responsable del concejo, que recibe además un correo.
     const townID = relationID(space?.town);
     const town = townID ? await req.payload.findByID({ collection: 'towns', id: townID, depth: 0, overrideAccess: true, req }) : null;
+    // Un correo por publicación: si ya se avisó de este contenido (se despublicó y se vuelve a publicar), no se repite.
+    const already = (await req.payload.count({ collection: 'notifications', overrideAccess: true, req, where: { and: [{ kind: { equals: 'municipal-publication' } }, { content: { equals: doc.id } }] } })).totalDocs > 0;
+    const { siteUrl } = await import('../lib/site-config');
+    const typeLabel = municipalTypeLabels[doc.type as string] ?? 'Publicación';
+    const slug = space?.legacyID || town?.slug || '';
+    const webURL = `${siteUrl.replace(/\/$/, '')}/${slug}${doc.type && doc.type !== 'news' ? `?seccion=${doc.type}` : ''}`;
+    const cmsBase = (process.env.CMS_SERVER_URL || siteUrl).replace(/\/$/, '');
     await createPendingNotice(req.payload, req, { kind: 'municipal-publication', title: doc.title, townID, townName: town?.name, fallbackEmailStatus: emailStatus,
       detail: `${space?.name || 'Un ayuntamiento'} ha publicado en su espacio de Planta 14: «${doc.title}».`,
+      email: already ? false : { subject: `${space?.name || 'Un ayuntamiento'} ha publicado: ${doc.title}`,
+        text: greeting => `${greeting}\n\n${space?.name || 'Un ayuntamiento'} ha publicado algo nuevo en su espacio de Planta 14.\n\n` +
+          `Tipo: ${typeLabel}\nTítulo: ${doc.title}\nEn la web: ${webURL}\n\n` +
+          `Si hubiera que retirarla, hazlo desde «Mis concejos» en el CMS, indicando el motivo:\n${cmsBase}/cms/mis-concejos\n\n` +
+          `Eres el periodista responsable de ${town?.name || 'este concejo'}. Puedes dejar de recibir estos correos en tu perfil del CMS («Avisos por correo»).\n\n— Planta 14` },
       data: { content: doc.id, space: spaceID ?? undefined, publishedBy: req.user.id } });
   }
   return doc;

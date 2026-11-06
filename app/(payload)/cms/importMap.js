@@ -1,3 +1,4 @@
+import { CmsNotifyToggle as CmsNotifyToggle_301372c1590d7e7bdca1946f8c88dad1 } from '../../../components/cms-notify-toggle'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -18,11 +19,13 @@ import { NewsletterSend as NewsletterSend_09d75ac5252af0d7aabb71d8aab290bb } fro
 import { CmsMaintenanceBanner as CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd } from '../../../components/cms-maintenance-banner'
 import { CmsDashboard as CmsDashboard_c961bb4b059fa844220814f2fa37f917 } from '../../../components/cms-dashboard'
 import { StatsAdminView as StatsAdminView_f018c169a2aca0b545db3ec27d597051 } from '../../../components/stats-admin-view'
+import { MyTownsView as MyTownsView_a2781b09e56065ce9a1ef0052a4b62a0 } from '../../../components/cms-my-towns'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "/components/cms-notify-toggle#CmsNotifyToggle": CmsNotifyToggle_301372c1590d7e7bdca1946f8c88dad1,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -43,6 +46,7 @@ export const importMap = {
   "/components/cms-maintenance-banner#CmsMaintenanceBanner": CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd,
   "/components/cms-dashboard#CmsDashboard": CmsDashboard_c961bb4b059fa844220814f2fa37f917,
   "/components/stats-admin-view#StatsAdminView": StatsAdminView_f018c169a2aca0b545db3ec27d597051,
+  "/components/cms-my-towns#MyTownsView": MyTownsView_a2781b09e56065ce9a1ef0052a4b62a0,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

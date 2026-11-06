@@ -183,6 +183,7 @@ export interface User {
    * Obligatorio para cuentas municipales; prohibido para las demás.
    */
   municipalSpace?: (number | null) | MunicipalSpace;
+  notifyMunicipalPublications?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1324,6 +1325,7 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   author?: T;
   municipalSpace?: T;
+  notifyMunicipalPublications?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

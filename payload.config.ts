@@ -36,7 +36,9 @@ export default buildConfig({
   // Fechas del CMS (listas, «Última modificación», versiones) como dd/MM/yyyy HH:mm.
   admin: { dateFormat: 'dd/MM/yyyy HH:mm', user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'],
     // Estadísticas propias (solo administración): /cms/estadisticas.
-    views: { estadisticas: { Component: '/components/stats-admin-view#StatsAdminView', path: '/estadisticas' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
+    views: { estadisticas: { Component: '/components/stats-admin-view#StatsAdminView', path: '/estadisticas' },
+      // «Mis concejos» de la redacción: /cms/mis-concejos.
+      misConcejos: { Component: '/components/cms-my-towns#MyTownsView', path: '/mis-concejos' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
   collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, Newsletters, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   globals: [BreakingNews, Mottos, FooterSettings, Principles, FiestasSettings, LettersSettings],

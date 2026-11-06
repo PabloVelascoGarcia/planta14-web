@@ -1,4 +1,5 @@
 import type { Payload } from "payload";
+import { MyTowns } from "./cms-my-towns";
 
 type DashboardUser = { id: number | string; role?: string | null; name?: string | null; collection?: string };
 const card = { display: "block", padding: "16px 18px", border: "1px solid var(--theme-elevation-150)", borderRadius: 6, textDecoration: "none", color: "inherit", background: "var(--theme-elevation-0)" } as const;
@@ -24,6 +25,7 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
     { id: "pendientes", href: user.role === "admin" ? "/cms/collections/notifications?where[reviewed][equals]=false" : `/cms/collections/notifications?where[and][0][reviewed][equals]=false&where[and][1][assignedTo][equals]=${user.id}`,
       title: "Pendientes de revisar", text: user.role === "admin" ? "Lo que ha llegado de fuera (ayuntamientos, fiestas enviadas…) y aún no está revisado." : "Lo que ha llegado de fuera de tus concejos (ayuntamientos, fiestas enviadas…) y aún no has revisado.", value: unreviewed.totalDocs },
   ];
+  links.push({ id: "mis-concejos", href: "/cms/mis-concejos", title: "Mis concejos", text: "Publicaciones de los ayuntamientos y sugerencias de tus concejos; también de los demás." });
   if (user.role === "admin") links.push(
     { id: "estadisticas", href: "/cms/estadisticas", title: "Estadísticas", text: "Visitas por día, páginas más vistas y procedencia, con CSV y PDF mensuales." },
     { id: "espacios", href: "/cms/collections/municipal-spaces", title: "Espacios municipales", text: "Estado, contacto e identidad visual (foto, lema, escudo y colores)." },
@@ -39,5 +41,6 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
         <span style={{ display: "block", marginTop: 4, fontSize: 13, opacity: 0.75 }}>{link.text}</span>
       </a>)}
     </div>
+    <MyTowns payload={payload} user={user} compact />
   </section>;
 }

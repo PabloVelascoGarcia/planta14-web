@@ -101,7 +101,7 @@ Si lo que ha fallado es una **actualización** de la web, no sigas este apartado
 
 **Para dar de baja una cuenta:** en **Users**, ábrela y bórrala. Lo que publicó se mantiene y el registro de auditoría conserva quién lo hizo.
 
-**Para retirar una publicación municipal:** en `/cms`, ve a **Municipal Contents**, ábrela, marca **Retirado**, escribe el **Motivo** y pulsa **Save Draft** (guardar borrador). La retirada afecta también a la versión pública. Comprueba en una ventana privada que ya no aparece; el ayuntamiento verá el motivo en su panel. No restaures una versión anterior para eludir una retirada.
+**Para retirar una publicación municipal:** lo más rápido es **Mis concejos** (apartado 27). También en `/cms`: ve a **Municipal Contents**, ábrela, marca **Retirado**, escribe el **Motivo** y pulsa **Save Draft** (guardar borrador). La retirada afecta también a la versión pública. Comprueba en una ventana privada que ya no aparece; el ayuntamiento verá el motivo en su panel. No restaures una versión anterior para eludir una retirada.
 
 ## 6. Tareas programadas (cron)
 
@@ -259,11 +259,12 @@ La foto que elijas en Imágenes sustituye a la que venía con la web («Foto act
 
 ## 12. Escribir noticias en el CMS (redacción)
 
-Al entrar en `/cms`, el **inicio** muestra cuatro accesos:
+Al entrar en `/cms`, el **inicio** muestra estos accesos:
 - **Nueva noticia:** abre el formulario vacío;
 - **Mis borradores:** las noticias que has creado tú y aún no están publicadas, con su número;
 - **Publicadas hoy:** las noticias publicadas con la fecha de hoy;
-- **Pendientes de revisar:** lo que ha llegado de fuera de tus concejos (apartado 14).
+- **Pendientes de revisar:** lo que ha llegado de fuera de tus concejos (apartado 14);
+- **Mis concejos:** las publicaciones de los ayuntamientos y las sugerencias de tus concejos (apartado 27). Debajo de los accesos tienes ya las últimas.
 
 La administración ve todos los pendientes, los **espacios municipales** y los **usuarios**. En el CMS, las fechas se muestran como `dd/MM/aaaa HH:mm`.
 
@@ -355,7 +356,7 @@ Los carga, una vez, `npm run cms:responsables` (lo hace Code local al instalar; 
 - las **publicaciones de los ayuntamientos** en su espacio;
 - las **fiestas enviadas** por comisiones y asociaciones (apartado 15).
 
-Cada entrada crea un aviso en **Pendientes de revisar** (antes «Avisos municipales»), asignado al responsable, que además recibe un **correo** con el enlace (desde avisos@planta14.com, si el correo está activado). Cuando lo hayas atendido, abre el pendiente y marca **Revisado**. Si un concejo no tiene responsable, el pendiente queda sin asignar y solo lo ve la administración.
+Cada entrada crea un aviso en **Pendientes de revisar** (antes «Avisos municipales»), asignado al responsable, que además recibe un **correo** (desde avisos@planta14.com, si el correo está activado). Para las publicaciones de los ayuntamientos, el correo lleva el título, el tipo y el enlace en la web; se puede desactivar en el perfil (apartado 27). Cuando lo hayas atendido, abre el pendiente y marca **Revisado**. Si un concejo no tiene responsable, el pendiente queda sin asignar y solo lo ve la administración.
 
 Las **cartas de los lectores** siguen este mismo camino (apartado 19).
 
@@ -700,3 +701,17 @@ Cada correo lleva la **baja en un clic** y quién edita Planta 14.
 
 **Un boletín enviado no se puede reenviar ni cambiar.** Para otro envío, crea uno nuevo.
 
+## 27. «Mis concejos» y avisos de publicaciones municipales (redacción)
+
+**Mis concejos** reúne lo que hacen los ayuntamientos de los concejos de los que eres responsable (apartado 14: Andrés, Aller, Mieres y Morcín; Juanfran, Lena, Riosa y Ribera de Arriba).
+
+- **En el inicio del CMS**, debajo de los accesos, ves las 6 últimas publicaciones de tus ayuntamientos (avisos, agenda, ayudas, tablón y noticias) y las 3 últimas sugerencias. **Ver más u otros concejos** abre la página completa, `/cms/mis-concejos`, con las 30 últimas publicaciones y las 15 últimas sugerencias.
+- **Es un filtro, no una restricción.** En **Concejos** elige **Todos los concejos** o cualquier concejo y pulsa **Ver**. Las **sugerencias** son la excepción: cada periodista solo ve las de sus concejos (la administración, todas), como ya se les dice a los ayuntamientos.
+- Cada publicación ocupa una línea: **tipo**, **título**, ayuntamiento, **estado** (Publicado, Borrador o «Retirado: motivo») y fecha del último cambio. A la derecha:
+  - **Ver en la web:** la abre en la sección de su concejo (solo si está publicada);
+  - **Abrir:** la ficha completa en el CMS;
+  - **Retirar:** escribe el **motivo** (obligatorio; lo verá el ayuntamiento en su panel) y pulsa **Retirar la publicación**. Es la misma retirada de siempre: sale de la web al momento, queda en la auditoría con tu nombre y el ayuntamiento no puede volver a publicarla. Para restablecerla, ábrela en el CMS (**Abrir**) y desmarca **Retirado**; queda en borrador hasta que se vuelva a publicar.
+
+**Correo por cada publicación nueva.** Cuando un ayuntamiento publica algo nuevo, su periodista responsable recibe un correo con el **título**, el **tipo** y el **enlace en la web**, y cómo retirarla desde «Mis concejos». Es uno por publicación: si el ayuntamiento la despublica y la vuelve a publicar, no se repite. Usa el envío de correo ya configurado (avisos@planta14.com).
+
+**Dejar de recibirlos:** en el CMS, pulsa tu cuenta (arriba a la derecha) y, en **Avisos por correo**, desmarca «Recibir un correo por cada publicación nueva de los ayuntamientos de mis concejos». Se guarda al momento, sin pulsar Guardar. Lo nuevo sigue apareciendo en **Mis concejos** y en **Pendientes de revisar**. Cada periodista cambia solo el suyo; la administración puede cambiar el de cualquiera desde **Usuarios**. Los correos de fiestas, cartas y sugerencias no cambian.
