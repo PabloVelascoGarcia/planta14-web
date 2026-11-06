@@ -19,3 +19,11 @@ assert.match(message.from, /avisos@planta14.com/);
 assert.equal(message.subject, 'Recovery/notice');
 await assert.rejects((await nodemailerAdapter({ ...options, transport: { sendMail: async () => { throw new Error('synthetic SMTP failure'); } } }))().sendEmail({ to: 'synthetic@example.test' }), /synthetic SMTP failure/);
 console.log('PASS: IONOS TLS SMTP, explicit enable/credentials, no config-time network, adapter delivery and error propagation');
+
+// Sin instrumentation.ts: Next lo compila como entrada aparte con todo Payload y la imagen se queda sin memoria al
+// compilar (CI del 5/11 y del 6/11, exit 134). Las tareas del servidor arrancan desde /api/health (ensureUtilRefresher,
+// ensureDigestTicker).
+for (const file of ['instrumentation.ts', 'instrumentation.js', 'instrumentation.mjs', 'src/instrumentation.ts', 'instrumentation-client.ts']) {
+  assert.equal(fs.existsSync(file), false, `${file} no debe existir: la compilación de la imagen se queda sin memoria`);
+}
+console.log('PASS: no instrumentation.ts (it pulls Payload into a separate build entry and the image build runs out of memory)');

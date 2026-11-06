@@ -35,6 +35,8 @@ export async function GET() {
   const enabled = cmsEnabled();
   // Arranca (una vez) el refresco en segundo plano de las fuentes de «Útil»: deploy.sh consulta esta ruta nada más desplegar.
   if (enabled) await import("@/lib/util-sources").then(m => m.ensureUtilRefresher()).catch(() => undefined);
+  // Y el temporizador del resumen diario de la redacción (8:00), con el mismo arranque.
+  if (enabled) await import("@/cms/newsroom").then(m => m.ensureDigestTicker()).catch(() => undefined);
   const [db, s3]: Check[] = enabled ? (await Promise.all([databaseProbe(), storageProbe()])).map(ok => ok ? "ok" : "error") : ["not-configured", "not-configured"];
   const healthy = db !== "error" && s3 !== "error";
   return Response.json({ status: healthy ? "ok" : "error", checks: { database: db, storage: s3 } },

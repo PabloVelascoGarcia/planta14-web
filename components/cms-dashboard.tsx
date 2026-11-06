@@ -11,6 +11,8 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
   // DNI y teléfono de las cartas: se borran a los 24 meses (también con npm run cms:cartas:caducar).
   await (await import("@/cms/letters")).eraseExpiredPersonalData(payload).catch(() => 0);
+  // Arranca (una vez por proceso) el temporizador del resumen diario de las 8:00.
+  (await import("@/cms/newsroom")).ensureDigestTicker();
   const [drafts, publishedToday, unreviewed] = await Promise.all([
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "draft" } }, { createdBy: { equals: user.id } }] } }),
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "published" } }, { date: { equals: today } }] } }),

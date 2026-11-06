@@ -206,7 +206,32 @@ export async function sendDailyDigests(payload: Payload, now = new Date()) {
 }
 
 /**
- * Lo llama cada pocos minutos el servidor (instrumentation.ts): a partir de las 8:00 (Madrid), una vez al día. Si el
+ * Arranca, una sola vez por proceso, el temporizador del resumen diario (comprueba cada 5 minutos). Se llama desde
+ * /api/health (deploy.sh la consulta al desplegar y luego el monitor), al leer «Útil» y al abrir el inicio del CMS:
+ * el mismo arranque que el refresco de «Útil». Sin instrumentation.ts: compilarlo arrastra todo Payload a una entrada
+ * aparte y la compilación de la imagen se queda sin memoria (CI del 5/11 y del 6/11). Nunca durante la compilación.
+ * NEWSROOM_DIGEST_ENABLED=false lo desactiva (pruebas).
+ */
+export function ensureDigestTicker() {
+  if (process.env.NEXT_PHASE === 'phase-production-build' || process.env.CMS_ENABLED !== 'true' || process.env.NEWSROOM_DIGEST_ENABLED === 'false') return;
+  const flags = globalThis as typeof globalThis & { __planta14DigestTicker?: boolean };
+  if (flags.__planta14DigestTicker) return;
+  flags.__planta14DigestTicker = true;
+  const tick = async () => {
+    try {
+      const { contentClient } = await import('../lib/payload-content');
+      const sent = await dailyDigestTick(await contentClient());
+      if (sent) console.log(`Resumen diario de la redacción: ${sent.length} correo(s)`);
+    } catch (error) {
+      console.error('No se pudo preparar el resumen diario de la redacción', error);
+    }
+  };
+  setTimeout(tick, 30_000).unref?.();
+  setInterval(tick, 5 * 60_000).unref?.();
+}
+
+/**
+ * Lo llama cada 5 minutos el temporizador del servidor (ensureDigestTicker): a partir de las 8:00 (Madrid), una vez al día. Si el
  * servidor estaba parado a las 8:00, sale al arrancar. El día enviado queda guardado para no repetirlo.
  */
 export async function dailyDigestTick(payload: Payload, now = new Date()) {

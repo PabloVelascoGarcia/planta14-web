@@ -54,6 +54,7 @@ export async function getUtilData(town: string | null): Promise<UtilData> {
   const empty = { data: null, fetchedAt: null, error: null };
   if (contentSource() !== "payload") return { town, hidden: [], hiddenByTown: {}, activeTowns: [], pajares: empty, forecasts: null, grants: empty, jobs: empty, heritage: [], routes: [], services: [], servicesByTown: {} };
   ensureUtilRefresher();
+  void import("@/cms/newsroom").then(m => m.ensureDigestTicker()).catch(() => undefined);
   const { contentClient } = await import("./payload-content");
   const payload = await contentClient();
   const townWhere: Where = town ? { "town.slug": { equals: town } } : {};
