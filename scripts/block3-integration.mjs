@@ -272,7 +272,7 @@ try {
   assert(denied(bulk.status) || bulk.json.errors?.length > 0, 'bulk update cannot republish withdrawn content');
   const storedWithdrawal = await payload.findByID({ collection: 'municipal-content', id: fresh.id, overrideAccess: true });
   assert.equal(storedWithdrawal._status, 'draft'); assert.equal(storedWithdrawal.withdrawal.reason, reason);
-  const lenaPanel = await page('/lena/panel', lena);
+  const lenaPanel = await page('/lena/panel?pestana=publicaciones', lena);
   assert.equal(lenaPanel.status, 200);
   assert(lenaPanel.html.includes(reason), 'the municipality sees the reason in its panel');
   assert(lenaPanel.html.includes('Borrador de Lena') && lenaPanel.html.includes('Retirado por Planta 14'));
@@ -284,10 +284,10 @@ try {
   passed('a withdrawal removes the content from the site, shows the reason to the municipality and is recorded in the audit log');
 
   // Panel isolation over HTTP: Lena's session cannot manage Mieres.
-  const crossPanel = await page('/mieres/panel', lena);
+  const crossPanel = await page('/mieres/panel?pestana=publicaciones', lena);
   assert(crossPanel.html.includes('Tu cuenta no gestiona este espacio municipal'));
   assert(!crossPanel.html.includes('Borrador privado de Mieres') && !crossPanel.html.includes('Publicación de Mieres'));
-  assert((await page('/mieres/panel', mieres)).html.includes('Borrador privado de Mieres'));
+  assert((await page('/mieres/panel?pestana=publicaciones', mieres)).html.includes('Borrador privado de Mieres'));
   assert((await page('/lena/panel')).html.includes('Entra con la cuenta de tu ayuntamiento'));
   const crossSite = await fetch(`http://127.0.0.1:${webPort}/lena/panel`, { headers: { Cookie: `payload-token=${lena}`, Origin: 'https://evil.example' } });
   assert(!(await crossSite.text()).includes('Borrador de Lena'), 'a cross-site request does not reuse the session cookie');

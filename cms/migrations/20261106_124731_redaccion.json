@@ -126,12 +126,18 @@
           "primaryKey": false,
           "notNull": false
         },
-        "notify_municipal_publications": {
-          "name": "notify_municipal_publications",
+        "daily_digest": {
+          "name": "daily_digest",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": true
+        },
+        "away_until": {
+          "name": "away_until",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -5748,6 +5754,12 @@
           "notNull": true,
           "default": "'municipal-publication'"
         },
+        "town_id": {
+          "name": "town_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "assigned_to_id": {
           "name": "assigned_to_id",
           "type": "integer",
@@ -5768,6 +5780,12 @@
         },
         "letter_id": {
           "name": "letter_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "suggestion_id": {
+          "name": "suggestion_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -5805,6 +5823,37 @@
           "notNull": false,
           "default": false
         },
+        "decision": {
+          "name": "decision",
+          "type": "enum_notifications_decision",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reject_reason": {
+          "name": "reject_reason",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reject_note": {
+          "name": "reject_note",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resolved_by_id": {
+          "name": "resolved_by_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resolved_at": {
+          "name": "resolved_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -5821,6 +5870,21 @@
         }
       },
       "indexes": {
+        "notifications_town_idx": {
+          "name": "notifications_town_idx",
+          "columns": [
+            {
+              "expression": "town_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "notifications_assigned_to_idx": {
           "name": "notifications_assigned_to_idx",
           "columns": [
@@ -5881,6 +5945,21 @@
           "method": "btree",
           "with": {}
         },
+        "notifications_suggestion_idx": {
+          "name": "notifications_suggestion_idx",
+          "columns": [
+            {
+              "expression": "suggestion_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "notifications_space_idx": {
           "name": "notifications_space_idx",
           "columns": [
@@ -5926,6 +6005,21 @@
           "method": "btree",
           "with": {}
         },
+        "notifications_resolved_by_idx": {
+          "name": "notifications_resolved_by_idx",
+          "columns": [
+            {
+              "expression": "resolved_by_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "notifications_updated_at_idx": {
           "name": "notifications_updated_at_idx",
           "columns": [
@@ -5958,6 +6052,19 @@
         }
       },
       "foreignKeys": {
+        "notifications_town_id_towns_id_fk": {
+          "name": "notifications_town_id_towns_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "towns",
+          "columnsFrom": [
+            "town_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "notifications_assigned_to_id_users_id_fk": {
           "name": "notifications_assigned_to_id_users_id_fk",
           "tableFrom": "notifications",
@@ -6010,6 +6117,19 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
+        "notifications_suggestion_id_suggestions_id_fk": {
+          "name": "notifications_suggestion_id_suggestions_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "suggestions",
+          "columnsFrom": [
+            "suggestion_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "notifications_space_id_municipal_spaces_id_fk": {
           "name": "notifications_space_id_municipal_spaces_id_fk",
           "tableFrom": "notifications",
@@ -6029,6 +6149,19 @@
           "tableTo": "users",
           "columnsFrom": [
             "published_by_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "notifications_resolved_by_id_users_id_fk": {
+          "name": "notifications_resolved_by_id_users_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "users",
+          "columnsFrom": [
+            "resolved_by_id"
           ],
           "columnsTo": [
             "id"
@@ -10432,6 +10565,125 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.newsroom_settings_rejection_reasons": {
+      "name": "newsroom_settings_rejection_reasons",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "newsroom_settings_rejection_reasons_order_idx": {
+          "name": "newsroom_settings_rejection_reasons_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "newsroom_settings_rejection_reasons_parent_id_idx": {
+          "name": "newsroom_settings_rejection_reasons_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "newsroom_settings_rejection_reasons_parent_id_fk": {
+          "name": "newsroom_settings_rejection_reasons_parent_id_fk",
+          "tableFrom": "newsroom_settings_rejection_reasons",
+          "tableTo": "newsroom_settings",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.newsroom_settings": {
+      "name": "newsroom_settings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "digest_sent_day": {
+          "name": "digest_sent_day",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -10688,7 +10940,8 @@
       "values": [
         "municipal-publication",
         "festival-submission",
-        "letter-submission"
+        "letter-submission",
+        "suggestion"
       ]
     },
     "public.enum_notifications_email_status": {
@@ -10698,6 +10951,15 @@
         "disabled",
         "sent",
         "failed"
+      ]
+    },
+    "public.enum_notifications_decision": {
+      "name": "enum_notifications_decision",
+      "schema": "public",
+      "values": [
+        "aprobado",
+        "rechazado",
+        "revisado"
       ]
     },
     "public.enum_suggestions_services": {
@@ -10878,6 +11140,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "3f81a2ce-ea0d-432b-ba34-32484155be44",
+  "id": "4af319f3-ce58-4f00-8430-0f3fd31ead63",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

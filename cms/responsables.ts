@@ -1,7 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import type { Payload, PayloadRequest } from 'payload';
 import { relationID } from './access';
-import { emailAvailable } from './email';
 
 /**
  * Periodista responsable de cada concejo: recibe lo que llega de fuera (publicaciones de los ayuntamientos, fiestas
@@ -12,49 +11,37 @@ export const responsablesIniciales = [
   { email: 'juansantospolalena@gmail.com', name: 'Juanfran Santos', towns: ['lena', 'riosa', 'ribera-de-arriba'] },
 ] as const;
 
-type Responsible = { id: number; email: string; name?: string | null; notifyMunicipalPublications?: boolean | null };
+type Responsible = { id: number; email: string; name?: string | null };
 
 export async function responsibleOfTown(payload: Payload, townID: unknown, req?: PayloadRequest): Promise<Responsible | null> {
   const id = relationID(townID);
   if (id === null) return null;
   const town = await payload.findByID({ collection: 'towns', id, depth: 1, overrideAccess: true, req }).catch(() => null);
   const user = town?.responsible;
-  return user && typeof user === 'object' && user.email ? { id: user.id, email: user.email, name: user.name, notifyMunicipalPublications: user.notifyMunicipalPublications } : null;
+  return user && typeof user === 'object' && user.email ? { id: user.id, email: user.email, name: user.name } : null;
 }
 
-const cmsURL = (path: string) => `${(process.env.CMS_SERVER_URL || '').replace(/\/$/, '')}${path}`;
 
 /**
- * Crea el aviso pendiente asignado al responsable del concejo y le escribe. Devuelve el aviso.
- * `fallbackEmailStatus`: estado del correo general (si no hay responsable al que escribir).
+ * Crea la entrada de «Pendientes de revisar» con su concejo y su responsable. Si requiere intervención (fiestas,
+ * cartas, sugerencias), avisa al momento solo al responsable del concejo (o al otro redactor si está «Fuera hasta»),
+ * con el enlace directo a la bandeja. Las publicaciones municipales (`email: false`) solo quedan registradas.
  */
 export async function createPendingNotice(payload: Payload, req: PayloadRequest | undefined, entry: {
-  kind: 'municipal-publication' | 'festival-submission' | 'letter-submission'; title: string; townID: unknown; townName?: string;
-  data?: Record<string, unknown>; detail: string; fallbackEmailStatus?: 'disabled' | 'sent' | 'failed';
-  /** Correo propio (asunto y texto) en lugar del genérico «Pendiente de revisar»; `false`: no escribir. */
-  email?: { subject: string; text: (greeting: string) => string } | false;
+  kind: 'municipal-publication' | 'festival-submission' | 'letter-submission' | 'suggestion'; title: string; townID: unknown; townName?: string;
+  data?: Record<string, unknown>; detail: string; fallbackEmailStatus?: 'disabled' | 'sent' | 'failed'; email?: false; reviewed?: boolean;
 }) {
   const responsible = await responsibleOfTown(payload, entry.townID, req);
+  const townID = relationID(entry.townID);
   const notice = await payload.create({ collection: 'notifications', overrideAccess: true, req, data: {
-    kind: entry.kind, title: entry.title, assignedTo: responsible?.id ?? null, emailStatus: entry.fallbackEmailStatus ?? 'disabled', ...entry.data } as never });
-  // Las publicaciones municipales respetan la preferencia del perfil («Avisos por correo»); el pendiente se crea igual.
-  const wantsEmail = entry.email !== false && !(entry.kind === 'municipal-publication' && responsible?.notifyMunicipalPublications === false);
-  if (responsible && wantsEmail && emailAvailable()) {
-    let status: 'sent' | 'failed' = 'sent';
-    const greeting = `Hola${responsible.name ? `, ${responsible.name}` : ''}:`;
-    try {
-      if (entry.email) await payload.sendEmail({ to: responsible.email, subject: entry.email.subject, text: entry.email.text(greeting) });
-      else await payload.sendEmail({ to: responsible.email, subject: `Pendiente de revisar: ${entry.title}`,
-        text: `${greeting}\n\n${entry.detail}\n\nEres el periodista responsable de ${entry.townName || 'este concejo'} en Planta 14. ` +
-          `Revísalo en el CMS («Pendientes de revisar» en el inicio):\n${cmsURL(`/cms/collections/notifications/${notice.id}`)}\n\n— Planta 14` });
-    } catch (error) {
-      status = 'failed';
-      payload.logger.error({ err: error, msg: 'No se pudo avisar por correo al responsable del concejo' });
-    }
-    await payload.update({ collection: 'notifications', id: notice.id, overrideAccess: true, req, data: { emailStatus: status } });
-    return { ...notice, emailStatus: status };
-  }
-  return notice;
+    kind: entry.kind, title: entry.title, town: townID, assignedTo: responsible?.id ?? null, emailStatus: entry.fallbackEmailStatus ?? 'disabled',
+    reviewed: entry.reviewed ?? false, ...entry.data } as never });
+  if (entry.email === false) return notice;
+  const { notifyInbox } = await import('./newsroom');
+  const status = await notifyInbox(payload, req, notice, townID, entry.detail);
+  if (status === 'disabled') return notice;
+  await payload.update({ collection: 'notifications', id: notice.id, overrideAccess: true, req, data: { emailStatus: status } });
+  return { ...notice, emailStatus: status };
 }
 
 /**

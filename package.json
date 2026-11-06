@@ -19,6 +19,7 @@
     "cms:import:municipal": "payload run scripts/import-municipal.ts",
     "cms:structure": "payload run scripts/load-structure.ts",
     "cms:responsables": "payload run scripts/responsables.ts",
+    "cms:resumen": "payload run scripts/resumen-diario.ts",
     "cms:fiestas:importar": "node scripts/fiestas-run.mjs",
     "cms:cartas:caducar": "payload run scripts/cartas-caducar.ts",
     "cms:patrimonio:importar": "node scripts/util-run.mjs patrimonio",

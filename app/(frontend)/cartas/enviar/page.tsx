@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CAUDAL } from "@/lib/caudal";
 import { lettersActive } from "@/lib/letters";
 import { territories } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
@@ -9,7 +10,8 @@ export const metadata: Metadata = { title: "Escribe una carta", description: "En
 
 export default async function EnviarCartaPage() {
   if (!(await lettersActive())) notFound();
-  const towns = Object.values(territories).flat().map(name => ({ slug: slugify(name), name }));
+  // Concejo obligatorio; para lo comarcal, «Caudal».
+  const towns = [...Object.values(territories).flat().map(name => ({ slug: slugify(name), name })), { slug: CAUDAL.slug, name: CAUDAL.label }];
   return <div className="container-p14 py-8">
     <header className="max-w-3xl border-b-2 border-coal-950 pb-5">
       <p className="editorial-kicker">Opinión</p>

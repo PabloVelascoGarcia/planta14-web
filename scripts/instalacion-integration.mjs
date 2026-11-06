@@ -58,11 +58,12 @@ try {
   const first = await loadStructure(payload);
   const towns = caudalTowns();
   assert.deepEqual(first.created, { sections: siteSections.length, towns: towns.length, 'municipal-spaces': towns.length });
-  assert.deepEqual(await counts(), { sections: siteSections.length, towns: towns.length, 'municipal-spaces': towns.length, 'municipal-content': 0, articles: 0, authors: 0, media: 0, users: 0 });
+  // Más «Caudal» (oculto, lo crea la migración `redaccion` para lo comarcal).
+  assert.deepEqual(await counts(), { sections: siteSections.length, towns: towns.length + 1, 'municipal-spaces': towns.length, 'municipal-content': 0, articles: 0, authors: 0, media: 0, users: 0 });
   const sections = (await all('sections')).sort((a, b) => a.position - b.position);
   assert.deepEqual(sections.map(s => s.name), siteSections, 'same sections and order as the demo navigation');
   assert.ok(sections.some(s => s.name === 'Opinión' && s.slug === 'opinion'), 'Opinión included');
-  assert.deepEqual((await all('towns')).map(t => t.slug).sort(), ['aller', 'lena', 'mieres', 'morcin', 'ribera-de-arriba', 'riosa']);
+  assert.deepEqual((await all('towns')).map(t => t.slug).sort(), ['aller', 'caudal', 'lena', 'mieres', 'morcin', 'ribera-de-arriba', 'riosa']);
   for (const space of await all('municipal-spaces')) {
     assert.equal(space.subscription.status, 'inactive', `${space.name} inactive`);
     assert.equal(space._status, 'published', 'published so the town page exists');

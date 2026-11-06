@@ -82,7 +82,7 @@ Planta 14 puede retirar una publicación si incumple las condiciones de uso o la
 
 - **Útil.** La página de tu concejo tiene una sección «Útil»: el tiempo, puertos y estaciones de esquí, farmacias de guardia, directorio de servicios municipales, patrimonio, rutas, subvenciones y empleo público. Por defecto salen todos. Desmarca los que no quieras mostrar y pulsa **Guardar**. Las noticias y los contenidos de Planta 14 no se pueden ocultar.
 - **Directorio.** La lista de los servicios del ayuntamiento, uno por línea, con un buscador. Para añadir uno, pulsa **Añadir servicio**, rellena el formulario y pulsa **Añadir al directorio**. Para corregir uno, pulsa **Editar** en su línea: el formulario se abre ahí mismo; al terminar, pulsa **Guardar los cambios**. También puedes **Quitar** un servicio. Los cambios salen al momento en «Útil».
-- **Sugerencias.** Marca los servicios de Planta 14 que os interesarían, cuéntanos lo que quieras y pulsa **Enviar la sugerencia**. Lo leen la administración y el periodista de vuestro concejo.
+- **Sugerencias.** Marca los servicios de Planta 14 que os interesarían, cuéntanos lo que quieras y pulsa **Enviar la sugerencia**. Lo lee la redacción de Planta 14, empezando por el periodista de vuestro concejo, que recibe un aviso.
 - **Visitas.** El total del mes y una fila de barras, una por día (pasa el ratón por encima para ver la cifra); debajo, las páginas más vistas, de dónde llegan (buscadores, redes, WhatsApp…) y las secciones. Solo de tu concejo. Se pueden descargar en **CSV** (Excel) o en **PDF**. No usamos cookies ni guardamos datos personales de quien visita.
 
 ## 8. Buenas prácticas

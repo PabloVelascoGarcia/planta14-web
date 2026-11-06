@@ -130,6 +130,7 @@ export interface Config {
     principles: Principle;
     'fiestas-settings': FiestasSetting;
     'letters-settings': LettersSetting;
+    'newsroom-settings': NewsroomSetting;
   };
   globalsSelect: {
     'breaking-news': BreakingNewsSelect<false> | BreakingNewsSelect<true>;
@@ -138,6 +139,7 @@ export interface Config {
     principles: PrinciplesSelect<false> | PrinciplesSelect<true>;
     'fiestas-settings': FiestasSettingsSelect<false> | FiestasSettingsSelect<true>;
     'letters-settings': LettersSettingsSelect<false> | LettersSettingsSelect<true>;
+    'newsroom-settings': NewsroomSettingsSelect<false> | NewsroomSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -183,7 +185,8 @@ export interface User {
    * Obligatorio para cuentas municipales; prohibido para las demás.
    */
   municipalSpace?: (number | null) | MunicipalSpace;
-  notifyMunicipalPublications?: boolean | null;
+  dailyDigest?: boolean | null;
+  awayUntil?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -765,28 +768,35 @@ export interface MunicipalContent {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Lo que llega de fuera (publicaciones de los ayuntamientos, fiestas enviadas…), asignado al periodista responsable del concejo. Márcalo como revisado cuando lo hayas atendido.
+ * Registro de lo que llega de fuera. Para resolverlo, usa la bandeja «Pendiente de revisar» (/cms/bandeja): fiestas enviadas, sugerencias y cartas. Las publicaciones municipales quedan aquí como registro y salen en el resumen diario.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "notifications".
  */
 export interface Notification {
   id: number;
-  kind: 'municipal-publication' | 'festival-submission' | 'letter-submission';
+  kind: 'municipal-publication' | 'festival-submission' | 'letter-submission' | 'suggestion';
+  town?: (number | null) | Town;
   assignedTo?: (number | null) | User;
   content?: (number | null) | MunicipalContent;
   festival?: (number | null) | Festival;
   letter?: (number | null) | Letter;
+  suggestion?: (number | null) | Suggestion;
   space?: (number | null) | MunicipalSpace;
   title: string;
   publishedBy?: (number | null) | User;
   emailStatus: 'disabled' | 'sent' | 'failed';
   reviewed?: boolean | null;
+  decision?: ('aprobado' | 'rechazado' | 'revisado') | null;
+  rejectReason?: string | null;
+  rejectNote?: string | null;
+  resolvedBy?: (number | null) | User;
+  resolvedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Sugerencias de los ayuntamientos desde su panel. Las ven la administración y el periodista responsable del concejo.
+ * Sugerencias de los ayuntamientos desde su panel. Se resuelven en la bandeja «Pendiente de revisar» (/cms/bandeja); avisan al periodista responsable del concejo.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "suggestions".
@@ -1325,7 +1335,8 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   author?: T;
   municipalSpace?: T;
-  notifyMunicipalPublications?: T;
+  dailyDigest?: T;
+  awayUntil?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1682,15 +1693,22 @@ export interface MunicipalContentSelect<T extends boolean = true> {
  */
 export interface NotificationsSelect<T extends boolean = true> {
   kind?: T;
+  town?: T;
   assignedTo?: T;
   content?: T;
   festival?: T;
   letter?: T;
+  suggestion?: T;
   space?: T;
   title?: T;
   publishedBy?: T;
   emailStatus?: T;
   reviewed?: T;
+  decision?: T;
+  rejectReason?: T;
+  rejectNote?: T;
+  resolvedBy?: T;
+  resolvedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2070,6 +2088,24 @@ export interface LettersSetting {
   createdAt?: string | null;
 }
 /**
+ * Motivos que la redacción elige al rechazar algo en «Pendiente de revisar». Al rechazar se puede añadir un texto libre. En las cartas, el motivo se envía al autor.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsroom-settings".
+ */
+export interface NewsroomSetting {
+  id: number;
+  rejectionReasons?:
+    | {
+        reason: string;
+        id?: string | null;
+      }[]
+    | null;
+  digestSentDay?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "breaking-news_select".
  */
@@ -2141,6 +2177,22 @@ export interface FiestasSettingsSelect<T extends boolean = true> {
  */
 export interface LettersSettingsSelect<T extends boolean = true> {
   active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsroom-settings_select".
+ */
+export interface NewsroomSettingsSelect<T extends boolean = true> {
+  rejectionReasons?:
+    | T
+    | {
+        reason?: T;
+        id?: T;
+      };
+  digestSentDay?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

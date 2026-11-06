@@ -23,7 +23,7 @@ import * as migration_20261105_102329_util_activacion from './20261105_102329_ut
 import * as migration_20261105_143455_cartas_activas from './20261105_143455_cartas_activas';
 import * as migration_20261106_093606_fiestas_aviso from './20261106_093606_fiestas_aviso';
 import * as migration_20261106_095011_final from './20261106_095011_final';
-import * as migration_20261106_123214_panel_avisos from './20261106_123214_panel_avisos';
+import * as migration_20261106_124731_redaccion from './20261106_124731_redaccion';
 
 export const migrations = [
   {
@@ -152,8 +152,8 @@ export const migrations = [
     name: '20261106_095011_final',
   },
   {
-    up: migration_20261106_123214_panel_avisos.up,
-    down: migration_20261106_123214_panel_avisos.down,
-    name: '20261106_123214_panel_avisos',
+    up: migration_20261106_124731_redaccion.up,
+    down: migration_20261106_124731_redaccion.down,
+    name: '20261106_124731_redaccion',
   },
 ];

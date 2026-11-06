@@ -1,5 +1,5 @@
 import type { Payload } from "payload";
-import { MyTowns } from "./cms-my-towns";
+import { Inbox } from "./cms-inbox";
 
 type DashboardUser = { id: number | string; role?: string | null; name?: string | null; collection?: string };
 const card = { display: "block", padding: "16px 18px", border: "1px solid var(--theme-elevation-150)", borderRadius: 6, textDecoration: "none", color: "inherit", background: "var(--theme-elevation-0)" } as const;
@@ -14,22 +14,25 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
   const [drafts, publishedToday, unreviewed] = await Promise.all([
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "draft" } }, { createdBy: { equals: user.id } }] } }),
     payload.count({ collection: "articles", overrideAccess: true, where: { and: [{ _status: { equals: "published" } }, { date: { equals: today } }] } }),
-    // Pendientes de revisar: lo que llega de fuera. La redacción ve lo asignado a ella; la administración, todo.
-    payload.count({ collection: "notifications", overrideAccess: true, where: user.role === "admin" ? { reviewed: { equals: false } } : { and: [{ reviewed: { equals: false } }, { assignedTo: { equals: user.id } }] } }),
+    // Pendiente de revisar: lo que requiere intervención (bandeja compartida); la cifra es la de tus concejos.
+    (async () => {
+      const { townsWithResponsibles, inboxTownsFor, pendingInbox } = await import("@/cms/newsroom");
+      const covered = inboxTownsFor(await townsWithResponsibles(payload), Number(user.id)).map(t => t.id);
+      return payload.count({ collection: "notifications", overrideAccess: true, where: { and: [pendingInbox, { town: { in: covered.concat(0) } }] } });
+    })(),
   ]);
   const list = "/cms/collections/articles";
   const links: { href: string; title: string; text: string; value?: number; id: string }[] = [
     { id: "nueva", href: `${list}/create`, title: "Nueva noticia", text: "Escribe y publica, o guarda como borrador." },
     { id: "borradores", href: `${list}?where[and][0][_status][equals]=draft&where[and][1][createdBy][equals]=${user.id}`, title: "Mis borradores", text: "Noticias que has creado y aún no están publicadas.", value: drafts.totalDocs },
     { id: "hoy", href: `${list}?where[and][0][_status][equals]=published&where[and][1][date][equals]=${today}`, title: "Publicadas hoy", text: `Noticias publicadas con fecha de hoy (${today.split("-").reverse().join("/")}).`, value: publishedToday.totalDocs },
-    { id: "pendientes", href: user.role === "admin" ? "/cms/collections/notifications?where[reviewed][equals]=false" : `/cms/collections/notifications?where[and][0][reviewed][equals]=false&where[and][1][assignedTo][equals]=${user.id}`,
-      title: "Pendientes de revisar", text: user.role === "admin" ? "Lo que ha llegado de fuera (ayuntamientos, fiestas enviadas…) y aún no está revisado." : "Lo que ha llegado de fuera de tus concejos (ayuntamientos, fiestas enviadas…) y aún no has revisado.", value: unreviewed.totalDocs },
+    { id: "pendientes", href: "/cms/bandeja", title: "Pendiente de revisar", text: "Fiestas enviadas, sugerencias y cartas de tus concejos que esperan una decisión. Se resuelven en un clic.", value: unreviewed.totalDocs },
   ];
-  links.push({ id: "mis-concejos", href: "/cms/mis-concejos", title: "Mis concejos", text: "Publicaciones de los ayuntamientos y sugerencias de tus concejos; también de los demás." });
   if (user.role === "admin") links.push(
     { id: "estadisticas", href: "/cms/estadisticas", title: "Estadísticas", text: "Visitas por día, páginas más vistas y procedencia, con CSV y PDF mensuales." },
     { id: "espacios", href: "/cms/collections/municipal-spaces", title: "Espacios municipales", text: "Estado, contacto e identidad visual (foto, lema, escudo y colores)." },
     { id: "usuarios", href: "/cms/collections/users", title: "Usuarios", text: "Cuentas de la redacción y de los ayuntamientos." },
+    { id: "motivos", href: "/cms/globals/newsroom-settings", title: "Motivos de rechazo", text: "La lista que elige la redacción al rechazar algo en «Pendiente de revisar»." },
   );
   return <section data-cms-dashboard={user.role} style={{ marginBottom: 32 }}>
     <h2 style={{ margin: "0 0 4px" }}>Hola{user.name ? `, ${user.name}` : ""}</h2>
@@ -41,6 +44,6 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
         <span style={{ display: "block", marginTop: 4, fontSize: 13, opacity: 0.75 }}>{link.text}</span>
       </a>)}
     </div>
-    <MyTowns payload={payload} user={user} compact />
+    <Inbox payload={payload} user={user} compact />
   </section>;
 }

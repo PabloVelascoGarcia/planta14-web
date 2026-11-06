@@ -50,23 +50,35 @@ export const Users: CollectionConfig = {
     { name: 'municipalSpace', label: 'Espacio municipal', type: 'relationship', relationTo: 'municipal-spaces', index: true,
       admin: { condition: (data) => data?.role === 'municipal', description: 'Obligatorio para cuentas municipales; prohibido para las demás.' },
       access: { create: adminOnly, update: adminOnly } },
-    // Correo al periodista responsable cuando un ayuntamiento de sus concejos publica algo nuevo. Se cambia desde el
-    // perfil con el interruptor de abajo (endpoint propio: la redacción no puede editar el resto de su cuenta).
-    { name: 'notifyMunicipalPublications', label: 'Recibir por correo las publicaciones nuevas de mis ayuntamientos', type: 'checkbox', defaultValue: true,
+    // Preferencias de la redacción (perfil del CMS, «Avisos y resumen»): se cambian con el formulario de abajo, que usa un
+    // endpoint propio, porque la redacción no puede editar el resto de su cuenta.
+    { name: 'dailyDigest', label: 'Recibir el resumen diario (8:00)', type: 'checkbox', defaultValue: true,
       admin: { hidden: true }, access: { create: adminOnly, update: adminOnly } },
-    { name: 'notifyMunicipalToggle', type: 'ui', admin: { condition: (data) => data?.role !== 'municipal', components: { Field: '/components/cms-notify-toggle#CmsNotifyToggle' } } },
+    { name: 'awayUntil', label: 'Fuera hasta (incluido)', type: 'text', admin: { hidden: true }, access: { create: adminOnly, update: adminOnly },
+      validate: (value: unknown) => !value || /^\d{4}-\d{2}-\d{2}$/.test(String(value)) || 'Fecha AAAA-MM-DD' },
+    { name: 'newsroomPreferences', type: 'ui', admin: { condition: (data) => data?.role !== 'municipal', components: { Field: '/components/cms-notify-toggle#CmsNotifyToggle' } } },
   ],
   endpoints: [{
-    // POST /api/cms/users/:id/avisos-municipales { value: boolean }: cada periodista, el suyo; la administración, cualquiera.
-    path: '/:id/avisos-municipales', method: 'post',
+    // POST /api/cms/users/:id/preferencias { dailyDigest?: boolean, awayUntil?: 'AAAA-MM-DD' | null }:
+    // cada periodista, las suyas; la administración, las de cualquiera.
+    path: '/:id/preferencias', method: 'post',
     handler: async (req) => {
       const id = Number(req.routeParams?.id);
       if (!editorialUser({ req }) || !Number.isInteger(id)) return Response.json({ error: 'Solo la redacción' }, { status: 403 });
-      if (!adminOnly({ req }) && req.user?.id !== id) return Response.json({ error: 'Solo puedes cambiar tus propios avisos' }, { status: 403 });
-      const body = await req.json?.().catch(() => null) as { value?: unknown } | null;
-      if (typeof body?.value !== 'boolean') return Response.json({ error: 'Valor no válido' }, { status: 400 });
-      const user = await req.payload.update({ collection: 'users', id, overrideAccess: true, req, data: { notifyMunicipalPublications: body.value } });
-      return Response.json({ ok: true, value: Boolean(user.notifyMunicipalPublications) });
+      if (!adminOnly({ req }) && req.user?.id !== id) return Response.json({ error: 'Solo puedes cambiar tus propias preferencias' }, { status: 403 });
+      const body = await req.json?.().catch(() => null) as { dailyDigest?: unknown; awayUntil?: unknown } | null;
+      const data: { dailyDigest?: boolean; awayUntil?: string | null } = {};
+      if (body && 'dailyDigest' in body) {
+        if (typeof body.dailyDigest !== 'boolean') return Response.json({ error: 'Valor no válido' }, { status: 400 });
+        data.dailyDigest = body.dailyDigest;
+      }
+      if (body && 'awayUntil' in body) {
+        if (body.awayUntil !== null && body.awayUntil !== '' && !/^\d{4}-\d{2}-\d{2}$/.test(String(body.awayUntil))) return Response.json({ error: 'Fecha no válida' }, { status: 400 });
+        data.awayUntil = body.awayUntil ? String(body.awayUntil) : null;
+      }
+      if (!Object.keys(data).length) return Response.json({ error: 'Nada que cambiar' }, { status: 400 });
+      const user = await req.payload.update({ collection: 'users', id, overrideAccess: true, req, data });
+      return Response.json({ ok: true, dailyDigest: user.dailyDigest !== false, awayUntil: user.awayUntil ?? null });
     },
   }],
 };

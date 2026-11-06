@@ -59,7 +59,8 @@ try {
   const first = await counts();
   await importMunicipalDemo(payload);
   assert.deepEqual(await counts(), first);
-  assert.equal(first[1], 6); assert.equal(first[2], 6);
+  // Seis concejos y «Caudal» (oculto, lo crea la migración `redaccion` para lo comarcal); seis espacios municipales.
+  assert.equal(first[1], 7); assert.equal(first[2], 6);
   assert.deepEqual(first.slice(4), [0, 0, 0]);
   const imported = await payload.find({ collection: 'municipal-content', pagination: false, depth: 0, overrideAccess: true });
   assert(imported.docs.every(d => d.provenance === 'planta14-municipal-demo-reviewed-2026-11-02'));

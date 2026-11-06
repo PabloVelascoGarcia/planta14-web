@@ -41,8 +41,8 @@ export async function testMunicipalBrowser({ url, email, password, editorEmail }
     await withdrawThroughCMS(editor, url, doc.id, reason);
     await publicPage.reload();
     assert(!(await publicPage.locator('body').innerText()).includes(title));
-    await page.reload();
-    const card = page.locator('.municipal-content-card').filter({ hasText: title });
+    await page.goto(`${url}/lena/panel?pestana=publicaciones`);
+    const card = page.locator('[data-publication]').filter({ hasText: title });
     await card.getByText(reason, { exact: false }).waitFor();
     assert((await card.innerText()).includes('Retirado por Planta 14'));
     assert.equal(await card.getByRole('button', { name: 'Publicar', exact: true }).count(), 0);

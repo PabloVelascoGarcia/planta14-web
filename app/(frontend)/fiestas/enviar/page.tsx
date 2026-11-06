@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { territories } from "@/lib/mock-data";
+import { CAUDAL } from "@/lib/caudal";
 import { slugify } from "@/lib/utils";
 import { FiestaForm } from "./fiesta-form";
 
 export const metadata: Metadata = { title: "Envía tu fiesta", description: "Comisiones de fiestas y asociaciones: envía a Planta 14 las fechas y el programa de tu fiesta.", alternates: { canonical: "/fiestas/enviar" } };
 
 export default function EnviarFiestaPage() {
-  const towns = Object.values(territories).flat().map(name => ({ slug: slugify(name), name }));
+  // Concejo obligatorio; para lo comarcal, «Caudal».
+  const towns = [...Object.values(territories).flat().map(name => ({ slug: slugify(name), name })), { slug: CAUDAL.slug, name: CAUDAL.label }];
   return (
     <div className="container-p14 py-8">
       <header className="max-w-3xl border-b-2 border-coal-950 pb-5">

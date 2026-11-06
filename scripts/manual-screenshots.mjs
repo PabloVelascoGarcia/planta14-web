@@ -55,9 +55,9 @@ export async function captureManual({ browser, payload, url, lenaSpace }) {
   await shot.call(null, '04-en-la-web', notices);
 
   await payload.update({ collection: 'municipal-content', id: doc.id, overrideAccess: true, data: { withdrawal: { withdrawn: true, reason: 'La fecha del corte era incorrecta. Publicad de nuevo el aviso con la fecha correcta.' } } });
-  await page.reload();
-  const card = page.locator('.municipal-content-card').filter({ hasText: 'Corte de agua en la calle Mayor' });
-  await card.getByText('Motivo de la retirada').waitFor();
+  await page.goto(`${url}/lena/panel?pestana=publicaciones`);
+  const card = page.locator('[data-publication]').filter({ hasText: 'Corte de agua en la calle Mayor' });
+  await card.getByText('Motivo:').waitFor();
   await shot('05-retirado', card);
   await visitor.close(); await context.close();
   console.log(`Capturas del manual en ${dir}/`);

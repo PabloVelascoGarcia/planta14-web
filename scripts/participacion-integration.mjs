@@ -19,7 +19,7 @@ const directory = await mkdtemp(path.join(os.tmpdir(), 'planta14-participacion-'
 const outbox = path.join(directory, 'correo.jsonl');
 await writeFile(outbox, '');
 Object.assign(process.env, { NODE_ENV: 'production', CMS_ENABLED: 'true', CONTENT_SOURCE: 'payload', PAYLOAD_SECRET: randomUUID() + randomUUID(), DATABASE_URL: databaseURL,
-  CMS_SERVER_URL: origin, SITE_URL: origin, S3_BUCKET: 'planta14-participacion-private', S3_REGION: 'us-east-1', S3_ENDPOINT: `http://127.0.0.1:${s3Port}`, S3_FORCE_PATH_STYLE: 'true',
+  CMS_SERVER_URL: origin, SITE_URL: origin, NEWSROOM_DIGEST_ENABLED: 'false', S3_BUCKET: 'planta14-participacion-private', S3_REGION: 'us-east-1', S3_ENDPOINT: `http://127.0.0.1:${s3Port}`, S3_FORCE_PATH_STYLE: 'true',
   S3_ACCESS_KEY_ID: 'S3RVER', S3_SECRET_ACCESS_KEY: 'S3RVER', PUBLIC_MEDIA_BASE_URL: `http://127.0.0.1:${s3Port}/planta14-participacion-public`, PUBLIC_MEDIA_BUCKET: 'planta14-participacion-public',
   PLANTA14_TEST_EMAIL_OUTBOX: outbox,
   // Las pruebas nunca consultan las fuentes reales de «Útil» (el bloque util usa un servidor simulado).
@@ -88,7 +88,8 @@ try {
   await assert.rejects(payload.update({ collection: 'towns', id: (await town('lena')).id, user: users.editor, overrideAccess: false, data: { responsible: users.editor.id } }));
   await payload.update({ collection: 'towns', id: (await town('lena')).id, user: users.admin, overrideAccess: false, data: { responsible: users.juanfran.id } });
   const anonymous = await payload.find({ collection: 'towns', overrideAccess: false, depth: 0 });
-  assert.ok(anonymous.docs.length === 6 && anonymous.docs.every(t => t.responsible === undefined), 'responsible not public');
+  // Seis concejos y «Caudal» (oculto, para lo comarcal).
+  assert.ok(anonymous.docs.length === 7 && anonymous.docs.every(t => t.responsible === undefined), 'responsible not public');
   // Lo que llega de fuera: publicación de un ayuntamiento → pendiente asignado y correo al responsable.
   const lenaSpace = await space('lena'), mieresSpace = await space('mieres');
   for (const s of [lenaSpace, mieresSpace]) await payload.update({ collection: 'municipal-spaces', id: s.id, overrideAccess: true, data: { subscription: { status: 'active', startsAt: '2026-01-01', endsAt: null } } });
@@ -96,12 +97,11 @@ try {
   await payload.create({ collection: 'municipal-content', user: users.lena, overrideAccess: false, data: { space: lenaSpace.id, type: 'notice', title: 'Corte de agua en Campomanes', excerpt: 'Aviso de prueba.', body: 'Texto del aviso de prueba.', origin: 'municipality', publishedAt: '2026-11-04', _status: 'published' } });
   const notices = await all('notifications', undefined, 1);
   assert.equal(notices.length, 1);
-  assert.equal(notices[0].assignedTo.id, users.juanfran.id, 'assigned to the responsible of Lena');
-  assert.equal(notices[0].emailStatus, 'sent');
-  const mail = (await mails()).find(m => m.to === 'juansantospolalena@gmail.com');
-  // Un correo por publicación con su título, su tipo y su enlace en la web (y cómo retirarla desde «Mis concejos»).
-  assert.ok(mail && mail.subject === `${lenaSpace.name} ha publicado: Corte de agua en Campomanes` && mail.text.includes('Tipo: Aviso') && mail.text.includes('Título: Corte de agua en Campomanes')
-    && /En la web: https?:\/\/\S+\/lena\?seccion=notice/.test(mail.text) && mail.text.includes(`${origin}/cms/mis-concejos`) && mail.text.includes('responsable de Lena') && mail.text.includes('Avisos por correo'), `email to the responsible: ${JSON.stringify(mail)}`);
+  assert.equal(notices[0].assignedTo.id, users.juanfran.id, 'recorded with the responsible of Lena');
+  assert.equal(notices[0].town.slug, 'lena', 'with its concejo');
+  // No requiere intervención: queda registrada (sale en el resumen diario), sin correo suelto ni pendiente.
+  assert.ok(notices[0].reviewed === true && notices[0].emailStatus === 'disabled', 'no pending item, no email');
+  assert.ok(!(await mails()).some(m => m.to === 'juansantospolalena@gmail.com'), 'no immediate email for a municipal publication');
   ctx.notices = notices;
   // Deja activos exactamente esos espacios municipales (los demás, inactivos). Por defecto, Lena y Mieres.
   ctx.activate = async slugs => {
@@ -109,7 +109,7 @@ try {
       data: { subscription: { status: slugs.includes(s.legacyID) ? 'active' : 'inactive', startsAt: '2026-01-01', endsAt: null } } });
   };
   ctx.SIX = ['mieres', 'lena', 'aller', 'morcin', 'riosa', 'ribera-de-arriba'];
-  passed('responsables: npm run cms:responsables creates Andrés (Aller, Mieres, Morcín) and Juanfran Santos (Lena, Riosa, Ribera de Arriba) as newsroom accounts and assigns them; repeatable, never overrides a later choice; only the administration changes it and it is not public; a Lena publication becomes a pending item assigned to Juanfran with an email (title, type and web link)');
+  passed('responsables: npm run cms:responsables creates Andrés (Aller, Mieres, Morcín) and Juanfran Santos (Lena, Riosa, Ribera de Arriba) as newsroom accounts and assigns them; repeatable, never overrides a later choice; only the administration changes it and it is not public; a Lena publication is recorded with its concejo and responsible, without a pending item or an immediate email (it goes to the daily summary)');
 
   await start();
   const signIn = async email => {
@@ -122,10 +122,10 @@ try {
   const dashboard = async email => (await (await fetch(`${web}/cms`, { headers: { Cookie: await signIn(email), 'Sec-Fetch-Site': 'same-origin' } })).text()).replaceAll('<!-- -->', '');
   const juanfranHome = await dashboard('juansantospolalena@gmail.com'), andresHome = await dashboard('velascolne@gmail.com');
   const pendingCount = html => Number(html.match(/data-dashboard-link="pendientes"[^>]*>(?:<span[^>]*>(\d+)<\/span>)/)?.[1]);
-  assert.equal(pendingCount(juanfranHome), 1, 'Juanfran: 1 pending');
-  assert.equal(pendingCount(andresHome), 0, 'Andrés: 0 pending');
-  assert.ok(juanfranHome.includes(`assignedTo][equals]=${users.juanfran.id}`), 'link filtered to the user');
-  passed('«Pendientes de revisar» in the CMS home: each journalist sees what was assigned to them (Juanfran 1, Andrés 0), linked to the filtered list');
+  assert.equal(pendingCount(juanfranHome), 0, 'Juanfran: nothing to act on');
+  assert.equal(pendingCount(andresHome), 0, 'Andrés: nothing to act on');
+  assert.ok(juanfranHome.includes('href="/cms/bandeja"') && juanfranHome.includes('data-inbox="compact"'), 'home links to the inbox and shows it');
+  passed('«Pendiente de revisar» in the CMS home: municipal publications are not pending; the home shows the inbox and links to /cms/bandeja');
 
   const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs', 'participacion-redaccion.mjs'];
   // PARTICIPACION_BLOQUES=contrasena,cartas… para pasar solo algunos (pruebas rápidas); por defecto, todos.

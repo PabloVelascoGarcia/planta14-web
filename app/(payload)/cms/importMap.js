@@ -19,7 +19,7 @@ import { NewsletterSend as NewsletterSend_09d75ac5252af0d7aabb71d8aab290bb } fro
 import { CmsMaintenanceBanner as CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd } from '../../../components/cms-maintenance-banner'
 import { CmsDashboard as CmsDashboard_c961bb4b059fa844220814f2fa37f917 } from '../../../components/cms-dashboard'
 import { StatsAdminView as StatsAdminView_f018c169a2aca0b545db3ec27d597051 } from '../../../components/stats-admin-view'
-import { MyTownsView as MyTownsView_a2781b09e56065ce9a1ef0052a4b62a0 } from '../../../components/cms-my-towns'
+import { InboxView as InboxView_54b8b574c7e3678a25405c2e84189746 } from '../../../components/cms-inbox'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
@@ -46,7 +46,7 @@ export const importMap = {
   "/components/cms-maintenance-banner#CmsMaintenanceBanner": CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd,
   "/components/cms-dashboard#CmsDashboard": CmsDashboard_c961bb4b059fa844220814f2fa37f917,
   "/components/stats-admin-view#StatsAdminView": StatsAdminView_f018c169a2aca0b545db3ec27d597051,
-  "/components/cms-my-towns#MyTownsView": MyTownsView_a2781b09e56065ce9a1ef0052a4b62a0,
+  "/components/cms-inbox#InboxView": InboxView_54b8b574c7e3678a25405c2e84189746,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

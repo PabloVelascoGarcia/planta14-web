@@ -1,9 +1,8 @@
 import { APIError, type CollectionAfterChangeHook, type CollectionBeforeChangeHook, type CollectionConfig } from 'payload';
 import { adminOnly, editorialUser, municipalSpaceOf, municipalUser, relationID } from './access';
-import { emailAvailable } from './email';
 
 // Buzón de sugerencias del panel municipal: qué servicios de Planta 14 interesarían al ayuntamiento y un texto libre.
-// Lo ven la administración y el periodista responsable del concejo; a ambos les llega un correo.
+// Entra en la bandeja compartida de la redacción («Pendiente de revisar») y avisa al periodista responsable del concejo.
 export const suggestionServices = [
   { label: 'Campañas y publicidad institucional en Planta 14', value: 'publicidad' },
   { label: 'Boletín por correo para los vecinos del concejo', value: 'boletin' },
@@ -26,18 +25,15 @@ const fromMunicipality: CollectionBeforeChangeHook = async ({ data, operation, r
   return { ...data, space: spaceDoc.id, town: town?.id ?? null, assignedTo: relationID(town?.responsible) ?? null, createdBy: req.user?.id ?? null };
 };
 
+// Entra en la bandeja «Pendiente de revisar» de la redacción; aviso solo al periodista responsable del concejo.
 const notify: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
-  if (operation !== 'create' || !emailAvailable()) return doc;
-  const admins = (await req.payload.find({ collection: 'users', where: { role: { equals: 'admin' } }, pagination: false, depth: 0, overrideAccess: true, req })).docs.map(u => u.email);
-  const responsible = doc.assignedTo ? await req.payload.findByID({ collection: 'users', id: relationID(doc.assignedTo)!, depth: 0, overrideAccess: true, req }).catch(() => null) : null;
+  if (operation !== 'create') return doc;
   const space = await req.payload.findByID({ collection: 'municipal-spaces', id: relationID(doc.space)!, depth: 0, overrideAccess: true, req });
   const services = (doc.services || []).map((value: string) => suggestionServices.find(s => s.value === value)?.label ?? value);
-  const to = [...new Set([...admins, ...(responsible ? [responsible.email] : [])])];
-  if (!to.length) return doc;
-  await req.payload.sendEmail({ to: to.join(', '), subject: `Sugerencia de ${space.name}`,
-    text: `${space.name} ha enviado una sugerencia desde su panel municipal.\n\n${services.length ? `Servicios que le interesan:\n- ${services.join('\n- ')}\n\n` : ''}${doc.text ? `Sugerencia:\n${doc.text}\n\n` : ''}` +
-      `Verla en el CMS: ${(process.env.CMS_SERVER_URL || '').replace(/\/$/, '')}/cms/collections/suggestions/${doc.id}\n\n— Planta 14` })
-    .catch(error => req.payload.logger.error({ err: error, msg: 'No se pudo avisar de una sugerencia' }));
+  const { createPendingNotice } = await import('./responsables');
+  await createPendingNotice(req.payload, req, { kind: 'suggestion', title: `Sugerencia de ${space.name}`, townID: doc.town,
+    detail: `${space.name} ha enviado una sugerencia desde su panel municipal.\n\n${services.length ? `Servicios que le interesan:\n- ${services.join('\n- ')}\n\n` : ''}${doc.text ? `Sugerencia:\n${doc.text}` : ''}`.trim(),
+    data: { suggestion: doc.id, space: space.id } }).catch(error => req.payload.logger.error({ err: error, msg: 'No se pudo registrar una sugerencia en la bandeja' }));
   return doc;
 };
 
@@ -46,12 +42,12 @@ export const Suggestions: CollectionConfig = {
   labels: { singular: 'Sugerencia', plural: 'Sugerencias' },
   access: {
     create: (args) => municipalUser(args),
-    // Administración: todas. Periodista: las de los concejos de los que es responsable.
-    read: (args) => adminOnly(args) || (editorialUser(args) ? { assignedTo: { equals: args.req.user!.id } } : false),
+    // La bandeja es compartida: toda la redacción las ve (por defecto, primero las de sus concejos).
+    read: editorialUser,
     update: adminOnly, delete: adminOnly,
   },
   admin: { useAsTitle: 'summary', defaultColumns: ['summary', 'space', 'services', 'createdAt'],
-    description: 'Sugerencias de los ayuntamientos desde su panel. Las ven la administración y el periodista responsable del concejo.' },
+    description: 'Sugerencias de los ayuntamientos desde su panel. Se resuelven en la bandeja «Pendiente de revisar» (/cms/bandeja); avisan al periodista responsable del concejo.' },
   hooks: { beforeChange: [fromMunicipality, ({ data, originalDoc }) => {
     const merged = { ...originalDoc, ...data };
     data.summary = String(merged.text || (merged.services || []).join(', ') || 'Sugerencia').replace(/\s+/g, ' ').slice(0, 80);

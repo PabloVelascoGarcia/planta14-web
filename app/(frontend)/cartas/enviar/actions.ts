@@ -1,5 +1,6 @@
 "use server";
 import { territories } from "@/lib/mock-data";
+import { CAUDAL } from "@/lib/caudal";
 import { siteUrl } from "@/lib/site-config";
 import { slugify } from "@/lib/utils";
 
@@ -25,7 +26,7 @@ export async function sendLetter(_previous: LetterState, form: FormData): Promis
   if (!letters.validDNI(values.dni)) errors.dni = "Revisa el DNI o NIE (con su letra).";
   if (!/^\+?[\d\s]{9,15}$/.test(values.phone)) errors.phone = "Escribe un teléfono de contacto.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) errors.email = "Escribe un correo válido: te pediremos que lo confirmes.";
-  if (!towns.some(t => slugify(t) === values.town)) errors.town = "Elige tu concejo.";
+  if (!towns.some(t => slugify(t) === values.town) && values.town !== CAUDAL.slug) errors.town = "Elige tu concejo.";
   if (values.body.length < 30) errors.body = "La carta es demasiado corta.";
   if (values.body.length > letters.LETTER_MAX_LENGTH) errors.body = `La carta no puede pasar de ${letters.LETTER_MAX_LENGTH} caracteres (tiene ${values.body.length}).`;
   if (form.get("rules") !== "on") errors.rules = "Tienes que aceptar las normas de las cartas.";

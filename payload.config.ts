@@ -16,6 +16,7 @@ import { Suggestions } from './cms/suggestions';
 import { Heritage, Routes, MunicipalServices, UtilVisibility } from './cms/util';
 import { Newsletters } from './cms/newsletters';
 import { FiestasSettings, FooterSettings, LettersSettings, Mottos, Principles } from './cms/site-globals';
+import { NewsroomSettings } from './cms/newsroom';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { smtpOptions, testOutboxAdapter } from './cms/email';
 import { withMaintenanceGuard } from './cms/maintenance';
@@ -37,11 +38,11 @@ export default buildConfig({
   admin: { dateFormat: 'dd/MM/yyyy HH:mm', user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'],
     // Estadísticas propias (solo administración): /cms/estadisticas.
     views: { estadisticas: { Component: '/components/stats-admin-view#StatsAdminView', path: '/estadisticas' },
-      // «Mis concejos» de la redacción: /cms/mis-concejos.
-      misConcejos: { Component: '/components/cms-my-towns#MyTownsView', path: '/mis-concejos' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
+      // Bandeja «Pendiente de revisar» de la redacción: /cms/bandeja.
+      bandeja: { Component: '/components/cms-inbox#InboxView', path: '/bandeja' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
   collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, Newsletters, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
-  globals: [BreakingNews, Mottos, FooterSettings, Principles, FiestasSettings, LettersSettings],
+  globals: [BreakingNews, Mottos, FooterSettings, Principles, FiestasSettings, LettersSettings, NewsroomSettings],
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({
     enabled: settings.enabled,

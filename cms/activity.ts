@@ -1,5 +1,6 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionBeforeChangeHook, CollectionConfig, CollectionSlug, Payload, PayloadRequest } from 'payload';
 import { adminOnly, editorialUser, relationID } from './access';
+import { resolveEndpoint } from './newsroom';
 import { createPendingNotice } from './responsables';
 
 /** Nombre de cada tipo de publicación municipal, como en el panel y la web. */
@@ -38,22 +39,32 @@ export const AuditLog: CollectionConfig = {
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
   labels: { singular: 'Pendiente de revisar', plural: 'Pendientes de revisar' },
-  admin: { useAsTitle: 'title', defaultColumns: ['createdAt', 'title', 'kind', 'assignedTo', 'reviewed', 'emailStatus'],
-    description: 'Lo que llega de fuera (publicaciones de los ayuntamientos, fiestas enviadas…), asignado al periodista responsable del concejo. Márcalo como revisado cuando lo hayas atendido.' },
+  admin: { useAsTitle: 'title', defaultColumns: ['createdAt', 'title', 'kind', 'town', 'assignedTo', 'reviewed', 'resolvedBy'],
+    description: 'Registro de lo que llega de fuera. Para resolverlo, usa la bandeja «Pendiente de revisar» (/cms/bandeja): fiestas enviadas, sugerencias y cartas. Las publicaciones municipales quedan aquí como registro y salen en el resumen diario.' },
+  // La bandeja es compartida: cualquier persona de la redacción ve y resuelve todo.
   access: { read: editorialUser, create: () => false, update: editorialUser, delete: () => false },
+  hooks: { beforeChange: [async ({ data, originalDoc, req }) => (await import('./newsroom')).stampResolution({ data, originalDoc, req })] },
+  endpoints: [resolveEndpoint],
   fields: [
-    { name: 'kind', type: 'select', required: true, defaultValue: 'municipal-publication', options: ['municipal-publication', 'festival-submission', 'letter-submission'], access: { update: () => false } },
-    // Periodista responsable del concejo (Concejos → Periodista responsable) cuando llegó el aviso.
-    { name: 'assignedTo', label: 'Asignado a', type: 'relationship', relationTo: 'users', index: true, access: { update: adminOnlyField } },
+    { name: 'kind', label: 'Tipo', type: 'select', required: true, defaultValue: 'municipal-publication', access: { update: () => false },
+      options: [{ label: 'Publicación municipal', value: 'municipal-publication' }, { label: 'Fiesta enviada', value: 'festival-submission' }, { label: 'Carta', value: 'letter-submission' }, { label: 'Sugerencia', value: 'suggestion' }] },
+    // Concejo del que trata (Caudal para lo comarcal) y su periodista responsable cuando llegó.
+    { name: 'town', label: 'Concejo', type: 'relationship', relationTo: 'towns', index: true, access: { update: () => false } },
+    { name: 'assignedTo', label: 'Responsable', type: 'relationship', relationTo: 'users', index: true, access: { update: adminOnlyField } },
     { name: 'content', type: 'relationship', relationTo: 'municipal-content', access: { update: () => false } },
     { name: 'festival', label: 'Fiesta', type: 'relationship', relationTo: 'festivals', access: { update: () => false } },
     { name: 'letter', label: 'Carta', type: 'relationship', relationTo: 'letters', access: { update: () => false } },
+    { name: 'suggestion', label: 'Sugerencia', type: 'relationship', relationTo: 'suggestions', access: { update: () => false } },
     { name: 'space', type: 'relationship', relationTo: 'municipal-spaces', index: true, access: { update: () => false } },
     { name: 'title', type: 'text', required: true, access: { update: () => false } },
     { name: 'publishedBy', type: 'relationship', relationTo: 'users', access: { update: () => false } },
-    // Email delivery is prepared but disabled until a mail provider is contracted.
-    { name: 'emailStatus', type: 'select', required: true, defaultValue: 'disabled', options: ['disabled', 'sent', 'failed'], access: { update: () => false } },
-    { name: 'reviewed', type: 'checkbox', defaultValue: false, index: true },
+    { name: 'emailStatus', label: 'Aviso por correo', type: 'select', required: true, defaultValue: 'disabled', options: ['disabled', 'sent', 'failed'], access: { update: () => false } },
+    { name: 'reviewed', label: 'Resuelto', type: 'checkbox', defaultValue: false, index: true },
+    { name: 'decision', label: 'Decisión', type: 'select', options: [{ label: 'Aprobado', value: 'aprobado' }, { label: 'Rechazado', value: 'rechazado' }, { label: 'Revisado', value: 'revisado' }], access: { update: () => false }, admin: { readOnly: true } },
+    { name: 'rejectReason', label: 'Motivo del rechazo', type: 'text', access: { update: () => false }, admin: { readOnly: true } },
+    { name: 'rejectNote', label: 'Nota del rechazo', type: 'textarea', access: { update: () => false }, admin: { readOnly: true } },
+    { name: 'resolvedBy', label: 'Resuelto por', type: 'relationship', relationTo: 'users', access: { update: () => false }, admin: { readOnly: true } },
+    { name: 'resolvedAt', label: 'Resuelto el', type: 'date', access: { update: () => false }, admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime', displayFormat: 'dd/MM/yyyy HH:mm' } } },
   ],
 };
 
@@ -119,20 +130,9 @@ export const auditAfterChange: CollectionAfterChangeHook = async ({ collection, 
     // Pendiente asignado al periodista responsable del concejo, que recibe además un correo.
     const townID = relationID(space?.town);
     const town = townID ? await req.payload.findByID({ collection: 'towns', id: townID, depth: 0, overrideAccess: true, req }) : null;
-    // Un correo por publicación: si ya se avisó de este contenido (se despublicó y se vuelve a publicar), no se repite.
-    const already = (await req.payload.count({ collection: 'notifications', overrideAccess: true, req, where: { and: [{ kind: { equals: 'municipal-publication' } }, { content: { equals: doc.id } }] } })).totalDocs > 0;
-    const { siteUrl } = await import('../lib/site-config');
-    const typeLabel = municipalTypeLabels[doc.type as string] ?? 'Publicación';
-    const slug = space?.legacyID || town?.slug || '';
-    const webURL = `${siteUrl.replace(/\/$/, '')}/${slug}${doc.type && doc.type !== 'news' ? `?seccion=${doc.type}` : ''}`;
-    const cmsBase = (process.env.CMS_SERVER_URL || siteUrl).replace(/\/$/, '');
+    // Registro sin aviso inmediato: no requiere intervención. Sale en el resumen diario de las 8:00.
     await createPendingNotice(req.payload, req, { kind: 'municipal-publication', title: doc.title, townID, townName: town?.name, fallbackEmailStatus: emailStatus,
-      detail: `${space?.name || 'Un ayuntamiento'} ha publicado en su espacio de Planta 14: «${doc.title}».`,
-      email: already ? false : { subject: `${space?.name || 'Un ayuntamiento'} ha publicado: ${doc.title}`,
-        text: greeting => `${greeting}\n\n${space?.name || 'Un ayuntamiento'} ha publicado algo nuevo en su espacio de Planta 14.\n\n` +
-          `Tipo: ${typeLabel}\nTítulo: ${doc.title}\nEn la web: ${webURL}\n\n` +
-          `Si hubiera que retirarla, hazlo desde «Mis concejos» en el CMS, indicando el motivo:\n${cmsBase}/cms/mis-concejos\n\n` +
-          `Eres el periodista responsable de ${town?.name || 'este concejo'}. Puedes dejar de recibir estos correos en tu perfil del CMS («Avisos por correo»).\n\n— Planta 14` },
+      detail: `${space?.name || 'Un ayuntamiento'} ha publicado en su espacio de Planta 14: «${doc.title}».`, email: false, reviewed: true,
       data: { content: doc.id, space: spaceID ?? undefined, publishedBy: req.user.id } });
   }
   return doc;

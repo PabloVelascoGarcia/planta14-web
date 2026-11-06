@@ -143,8 +143,9 @@ try {
   await pub.reload();
   assert(!(await pub.locator('body').innerText()).includes(title), 'withdrawn notice no longer public');
   assert.equal((await visitor.request.get(src)).status(), 404, 'withdrawn image no longer served');
-  await lena.reload();
-  const card = lena.locator('.municipal-content-card').filter({ hasText: title });
+  // Las publicaciones están en su pestaña del panel («Mis publicaciones»).
+  await lena.goto(`${origin}/lena/panel?pestana=publicaciones`);
+  const card = lena.locator('[data-publication]').filter({ hasText: title });
   await card.getByText(reason, { exact: false }).waitFor();
   assert((await card.innerText()).includes('Retirado por Planta 14'));
   await lena.screenshot({ path: path.join(out, '05-panel-lena-retirado.png'), fullPage: true });

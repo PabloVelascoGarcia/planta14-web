@@ -1,5 +1,6 @@
 "use server";
 import { territories } from "@/lib/mock-data";
+import { CAUDAL } from "@/lib/caudal";
 import { paragraphsToLexical } from "@/lib/rich-text";
 import { siteUrl } from "@/lib/site-config";
 import { slugify } from "@/lib/utils";
@@ -28,7 +29,7 @@ export async function sendFiesta(_previous: FiestaFormState, form: FormData): Pr
   const errors: Record<string, string> = {};
   if (values.name.length < 3) errors.name = "Escribe el nombre de la fiesta.";
   if (values.village.length < 2) errors.village = "Indica el pueblo o barrio.";
-  if (!towns.some(t => slugify(t) === values.town)) errors.town = "Elige el concejo.";
+  if (!towns.some(t => slugify(t) === values.town) && values.town !== CAUDAL.slug) errors.town = "Elige el concejo.";
   if (!values.startDay) errors.startDay = "Indica el primer día.";
   if (values.endDay < values.startDay) errors.endDay = "El último día no puede ser anterior al primero.";
   if (values.organizer.length < 2) errors.organizer = "Indica quién organiza (comisión, asociación…).";
