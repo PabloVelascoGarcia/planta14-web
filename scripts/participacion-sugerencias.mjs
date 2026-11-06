@@ -4,7 +4,7 @@ export async function run(ctx) {
   await payload.update({ collection: 'users', id: users.lena.id, overrideAccess: true, data: { password } });
   const context = await browser.newContext();
   const tab = await context.newPage();
-  await tab.goto(`${ctx.origin}/lena/panel`); // mismo origen que CMS_SERVER_URL (Payload solo acepta la sesión desde él)
+  await tab.goto(`${ctx.origin}/lena/panel?pestana=sugerencias`); // mismo origen que CMS_SERVER_URL (Payload solo acepta la sesión desde él)
   await tab.getByLabel('Correo electrónico', { exact: true }).fill(users.lena.email);
   await tab.getByLabel('Contraseña', { exact: true }).fill(password);
   await tab.getByRole('button', { name: 'Entrar ↗', exact: true }).click();

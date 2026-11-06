@@ -32,7 +32,7 @@ export function MunicipalSuggestions({ disabled = false }: { disabled?: boolean 
   return <form onSubmit={submit} className="municipal-form municipal-suggestions" aria-label="Buzón de sugerencias" data-suggestions>
     <div className="municipal-step"><span>✉</span><h3>Buzón de sugerencias</h3></div>
     <p className="municipal-form-help">¿Qué más podría hacer Planta 14 por tu concejo? Marca lo que os interese y cuéntanoslo.</p>
-    <fieldset><legend className="municipal-form-help">Servicios que nos interesarían</legend>
+    <fieldset className="municipal-checks"><legend className="municipal-form-help">Servicios que nos interesarían</legend>
       {services.map(([value, label]) => <label key={value} className="municipal-check"><input type="checkbox" checked={chosen.includes(value)} onChange={e => setChosen(c => e.target.checked ? [...c, value] : c.filter(x => x !== value))} /> {label}</label>)}
     </fieldset>
     <label>Tu sugerencia (opcional)<textarea value={text} onChange={e => setText(e.target.value)} maxLength={2000} rows={4} /></label>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { hasTheme, identityStyle } from "@/lib/municipal-identity";
 import { sections, type MunicipalSpace } from "@/lib/demo/municipal";
 import type { PanelItem, PanelState } from "@/lib/municipal-panel";
@@ -71,7 +71,54 @@ function Login({ onDone }: { onDone: () => void }) {
   </form>;
 }
 
-export function MunicipalCmsPanel({ space, state, maintenance = null }: { space: MunicipalSpace; state: PanelState; maintenance?: string | null }) {
+/** «Mis publicaciones»: una línea por publicación (tipo, título, estado y fecha) con acciones pequeñas a la derecha. */
+function PublicationsList({ items, locked, message, typeFilter, statusFilter, page, setTypeFilter, setStatusFilter, setPage, onEdit, onStatus }: {
+  items: PanelItem[]; locked: boolean; message: string; typeFilter: string; statusFilter: string; page: number;
+  setTypeFilter: (v: string) => void; setStatusFilter: (v: string) => void; setPage: (p: number) => void;
+  onEdit: (item: PanelItem) => void; onStatus: (item: PanelItem, status: "published" | "draft") => void;
+}) {
+  const filtered = items.filter(i => (!typeFilter || i.type === typeFilter) && (!statusFilter || statusOf(i) === statusFilter || (statusFilter === "publicado" && statusOf(i) === "cambios")));
+  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const current = Math.min(page, pages);
+  const shown = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+  return <section className="municipal-form municipal-publications" aria-label="Mis publicaciones" data-panel-section="publicaciones">
+    <div className="municipal-step"><span>☰</span><h3>Mis publicaciones</h3></div>
+    <div className="municipal-list-tools">
+      <label>Tipo<select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} data-publications-type><option value="">Todos</option>{types.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
+      <label>Estado<select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} data-publications-status><option value="">Todos</option><option value="publicado">Publicado</option><option value="borrador">Borrador</option><option value="retirado">Retirado</option></select></label>
+    </div>
+    {!items.length ? <p className="municipal-field-help">Todavía no hay publicaciones.</p> : !filtered.length ? <p className="municipal-field-help">Ninguna publicación con estos filtros.</p> : null}
+    <ul className="municipal-compact-list">{shown.map(item => <li key={item.id} data-publication={item.id} data-status={statusOf(item)}>
+      <div className="municipal-row">
+        <span className="municipal-row-main"><small className="municipal-row-type">{types.find(t => t.id === item.type)?.label}</small> <strong>{item.title}</strong> <small>{STATUS_LABEL[statusOf(item)]} · {shortDay(item.updatedAt)}</small>
+          {item.withdrawn ? <small className="municipal-form-status"> Motivo: {item.withdrawalReason}</small> : null}</span>
+        <span className="municipal-row-actions">
+          <button type="button" className="municipal-text-link" onClick={() => onEdit(item)}>Editar</button>
+          {!item.withdrawn && (item.live !== "published" || item.hasDraft) ? <button type="button" className="municipal-text-link" disabled={locked} onClick={() => onStatus(item, "published")}>{item.hasDraft ? "Publicar cambios" : "Publicar"}</button> : null}
+          {!item.withdrawn && item.live === "published" ? <button type="button" className="municipal-text-link" disabled={locked} onClick={() => onStatus(item, "draft")}>Despublicar</button> : null}
+        </span>
+      </div></li>)}</ul>
+    {pages > 1 ? <nav className="municipal-pager" aria-label="Páginas" data-publications-pager>
+      <button type="button" className="municipal-text-link" disabled={current <= 1} onClick={() => setPage(current - 1)}>← Anteriores</button>
+      <span>Página {current} de {pages}</span>
+      <button type="button" className="municipal-text-link" disabled={current >= pages} onClick={() => setPage(current + 1)}>Siguientes →</button>
+    </nav> : null}
+    <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
+  </section>;
+}
+
+/** Pestañas del panel, cada una con su enlace (?pestana=…). «Publicar» es la de por defecto. */
+export const PANEL_TABS = [
+  { id: "publicar", label: "Publicar" }, { id: "publicaciones", label: "Mis publicaciones" }, { id: "util", label: "Útil" },
+  { id: "directorio", label: "Directorio" }, { id: "sugerencias", label: "Sugerencias" }, { id: "visitas", label: "Visitas" },
+] as const;
+export type PanelTab = typeof PANEL_TABS[number]["id"];
+const PAGE_SIZE = 10;
+const shortDay = (iso: string) => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : "";
+const statusOf = (item: PanelItem) => item.withdrawn ? "retirado" : item.live === "published" ? (item.hasDraft ? "cambios" : "publicado") : "borrador";
+const STATUS_LABEL: Record<string, string> = { publicado: "Publicado", cambios: "Publicado · cambios sin publicar", borrador: "Borrador", retirado: "Retirado por Planta 14" };
+
+export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab = "publicar" }: { space: MunicipalSpace; state: PanelState; maintenance?: string | null; initialTab?: string }) {
   const identity = space.identity;
   const router = useRouter();
   const [draft, setDraft] = useState<Draft>(empty);
@@ -82,6 +129,14 @@ export function MunicipalCmsPanel({ space, state, maintenance = null }: { space:
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const set = (patch: Partial<Draft>) => setDraft(current => ({ ...current, ...patch }));
+  const [tab, setTabState] = useState<PanelTab>(PANEL_TABS.some(t => t.id === initialTab) ? initialTab as PanelTab : "publicar");
+  // Cada pestaña tiene su enlace: se cambia sin recargar y la dirección queda en la barra (?pestana=…).
+  const setTab = (next: PanelTab) => { setTabState(next); window.history.replaceState(null, "", next === "publicar" ? window.location.pathname : `?pestana=${next}`); };
+  useEffect(() => { const onPop = () => { const t = new URLSearchParams(window.location.search).get("pestana"); setTabState(PANEL_TABS.some(x => x.id === t) ? t as PanelTab : "publicar"); }; window.addEventListener("popstate", onPop); return () => window.removeEventListener("popstate", onPop); }, []);
+  // Mis publicaciones: filtros por tipo y estado, 10 por página.
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
   // Modo mantenimiento: solo lectura (el servidor rechaza igualmente cualquier escritura).
   const locked = busy || Boolean(maintenance);
 
@@ -137,12 +192,18 @@ export function MunicipalCmsPanel({ space, state, maintenance = null }: { space:
       {state.kind === "login" ? <>
         <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>Publica en tu<br />espacio municipal.</h2></div><p>Lo que publiques aparece al momento<br />en {space.name}.</p></div>
         <div className="municipal-panel-grid"><Login onDone={() => router.refresh()} /></div>
+        <p className="municipal-panel-terms"><Link href="/condiciones-cuentas-municipales" target="_blank" data-panel-terms>Condiciones de uso del espacio municipal</Link></p>
       </> : null}
       {state.kind === "forbidden" ? <div className="municipal-demo-banner"><span className="municipal-example">Sin acceso</span><p>{state.reason} ({state.email})</p><button type="button" className="municipal-reset" onClick={logout}>Cerrar sesión</button></div> : null}
       {state.kind === "editor" ? <>
         <div className="municipal-demo-banner"><span className="municipal-example">Contenido municipal</span><p>Conectado como {state.email}. Lo que publiques aparece al momento en tu espacio, marcado como contenido del ayuntamiento. Planta 14 puede retirarlo indicando el motivo.</p><button type="button" className="municipal-reset" onClick={logout}>Cerrar sesión</button></div>
-        <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>{draft.id ? "Edita tu publicación." : "Una idea. Un minuto."}<br />Tu publicación.</h2></div><p><Link href={`/${space.id}`}>Ver el espacio ↗</Link></p></div>
-        <div className="municipal-panel-grid">
+        <nav className="municipal-panel-tabs" aria-label="Secciones del panel" data-panel-tabs>
+          {PANEL_TABS.map(t => <a key={t.id} href={t.id === "publicar" ? `/${space.id}/panel` : `/${space.id}/panel?pestana=${t.id}`} aria-current={tab === t.id ? "page" : undefined} data-panel-tab={t.id}
+            onClick={e => { e.preventDefault(); setTab(t.id); }}>{t.label}{t.id === "publicaciones" && state.kind === "editor" ? <small> {state.items.length}</small> : null}</a>)}
+        </nav>
+        {tab === "publicar" ? <section data-panel-section="publicar">
+          <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>{draft.id ? "Edita tu publicación." : "Una idea. Un minuto."}<br />Tu publicación.</h2></div><p><Link href={`/${space.id}`}>Ver el espacio ↗</Link></p></div>
+          <div className="municipal-panel-grid is-single">
           <form onSubmit={e => { e.preventDefault(); void save(true); }} className="municipal-form" aria-label="Publicación municipal">
             <div className="municipal-step"><span>1</span><h3>¿Qué quieres contar?</h3></div>
             <label>Tipo<select value={draft.type} onChange={e => set({ type: e.target.value as ContentType })}>{types.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
@@ -163,30 +224,19 @@ export function MunicipalCmsPanel({ space, state, maintenance = null }: { space:
             {draft.id ? <button type="button" className="municipal-reset" onClick={() => setDraft(empty)}>Cancelar la edición</button> : null}
             <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
           </form>
-          <aside className="municipal-live-preview show-preview" aria-label="Tus publicaciones">
-            <div className="municipal-step"><span>3</span><h3>Tus publicaciones</h3></div>
-            {state.items.length === 0 ? <p className="municipal-field-help">Todavía no hay publicaciones.</p> : null}
-            {state.items.map(item => <article key={item.id} className="municipal-content-card is-compact" data-status={item.withdrawn ? "withdrawn" : item.live}>
-              <div className="municipal-card-meta"><span>{types.find(t => t.id === item.type)?.label}</span><span>{item.withdrawn ? "Retirado por Planta 14" : item.live === "published" ? (item.hasDraft ? "Publicado · cambios sin publicar" : "Publicado") : "Borrador"}</span></div>
-              <h3>{item.title}</h3>
-              {item.withdrawn ? <p className="municipal-form-status">Motivo de la retirada: {item.withdrawalReason}</p> : <p>{item.excerpt}</p>}
-              <div className="municipal-card-dates">
-                <button type="button" className="municipal-text-button" onClick={() => { setDraft(fromItem(item)); setMessage(""); }}>Editar</button>
-                {!item.withdrawn && (item.live !== "published" || item.hasDraft) ? <button type="button" className="municipal-text-button" disabled={locked} onClick={() => void setStatus(item, "published")}>{item.hasDraft ? "Publicar cambios" : "Publicar"}</button> : null}
-                {!item.withdrawn && item.live === "published" ? <button type="button" className="municipal-text-button" disabled={locked} onClick={() => void setStatus(item, "draft")}>Despublicar</button> : null}
-              </div>
-            </article>)}
-          </aside>
-        </div>
-        <div className="municipal-panel-extra">
-          <MunicipalUtilVisibility hidden={state.utilHidden} territory={space.territory} disabled={Boolean(maintenance)} />
-          <MunicipalServicesEditor services={state.services} disabled={Boolean(maintenance)} />
-          <MunicipalSuggestions disabled={Boolean(maintenance)} />
-          {state.stats ? <section className="municipal-form municipal-stats" aria-label="Visitas de tu concejo" data-municipal-stats>
-            <div className="municipal-step"><span>↗</span><h3>Visitas de {space.name.replace("Ayuntamiento de ", "")} este mes</h3></div>
-            <StatsReportView report={state.stats} exportBase={`/api/estadisticas?mes=${state.statsMonth}`} />
-          </section> : null}
-        </div>
+          </div>
+        </section> : null}
+        {tab === "publicaciones" ? <PublicationsList items={state.items} locked={locked} message={message}
+          typeFilter={typeFilter} statusFilter={statusFilter} page={page} setTypeFilter={v => { setTypeFilter(v); setPage(1); }} setStatusFilter={v => { setStatusFilter(v); setPage(1); }} setPage={setPage}
+          onEdit={item => { setDraft(fromItem(item)); setMessage(""); setTab("publicar"); }} onStatus={(item, status) => void setStatus(item, status)} /> : null}
+        {tab === "util" ? <div data-panel-section="util"><MunicipalUtilVisibility hidden={state.utilHidden} territory={space.territory} disabled={Boolean(maintenance)} /></div> : null}
+        {tab === "directorio" ? <div data-panel-section="directorio"><MunicipalServicesEditor services={state.services} disabled={Boolean(maintenance)} /></div> : null}
+        {tab === "sugerencias" ? <div data-panel-section="sugerencias"><MunicipalSuggestions disabled={Boolean(maintenance)} /></div> : null}
+        {tab === "visitas" ? (state.stats ? <section className="municipal-form municipal-stats" aria-label="Visitas de tu concejo" data-municipal-stats data-panel-section="visitas">
+          <div className="municipal-step"><span>↗</span><h3>Visitas de {space.name.replace("Ayuntamiento de ", "")} este mes</h3></div>
+          <StatsReportView report={state.stats} exportBase={`/api/estadisticas?mes=${state.statsMonth}`} compact />
+        </section> : <p className="municipal-field-help" data-panel-section="visitas">Todavía no hay visitas este mes.</p>) : null}
+        <p className="municipal-panel-terms"><Link href="/condiciones-cuentas-municipales" target="_blank" data-panel-terms>Condiciones de uso del espacio municipal</Link></p>
       </> : null}
     </div>
   </div>;

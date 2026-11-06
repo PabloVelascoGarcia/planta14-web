@@ -20,7 +20,7 @@ export default function Page() {
     <h2>Objeto</h2>
     <p>{owner.medium} publica información y opinión sobre la vida local de las cuencas mineras asturianas y ofrece a los ayuntamientos que lo contratan un espacio municipal propio. El acceso a la web es gratuito y no requiere registro, salvo para las cuentas municipales y de la redacción.</p>
     <h2>Contenido municipal</h2>
-    <p>Los espacios municipales recogen avisos, noticias, agenda y otra información publicada directamente por cada ayuntamiento, bajo su responsabilidad, y aparecen identificados como contenido del ayuntamiento. {owner.medium} puede retirar ese contenido indicando el motivo, conforme a las <Link href="/condiciones-cuentas-municipales">condiciones de uso de las cuentas municipales</Link>.</p>
+    <p>Los espacios municipales recogen avisos, noticias, agenda y otra información publicada directamente por cada ayuntamiento, bajo su responsabilidad, y aparecen identificados como contenido del ayuntamiento. {owner.medium} puede retirar ese contenido indicando el motivo, conforme a las condiciones de uso de las cuentas municipales.</p>
     <h2>Propiedad intelectual</h2>
     <p>Los textos, fotografías, diseño y marca de {owner.medium} pertenecen a su titular o a sus autores y se publican con su autorización. Las imágenes indican su autor o crédito. No se permite su reproducción, distribución o transformación sin autorización, salvo los usos permitidos por la ley, como la cita con indicación de la fuente y enlace al original.</p>
     <h2>Responsabilidad</h2>

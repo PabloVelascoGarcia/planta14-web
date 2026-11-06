@@ -30,7 +30,8 @@ export function SubscribeForm({ source, variant = "full", tone = "dark", intro =
       {error("topics")}
     </fieldset>
     <fieldset className="mt-3"><legend className="text-[14px] font-bold">Tus concejos <span className="font-normal">(si no marcas ninguno, los seis)</span></legend>
-      <div className="mt-1 grid grid-cols-2 gap-x-4 sm:grid-cols-3">{TOWNS.map(t => <label key={t} className={check}><input type="checkbox" name="towns" value={slug(t)} defaultChecked={v?.towns.includes(slug(t))} className="h-4 w-4 shrink-0" /> {t}</label>)}</div>
+      {/* En la portada (split) la columna es estrecha: dos por fila para que «Ribera de Arriba» no parta en dos líneas. */}
+      <div className={`mt-1 grid grid-cols-2 gap-x-4 ${variant === "split" ? "" : "sm:grid-cols-3"}`}>{TOWNS.map(t => <label key={t} className={check}><input type="checkbox" name="towns" value={slug(t)} defaultChecked={v?.towns.includes(slug(t))} className="h-4 w-4 shrink-0" /> {t}</label>)}</div>
     </fieldset>
   </>;
   const small = variant === "full" ? "text-[14px] leading-6" : "text-[13px] leading-5";

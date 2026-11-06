@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SubscribeForm } from "./subscribe-form";
+import { HideOnPanel } from "./hide-on-panel";
 import { contentSource } from "@/lib/content-source";
 
 // Títulos de columna: gris claro sobre el negro del pie, contraste ≥ 7:1 (AA y AAA para texto pequeño en negrita).
@@ -47,10 +48,11 @@ export function Footer({ motto = "Orgullo de historia. Mirada al futuro", whatsa
             {whatsapp ? <li><a href={whatsapp} className={link} target="_blank" rel="noopener noreferrer" data-footer-whatsapp>WhatsApp</a></li> : null}
           </ul>
         </nav>
-        <div className="md:col-span-2 lg:col-span-1" data-footer-newsletter data-footer-col="boletin">
+        {/* En el panel municipal no: el técnico del ayuntamiento no está ahí para suscribirse. */}
+        <HideOnPanel><div className="md:col-span-2 lg:col-span-1" data-footer-newsletter data-footer-col="boletin">
           <p className={heading}>Boletín</p>
           <SubscribeForm source="pie" variant="compact" />
-        </div>
+        </div></HideOnPanel>
       </div>
       <nav aria-label="Información legal" className="border-t border-paper/15">
         <div className="container-p14 flex flex-wrap items-center gap-x-6 py-3 text-[13px] text-paper/80">
@@ -58,7 +60,6 @@ export function Footer({ motto = "Orgullo de historia. Mirada al futuro", whatsa
           <Link href="/aviso-legal" className={link}>Aviso legal</Link>
           <Link href="/privacidad" className={link}>Privacidad</Link>
           <Link href="/cookies" className={link}>Cookies</Link>
-          <Link href="/condiciones-cuentas-municipales" className={link}>Condiciones de las cuentas municipales</Link>
         </div>
       </nav>
     </footer>

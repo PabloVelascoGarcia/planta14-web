@@ -3,7 +3,8 @@ import Link from "next/link";
 import { LegalPage } from "@/components/legal-page";
 import { owner } from "@/lib/legal";
 
-export const metadata: Metadata = { title: "Condiciones de uso de las cuentas municipales", alternates: { canonical: "/condiciones-cuentas-municipales" } };
+// Solo para los ayuntamientos: no se indexa ni está en el sitemap; se enlaza desde el acceso al panel y el panel.
+export const metadata: Metadata = { title: "Condiciones de uso de las cuentas municipales", robots: { index: false, follow: false }, alternates: { canonical: "/condiciones-cuentas-municipales" } };
 
 export default function Page() {
   return <LegalPage title="Condiciones de uso de las cuentas municipales">

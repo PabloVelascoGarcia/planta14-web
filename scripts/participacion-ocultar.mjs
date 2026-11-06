@@ -18,7 +18,7 @@ export async function run(ctx) {
   const panel = await browser.newContext();
   await panel.addCookies(lenaCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
   const tab = await panel.newPage();
-  await tab.goto(`${origin}/lena/panel`);
+  await tab.goto(`${origin}/lena/panel?pestana=util`);
   const form = tab.locator('[data-util-visibility]');
   await form.waitFor();
   assert.equal(await form.locator('input[type=checkbox]:checked').count(), 8, 'all services shown by default');

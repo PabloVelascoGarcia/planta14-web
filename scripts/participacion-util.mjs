@@ -258,7 +258,7 @@ export async function run(ctx) {
       && !block(aller, 'invierno').includes('data-util-source'), 'Aller: San Isidro and Fuentes de Invierno as links only, no data');
     assert.ok(!(await page(`${web}/mieres/util`)).includes('data-util="invierno"'), 'no winter block where it does not apply');
     const weather = block(lena, 'tiempo');
-    assert.ok(weather.includes('Nieve débil') && weather.includes('Cota de nieve 900 m') && weather.includes('Lluvia 80%') && weather.includes('9° / 1°')
+    assert.ok(weather.includes('Nieve débil') && weather.includes('Cota de nieve 900 m') && weather.includes('Lluvia 80%') && weather.includes('>9°<') && weather.includes('>1°<') && weather.includes('data-weather-icon=')
       && weather.includes('© AEMET') && weather.includes('Información elaborada por la Agencia Estatal de Meteorología') && weather.includes('Elaborada: 04/11/2026 19:00'), `AEMET forecast (ISO-8859-15) with attribution: ${weather.slice(0, 900)}`);
     const grants = block(lena, 'subvenciones');
     assert.ok(grants.includes('Ayudas a la rehabilitación de fachadas en pola de lena 2026') && grants.includes('Solicitudes hasta el 01 de diciembre de 2099') && grants.includes('Hasta agotar el crédito')
@@ -405,10 +405,11 @@ export async function run(ctx) {
     const panel = await browser.newContext();
     await panel.addCookies(lenaCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
     const tab = await panel.newPage();
-    await tab.goto(`${origin}/lena/panel`);
+    await tab.goto(`${origin}/lena/panel?pestana=directorio`);
     const editor = tab.locator('[data-services-editor]');
     await editor.waitFor();
     assert.equal(await editor.locator('[data-service-row]').count(), 2, 'its two services');
+    await editor.locator('[data-service-add]').click();
     await editor.getByLabel('Nombre').fill('Punto limpio de Villallana');
     await editor.getByLabel('Tipo').selectOption('medio-ambiente');
     await editor.getByLabel('Teléfono').fill('985 49 00 00');

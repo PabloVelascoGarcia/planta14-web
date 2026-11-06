@@ -37,10 +37,12 @@ export async function captureManual({ browser, payload, url, lenaSpace }) {
   await form.getByRole('button', { name: 'Publicar ahora ↗', exact: true }).click();
   const { doc } = await (await created).json();
   await page.getByRole('status').filter({ hasText: 'Publicado' }).waitFor();
-  // Only the heading and the first card (the new publication), not the whole list.
-  await page.getByRole('complementary', { name: 'Tus publicaciones' }).evaluate(el => el.scrollIntoView({ block: 'start' }));
-  const list = await page.getByRole('complementary', { name: 'Tus publicaciones' }).boundingBox();
-  const first = await page.locator('.municipal-content-card').first().boundingBox();
+  // Pestaña «Mis publicaciones»: solo el título y la primera fila (la publicación nueva), no toda la lista.
+  await page.locator('[data-panel-tab="publicaciones"]').click();
+  const section = page.locator('[data-panel-section="publicaciones"]');
+  await section.evaluate(el => el.scrollIntoView({ block: 'start' }));
+  const list = await section.boundingBox();
+  const first = await section.locator('[data-publication]').first().boundingBox();
   await page.screenshot({ path: `${dir}/03-publicado.png`, clip: { x: list.x, y: list.y, width: list.width, height: first.y + first.height - list.y + 8 } });
 
   const visitor = await browser.newContext({ viewport: { width: 1280, height: 900 } });

@@ -84,7 +84,7 @@ export async function run(ctx) {
   const panel = await browser.newContext();
   await panel.addCookies(lenaCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
   const lena = await panel.newPage();
-  await lena.goto(`${origin}/lena/panel`);
+  await lena.goto(`${origin}/lena/panel?pestana=visitas`);
   await lena.locator('[data-municipal-stats] [data-stats-total]').waitFor();
   assert.equal(Number((await lena.locator('[data-municipal-stats] [data-stats-total]').innerText()).replace(/\D/g, '')), await views(r => r.town === 'lena'), 'municipal panel: own concejo');
   assert.equal(await lena.locator('[data-municipal-stats] [data-stats-export="pdf"]').count(), 1);

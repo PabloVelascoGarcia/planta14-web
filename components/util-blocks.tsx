@@ -161,8 +161,14 @@ export function UtilBlocks({ data }: { data: UtilData }) {
     {town && show("tiempo") && forecasts?.length ? <Block id="tiempo" title="El tiempo" kicker="Predicción">
       {forecasts.map(({ town: slug, forecast }) => <div key={slug} className="util-forecast" data-util-forecast={slug}>
         {!town ? <h4>{townName(slug)}</h4> : null}
-        {forecast.data ? <ol>{forecast.data.days.slice(0, town ? 4 : 2).map(d => <li key={d.day}><strong>{weekday(d.day)}</strong><span>{d.sky}</span>
-          <span>{d.max ?? "–"}° / {d.min ?? "–"}°</span>{d.rain !== null ? <span>Lluvia {d.rain}%</span> : null}{d.snowLevel ? <span>Cota de nieve {d.snowLevel} m</span> : null}</li>)}</ol> : <Unavailable cached={forecast} what="la predicción" />}
+        {/* Los mismos iconos y la misma disposición que la franja de /util y el resumen del concejo: un día por casilla. */}
+        {forecast.data ? <ul className="util-weather-towns util-weather-days" data-util-days>{forecast.data.days.slice(0, 4).map((d, i) => <li key={d.day} className="util-weather-town" data-util-day={d.day}>
+          <h4>{i === 0 ? "Hoy" : i === 1 ? "Mañana" : weekday(d.day)}</h4>
+          <div className="util-weather-now"><WeatherIcon sky={d.sky} size={i < 2 ? 40 : 32} /><span className="util-weather-temps"><strong>{d.max ?? "–"}°</strong> <span>{d.min ?? "–"}°</span></span></div>
+          <p className="util-weather-sky">{d.sky || "Sin estado del cielo"}</p>
+          {d.rain !== null ? <p className="util-weather-rain">Lluvia {d.rain}%</p> : null}
+          {d.snowLevel ? <p className="util-weather-rain">Cota de nieve {d.snowLevel} m</p> : null}
+        </li>)}</ul> : <Unavailable cached={forecast} what="la predicción" />}
         {forecast.data && forecast.error ? <p className="util-source"><Stale error={forecast.error} /></p> : null}
       </div>)}
       <AemetSource forecasts={forecasts.map(f => f.forecast)} />

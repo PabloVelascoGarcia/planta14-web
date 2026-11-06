@@ -10,7 +10,7 @@ import type { Article } from "@/lib/mock-data";
  */
 export function TownNewsPage({ name, slug, articles, fiestas }: { name: string; slug: string; articles: Article[]; fiestas: Fiesta[] }) {
   return <div className="container-p14 py-8" data-town-news={slug}>
-    <header className="max-w-3xl border-b-2 border-coal-950 pb-5">
+    <header className="border-b-2 border-coal-950 pb-5">
       <h1 className="font-serif text-5xl font-black leading-none text-coal-950">{name}</h1>
     </header>
     <div className={`mt-8 grid gap-10 ${fiestas.length ? "lg:grid-cols-[minmax(0,1fr)_300px]" : ""}`}>
