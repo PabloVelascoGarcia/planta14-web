@@ -729,4 +729,4 @@ Cada mañana a las 8:00, **solo si hay algo**, cada redactor recibe «Planta 14,
 - lo **publicado por los ayuntamientos de sus concejos** en las últimas 24 horas, con el enlace en la web;
 - lo que **sigue pendiente** en su bandeja, con el enlace directo a cada elemento.
 
-Se desactiva en el perfil (**Avisos y resumen**, casilla del resumen diario). Lo envía la propia web (no hace falta ninguna tarea programada en el servidor); si estuviera parada a las 8:00, sale al arrancar, una sola vez al día. Para enviarlo a mano: `npm run cms:resumen` (con la orden `migrate` del documento de instalación).
+Se desactiva en el perfil (**Avisos y resumen**, casilla del resumen diario). Lo envía la propia web, sin tareas programadas en el servidor: un temporizador que se pone en marcha con la comprobación de salud (`/api/health`, que consultan el despliegue y el monitor), al visitar «Útil» o al abrir el CMS. Si a las 8:00 no estaba en marcha, sale en cuanto arranca, una sola vez al día. Para enviarlo a mano: `npm run cms:resumen` (con la orden `migrate` del documento de instalación).
