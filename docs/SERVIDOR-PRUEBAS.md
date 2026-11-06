@@ -2,7 +2,9 @@
 
 ## Versión instalada ahora
 
-**`a66deb2356e6c3d398aac6b455fa53d4991ce7aa`** (`a66deb2`, rama `desarrollo/planta14-v2-pulido`). Desplegada el **5 de noviembre de 2026 a las 22:53** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `36c43c4`, y `deploy.sh` la conserva para poder volver a ella.
+**`d7d348fcb9f873307b9f8ed5afa3c5f602c1c9fe`** (`d7d348f`, rama `desarrollo/planta14-v2-final`). Desplegada el **6 de noviembre de 2026 a las 12:27** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `a66deb2`, y `deploy.sh` la conserva para poder volver a ella.
+
+> **Fechas de contrato.** En pruebas, Mieres y Lena empiezan el 3 de noviembre de 2026, y Aller y Riosa no tienen fecha. **En producción, todos los espacios municipales empiezan el 1 de enero de 2027, Mieres incluido.**
 
 ## Cuentas de la redacción en /cms
 
@@ -33,6 +35,50 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a d7d348f: versión final de salida (6 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-FINAL.md` (`ff10f48`). La instalación y las comprobaciones se hicieron en una sola conexión SSH, más otra de solo lectura para revisar las versiones de las fiestas. No se han tocado el DNS, los buckets, las claves ni el ensayo. Del `.env` solo se quitó `GA4_MEASUREMENT_ID`, que ya no se usa; el archivo conserva el propietario `planta14` y los permisos `600`.
+
+**Espacios municipales:** sin cambios, comprobado antes y después.
+- **Activos:** Mieres, Lena, Aller y Riosa.
+- **Inactivos:** Morcín y Ribera de Arriba.
+- **Mieres:** su contrato empezaba el 3 de noviembre de 2026, ya pasado, así que no hubo que cambiar su fecha de inicio.
+
+| Paso | Resultado |
+|---|---|
+| Estado previo | `a66deb2` (versión de vuelta atrás), `/api/health: ok` y mantenimiento desactivado |
+| `deploy.sh … d7d348f…` | **Código 0, «Desplegada».** Construcción de 8 minutos y copia previa `…20261106T112701Z.dump.age` (460K). El mantenimiento duró 19 segundos. Registro: `/srv/planta14/state/deploy-d7d348f.log` |
+| 1. Migraciones | Aplicadas `20261106_093606_fiestas_aviso` y `20261106_095011_final` |
+| Paso 3 del documento | `/rss.xml 200 30 noticias`, `/util 200 con el tiempo` y `/cookies 200 sin GA4` |
+| 2. Fiestas: solo comprobar | Formato: catálogo con fechas. Se crearían 4: Santa Bárbara, San Antón de Carcarosa, Santa Apolonia de El Pedroso y Antroxu de Moreda. Se actualizarían 43. Fechas: 1 confirmada, 21 por regla y 25 pendientes. Eventos no importados: 29. Sin errores |
+| 2. Fiestas: importación | «Creadas 4 fiestas como borrador», «Actualizadas 43» e «IMPORTACIÓN TERMINADA». Al repetirla: «Creadas 0», sin duplicados |
+| 2. Fiestas que ahora son eventos | Mercáu de Seruenda, Certamen del Quesu Afuega'l Pitu y Mercao de Otoño: listadas y sin tocar, en borrador |
+| 2. Fiestas: estado | Hay 50 en total, **ninguna publicada**. En la última versión, que es la que ve el CMS: 1 confirmada, 21 por regla y 28 pendientes. Las 47 importadas tienen fuente y fecha de consulta. La tabla principal conserva los datos anteriores, porque Payload guarda los cambios de un borrador solo en sus versiones |
+| Servicios: fecha de comprobación | «Creados 0» y «Completadas 73». Antes la tenían 0 de 73; ahora, 73 de 73 |
+| Boletín de prueba | Creado «Prueba de boletín» (id 1) con la cuenta de administración. Al crearlo tomó 30 noticias de los últimos 7 días. «Enviarme una prueba»: 200, enviada **solo** al correo del administrador (in…@planta14.com). Estado: borrador. Resultado: 0 enviados, 0 fallos y 0 bajas. Hay 0 suscriptores confirmados. **No se usó «Enviar a todos».** El boletín sigue en el CMS |
+| 3. Concejos inactivos | `/morcin` y `/ribera-de-arriba`: título «Morcín» o «Ribera de Arriba» y «Noticias de … en Planta 14». No tienen escudo, «Espacio municipal en Planta 14» ni pestaña «Útil». `/morcin/util` y `/ribera-de-arriba/util` dan 404 |
+| 3. Concejos activos | `/aller`, `/mieres`, `/lena` y `/riosa` conservan su espacio municipal con escudo, la pestaña «Útil» y el resumen compacto al final, entre el 80 y el 90 % de la página. El resumen lleva el tiempo, las farmacias y «Todo lo útil de…»; además, Pajares en Lena y San Isidro en Aller. `/aller/util` tiene 8 cajas (invierno, tiempo, farmacias, servicios, patrimonio, rutas, subvenciones y empleo) y `/mieres/util` tiene 7 |
+| 4. `/util` | Franja del tiempo y filas compactas de Mieres, Lena, Aller y Riosa. Morcín y Ribera de Arriba enlazan a su página; ningún enlace va a su `#util` |
+| 5. RSS | Responde 200 y es XML válido, con 30 entradas. Está enlazado en el `<head>` de la portada y de las noticias |
+| 5. Legales | `/privacidad` y `/cookies`: su única tabla está dentro de `.legal-table` y no mencionan Google, Analytics ni GA4 |
+| 5. Terceros en la portada | Sin Google ni gtag, sin teselas de mapa y sin cookies. Las imágenes vienen del bucket propio de IONOS (`planta14-imagenes-b11`) |
+| 6. Páginas | Responden 200: la portada, una noticia, `/opinion`, `/util`, `/aller`, `/aller/util`, `/mieres`, `/mieres/util`, `/fiestas`, `/agenda`, `/contacto`, `/principios`, `/privacidad`, `/cookies`, `/rss.xml` y `/api/health` |
+
+**Memoria de la compilación**, medida cada segundo, con 493 muestras. Registro: `/srv/planta14/state/memoria-compilacion-d7d348f.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.108 MiB al empezar; **máximo 2.419 MiB** |
+| Swap (4.095 MiB en total) | 64 MiB al empezar; **máximo 514 MiB**; 67 MiB al terminar |
+| RSS máximo de los procesos `node` de la compilación | 646 MiB |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:**
+- las comprobaciones en el navegador de `docs/INSTALAR-V2-FINAL.md`;
+- que llegue el correo de prueba del boletín y se vea bien;
+- que la redacción decida qué hacer con las 3 fiestas que ahora son eventos y revise las fechas «Por regla» y «Pendiente»;
+- los textos legales provisionales.
 
 ### Actualización a a66deb2: pulido de «Útil», pie, cabecera y cartas desactivadas (5 de noviembre de 2026)
 
