@@ -117,33 +117,44 @@ bash infra/deploy/deploy.sh --env-file infra/.env.production d7d348fcb9f873307b9
 
 La migración nueva solo **añade** columnas, una tabla de ajustes, un tipo de pendiente («sugerencia») y el concejo oculto Caudal, que la versión anterior no usa: no hace falta deshacerla. Si se deshiciera, se borran antes los pendientes de tipo sugerencia; Caudal se queda (puede tener noticias o fiestas). Los enlaces con `?pestana=` siguen abriendo el panel en la versión anterior (sin pestañas).
 
-## Qué mirar en el navegador
+## Comprobaciones después del despliegue
 
-En el ordenador (1440 y 1024 px), la tableta (768) y el móvil (390), sin barra de desplazamiento horizontal:
+**5. Desde el servidor** (sigue en `/srv/planta14/app`). Una sola orden que consulta la web por dentro y resume lo que debe salir:
 
-- **`/mieres/panel` con una cuenta municipal de Mieres** (o la de otro concejo activo):
-  - al entrar, la pestaña «Publicar»; arriba, las seis pestañas (en el móvil, en una fila que se desliza);
-  - en «Publicar», la casilla de los derechos de la imagen, pequeña y con el texto al lado;
-  - «Mis publicaciones»: una línea por publicación, 10 por página, los filtros por tipo y estado; «Editar» la abre en «Publicar»;
-  - «Útil» y «Sugerencias»: casillas en dos columnas (una en el móvil) y el botón a la vista;
-  - «Directorio»: buscador, «Añadir servicio» abre el formulario; «Editar» lo abre en su fila;
-  - «Visitas»: total, una fila de barras, CSV y PDF;
-  - al pie, «Condiciones de uso del espacio municipal» y sin el bloque del boletín;
-  - recarga la página en cada pestaña: se queda en la misma.
-- **`/mieres`, `/aller`, `/lena`:** los escudos, de la misma altura.
-- **`/aller/util`:** el tiempo con iconos, dos días por fila.
-- **`/morcin`:** la raya bajo el título, de lado a lado.
-- **Portada:** las casillas del boletín verde, pequeñas y con su texto al lado; los concejos de dos en dos.
-- **Pie de cualquier página:** sin «Condiciones de las cuentas municipales»; «Elegir concejos» abre casillas pequeñas.
-- **CMS con la cuenta de Andrés o de Juanfran:**
-  - en el inicio, debajo de los accesos, «Pendiente de revisar» con lo de sus concejos y sus botones;
-  - en `/cms/bandeja`, «De tus concejos», «Del resto de concejos», «Resuelto recientemente» y «Publicado por los ayuntamientos»;
-  - en tu cuenta (arriba a la derecha), «Avisos y resumen»: resumen diario marcado y «Fuera hasta» vacío.
-- **Formularios públicos:** en `/fiestas/enviar`, el concejo es obligatorio y ofrece «Caudal (varios concejos o toda la comarca)». En el menú no aparece Caudal.
-- **Administración:** en el inicio, «Motivos de rechazo» con los cinco motivos iniciales.
-- **Prueba del aviso** (con una cuenta municipal de prueba de un concejo de Juanfran, si la hay; si no, déjalo para la primera sugerencia real): envía una sugerencia desde su panel; a Juanfran le llega «Pendiente de revisar: Sugerencia de …» con el enlace a la bandeja. Márcala como **Atendida**: aparece en «Resuelto recientemente» con tu nombre y la hora.
-- **Resumen:** al día siguiente, a partir de las 8:00, si hay algo, llega «Planta 14, resumen del día». Para probarlo antes: `migrate npm run cms:resumen`.
-- **`/condiciones-cuentas-municipales`:** se abre igual, pero en el código fuente (Ctrl+U) lleva `<meta name="robots" content="noindex, nofollow">`; no aparece en `/sitemap.xml`.
+```bash
+docker compose -f infra/compose.production.yaml --env-file infra/.env.production exec -T app node -e 'const g=p=>fetch("http://127.0.0.1:3000"+p,{redirect:"manual"}).then(async r=>[r.status,await r.text()]);(async()=>{const [,home]=await g("/");const [cs,ct]=await g("/condiciones-cuentas-municipales");const [,sm]=await g("/sitemap.xml");const [caudal]=await g("/caudal");const [,fe]=await g("/fiestas/enviar");console.log("pie sin condiciones:",!home.includes("condiciones-cuentas-municipales"));console.log("condiciones noindex:",cs,/<meta name="robots" content="noindex, ?nofollow"/.test(ct));console.log("condiciones fuera del sitemap:",!sm.includes("condiciones-cuentas-municipales"));console.log("Caudal oculto (menú, sin página):",!home.includes("href=\"/caudal\""),caudal);console.log("Caudal en el formulario de fiestas:",fe.includes("value=\"caudal\""))})()'
+```
+
+Debe decir `true` en todo, `200 true` en «condiciones noindex» y `404` en «Caudal oculto».
+
+**6. En el navegador.** En el ordenador (1440 y 1024 px) y en el móvil (390 px; en el ordenador vale el modo móvil del navegador, F12), sin barra de desplazamiento horizontal. Para el panel hace falta una cuenta municipal de un concejo activo (Mieres o Lena); si no hay ninguna de prueba, crea una en **Usuarios** (rol municipal y su espacio) y bórrala al terminar.
+
+1. **Pestañas del panel municipal** (`/mieres/panel` o `/lena/panel`):
+   - al entrar, «Publicar»; arriba, **Publicar · Mis publicaciones · Útil · Directorio · Sugerencias · Visitas**; en el móvil, en una sola fila que se desliza con el dedo;
+   - cada pestaña cambia la dirección (`?pestana=…`) y, al recargar, se queda en la misma;
+   - «Mis publicaciones»: una línea por publicación, 10 por página, filtros por tipo y estado; «Editar» la abre en «Publicar»;
+   - «Directorio»: buscador; el formulario solo se abre con «Añadir servicio»; «Editar» lo abre en su fila;
+   - «Visitas»: el total, una fila de barras, CSV y PDF;
+   - al pie del panel, «Condiciones de uso del espacio municipal» y **sin** el bloque del boletín.
+2. **Casillas con su tamaño normal** (ordenador y móvil): en las pestañas **Útil** y **Sugerencias** (buzón), cada casilla es pequeña (como la de un formulario normal, no una barra a todo el ancho) y su texto va a su lado, en la misma fila; dos columnas en el ordenador y una en el móvil; el botón «Guardar» / «Enviar la sugerencia» se ve sin buscarlo. Igual en «Publicar» (casilla de derechos de la imagen), en el boletín verde de la portada y en «Elegir concejos» del pie.
+3. **Bandeja `/cms/bandeja`** (con la cuenta de Andrés o de Juanfran): «De tus concejos», «Del resto de concejos», «Resuelto recientemente» y «Publicado por los ayuntamientos». En el inicio del CMS, debajo de los accesos, el bloque «Pendiente de revisar». En tu cuenta (arriba a la derecha), «Avisos y resumen» con el resumen diario marcado y «Fuera hasta» vacío. Con la cuenta de administración, en el inicio, «Motivos de rechazo» con los cinco motivos.
+4. **Concejo «Caudal» oculto:** no aparece en el menú de concejos ni en la portada; `/caudal` da «no encontrada»; en `/fiestas/enviar` el concejo es obligatorio y ofrece «Caudal (varios concejos o toda la comarca)»; en el CMS, al crear una noticia, «Caudal» está en la lista de concejos.
+5. **«Condiciones de uso del espacio municipal» fuera del pie público:** en el pie de la portada y de cualquier página no hay ningún enlace a las condiciones; solo en la entrada al panel y en el panel. La página se abre igual (lo comprueba el paso 5).
+6. **Escudos del mismo tamaño:** en `/mieres`, `/aller` y `/lena`, el escudo de la cabecera tiene la misma altura en los tres (ninguno más grande), sin deformarse; también en el móvil.
+7. **Iconos del tiempo en `/[concejo]/util`** (`/aller/util`, `/lena/util`): la caja del tiempo lleva un icono por día (sol, nubes, lluvia…), con máxima y mínima, dos días por fila, como la franja de `/util`. Si AEMET no ha respondido todavía, sale «Consultando…»: vuelve a mirarlo en unos minutos.
+8. **Raya del título de Morcín:** en `/morcin`, la raya bajo «Morcín» va de lado a lado del contenido (no a media anchura).
+
+**7. Aviso y resumen** (cuando haya una sugerencia o una fiesta enviada real, o con una cuenta municipal de prueba de un concejo de Juanfran): al enviar una sugerencia, a Juanfran le llega «Pendiente de revisar: Sugerencia de …» con el enlace a la bandeja; márcala como **Atendida** y aparece en «Resuelto recientemente» con tu nombre y la hora. El resumen diario llega a partir de las 8:00 si hay algo. Para probarlo antes, en `/srv/planta14/app` (la imagen recién desplegada):
+
+```bash
+migrate() { APP_IMAGE="planta14-app:$(git rev-parse HEAD | cut -c1-12)" docker compose -f infra/compose.production.yaml --env-file infra/.env.production --profile migrate run --rm -T migrate "$@"; }
+```
+
+```bash
+migrate npm run cms:resumen
+```
+
+Debe terminar en «RESUMEN ENVIADO A …» o «NADA QUE ENVIAR».
 
 ## Resultados de la batería completa
 

@@ -34,8 +34,6 @@ export const NewsroomSettings: GlobalConfig = {
     { name: 'rejectionReasons', label: 'Motivos de rechazo', type: 'array', labels: { singular: 'Motivo', plural: 'Motivos' },
       defaultValue: DEFAULT_REJECTION_REASONS.map(reason => ({ reason })),
       fields: [{ name: 'reason', label: 'Motivo', type: 'text', required: true, maxLength: 120 }] },
-    // Día (AAAA-MM-DD, Madrid) del último resumen diario enviado: evita repetirlo si el servidor se reinicia.
-    { name: 'digestSentDay', type: 'text', access: { update: () => false }, admin: { hidden: true } },
   ],
 };
 
@@ -234,12 +232,21 @@ export function ensureDigestTicker() {
  * Lo llama cada 5 minutos el temporizador del servidor (ensureDigestTicker): a partir de las 8:00 (Madrid), una vez al día. Si el
  * servidor estaba parado a las 8:00, sale al arrancar. El día enviado queda guardado para no repetirlo.
  */
+/** Clave del día del último resumen enviado en external_cache. */
+export const DIGEST_KEY = 'newsroom:resumen-diario';
 export async function dailyDigestTick(payload: Payload, now = new Date()) {
   const hour = Number(process.env.NEWSROOM_DIGEST_HOUR || 8);
   if (madridHour(now) < hour) return null;
   const day = madridDay(now);
-  const settings = await payload.findGlobal({ slug: 'newsroom-settings', depth: 0, overrideAccess: true }).catch(() => null) as { digestSentDay?: string | null } | null;
-  if (settings?.digestSentDay === day) return null;
-  await payload.updateGlobal({ slug: 'newsroom-settings', overrideAccess: true, data: { digestSentDay: day } as never });
+  // Reserva atómica del día en la tabla de estado de la web en marcha (external_cache, como la caché de «Útil»), no en
+  // los ajustes editoriales: solo el primero que la consigue envía, aunque haya reinicios o varios procesos.
+  const { sql } = await import('@payloadcms/db-postgres');
+  const db = payload.db as unknown as { drizzle: { execute: (query: unknown) => Promise<{ rows: unknown[] }> } };
+  const claimed = await db.drizzle.execute(sql`INSERT INTO external_cache (key, value, fetched_at, checked_at, attempts)
+    VALUES (${DIGEST_KEY}, ${JSON.stringify({ day })}::jsonb, now(), now(), 0)
+    ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, fetched_at = now(), checked_at = now()
+    WHERE external_cache.value->>'day' IS DISTINCT FROM ${day}
+    RETURNING key`);
+  if (!claimed.rows.length) return null;
   return sendDailyDigests(payload, now);
 }

@@ -2101,7 +2101,6 @@ export interface NewsroomSetting {
         id?: string | null;
       }[]
     | null;
-  digestSentDay?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2192,7 +2191,6 @@ export interface NewsroomSettingsSelect<T extends boolean = true> {
         reason?: T;
         id?: T;
       };
-  digestSentDay?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

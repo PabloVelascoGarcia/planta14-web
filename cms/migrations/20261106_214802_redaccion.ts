@@ -1,6 +1,6 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
-// Redacción: bandeja «Pendiente de revisar» (concejo, decisión, quién y cuándo; sugerencias), motivos de rechazo, resumen diario y «Fuera hasta» en el perfil, y el concejo oculto «Caudal» para lo comarcal.
+// Redacción: bandeja «Pendiente de revisar» (concejo, decisión, quién y cuándo; sugerencias), motivos de rechazo, resumen diario y «Fuera hasta» en el perfil, y el concejo oculto «Caudal» para lo comarcal. El día del último resumen enviado se guarda en external_cache (estado de la web en marcha), no aquí.
 
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -15,7 +15,6 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   
   CREATE TABLE "newsroom_settings" (
   	"id" serial PRIMARY KEY NOT NULL,
-  	"digest_sent_day" varchar,
   	"updated_at" timestamp(3) with time zone,
   	"created_at" timestamp(3) with time zone
   );

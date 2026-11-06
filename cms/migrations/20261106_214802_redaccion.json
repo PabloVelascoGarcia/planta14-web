@@ -10658,12 +10658,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "digest_sent_day": {
-          "name": "digest_sent_day",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -11140,6 +11134,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "4af319f3-ce58-4f00-8430-0f3fd31ead63",
+  "id": "0d60010a-753c-43ce-af02-9e9c753ca5df",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
