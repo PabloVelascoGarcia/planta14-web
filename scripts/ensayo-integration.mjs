@@ -252,7 +252,8 @@ try {
   assert.ok(retireAudit.reason.includes(path.basename(dump)) && retireAudit.userEmail === admin.email, 'audit records who and the backup');
   assert.ok((await all('audit-log', { and: [{ action: { equals: 'delete' } }, { targetCollection: { equals: 'articles' } }] })).length >= articulos.length - 2, 'each deletion audited');
   const mieresAfter = await page(`${web}/mieres`);
-  assert.ok(mieresAfter.includes('El concejo en Planta 14') && !mieresAfter.includes('Ensayo:'), 'Mieres back to inactive, no test content');
+  // Inactivo: la página es la del periódico («Noticias de Mieres en Planta 14»), sin contenido del ensayo.
+  assert.ok(mieresAfter.includes('data-town-news="mieres"') && mieresAfter.includes('Noticias de Mieres en Planta 14') && !mieresAfter.includes('Ensayo:'), 'Mieres back to inactive, no test content');
   assert.equal((await fetch(`${web}/noticia/${loaded.find(a => a.legacyID === 'p14-noticia-01').slug}`)).status, 404);
   assert.equal((await page(`${web}/noticia/bustiello-la-vida-alrededor-de-la-mina`)).includes('Bustiello'), true);
   passed('after retiring only the definitive reports, previous content and content created later remain; photos still in use kept, the rest and their public copies deleted; test-only authors deleted; spaces restored; audit with the backup name');

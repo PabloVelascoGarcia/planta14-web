@@ -152,9 +152,12 @@ try {
     // The agenda list is compared elsewhere: with real content it shows upcoming events sorted by date (and the
     // general agenda), while the demo keeps its fixed sample order (scripts/ensayo-integration.mjs).
     const withoutAgenda = html => html.replace(/<div class="divide-y divide-coal-900\/15 border-y border-coal-900\/15">[\s\S]*?<\/article><\/div>/, '<div class="agenda"></div>');
-    // La sección «Útil» de la página del concejo solo existe con contenido real (sus fuentes usan la caché de la base de datos).
-    const withoutUtil = html => html.replace(/<a href="#util" class="municipal-util-link">[\s\S]*?<\/a>/, '').replace(/<section id="util"[\s\S]*?(?=<div class="municipal-bottom-note">)/, '');
-    let expected = mainContent(withoutAgenda(withoutDemoOnly(await demo.text()))); const actual = mainContent(withoutAgenda(withoutUtil(await cms.text())));
+    // La sección «Útil» de la página del concejo (y su pestaña) solo existe con contenido real (sus fuentes usan la caché de la base de datos).
+    const withoutUtil = html => html.replace(/<a data-municipal-util-tab="true" href="\/[a-z-]+\/util">Útil<\/a>/, '').replace(/<a href="#util" class="municipal-util-link">[\s\S]*?<\/a>/, '').replace(/<section id="util"[\s\S]*?(?=<div class="municipal-bottom-note">)/, '');
+    // El número interno de las acciones de servidor de los formularios ($ACTION_REF_n) depende del orden en que se resuelven
+    // las partes de la página, no del contenido: se iguala.
+    const actionIDs = html => html.replace(/\$ACTION_(REF_)?\d+/g, '$ACTION_$1n');
+    let expected = actionIDs(mainContent(withoutAgenda(withoutDemoOnly(await demo.text())))); const actual = actionIDs(mainContent(withoutAgenda(withoutUtil(await cms.text()))));
     // The concejo page's «Contenido de ejemplo» label belongs to the demo only (CONTENT_SOURCE=demo).
     const label = '<span class="municipal-example">Contenido de ejemplo</span>';
     if (/^\/(lena|mieres|aller|morcin|riosa|ribera-de-arriba)$/.test(route)) {

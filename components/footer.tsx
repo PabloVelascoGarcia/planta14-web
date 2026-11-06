@@ -23,7 +23,7 @@ export function Footer({ motto = "Orgullo de historia. Mirada al futuro", whatsa
           <p className="font-serif text-4xl font-black">Planta 14</p>
           <p className="text-sm leading-6 text-paper/80" data-motto="pie">{motto}</p>
         </div>
-        {demo ? <p className="mt-3 text-sm">Textos e imágenes utilizados únicamente con fines de demostración. No se publican.</p> : null}
+        {demo ? <p className="mt-3">Textos e imágenes utilizados únicamente con fines de demostración. No se publican.</p> : null}
       </div>
       <div className="container-p14 grid items-start gap-8 py-8 md:grid-cols-2 lg:grid-cols-[1fr_0.8fr_1.3fr]">
         <nav aria-labelledby="pie-proyecto" className="text-sm" data-footer-col="proyecto">
