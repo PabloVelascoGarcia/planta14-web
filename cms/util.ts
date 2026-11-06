@@ -173,6 +173,8 @@ export const MunicipalServices: CollectionConfig = {
     { name: 'hours', label: 'Horario', type: 'textarea', maxLength: 500, admin: { description: 'Hasta 500 caracteres.' } },
     { name: 'notes', label: 'Observaciones', type: 'textarea', maxLength: 600 },
     { name: 'sourceUrl', label: 'Fuente', type: 'text', maxLength: 300, admin: { description: 'Página oficial de la que sale el dato.' } },
+    { name: 'checkedAt', label: 'Fecha de comprobación', type: 'text', maxLength: 10, validate: (value: unknown) => !value || /^\d{4}-\d{2}-\d{2}$/.test(String(value)) || 'Escribe la fecha como AAAA-MM-DD',
+      admin: { description: 'Día en que se comprobó el dato en la fuente (AAAA-MM-DD). Sale junto a la fuente: «comprobado el 04/11/2026». Sin fuente o sin fecha: «Fuente pendiente de comprobar».' } },
     { name: 'doubts', label: 'Dudas pendientes (no se publica)', type: 'textarea', access: editorialOnly },
     { name: 'externalID', label: 'Identificador de importación', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true } },
     { name: 'order', label: 'Orden', type: 'number', defaultValue: 100, admin: { position: 'sidebar', description: 'Los números más bajos salen antes dentro de su tipo.' } },

@@ -32,9 +32,8 @@ x-app-env: &app-env
   PUBLIC_MEDIA_PREFIX: ${PUBLIC_MEDIA_PREFIX:-public}
   PUBLIC_MEDIA_CACHE_CONTROL: ${PUBLIC_MEDIA_CACHE_CONTROL:-public, max-age=86400}
   PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS: ${PUBLIC_MEDIA_ORPHAN_GRACE_SECONDS:-600}
-  # Lanzamiento: indexación solo con SITE_INDEXABLE=true (staging: nunca). GA4 solo tras consentimiento.
+  # Lanzamiento: indexación solo con SITE_INDEXABLE=true (staging: nunca).
   SITE_INDEXABLE: ${SITE_INDEXABLE:-false}
-  GA4_MEASUREMENT_ID: ${GA4_MEASUREMENT_ID:-}
   # Gancho de purga del CDN: desactivado hasta contratar proveedor.
   CDN_PURGE_ENABLED: ${CDN_PURGE_ENABLED:-false}
   CDN_PURGE_URL: ${CDN_PURGE_URL:-}

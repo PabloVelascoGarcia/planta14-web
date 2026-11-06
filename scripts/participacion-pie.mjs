@@ -58,7 +58,7 @@ export async function run(ctx) {
     await tab.goto(`${web}/`, { waitUntil: 'networkidle' });
     const result = await tab.evaluate(() => {
       const box = sel => { const r = document.querySelector(sel).getBoundingClientRect(); return { x: Math.round(r.left), y: Math.round(r.top + window.scrollY), w: Math.round(r.width) }; };
-      const cols = ['planta14', 'participa', 'proyecto', 'boletin'].map(c => box(`[data-footer-col="${c}"]`));
+      const cols = ['planta14', 'proyecto', 'participa', 'boletin'].map(c => box(`[data-footer-col="${c}"]`));
       const footer = document.querySelector('[data-site-footer]');
       const small = [];
       // Separación entre enlaces seguidos de una lista del pie (de un enlace al siguiente).
@@ -89,8 +89,11 @@ export async function run(ctx) {
   };
   const desktop = await layout(1440, 900), tablet = await layout(820, 1180), mobile = await layout(390, 844);
   const sameRow = (a, b) => Math.abs(a.y - b.y) < 4;
-  assert.ok(desktop.cols.every(c => sameRow(c, desktop.cols[0])) && new Set(desktop.cols.map(c => c.x)).size === 4, `desktop: four columns ${JSON.stringify(desktop.cols)}`);
-  assert.ok(sameRow(tablet.cols[0], tablet.cols[1]) && sameRow(tablet.cols[2], tablet.cols[3]) && tablet.cols[2].y > tablet.cols[0].y && tablet.cols[0].x === tablet.cols[2].x, `tablet: two columns ${JSON.stringify(tablet.cols)}`);
+  // Ordenador: Planta 14 y el lema en una fila; debajo, Proyecto, Participa y Boletín en la misma fila (alineadas arriba).
+  const [top, proyecto, participa, boletin] = desktop.cols;
+  assert.ok(proyecto.y > top.y && sameRow(proyecto, participa) && sameRow(participa, boletin) && proyecto.x < participa.x && participa.x < boletin.x, `desktop: Planta 14 on top, then three columns ${JSON.stringify(desktop.cols)}`);
+  // Tableta: Proyecto y Participa juntas; el boletín debajo.
+  assert.ok(sameRow(tablet.cols[1], tablet.cols[2]) && tablet.cols[3].y > tablet.cols[1].y && tablet.cols[1].y > tablet.cols[0].y, `tablet: two columns ${JSON.stringify(tablet.cols)}`);
   assert.ok(mobile.cols.every((c, i) => i === 0 || c.y > mobile.cols[i - 1].y) && new Set(mobile.cols.map(c => c.x)).size === 1, `mobile: stacked ${JSON.stringify(mobile.cols)}`);
   assert.deepEqual(mobile.small, [], 'mobile: touch targets of at least 44 px');
   assert.deepEqual(tablet.small, [], 'tablet: touch targets of at least 44 px');

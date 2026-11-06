@@ -364,7 +364,7 @@ Las **cartas de los lectores** siguen este mismo camino (apartado 19).
 **En la web:**
 - **`/fiestas`:** «Este fin de semana» (de viernes a domingo; de lunes a jueves, el siguiente), el **calendario por meses** con las que aún no han terminado y un filtro por concejo. Sin carteles.
 - **Ficha** (`/fiestas/nombre-pueblo-año`): fechas, programa, botones de compartir, la crónica si se enlaza y el **cartel pequeño y enmarcado** junto al programa.
-- **Otros sitios:** también salen en la **agenda**, en la barra lateral de la **página del concejo** y, en la **portada**, en un bloque de texto «De fiesta este fin de semana» (si ese fin de semana no hay ninguna, «Próximas fiestas»). Hay un enlace «Fiestas» en el menú.
+- **Otros sitios:** también salen en la **agenda** y, como «Fiestas esta semana», en la **portada** y en la **página del concejo** (apartado 24). Hay un enlace «Fiestas» en el menú.
 
 **En el CMS** (Fiestas → Crear):
 
@@ -410,6 +410,27 @@ npm run cms:fiestas:importar -- fiestas.json
 - **Errores:** primero se revisa todo el archivo; si hay un error, no se importa nada y se dice en qué fiesta está.
 - **Repetible:** una fiesta que ya existe (mismo nombre, pueblo y año) no se toca.
 - **En el servidor:** el archivo se pasa por la entrada estándar al contenedor de migraciones. El comando completo está en el documento de la versión.
+
+**Estado de la fecha** (columna y filtro en Fiestas):
+
+| Estado | Qué significa | ¿Se publica? |
+|---|---|---|
+| Confirmada | Fechas comprobadas para esta edición | Sí, al pulsar **Publicar** |
+| Por regla, sin confirmar | La fecha que da la costumbre (por ejemplo, «24 de junio»), sin programa de la edición | No: confírmala antes |
+| Fecha pendiente | Sin fecha | No |
+| Fecha orientativa (2025) | Solo la referencia de 2025 | No |
+
+- **Despublicar, guardar como borrador y cambiar el estado de la fecha** funcionan siempre. La comprobación «Para publicar la fiesta, confirma sus fechas…» solo salta al **publicar**.
+- **Si una fiesta publicada pasa a «Pendiente», «Orientativa» o «Por regla» y se guarda,** se despublica sola. En la barra lateral queda el **Aviso** «Se ha despublicado sola…». Para volver a publicarla, pon «Confirmada» con sus fechas y pulsa **Publicar cambios**.
+- **Fuente de la fecha y fecha de consulta:** de dónde sale la fecha (y la regla). Solo las ve la redacción.
+
+**Catálogo con fechas** (`contenido-ensayo/fiestas-caudal-fechas.json`):
+- Se importa con el mismo comando, primero con `--solo-comprobar`.
+- Entran solo las de tipo «fiesta»; los eventos no se importan. Todas como **borrador**.
+- **Las que ya existen** (por su identificador) **no se duplican**:
+  - si siguen en borrador, se actualizan **solo** sus fechas, estado de la fecha, fuente y fecha de consulta (lo demás que hayas editado no se toca);
+  - si ya están publicadas, solo la fuente y la fecha de consulta.
+- Los comandos completos están en el documento de la versión.
 
 ## 16. Boletín: suscriptores
 
@@ -529,7 +550,7 @@ En su panel, cada ayuntamiento tiene un **Buzón de sugerencias**:
 
 ## 22. Sección «Útil»
 
-Está en **`/util`** (enlace «Útil» en el menú) y al final de la página de cada concejo (`/<concejo>#util`). Cada dato automático lleva su **fuente** y la **hora** a la que se consultó.
+Está en **`/util`** (enlace «Útil» en el menú) y en **`/<concejo>/util`** (pestaña «Útil» de cada espacio municipal activo). La página del concejo lleva al final un resumen compacto (apartado 25). Cada dato automático lleva su **fuente** y la **hora** a la que se consultó.
 
 **Datos automáticos.** Son cuatro fuentes, con permiso de reutilización comprobado:
 
@@ -625,14 +646,15 @@ Los tres se cambian en el CMS, en la barra lateral, sección **Globales**. La re
 
 | | Concejo **activo** | Concejo **no activo** |
 |---|---|---|
-| Página del concejo (`/<concejo>`) | Todo: foto de cabecera, avisos, agenda municipal, tablón, ayudas, tarjetas fijas, «Útil» y «Fiestas esta semana» | Solo la cabecera, las **noticias de Planta 14** de ese concejo y «Fiestas esta semana» |
-| «Útil» del concejo (`/<concejo>/util/…`, fichas de patrimonio y rutas) | Sí, salvo lo que haya ocultado (apartado 22) | **No**: esas páginas dan «no encontrada» (404) y no están en el sitemap |
-| Bloque del concejo en `/util` | Sí | No |
+| Página del concejo (`/<concejo>`) | El espacio del ayuntamiento, con su identidad: foto de cabecera, escudo y lema, avisos, agenda municipal, tablón, ayudas, tarjetas fijas, el resumen de «Útil» y «Fiestas esta semana» | **Una página del periódico**: título («Morcín»), «Noticias de Morcín en Planta 14» y, si las hay, «Fiestas esta semana». Sin escudo, sin rótulos de espacio municipal ni lemas, con la cabecera de Planta 14 |
+| «Útil» del concejo (`/<concejo>/util`, sus «Ver todos» y las fichas de patrimonio y rutas) | Sí, salvo lo que haya ocultado (apartado 22) | **No**: esas páginas dan «no encontrada» (404) y no están en el sitemap |
+| Fila del concejo en `/util` | Sí | No (su nombre, arriba, enlaza a su página) |
+| «Tu ayuntamiento, aquí» en la portada | Sale si hay **algún** concejo activo | Si no hay ninguno activo, la sección no sale |
 | Agenda municipal en `/agenda` | Sí | No |
 | Panel del ayuntamiento | Sí | No se abre |
 | Fiestas | Sí: son contenido de la redacción | Sí, igual |
 
-**`/util` siempre** muestra lo regional: el tiempo de los seis concejos en una franja bajo el título (AEMET), Pajares (DGT), las ayudas y el empleo generales (BDNS y BOE: Principado, IDEPA y Estado) y el enlace de farmacias. Debajo, un bloque por cada concejo **activo**, con sus listas y el empleo de su ayuntamiento.
+**`/util` siempre** muestra lo regional: el tiempo de los seis concejos en una franja bajo el título (AEMET), Pajares (DGT), las ayudas y el empleo generales (BDNS y BOE: Principado, IDEPA y Estado) y el enlace de farmacias. Debajo, una fila compacta por cada concejo **activo**, con sus accesos y su recuento («Servicios 18 · Patrimonio 8…») y «Todo lo útil de…».
 
 **Cajas de «Útil»:** cada caja enseña como mucho **5** elementos (primero los más completos: con foto, con recorrido o mapa) y debajo **«Ver todos (n)»**, que lleva a la lista completa de ese tipo en ese concejo, con búsqueda y filtro por tipo:
 - `/<concejo>/util/servicios`, `/<concejo>/util/patrimonio`, `/<concejo>/util/rutas`, `/<concejo>/util/subvenciones` y `/<concejo>/util/empleo`;
@@ -643,3 +665,38 @@ Los tres se cambian en el CMS, en la barra lateral, sección **Globales**. La re
 - Solo fiestas **publicadas** y con **fecha confirmada**: nunca borradores ni «Fecha pendiente».
 - Los días se cambian en CMS → Globales → **Fiestas en portada** (de 0 a 30). Lo puede cambiar la redacción.
 - Las fiestas siguen en `/fiestas` y en la agenda como siempre.
+
+
+## 25. «Útil» de cada concejo
+
+- **Página del concejo** (`/<concejo>`), al final, un **resumen compacto**:
+  - el tiempo de hoy y de mañana, con iconos;
+  - el puerto de Pajares en Lena y el de San Isidro en Aller;
+  - las farmacias de guardia;
+  - una fila de accesos con recuento (Servicios 18 · Patrimonio 8 · Rutas 7 · Ayudas 1 · Empleo 1);
+  - «Todo lo útil de [concejo]».
+- **`/<concejo>/util`:** todo lo útil del concejo, dentro de su espacio municipal (con su cabecera y su pestaña **Útil**): el tiempo, puertos, farmacias, servicios, patrimonio, rutas, ayudas y empleo, en cajas con «Ver todos». Da 404 si el concejo no está activo.
+- Lo que el ayuntamiento oculte desde su panel no sale en ninguno de los dos sitios.
+- **Servicios municipales:** cada uno enseña su **fuente** y la **fecha de comprobación** («Fuente: aytolena.es · comprobado el 04/11/2026»). Sin fuente, «Fuente pendiente de comprobar». La fecha se edita en el campo **Fecha de comprobación** (AAAA-MM-DD). Al repetir `npm run cms:servicios:importar` se rellena en los que no la tenían.
+
+## 26. Enviar el boletín (administración y redacción)
+
+1. CMS → **Boletines** → **Crear**. Escribe el **asunto** y, si quieres, una **entradilla**.
+2. **Noticias:** al crearlo salen las publicadas en los últimos 7 días. Quita o añade las que quieras; solo se pueden elegir noticias publicadas. Pulsa **Guardar**.
+3. Pulsa **Enviarme una prueba**, en la barra lateral: te llega solo a ti. Revísala en el móvil y en el ordenador.
+4. Si está bien, pulsa **Enviar a todos** y confirma. Si cambias algo después de la prueba, guarda y envíate otra: sin prueba de la versión guardada, no deja enviar.
+5. El envío va por lotes, en segundo plano. Recarga la página para ver el **Resultado**: enviados, fallos, bajas durante el envío y suscriptores sin noticias de sus concejos. El **Registro** muestra los fallos, con el correo enmascarado.
+
+**A quién le llega:**
+- solo a los suscriptores **confirmados**;
+- cada uno recibe las noticias de **sus concejos** (todas, si no eligió ninguno);
+- si no hay ninguna de sus concejos, ese boletín no le llega.
+
+Cada correo lleva la **baja en un clic** y quién edita Planta 14.
+
+**Límites:** se envía por avisos@planta14.com, en lotes de 20 correos, con 1 segundo entre correos y 2 minutos entre lotes (unos 480 por hora). Se cambian con `NEWSLETTER_BATCH_SIZE`, `NEWSLETTER_EMAIL_PAUSE_MS` y `NEWSLETTER_BATCH_PAUSE_SECONDS` en el `.env`.
+
+**Si el servidor se reinicia a mitad,** el boletín queda «Enviando». Pulsa otra vez **Enviar a todos**: sigue sin repetir a quien ya lo recibió.
+
+**Un boletín enviado no se puede reenviar ni cambiar.** Para otro envío, crea uno nuevo.
+

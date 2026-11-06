@@ -14,6 +14,7 @@ import { BreakingNews } from './cms/breaking-news';
 import { Letters } from './cms/letters';
 import { Suggestions } from './cms/suggestions';
 import { Heritage, Routes, MunicipalServices, UtilVisibility } from './cms/util';
+import { Newsletters } from './cms/newsletters';
 import { FiestasSettings, FooterSettings, LettersSettings, Mottos, Principles } from './cms/site-globals';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { smtpOptions, testOutboxAdapter } from './cms/email';
@@ -37,7 +38,7 @@ export default buildConfig({
     // Estadísticas propias (solo administración): /cms/estadisticas.
     views: { estadisticas: { Component: '/components/stats-admin-view#StatsAdminView', path: '/estadisticas' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
-  collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
+  collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, Newsletters, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   globals: [BreakingNews, Mottos, FooterSettings, Principles, FiestasSettings, LettersSettings],
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({

@@ -17,7 +17,7 @@ function ContentCard({ item, space, compact = false, demo, photo = true }: { ite
   const kind = sections.find(s => s.id === item.type)?.label;
   return <article className={`municipal-content-card ${compact ? "is-compact" : ""}`}>
     <div className="municipal-card-meta"><span>{space.name}</span><span>{kind} · {originLabel(item, demo)}</span></div>
-    <details><summary><h3>{item.title}</h3><span aria-hidden="true">↗</span></summary>
+    <details><summary><h3>{item.title}</h3><span className="details-toggle" aria-hidden="true" data-details-toggle /></summary>
       <p className="municipal-detail-text">{item.body}</p>
       {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="municipal-read-link">Consultar la referencia oficial ↗</a> : null}
       {item.attachments.map(file => <a key={file.url} href={file.url} className="editorial-link">{file.title} · PDF ↗</a>)}
@@ -44,9 +44,10 @@ function assetCredits(identity?: MunicipalIdentity) {
   if (!parts.length) return null;
   return <p className="aller-asset-credit">{parts.flatMap((part, i) => i ? [" · ", part] : [part])}. Fotografía de cabecera adaptada en tamaño y encuadre; colores de presentación inspirados en el paisaje.</p>;
 }
-export function MunicipalPage({ space, active, contents, articles, fiestas = [], demo = false, util = null }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[]; fiestas?: Fiesta[]; demo?: boolean; util?: ReactNode }) {
+export function MunicipalPage({ space, active, contents, articles, fiestas = [], demo = false, util = null, initialSection = "news" }: { space: MunicipalSpace; active: boolean; contents: MunicipalContent[]; articles: Article[]; fiestas?: Fiesta[]; demo?: boolean; util?: ReactNode; initialSection?: string }) {
   const identity = space.identity;
-  const [section, setSection] = useState<string>("news");
+  // Sección inicial desde ?seccion= (las pestañas de /[concejo]/util enlazan aquí).
+  const [section, setSection] = useState<string>(sections.some(s => s.id === initialSection) ? initialSection : "news");
   const [browserItems, setBrowserItems] = useState<MunicipalContent[]>([]);
   // Demo only: items published in this browser (localStorage) and a fixed date until hydration. With real content
   // the server already filters expired items (app/(frontend)/[municipality]/page.tsx).
@@ -64,9 +65,9 @@ export function MunicipalPage({ space, active, contents, articles, fiestas = [],
   return <div className={`municipal-shell ${hasTheme(identity) ? "aller-theme" : ""}`} style={identityStyle(identity)}>
     <MunicipalMasthead space={space} />
     {identity?.image && active ? <figure className="aller-hero"><img src={identity.image} alt={identity.imageAlt ?? ""} width={1800} height={715} fetchPriority="high" /><div className="aller-hero-shade" /><div className="container-p14 aller-hero-copy"><p className="municipal-kicker">Un concejo. Mil formas de vivirlo.</p>{identity.title ? <h2>{identity.title}</h2> : null}{identity.subtitle ? <p>{identity.subtitle}</p> : null}<a href="#vida-municipal">Descubre tu espacio municipal <span aria-hidden="true">↓</span></a></div>{identity.imageCredit ? <figcaption>{identity.imageSource ? <a href={identity.imageSource} target="_blank" rel="noopener noreferrer">{identity.imageCredit}</a> : identity.imageCredit}</figcaption> : null}</figure> : null}
-    {active ? <nav className="municipal-section-nav" aria-label="Secciones municipales"><div className="container-p14">{sections.map(s => <button key={s.id} onClick={() => setSection(s.id)} aria-current={section === s.id ? "page" : undefined}>{s.label}</button>)}</div></nav> : null}
+    {active ? <nav className="municipal-section-nav" aria-label="Secciones municipales"><div className="container-p14">{sections.map(s => <button key={s.id} onClick={() => setSection(s.id)} aria-current={section === s.id ? "page" : undefined}>{s.label}</button>)}{util ? <Link href={`/${space.id}/util`} data-municipal-util-tab>Útil</Link> : null}</div></nav> : null}
     <div id="vida-municipal" className="container-p14 municipal-page-body">
-      <div className="municipal-introline"><p><span className="municipal-status-dot" />{active ? "Tu espacio de información municipal" : "El concejo en Planta 14"}</p>{demo ? <span className="municipal-example">Contenido de ejemplo</span> : null}{util ? <a href="#util" className="municipal-util-link">Útil: el tiempo, ayudas, empleo… ↓</a> : null}</div>
+      <div className="municipal-introline"><p><span className="municipal-status-dot" />{active ? "Tu espacio de información municipal" : "El concejo en Planta 14"}</p>{demo ? <span className="municipal-example">Contenido de ejemplo</span> : null}{util ? <a href="#util" className="municipal-util-link">Útil: el tiempo, farmacias, servicios… ↓</a> : null}</div>
       {active && notices.length ? <button className="municipal-notice-strip" onClick={() => setSection("notice")}><span className="municipal-notice-icon" aria-hidden="true">!</span><span><small>AVISO DESTACADO</small><strong>{notices[0].title}</strong></span><span aria-hidden="true">Ver aviso ↗</span></button> : null}
       <div className={`municipal-columns${!active && !fiestas.length ? " is-single" : ""}`} data-municipal-active={active ? "true" : "false"}>
         <div className="municipal-main-column">
@@ -89,7 +90,7 @@ export function MunicipalPage({ space, active, contents, articles, fiestas = [],
           {demo ? <section className="municipal-panel-invite"><p className="municipal-kicker">Así de sencillo</p><h2>Tu ayuntamiento<br />tiene la palabra.</h2><p>Escribe un aviso, comprueba cómo queda y publícalo. Sin complicaciones.</p><Link href={`/${space.id}/panel`} className="municipal-cta">Probar el panel <span>↗</span></Link><small>Demostración · Sin registro</small></section> : null}</> : null}
         </aside> : null}
       </div>
-      {util ? <section id="util" className="municipal-util" aria-labelledby="util-title" data-municipal-util><div className="municipal-section-heading"><div><p className="municipal-kicker">Servicio</p><h2 id="util-title">Útil</h2></div><Link href="/util" aria-label="Útil en todas las Cuencas">↗</Link></div>{util}</section> : null}
+      {util ? <section id="util" className="municipal-util" aria-labelledby="util-title" data-municipal-util><div className="municipal-section-heading"><div><p className="municipal-kicker">Servicio</p><h2 id="util-title">Útil</h2></div><Link href={`/${space.id}/util`} aria-label={`Todo lo útil de ${space.name}`}>↗</Link></div>{util}</section> : null}
       <div className="municipal-bottom-note"><span>{active ? "Información municipal y periodismo local, en un mismo lugar." : `${space.name} en Planta 14.`}</span><Link href="/">Volver al periódico ↗</Link></div>
       {assetCredits(identity)}
     </div>

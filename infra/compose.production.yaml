@@ -38,7 +38,6 @@ x-app-env: &app-env
   CDN_PURGE_ENABLED: ${CDN_PURGE_ENABLED:-false}
   CDN_PURGE_URL: ${CDN_PURGE_URL:-}
   CDN_PURGE_TOKEN: ${CDN_PURGE_TOKEN:-}
-  GA4_MEASUREMENT_ID: ${GA4_MEASUREMENT_ID:-}
   MUNICIPAL_NOTICE_EMAIL_ENABLED: ${MUNICIPAL_NOTICE_EMAIL_ENABLED:-false}
   MUNICIPAL_NOTICE_EMAIL_TO: ${MUNICIPAL_NOTICE_EMAIL_TO:-}
   # Sección «Útil»: clave de AEMET OpenData (vacía = sin bloque del tiempo) y cada cuántas horas se refresca la BDNS.

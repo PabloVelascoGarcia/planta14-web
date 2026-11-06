@@ -60,7 +60,7 @@ export async function run(ctx) {
   const section = (await all('sections', { slug: { equals: 'sociedad' } }))[0];
   await payload.create({ collection: 'articles', overrideAccess: true, data: { title: 'Noticia de prueba para la portada', excerpt: 'Entradilla.', body: ['Texto.'], author: author.id, town: mieres.id, section: section.id, _status: 'published' } });
   const home = await page(`${web}/`);
-  const block = home.slice(home.indexOf('data-block="fiestas"'), home.indexOf('id="concejos"'));
+  const block = home.slice(home.indexOf('data-block="fiestas"'), home.indexOf('data-block="opinion"'));
   assert.ok(block.includes('Fiestas esta semana') && block.includes(`href="/fiestas/${sanJuan.slug}"`) && !block.includes(carmen.slug) && !block.includes('<img'), `home: text-only «Fiestas esta semana» block: ${block.slice(0, 600) || home.slice(0, 300)}`);
   assert.ok(lenaPage.includes('Fiestas esta semana') && !(await page(`${web}/mieres`)).includes('data-municipal-fiestas'), 'concejo page: only this week; hidden when there are none');
   // «Fiestas esta semana»: desde N días antes (7 por defecto) hasta el último día; nunca borradores ni «Fecha pendiente».
@@ -71,7 +71,7 @@ export async function run(ctx) {
     'from 7 days before until its last day');
   assert.deepEqual(thisWeek([f('a', shift(day, 3), shift(day, 3))], day, 2), [], 'configurable number of days');
   const lejana = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta lejana', village: 'Ujo', town: mieres.id, dateStatus: 'confirmada', startDate: `${shift(today, 20)}T12:00:00.000Z`, endDate: `${shift(today, 21)}T12:00:00.000Z`, recurring: true, _status: 'published' } });
-  const homeBlock = html => html.slice(html.indexOf('data-block="fiestas"'), html.indexOf('id="concejos"'));
+  const homeBlock = html => html.slice(html.indexOf('data-block="fiestas"'), html.indexOf('data-block="opinion"'));
   assert.ok(!homeBlock(await page(`${web}/`)).includes(lejana.slug), 'in 20 days: not yet with 7 days');
   const settings = body => async cookie => fetch(`${web}/api/cms/globals/fiestas-settings`, { method: 'POST', headers: { Cookie: cookie, 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   assert.equal((await (settings({ daysBefore: 40 }))(await signIn(users.lena.email))).status, 403, 'town halls cannot change it');
@@ -80,7 +80,7 @@ export async function run(ctx) {
   const pendiente = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta sin fecha', village: 'Ujo', town: mieres.id, dateStatus: 'pendiente', recurring: true } });
   const borrador = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta en borrador', village: 'Ujo', town: mieres.id, dateStatus: 'confirmada', startDate: `${today}T12:00:00.000Z`, endDate: `${today}T12:00:00.000Z`, _status: 'draft' } });
   const wider = await page(`${web}/`);
-  const widerBlock = wider.slice(wider.indexOf('data-block="fiestas"'), wider.indexOf('id="concejos"'));
+  const widerBlock = wider.slice(wider.indexOf('data-block="fiestas"'), wider.indexOf('data-block="opinion"'));
   assert.ok(widerBlock.includes(lejana.slug) && !widerBlock.includes(carmen.slug) && !widerBlock.includes('Fiesta sin fecha') && !widerBlock.includes('Fiesta en borrador'), 'with 30 days the one in 20 days enters (El Carmen, in 35, does not); never drafts nor «Fecha pendiente»');
   assert.equal((await (settings({ daysBefore: 7 }))(await signIn(users.editor.email))).status, 200);
   for (const doc of [pendiente, borrador, lejana]) await payload.delete({ collection: 'festivals', id: doc.id, overrideAccess: true });
@@ -240,5 +240,98 @@ export async function run(ctx) {
   const list = await (await fetch(`${web}/api/cms/festivals?where[dateStatus][equals]=pendiente&limit=0&draft=true`, { headers })).json();
   assert.equal(list.totalDocs, sinFecha, 'filterable by «Fecha pendiente»');
   passed(`fiestas catalogue (034b853, ${total} fiestas): converted with --solo-comprobar first (all errors at once), always drafts (--publicar refused), 2025 dates only as «Fecha orientativa (2025)», ${sinFecha} with «Fecha pendiente» (filterable in the CMS), concejo, village, description and sources kept; never public nor in the agenda until a journalist confirms the date; repeatable by id`);
+
+  // Catálogo con fechas (cb90d19, contenido-ensayo/fiestas-caudal-fechas.json): solo las de tipo «fiesta», todas en
+  // borrador; actualiza las existentes por su id sin duplicar (las publicadas solo en fuente y fecha de consulta).
+  {
+    const realDated = spawnSync('git', ['show', 'cb90d19:contenido-ensayo/fiestas-caudal-fechas.json'], { encoding: 'utf8', maxBuffer: 1 << 24 });
+    const first = catalog.fiestas[0], second = catalog.fiestas[1] ?? catalog.fiestas[0];
+    const dated = realDated.status === 0 ? JSON.parse(realDated.stdout) : { fecha_consulta: '2026-11-05', fiestas: [
+      { ...first, tipo: 'fiesta', fecha_inicio: '2027-06-24', fecha_fin: '2027-06-24', estado_fecha: 'por regla', fuente_fecha: [{ entidad: 'Ayuntamiento', url: 'https://example.org/', regla: '24 de junio' }], fecha_consulta: '2026-11-05' },
+      { ...second, tipo: 'fiesta', fecha_inicio: 'Fecha pendiente', fecha_fin: 'Fecha pendiente', estado_fecha: 'pendiente', fuente_fecha: [], fecha_consulta: '2026-11-05' },
+      { id: 'prueba-nueva', nombre: 'Fiesta nueva', pueblo_o_parroquia: 'Ujo', concejo: 'Mieres', tipo: 'fiesta', fecha_inicio: '2026-12-20', fecha_fin: '2026-12-21', estado_fecha: 'confirmada', fuente_fecha: [{ entidad: 'Ayuntamiento', url: 'https://example.org/b' }], fecha_consulta: '2026-11-05' },
+      { id: 'prueba-evento', nombre: 'Feria', pueblo_o_parroquia: 'Mieres', concejo: 'Mieres', tipo: 'evento', estado_fecha: 'pendiente' },
+    ] };
+    if (realDated.status !== 0) console.log('AVISO: no está el commit cb90d19; se prueba el catálogo con fechas con cuatro registros de ejemplo');
+    const fiestas = dated.fiestas.filter(f => f.tipo === 'fiesta'), eventos = dated.fiestas.filter(f => f.tipo === 'evento');
+    const datedFile = path.join(directory, 'fiestas-caudal-fechas.json');
+    await writeFile(datedFile, JSON.stringify(dated));
+    // Una de las existentes ya está publicada (confirmada por la redacción): sus fechas no deben cambiar.
+    const existingIDs = new Set((await payload.find({ collection: 'festivals', where: { externalID: { exists: true } }, pagination: false, draft: true, overrideAccess: true, depth: 0 })).docs.map(f => f.externalID));
+    const keep = fiestas.find(f => existingIDs.has(f.id));
+    const kept = (await payload.find({ collection: 'festivals', where: { externalID: { equals: keep.id } }, limit: 1, draft: true, overrideAccess: true, depth: 0 })).docs[0];
+    await payload.update({ collection: 'festivals', id: kept.id, overrideAccess: true, data: { dateStatus: 'confirmada', startDate: `${shift(today, 40)}T12:00:00.000Z`, endDate: `${shift(today, 41)}T12:00:00.000Z`, _status: 'published' } });
+    const keptDays = [(await payload.findByID({ collection: 'festivals', id: kept.id, overrideAccess: true })).startDay];
+    const fresh = fiestas.filter(f => !existingIDs.has(f.id)), toUpdate = fiestas.filter(f => existingIDs.has(f.id) && f.id !== keep.id);
+    const tally = list => ({ c: list.filter(f => f.estado_fecha === 'confirmada').length, r: list.filter(f => f.estado_fecha === 'por regla').length, p: list.filter(f => f.estado_fecha === 'pendiente').length });
+    const t = tally([...fresh, ...toUpdate]);
+    const beforeDated = (await payload.count({ collection: 'festivals', overrideAccess: true })).totalDocs;
+    const dryDated = await run(datedFile, '--solo-comprobar');
+    assert.ok(dryDated.status === 0 && dryDated.out.includes('Formato: catálogo con fechas') && dryDated.out.includes(`Se crearían ${fresh.length} fiestas como borrador`)
+      && dryDated.out.includes(`Se actualizarían ${toUpdate.length} existentes en borrador`) && dryDated.out.includes('Ya publicadas 1')
+      && dryDated.out.includes(`${t.c} confirmadas, ${t.r} por regla y ${t.p} pendientes. Eventos no importados: ${eventos.length}.`), dryDated.out);
+    assert.equal((await payload.count({ collection: 'festivals', overrideAccess: true })).totalDocs, beforeDated, '--solo-comprobar writes nothing');
+    assert.ok((await run(datedFile, '--publicar')).status === 1, 'always drafts');
+    const badDated = path.join(directory, 'fiestas-fechas-mal.json');
+    await writeFile(badDated, JSON.stringify({ fiestas: [{ ...fiestas[0], estado_fecha: 'quizá' }, { ...fiestas[0], id: 'otra', estado_fecha: 'confirmada', fecha_inicio: 'Fecha pendiente' }, { ...fiestas[0], id: 'otra-2', tipo: 'concierto' }] }));
+    const wrongDated = await run(badDated, '--solo-comprobar');
+    assert.ok(wrongDated.status === 1 && wrongDated.out.includes('estado_fecha desconocido «quizá»') && wrongDated.out.includes('hace falta fecha_inicio') && wrongDated.out.includes('tipo desconocido «concierto»'), wrongDated.out);
+    const byIDBefore = Object.fromEntries((await payload.find({ collection: 'festivals', where: { externalID: { exists: true } }, pagination: false, draft: true, overrideAccess: true, depth: 0 })).docs.map(f => [f.externalID, f.updatedAt]));
+    const realRun = await run(datedFile);
+    assert.ok(realRun.status === 0 && realRun.out.includes(`Creadas ${fresh.length} fiestas como borrador`), realRun.out);
+    const again2 = await run(datedFile);
+    assert.ok(again2.out.includes('Creadas 0 fiestas'), 'repeatable: nothing duplicated');
+    const all = (await payload.find({ collection: 'festivals', where: { externalID: { exists: true } }, pagination: false, draft: true, overrideAccess: true, depth: 0 })).docs;
+    assert.equal(all.length, existingIDs.size + fresh.length, 'existing ones updated by id, new ones created, no duplicates');
+    // Los eventos no se importan; los que ya existían como fiesta (catálogo anterior) no se tocan y se avisa de ellos.
+    const nowEvents = eventos.filter(e => existingIDs.has(e.id));
+    assert.ok(!all.some(f => eventos.some(e => e.id === f.externalID && !existingIDs.has(e.id))), 'events not imported');
+    assert.ok(nowEvents.every(e => byIDBefore[e.id] === all.find(f => f.externalID === e.id)?.updatedAt), 'existing ones that are now events: untouched');
+    if (nowEvents.length) assert.ok(dryDated.out.includes(`Ya existentes que ahora son eventos: ${nowEvents.length} (no se tocan`), dryDated.out);
+    const byID = Object.fromEntries(all.map(f => [f.externalID, f]));
+    const statusOf = { confirmada: 'confirmada', 'por regla': 'por-regla', pendiente: 'pendiente' };
+    for (const f of [...fresh, ...toUpdate]) {
+      const doc = byID[f.id];
+      assert.ok(doc._status === 'draft' && doc.dateStatus === statusOf[f.estado_fecha] && (f.estado_fecha === 'pendiente' ? !doc.startDay : doc.startDay === f.fecha_inicio) && doc.dateCheckedAt === f.fecha_consulta, `${f.id}: ${JSON.stringify({ s: doc._status, d: doc.dateStatus, start: doc.startDay, c: doc.dateCheckedAt })}`);
+    }
+    const keptAfter = byID[keep.id];
+    assert.ok(keptAfter._status === 'published' && keptAfter.dateStatus === 'confirmada' && keptAfter.startDay === keptDays[0] && keptAfter.dateCheckedAt === keep.fecha_consulta, 'a published one keeps its dates; only source and consultation date');
+    const ruled = fiestas.find(f => f.estado_fecha === 'por regla' && f.id !== keep.id);
+    if (ruled) for (const url of ['/fiestas', '/agenda', '/']) assert.ok(!(await page(`${web}${url}`)).includes(`>${byID[ruled.id].name}<`), `«por regla» not public (${url})`);
+    await payload.update({ collection: 'festivals', id: kept.id, overrideAccess: true, data: { _status: 'draft' } });
+    passed(`fiestas with dates (cb90d19, ${fiestas.length} fiestas, ${eventos.length} events not imported): --solo-comprobar validates everything first; all drafts; existing ones updated by id without duplicates (published ones keep their dates), new ones created; dates, date status (confirmada, por regla, pendiente), date source and consultation date stored; «por regla» never public`);
+  }
+  }
+
+  // Despublicar, guardar como borrador y cambiar el estado de la fecha funcionan siempre; la comprobación «Para publicar
+  // la fiesta, confirma sus fechas» solo salta al publicar. Una fiesta publicada que pasa a pendiente u orientativa se
+  // despublica sola, con un aviso.
+  {
+    const headers = { Cookie: await ctx.signIn(ctx.users.editor.email), 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' };
+    const patch = (id, body, query = '') => fetch(`${web}/api/cms/festivals/${id}${query}`, { method: 'PATCH', headers, body: JSON.stringify(body) });
+    const doc = id => payload.findByID({ collection: 'festivals', id, overrideAccess: true, depth: 0 });
+    const dates = { dateStatus: 'confirmada', startDate: `${shift(today, 3)}T12:00:00.000Z`, endDate: `${shift(today, 4)}T12:00:00.000Z` };
+    const fest = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta para despublicar', village: 'Ujo', town: mieres.id, recurring: true, ...dates, _status: 'published' } });
+    let r = await patch(fest.id, { dateStatus: 'pendiente', _status: 'draft' }, '?draft=true');
+    assert.equal(r.status, 200, `draft save with «Pendiente» on a published fiesta: ${await r.clone().text()}`);
+    r = await patch(fest.id, { _status: 'draft' });
+    assert.equal(r.status, 200, `unpublish: ${await r.clone().text()}`);
+    assert.equal((await doc(fest.id))._status, 'draft', 'unpublished');
+    r = await patch(fest.id, { dateStatus: 'orientativa' });
+    assert.equal(r.status, 200, `change the date status of a draft: ${await r.clone().text()}`);
+    r = await patch(fest.id, { _status: 'published' });
+    assert.ok(r.status === 400 && (await r.text()).includes('confirma sus fechas'), 'publishing a draft without a confirmed date: refused');
+    r = await patch(fest.id, { ...dates, _status: 'published' });
+    assert.equal(r.status, 200, `published again with a confirmed date: ${await r.clone().text()}`);
+    for (const change of [{ dateStatus: 'pendiente', _status: 'published' }, { dateStatus: 'orientativa' }]) {
+      r = await patch(fest.id, change);
+      const after = await doc(fest.id);
+      assert.ok(r.status === 200 && after._status === 'draft' && /Se ha despublicado sola/.test(after.unpublishedNotice ?? ''), `published → ${change.dateStatus}: unpublished by itself with a notice (${r.status}, ${after._status})`);
+      assert.ok(!(await page(`${web}/fiestas`)).includes('Fiesta para despublicar'), 'not public any more');
+      r = await patch(fest.id, { ...dates, _status: 'published' });
+      assert.ok(r.status === 200 && !(await doc(fest.id)).unpublishedNotice, 'published again: notice cleared');
+    }
+    await payload.delete({ collection: 'festivals', id: fest.id, overrideAccess: true });
+    passed('fiestas: unpublish, save as draft and change the date status always work; «confirma sus fechas» only applies when publishing a draft; a published fiesta moved to «Pendiente» or «Orientativa» unpublishes itself with a notice in the CMS');
   }
 }

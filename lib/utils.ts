@@ -26,6 +26,15 @@ export function publishedTime(publishedAt?: string) {
 }
 
 /** Fecha y hora de publicación de una noticia: «04 de noviembre de 2026 · 09:15 h». */
+/** «5 nov 2026»: fecha corta para tarjetas y listas. */
+export function shortDate(date: string) {
+  return new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Madrid" }).format(new Date(`${date.slice(0, 10)}T12:00:00`)).replace(/\.$/, "").replace(" de ", " ").replace(" de ", " ");
+}
+/** «5 nov 2026 · 10:30 h»: fecha corta con la hora de publicación, si la hay (tarjetas y listas). */
+export function shortPublished(article: { date: string; publishedAt?: string }) {
+  const time = publishedTime(article.publishedAt);
+  return time ? `${shortDate(article.date)} · ${time} h` : shortDate(article.date);
+}
 export function formatPublished(article: { date: string; publishedAt?: string }) {
   const time = publishedTime(article.publishedAt);
   return time ? `${formatDate(article.date)} · ${time} h` : formatDate(article.date);

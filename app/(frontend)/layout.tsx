@@ -11,11 +11,9 @@ import "./municipal.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { contentSource } from '@/lib/content-source';
-import { CookieConsent } from "@/components/cookie-consent";
 import { BreakingNewsBar } from "@/components/breaking-news-bar";
 import { StatsBeacon } from "@/components/stats-beacon";
 import { activeBreakingNews } from "@/cms/breaking-news";
-import { analyticsId } from "@/lib/consent";
 
 // Content publication and removal must take effect without stale public page caches.
 export const dynamic = 'force-dynamic';
@@ -49,20 +47,21 @@ export default async function RootLayout({
   children: ReactNode;
 }>) {
   const navigation = contentSource() === 'payload' ? await (await import('@/lib/payload-content')).payloadNavigation() : {};
-  // GA4 only exists when configured, and is only loaded in the browser after explicit consent.
-  const gaId = analyticsId();
+  // Las páginas de un espacio municipal ACTIVO llevan su propia cabecera; las de un concejo inactivo son del periódico.
+  const municipalSlugs = contentSource() === 'payload' ? (await (await import('@/lib/municipal-content')).getMunicipalSpaces({ activos: true })).map(space => space.id) : undefined;
   // «Última hora» (CMS): solo con contenido real; caduca sola (la web se pinta en cada petición).
   const texts = await (await import('@/lib/site-texts')).getSiteTexts();
   const breaking = contentSource() === 'payload' ? activeBreakingNews(await (await (await import('@/lib/payload-content')).contentClient()).findGlobal({ slug: 'breaking-news', overrideAccess: false, depth: 0 }).catch(() => null)) : null;
   return (
     <html lang="es">
+      {/* RSS de noticias en todas las páginas (los metadatos de cada página sustituyen los «alternates» del layout). */}
+      <head><link rel="alternate" type="application/rss+xml" title="Planta 14 · Noticias" href="/rss.xml" /></head>
       <body className="min-h-screen antialiased">
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
-        <Header {...navigation} demo={contentSource() === "demo"} tagline={texts.underMasthead} sideNote={texts.sideNote} />
-        {breaking ? <BreakingNewsBar text={breaking.text} link={breaking.link} townSlugs={"townSlugs" in navigation ? (navigation.townSlugs as string[]) : undefined} /> : null}
+        <Header {...navigation} {...(municipalSlugs ? { townSlugs: municipalSlugs } : {})} demo={contentSource() === "demo"} tagline={texts.underMasthead} sideNote={texts.sideNote} />
+        {breaking ? <BreakingNewsBar text={breaking.text} link={breaking.link} townSlugs={municipalSlugs} /> : null}
         <main id="contenido">{children}</main>
-        <Footer cookieSettings={Boolean(gaId)} motto={texts.footer} whatsapp={texts.whatsapp} letters={texts.letters} />
-        {gaId ? <CookieConsent gaId={gaId} /> : null}
+        <Footer motto={texts.footer} whatsapp={texts.whatsapp} letters={texts.letters} />
         {/* Estadísticas propias, sin cookies: solo con contenido real. */}
         {contentSource() === 'payload' ? <StatsBeacon /> : null}
       </body>

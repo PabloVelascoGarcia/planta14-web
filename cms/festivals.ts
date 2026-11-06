@@ -3,7 +3,7 @@ import { APIError, type Access, type CollectionBeforeChangeHook, type Collection
 import { BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { editorialUser, editorialVersions, notMunicipal, publishedFilter, relationID } from './access';
 import { auditAfterChange, auditAfterDelete, rememberMainState } from './activity';
-import { syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
+import { isPublishing, syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
 import { toLexical } from '../lib/rich-text';
 import { slugText } from './content-collections';
 
@@ -34,7 +34,8 @@ const help = (description: string) => ({ admin: { description } });
 const dateDay = { date: { pickerAppearance: 'dayOnly' as const, displayFormat: 'dd/MM/yyyy' } };
 const editorialOnly = { read: editorialUser, create: editorialUser, update: editorialUser };
 export const dateStatusOptions = [
-  { label: 'Confirmada', value: 'confirmada' }, { label: 'Fecha pendiente', value: 'pendiente' }, { label: 'Fecha orientativa (2025), sin confirmar', value: 'orientativa' },
+  { label: 'Confirmada', value: 'confirmada' }, { label: 'Por regla, sin confirmar', value: 'por-regla' }, { label: 'Fecha pendiente', value: 'pendiente' },
+  { label: 'Fecha orientativa (2025), sin confirmar', value: 'orientativa' },
 ];
 /** Público: solo fiestas publicadas y con la fecha confirmada. La redacción lo ve todo. */
 const festivalsRead: Access = (args) => editorialUser(args) || (notMunicipal(args) ? { and: [publishedFilter, { dateStatus: { equals: 'confirmada' } }] } : false);
@@ -48,8 +49,13 @@ const festivalRules: CollectionBeforeChangeHook = async ({ data, originalDoc, re
   const status = String(data.dateStatus ?? originalDoc?.dateStatus ?? 'confirmada');
   const start = madridDay(data.startDate !== undefined ? data.startDate : originalDoc?.startDate);
   const end = madridDay(data.endDate !== undefined ? data.endDate : originalDoc?.endDate) ?? start;
-  const publishing = (data._status ?? originalDoc?._status) === 'published';
-  if (publishing && status !== 'confirmada') throw new APIError('Para publicar la fiesta, confirma sus fechas: pon «Estado de la fecha» en «Confirmada» y rellena el primer y el último día', 400);
+  // Solo al publicar de verdad (no al guardar un borrador ni al despublicar). Si una fiesta YA publicada pasa a
+  // «Pendiente» u «Orientativa», se despublica sola y queda un aviso en la ficha del CMS.
+  if (status !== 'confirmada' && isPublishing(data, originalDoc, req)) {
+    if (originalDoc?._status !== 'published') throw new APIError('Para publicar la fiesta, confirma sus fechas: pon «Estado de la fecha» en «Confirmada» y rellena el primer y el último día', 400);
+    data._status = 'draft';
+    data.unpublishedNotice = `Se ha despublicado sola el ${new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', dateStyle: 'short', timeStyle: 'short' }).format(new Date())} porque su fecha ya no está confirmada. Para volver a publicarla, pon «Confirmada» con sus fechas y pulsa «Publicar cambios».`;
+  } else if (status === 'confirmada' && isPublishing(data, originalDoc, req)) data.unpublishedNotice = null;
   if (status === 'confirmada' && !start) throw new APIError('Indica la fecha de inicio de la fiesta (o marca «Fecha pendiente»)', 400);
   if (start && end! < start) throw new APIError('La fecha de fin no puede ser anterior a la de inicio', 400);
   if (start) Object.assign(data, { startDate: dayToStored(start), endDate: dayToStored(end!), startDay: start, endDay: end });
@@ -63,7 +69,7 @@ const festivalRules: CollectionBeforeChangeHook = async ({ data, originalDoc, re
     slug = `${slug.replace(/-\d+$/, '')}-${n}`;
   }
   data.slug = slug;
-  await validatePublishedImages({ ...originalDoc, ...data }, req);
+  await validatePublishedImages(data, req, originalDoc ?? null);
   return data;
 };
 const toRich: FieldHook = ({ value }) => toLexical(value) ?? value;
@@ -112,8 +118,13 @@ export const Festivals: CollectionConfig = {
       { name: 'startDate', label: 'Primer día', type: 'date', admin: { ...dateDay, description: 'Día en que empieza. Obligatorio con la fecha confirmada.' } },
       { name: 'endDate', label: 'Último día', type: 'date', admin: { ...dateDay, description: 'Día en que termina (el mismo si dura un día).' } },
     ] },
+    { name: 'unpublishedNotice', label: 'Aviso', type: 'textarea', access: { read: editorialUser, create: () => false, update: () => false },
+      admin: { position: 'sidebar', readOnly: true, condition: data => Boolean(data?.unpublishedNotice) } },
     { name: 'dateStatus', label: 'Estado de la fecha', type: 'select', required: true, defaultValue: 'confirmada', index: true, options: dateStatusOptions,
-      admin: { description: 'Solo con «Confirmada» y las fechas rellenas se puede publicar. Las fiestas del catálogo entran con «Fecha pendiente» o «Fecha orientativa (2025)».' } },
+      admin: { description: 'Solo con «Confirmada» y las fechas rellenas se puede publicar. «Por regla» lleva las fechas que da la costumbre (24 de junio…), sin confirmar: no se publica hasta confirmarlas. Las fiestas del catálogo entran con «Por regla», «Fecha pendiente» o «Fecha orientativa (2025)».' } },
+    { name: 'dateSource', label: 'Fuente de la fecha (no se publica)', type: 'textarea', maxLength: 3000, access: editorialOnly,
+      admin: { condition: data => Boolean(data?.dateSource), description: 'De dónde sale la fecha (y la regla, si es «por regla»). Comprueba el programa de la edición antes de confirmarla.' } },
+    { name: 'dateCheckedAt', label: 'Fecha de consulta', type: 'text', maxLength: 10, access: editorialOnly, admin: { condition: data => Boolean(data?.dateCheckedAt), description: 'Día en que se consultó la fuente de la fecha (AAAA-MM-DD).' } },
     { name: 'referenceDates', label: 'Fecha orientativa (2025)', type: 'textarea', maxLength: 1000, access: editorialOnly,
       admin: { condition: data => Boolean(data?.referenceDates), description: 'Solo de referencia: fechas documentadas en 2025. No se publican ni se trasladan a otro año.' } },
     { name: 'usualDates', label: 'Fechas habituales', type: 'textarea', maxLength: 600, access: editorialOnly, ...help('Cuándo se celebra normalmente, según las fuentes (no se publica).') },

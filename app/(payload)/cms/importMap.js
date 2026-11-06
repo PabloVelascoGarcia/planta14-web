@@ -14,6 +14,7 @@ import { ParagraphFeatureClient as ParagraphFeatureClient_e70f5e05f09f93e00b997e
 import { FestivalNextYear as FestivalNextYear_517eb2bb3c416e5d69b4461666be00c8 } from '../../../components/festival-next-year'
 import { UtilReviewNotice as UtilReviewNotice_b90793a5019c2b8ceb04a6fc808456d9 } from '../../../components/util-review-notice'
 import { SubscribersExport as SubscribersExport_f6ded776a75faf4178e16d924592bac9 } from '../../../components/subscribers-export'
+import { NewsletterSend as NewsletterSend_09d75ac5252af0d7aabb71d8aab290bb } from '../../../components/newsletter-send'
 import { CmsMaintenanceBanner as CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd } from '../../../components/cms-maintenance-banner'
 import { CmsDashboard as CmsDashboard_c961bb4b059fa844220814f2fa37f917 } from '../../../components/cms-dashboard'
 import { StatsAdminView as StatsAdminView_f018c169a2aca0b545db3ec27d597051 } from '../../../components/stats-admin-view'
@@ -38,6 +39,7 @@ export const importMap = {
   "/components/festival-next-year#FestivalNextYear": FestivalNextYear_517eb2bb3c416e5d69b4461666be00c8,
   "/components/util-review-notice#UtilReviewNotice": UtilReviewNotice_b90793a5019c2b8ceb04a6fc808456d9,
   "/components/subscribers-export#SubscribersExport": SubscribersExport_f6ded776a75faf4178e16d924592bac9,
+  "/components/newsletter-send#NewsletterSend": NewsletterSend_09d75ac5252af0d7aabb71d8aab290bb,
   "/components/cms-maintenance-banner#CmsMaintenanceBanner": CmsMaintenanceBanner_91830bdb81417176ea064eb96626e4cd,
   "/components/cms-dashboard#CmsDashboard": CmsDashboard_c961bb4b059fa844220814f2fa37f917,
   "/components/stats-admin-view#StatsAdminView": StatsAdminView_f018c169a2aca0b545db3ec27d597051,

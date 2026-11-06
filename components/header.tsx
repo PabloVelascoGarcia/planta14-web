@@ -23,7 +23,8 @@ function twoLines(text: string) {
 
 export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories, demo = true, tagline = "Una voz para las Cuencas", sideNote = "Donde otros no llegan" }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]>; demo?: boolean; tagline?: string; sideNote?: string }) {
   const pathname = usePathname();
-  if (townSlugs.some(slug => pathname === `/${slug}` || pathname === `/${slug}/panel`)) return null;
+  // `townSlugs`: concejos con espacio municipal activo (su página, su panel y su «Útil» llevan su propia cabecera).
+  if (townSlugs.some(slug => pathname === `/${slug}` || pathname === `/${slug}/panel` || pathname === `/${slug}/util`)) return null;
   return (
     <header className="bg-paper">
       <div className="container-p14">

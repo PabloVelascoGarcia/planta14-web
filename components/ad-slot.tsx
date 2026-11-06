@@ -6,7 +6,8 @@ type AdSlotProps = {
   tall?: boolean;
 };
 
-// Hueco publicitario. Mientras no haya anuncio, autopromoción discreta hacia /publicidad (sin scripts ni cookies).
+// Hueco publicitario. Mientras no haya anuncio, autopromoción discreta hacia /publicidad (sin scripts ni cookies),
+// con la altura de su contenido (no se estira a la de su fila).
 export function AdSlot({ label, tall = false }: AdSlotProps) {
   const size = tall ? "min-h-72" : "min-h-28";
   if (label) {
@@ -17,7 +18,7 @@ export function AdSlot({ label, tall = false }: AdSlotProps) {
     );
   }
   return (
-    <aside aria-label="Publicidad" data-ad-slot="autopromocion" className={`flex flex-col items-center justify-center gap-2 border border-coal-900/15 bg-white/45 p-5 text-center ${size}`}>
+    <aside aria-label="Publicidad" data-ad-slot="autopromocion" className="flex flex-col items-center justify-center gap-2 self-start border border-coal-900/15 bg-white/45 p-5 text-center">
       <span className="text-[13px] font-bold uppercase tracking-[0.16em] text-steel">Publicidad</span>
       <Link href="/publicidad" className="inline-flex min-h-11 items-center font-serif text-xl font-black text-coal-900 hover:text-copper">
         Anúnciate en Planta 14 <span aria-hidden="true" className="ml-1">↗</span>

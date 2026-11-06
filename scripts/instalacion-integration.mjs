@@ -112,11 +112,16 @@ try {
   const { sql: rawSql } = await import('@payloadcms/db-postgres');
   const latest = (await payload.db.drizzle.execute(rawSql`SELECT count(*)::int AS n FROM _municipal_spaces_v v JOIN municipal_spaces s ON s.id = v.parent_id WHERE v.latest AND v.version_identity_title = s.identity_title`)).rows[0].n;
   assert.equal(latest, towns.length, 'the latest version (opened by the CMS) carries the same identity');
+  // Concejo no activo: página del periódico («Lena» y sus noticias), sin escudo, identidad ni rótulos de espacio municipal.
+  const inactiveHTML = await page(`${cms}/lena`);
+  assert.ok(inactiveHTML.includes('data-town-news="lena"') && inactiveHTML.includes('Noticias de Lena en Planta 14') && !inactiveHTML.includes('Espacio municipal')
+    && !inactiveHTML.includes('escudo') && !inactiveHTML.includes('aller-theme') && !inactiveHTML.includes('municipal-masthead') && !inactiveHTML.includes('Información útil. Vida local.'), 'inactive /lena: a newspaper page');
+  // Con el espacio activo vuelve sola la página municipal con su identidad (también Riosa y Morcín, para el diseño neutro).
+  const subscriptions = {};
+  for (const id of ['lena', 'riosa', 'morcin']) { const sp = await spaceBy(id); subscriptions[id] = sp.subscription; await payload.update({ collection: 'municipal-spaces', id: sp.id, overrideAccess: true, data: { subscription: { status: 'active', startsAt: '2026-01-01', endsAt: null } } }); }
   const lenaHTML = await page(`${cms}/lena`);
-  for (const piece of ['aller-theme', 'src="/lena/escudo.svg"', 'Escudo: Manuelfb55 · CC BY-SA 4.0', 'Licencia de la fotografía']) assert.ok(lenaHTML.includes(piece), `inactive /lena keeps «${piece}»`);
-  // Concejo no activo: solo la cabecera (con su identidad) y las noticias; sin foto de cabecera ni tarjetas «todo el año».
-  assert.ok(!lenaHTML.includes('aller-hero') && !lenaHTML.includes('Lena, todo el año') && !lenaHTML.includes('aller-discover'), 'inactive page without hero or stories');
-  passed('municipal identity in the CMS: the six Caudal spaces get the current values (new installs from the structure load; existing ones from the migration, latest version included); the inactive page keeps crest, colours and credits (its stories only show with an active space)');
+  for (const piece of ['aller-theme', 'src="/lena/escudo.svg"', 'Escudo: Manuelfb55 · CC BY-SA 4.0', 'Licencia de la fotografía', 'aller-hero']) assert.ok(lenaHTML.includes(piece), `active /lena shows «${piece}»`);
+  passed('municipal identity in the CMS: the six Caudal spaces get the current values (new installs from the structure load; existing ones from the migration, latest version included); an inactive concejo is a newspaper page (no crest, identity or municipal labels); once active, its municipal page comes back with crest, colours, photo and credits');
 
   // Campos vacíos → diseño neutro; parciales → solo lo que hay.
   const riosa = await spaceBy('riosa');
@@ -128,6 +133,7 @@ try {
   await payload.update({ collection: 'municipal-spaces', id: morcin.id, overrideAccess: true, data: { identity: { colors: { accent: '#123456', dark: null, soft: null, border: null } } } });
   const partial = await page(`${cms}/morcin`);
   assert.ok(!partial.includes('aller-theme') && partial.includes('aller-crest') && partial.includes('aller-asset-credit'), 'incomplete colours → neutral theme, other pieces kept');
+  for (const [id, subscription] of Object.entries(subscriptions)) await payload.update({ collection: 'municipal-spaces', id: (await spaceBy(id)).id, overrideAccess: true, data: { subscription } });
   passed('empty identity fields keep the page working with the neutral design (no theme, crest placeholder, no credits or stories); partial identity shows only what exists');
 
   // Permisos: solo administración; la cuenta municipal lo ve en solo lectura; validaciones.
@@ -155,6 +161,9 @@ try {
   await payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, user: admin, overrideAccess: false, data: { identity: { heroImage: photo.id, title: 'Mieres, nuevo lema de prueba' } } });
   const published = await payload.findByID({ collection: 'media', id: photo.id, overrideAccess: true });
   assert.equal(published.publishedUses, 1, 'the identity photo counts as a published use'); assert.ok(published.publicKey, 'public copy created');
+  // La foto de cabecera se ve con el espacio activo (aquí el contrato empieza el 4 de diciembre: se adelanta para verla).
+  const mieresSubscription = (await spaceBy('mieres')).subscription;
+  await payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, overrideAccess: true, data: { subscription: { ...mieresSubscription, startsAt: '2026-01-01' } } });
   const mieresHTML = await page(`${cms}/mieres`);
   assert.ok(mieresHTML.includes(`planta14-instalacion-public/${published.publicKey}/`), 'active page shows the CMS photo from the public bucket');
   assert.ok(mieresHTML.includes('Mieres, nuevo lema de prueba') && !mieresHTML.includes('/mieres/panorama.webp"'), 'the CMS photo and slogan replace the previous ones');
@@ -162,6 +171,7 @@ try {
   const unlinked = await payload.findByID({ collection: 'media', id: photo.id, overrideAccess: true });
   assert.equal(unlinked.publishedUses, 0); assert.equal(unlinked.publicKey ?? null, null, 'public copy removed when no longer used');
   assert.ok((await page(`${cms}/mieres`)).includes('/mieres/panorama.webp'), 'back to the photo of the web files');
+  await payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, overrideAccess: true, data: { subscription: mieresSubscription } });
   const draftPhoto = await payload.create({ collection: 'media', overrideAccess: true, file: { data: png, mimetype: 'image/png', name: 'sin-derechos.png', size: png.length },
     data: { alt: 'Sin derechos', credit: 'Prueba', rightsHolder: 'Prueba', rightsType: 'propia', rightsScope: 'demo' } });
   await assert.rejects(payload.update({ collection: 'municipal-spaces', id: mieresSpace.id, user: admin, overrideAccess: false, data: { identity: { heroImage: draftPhoto.id } } }), /derechos publicables/);

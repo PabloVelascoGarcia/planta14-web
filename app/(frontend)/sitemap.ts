@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [active, hidden] = await Promise.all([activeTowns(), hiddenByConcejo()]);
   const utilRoutes = [
     ...["/util", "/util/patrimonio", "/util/rutas", "/util/subvenciones", "/util/empleo"].map(route => ({ url: `${baseUrl}${route}` })),
+    ...[...active].map(town => ({ url: `${baseUrl}/${town}/util` })),
     ...[...active].flatMap(town => Object.keys(UTIL_LIST_TYPES).filter(type => !(hidden[town] ?? []).includes(type)).map(type => ({ url: `${baseUrl}/${town}/util/${type}` }))),
   ];
   return [...staticRoutes, ...utilRoutes, ...articleRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes, ...municipalRoutes];

@@ -21,7 +21,7 @@ export default async function GlobalNotFound() {
       <body className="min-h-screen antialiased">
         <Header {...navigation} demo={contentSource() === "demo"} tagline={texts?.underMasthead} sideNote={texts?.sideNote} />
         <main id="contenido"><NotFoundContent /></main>
-        <Footer cookieSettings={false} motto={texts?.footer} whatsapp={texts?.whatsapp ?? null} letters={texts?.letters ?? false} />
+        <Footer motto={texts?.footer} whatsapp={texts?.whatsapp ?? null} letters={texts?.letters ?? false} />
       </body>
     </html>
   );

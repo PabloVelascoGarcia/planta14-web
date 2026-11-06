@@ -12,7 +12,7 @@ const text = (name: string, required = false): Field => ({ name, type: 'text', r
 const key: Field = { name: 'legacyID', type: 'text', unique: true, index: true };
 const provenance: Field[] = [text('provenance'), text('sourceUrl')];
 const validateImages: CollectionBeforeChangeHook = async ({ data, originalDoc, req }) => {
-  await validatePublishedImages({ ...originalDoc, ...data }, req);
+  await validatePublishedImages(data, req, originalDoc ?? null);
   return data;
 };
 const published = {

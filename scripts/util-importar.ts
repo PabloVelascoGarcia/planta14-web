@@ -21,7 +21,7 @@ try {
   } else {
     const how = kind === 'servicios' ? '' : opts.publicar ? ' publicadas' : ' sin publicar';
     console.log(`${opts.soloComprobar ? 'Se crearían' : 'Creados'} ${report.creadas.length} ${noun}${how}${report.creadas.length ? `:\n  ${report.creadas.join('\n  ')}` : '.'}`);
-    if (report.completadas.length) console.log(`Completadas ${report.completadas.length} (foto o recorrido que faltaba):\n  ${report.completadas.join('\n  ')}`);
+    if (report.completadas.length) console.log(`Completadas ${report.completadas.length} (foto, recorrido o fecha de comprobación que faltaba):\n  ${report.completadas.join('\n  ')}`);
     if (report.avisos.length) console.log(`AVISOS:\n  ${report.avisos.join('\n  ')}`);
     if (report.omitidas.length) console.log(`No se importan: ${report.omitidas.join('; ')}.`);
     console.log(`Ya existían ${report.existentes.length}${report.existentes.length ? ` (no se tocan):\n  ${report.existentes.join('\n  ')}` : '.'}`);

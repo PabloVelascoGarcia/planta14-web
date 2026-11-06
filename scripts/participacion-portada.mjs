@@ -58,8 +58,9 @@ export async function run(ctx) {
   const shown = (await cell.innerText()).trim();
   await tab.goto(`${ctx.origin}/cms/collections/festivals`);
   await tab.locator('td.cell-startDate').first().waitFor();
-  await tab.waitForFunction(() => /\d{2}\/\d{2}\/\d{4}/.test(document.querySelector('td.cell-startDate')?.textContent ?? ''), null, { timeout: 30_000 }).catch(() => undefined);
-  const festivalDate = (await tab.locator('td.cell-startDate').first().innerText()).trim();
+  // La primera fiesta con fecha (las importadas con «Fecha pendiente» no tienen).
+  await tab.waitForFunction(() => [...document.querySelectorAll('td.cell-startDate')].some(td => /\d{2}\/\d{2}\/\d{4}/.test(td.textContent ?? '')), null, { timeout: 30_000 }).catch(() => undefined);
+  const festivalDate = await tab.evaluate(() => ([...document.querySelectorAll('td.cell-startDate')].map(td => (td.textContent ?? '').trim()).find(t => /\d{2}\/\d{2}\/\d{4}/.test(t)) ?? ''));
   await context.close();
   assert.match(shown, /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/, `list dates as dd/MM/yyyy HH:mm (${shown})`);
   assert.match(festivalDate, /^\d{2}\/\d{2}\/\d{4}/, `fiesta days as dd/MM/yyyy (${festivalDate})`);

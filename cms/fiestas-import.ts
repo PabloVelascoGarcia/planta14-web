@@ -21,12 +21,29 @@ import { validateRecord } from './import-validate';
  *      dudas y verificación van a «Notas del catálogo» (no se publican).
  *    - Se puede repetir: se identifica cada fiesta por su «id»; lo que ya existe no se duplica ni se modifica.
  *
- * En los dos formatos se valida TODO antes de escribir (también con --solo-comprobar), contra el esquema real de la
+ * 3. Catálogo con fechas (contenido-ensayo/fiestas-caudal-fechas.json, commit cb90d19): el mismo catálogo con «tipo»
+ *    («fiesta» o «evento»), fecha_inicio, fecha_fin, estado_fecha («confirmada», «por regla» o «pendiente»), fuente_fecha
+ *    y fecha_consulta. Solo se importan las de tipo «fiesta» (los eventos no). Todas como BORRADOR (se rechaza
+ *    --publicar). Las que ya existen (por su id) no se duplican: si siguen en borrador se actualizan SOLO sus fechas,
+ *    estado de la fecha, fuente de la fecha y fecha de consulta (lo demás que haya editado la redacción no se toca); si
+ *    ya están publicadas, solo la fuente y la fecha de consulta (sus fechas y su estado no cambian). Las nuevas se crean
+ *    completas.
+ *
+ * En todos los formatos se valida TODO antes de escribir (también con --solo-comprobar), contra el esquema real de la
  * colección: si hay errores se informan todos y no se importa nada.
  */
 export type FiestaJSON = { nombre: string; pueblo: string; concejo: string; inicio: string; fin?: string; programa?: string; organizador?: string; contacto?: string; seRepite?: boolean };
 type Item = Record<string, unknown>;
-type Report = { formato: 'lista' | 'catalogo'; creadas: string[]; existentes: string[]; errores: string[]; pendientes: number; orientativas: number };
+type Report = { formato: 'lista' | 'catalogo' | 'catalogo-fechas'; creadas: string[]; existentes: string[]; actualizadas: string[]; publicadas: string[]; ahoraEventos: string[]; errores: string[];
+  pendientes: number; orientativas: number; porRegla: number; confirmadas: number; eventos: number };
+/** «estado_fecha» del catálogo → «Estado de la fecha» del CMS. */
+const DATE_STATUS: Record<string, string> = { confirmada: 'confirmada', 'por regla': 'por-regla', pendiente: 'pendiente' };
+/** «fuente_fecha» del catálogo → texto para la redacción (no se publica). */
+function dateSourceText(value: unknown): string | null {
+  const list = (Array.isArray(value) ? value : value ? [value] : []) as Item[];
+  const lines = list.map(f => [text(f.entidad), text(f.titulo), text(f.url), text(f.regla) ? `Regla: ${f.regla}` : null, text(f.nota), text(f.advertencia)].filter(Boolean).join(' — ')).filter(Boolean);
+  return lines.length ? lines.join('\n').slice(0, 3000) : null;
+}
 
 const normal = (value: string) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const day = /^\d{4}-\d{2}-\d{2}$/;
@@ -49,12 +66,18 @@ export function referenceDates2025(value: unknown): string | null {
 
 export async function importFiestas(payload: Payload, json: unknown, opts: { publicar: boolean; soloComprobar: boolean }): Promise<Report> {
   const catalog = !Array.isArray(json) && Array.isArray((json as Item)?.fiestas);
+  // Catálogo con fechas (formato 3): sus registros traen «estado_fecha».
+  const dated = catalog && ((json as Item).fiestas as Item[]).some(f => f && 'estado_fecha' in f);
   if (!Array.isArray(json) && !catalog) throw new Error('El JSON debe ser una lista de fiestas o un catálogo con la lista en «fiestas»');
   const towns = (await payload.find({ collection: 'towns', pagination: false, depth: 0, overrideAccess: true })).docs;
   const townOf = (v: unknown) => towns.find(t => t.slug === normal(String(v ?? '')) || normal(t.name) === normal(String(v ?? '')));
-  const report: Report = { formato: catalog ? 'catalogo' : 'lista', creadas: [], existentes: [], errores: [], pendientes: 0, orientativas: 0 };
+  const report: Report = { formato: dated ? 'catalogo-fechas' : catalog ? 'catalogo' : 'lista', creadas: [], existentes: [], actualizadas: [], publicadas: [], ahoraEventos: [], errores: [], pendientes: 0, orientativas: 0, porRegla: 0, confirmadas: 0, eventos: 0 };
   if (catalog && opts.publicar) { report.errores.push('El catálogo entra siempre como borrador: quita --publicar (los periodistas confirman las fechas y publican).'); return report; }
-  const items = (catalog ? (json as Item).fiestas : json) as unknown[];
+  const all = (catalog ? (json as Item).fiestas : json) as unknown[];
+  // Formato 3: solo las fiestas; los eventos no se importan.
+  const items = dated ? all.filter(f => (f as Item)?.tipo === 'fiesta') : all;
+  if (dated) report.eventos = all.filter(f => (f as Item)?.tipo === 'evento').length;
+  if (dated) for (const [i, f] of all.entries()) if (!['fiesta', 'evento'].includes(String((f as Item)?.tipo))) report.errores.push(`#${i + 1} ${text((f as Item)?.nombre) ?? '¿?'}: tipo desconocido «${(f as Item)?.tipo ?? ''}» (fiesta o evento)`);
 
   // 1. Se construyen y validan todos los registros antes de escribir nada.
   const seen = new Set<string>();
@@ -82,6 +105,18 @@ export async function importFiestas(payload: Payload, json: unknown, opts: { pub
       data = { name, village, town: town?.id, dateStatus: reference ? 'orientativa' : 'pendiente', startDate: null, endDate: null,
         referenceDates: reference, usualDates: text(usual.texto), description: text(item.descripcion), organizer: text(organizer.nombre),
         recurring: repeats.valor !== false, sources, catalogNotes: notes || null, externalID: id, _status: 'draft' };
+      if (dated) {
+        const status = DATE_STATUS[String(item.estado_fecha ?? '').trim().toLowerCase()];
+        const start = day.test(String(item.fecha_inicio)) ? String(item.fecha_inicio) : null;
+        const end = day.test(String(item.fecha_fin)) ? String(item.fecha_fin) : start;
+        if (!status) problems.push(`estado_fecha desconocido «${item.estado_fecha ?? ''}» (confirmada, por regla o pendiente)`);
+        if (status && status !== 'pendiente' && !start) problems.push(`con estado «${item.estado_fecha}» hace falta fecha_inicio (AAAA-MM-DD)`);
+        if (start && end && end < start) problems.push('fecha_fin anterior a fecha_inicio');
+        if (item.fecha_consulta && !day.test(String(item.fecha_consulta))) problems.push('fecha_consulta no es AAAA-MM-DD');
+        Object.assign(data, { dateStatus: status ?? 'pendiente', startDate: status !== 'pendiente' && start ? dayToStored(start) : null,
+          endDate: status !== 'pendiente' && start ? dayToStored(end ?? start) : null, dateSource: dateSourceText(item.fuente_fecha),
+          dateCheckedAt: text(item.fecha_consulta) });
+      }
     } else {
       const f = item as unknown as FiestaJSON;
       const town = townOf(f.concejo);
@@ -104,14 +139,36 @@ export async function importFiestas(payload: Payload, json: unknown, opts: { pub
   });
   if (report.errores.length) return report;
 
+  // Formato 3: fiestas ya importadas que el catálogo nuevo considera «evento». No se tocan ni se borran (siguen en
+  // borrador): se avisa para que decida la redacción.
+  if (dated) for (const e of all.filter(f => (f as Item)?.tipo === 'evento') as Item[]) {
+    const old = text(e.id) ? (await payload.find({ collection: 'festivals', where: { externalID: { equals: String(e.id) } }, limit: 1, depth: 0, overrideAccess: true, draft: true })).docs[0] : undefined;
+    if (old) report.ahoraEventos.push(`${old.name} (${old.village ?? ''})`);
+  }
   // 2. Escritura idempotente: por el id del catálogo o, en la lista, por nombre, pueblo y año.
   for (const { data, key, label } of records) {
     const where: Where = catalog ? { externalID: { equals: key } } : { slug: { equals: key } };
     const exists = await payload.find({ collection: 'festivals', where, limit: 1, depth: 0, overrideAccess: true, draft: true });
-    if (exists.docs.length) { report.existentes.push(label); continue; }
+    const count = () => {
+      if (data.dateStatus === 'pendiente') report.pendientes++;
+      if (data.dateStatus === 'orientativa') report.orientativas++;
+      if (data.dateStatus === 'por-regla') report.porRegla++;
+      if (data.dateStatus === 'confirmada' && dated) report.confirmadas++;
+    };
+    if (exists.docs.length) {
+      if (!dated) { report.existentes.push(label); continue; }
+      // Formato 3: se actualizan sus fechas sin duplicar (en las publicadas, solo la fuente y la fecha de consulta).
+      const doc = exists.docs[0] as { id: number; _status?: string };
+      const published = doc._status === 'published';
+      const patch = published ? { dateSource: data.dateSource, dateCheckedAt: data.dateCheckedAt }
+        : { dateStatus: data.dateStatus, startDate: data.startDate, endDate: data.endDate, dateSource: data.dateSource, dateCheckedAt: data.dateCheckedAt, _status: 'draft' };
+      (published ? report.publicadas : report.actualizadas).push(label);
+      if (!published) count();
+      if (!opts.soloComprobar) await payload.update({ collection: 'festivals', id: doc.id, overrideAccess: true, draft: !published, data: patch as never });
+      continue;
+    }
     report.creadas.push(label);
-    if (data.dateStatus === 'pendiente') report.pendientes++;
-    if (data.dateStatus === 'orientativa') report.orientativas++;
+    count();
     if (opts.soloComprobar) continue;
     await payload.create({ collection: 'festivals', overrideAccess: true, draft: data._status !== 'published', data: data as never });
   }

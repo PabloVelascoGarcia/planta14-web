@@ -14,7 +14,7 @@ export async function run(ctx) {
   for (let i = 1; i <= 7; i++) extra.push(await payload.create({ collection: 'municipal-services', overrideAccess: true,
     data: { name: `Servicio de prueba ${i}`, town: lena.id, category: i <= 3 ? 'deportes' : 'cultura', place: 'Pola de Lena', order: 100 + i } }));
   const services = (await payload.find({ collection: 'municipal-services', overrideAccess: false, pagination: false, where: { 'town.slug': { equals: 'lena' } } })).docs.length;
-  const lenaPage = await page(`${web}/lena`);
+  const lenaPage = await page(`${web}/lena/util`);
   const box = block(lenaPage, 'servicios');
   assert.equal((box.match(/<li data-util-service/g) ?? []).length, 5, 'at most 5 services in the box');
   assert.ok(box.includes('href="/lena/util/servicios"') && box.includes(`Ver todos (${services})`), `«Ver todos (n)»: ${box.slice(-400)}`);
@@ -41,8 +41,9 @@ export async function run(ctx) {
     body: JSON.stringify({ subscription: { status: value, startsAt: '2026-01-01', endsAt: null } }) });
   assert.equal((await setStatus('inactive')).status, 200, 'the administration deactivates Aller in the CMS');
   const aller = await page(`${web}/aller`);
-  assert.ok(aller.includes('data-municipal-active="false"') && aller.includes('municipal-masthead'), 'masthead kept');
-  for (const marker of ['data-municipal-util', 'municipal-section-nav', 'municipal-notices', 'municipal-grant-preview', 'aller-discover', 'Historias del Caudal', 'aller-hero'])
+  // Sin contrato no parece un espacio del ayuntamiento: página del periódico («Aller», sus noticias y sus fiestas).
+  assert.ok(aller.includes('data-town-news="aller"') && /<h1[^>]*>Aller<\/h1>/.test(aller) && aller.includes('Noticias de Aller en Planta 14') && aller.includes('data-motto="cabecera"'), 'inactive: newspaper page with the newspaper header');
+  for (const marker of ['municipal-masthead', 'Espacio municipal', 'Información útil. Vida local.', 'Ayuntamiento de Aller en Planta 14', 'escudo', 'data-municipal-util', 'municipal-section-nav', 'municipal-notices', 'municipal-grant-preview', 'aller-discover', 'Historias del Caudal', 'aller-hero'])
     assert.ok(!aller.includes(marker), `inactive concejo: no ${marker}`);
   for (const type of ['servicios', 'patrimonio', 'rutas', 'subvenciones', 'empleo']) assert.equal(await status(`/aller/util/${type}`), 404, `/aller/util/${type}: 404`);
   assert.equal(await status('/util/rutas/ruta-de-ejemplo-en-aller-aller'), 404, 'its cards too');
@@ -56,11 +57,16 @@ export async function run(ctx) {
   const sitemap = (await import('node:fs')).readFileSync('app/(frontend)/sitemap.ts', 'utf8');
   assert.ok(sitemap.includes('activeTowns()') && sitemap.includes('/util/${type}'), 'sitemap: «Ver todos» pages of active concejos only');
 
+  // «Tu ayuntamiento, aquí»: sin ningún espacio activo no sale; vuelve sola al activar uno.
+  await ctx.activate([]);
+  assert.ok(!(await page(`${web}/`)).includes('data-block="ayuntamientos"'), 'no active space: no «Tu ayuntamiento, aquí»');
+  await ctx.activate(ctx.SIX.filter(t => t !== 'aller'));
+  assert.ok((await page(`${web}/`)).includes('data-block="ayuntamientos"'), 'back once a space is active');
   // 3. Activarlo se nota sin desplegar (cada página se genera en cada petición y el CMS revalida al guardar).
   assert.equal((await setStatus('active')).status, 200);
   const again = await page(`${web}/aller`);
   assert.ok(again.includes('data-municipal-active="true"') && again.includes('data-municipal-util') && (await status('/aller/util/rutas')) === 200 && (await page(`${web}/util`)).includes('data-util="concejo-aller"'), 'activated: visible at once, without redeploying');
-  passed('activation per concejo: an inactive concejo shows only its masthead, Planta 14 news and fiestas (no Útil, notices, agenda, board or other services); its /[concejo]/util pages and cards give 404 and stay out of the sitemap; /util always shows the regional part and one block per active concejo; activating or deactivating in the CMS shows at once; imported data stays in the CMS');
+  passed('activation per concejo: an inactive concejo is a newspaper page (title, Planta 14 news and fiestas; no crest, municipal labels or mottos) (no Útil, notices, agenda, board or other services); its /[concejo]/util pages and cards give 404 and stay out of the sitemap; /util always shows the regional part and one block per active concejo; activating or deactivating in the CMS shows at once; imported data stays in the CMS');
 
   // 4. Maquetación: /util y los seis concejos a 2133 (el caso de /aller), 1440, 1024, 768 y 390 px. Cada caja va a la
   // columna más corta: columnas igualadas, sin huecos, orden de lectura (cada caja empieza a la altura de la anterior o
@@ -70,7 +76,7 @@ export async function run(ctx) {
   for (const width of widths) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 1, isMobile: width < 500, hasTouch: width < 500 });
     const tab = await context.newPage();
-    for (const path of ['/util', ...ctx.SIX.map(t => `/${t}`)]) {
+    for (const path of ['/util', ...ctx.SIX.map(t => `/${t}/util`)]) {
       await tab.goto(`${web}${path}`, { waitUntil: 'networkidle' });
       await tab.waitForFunction(() => document.querySelector('[data-util-grid]')?.dataset.utilColumns);
       await tab.evaluate(() => document.fonts.ready);
@@ -111,8 +117,8 @@ export async function run(ctx) {
     } else assert.equal(m.weather, null, `${m.path}: the weather stays a box on the concejo page`);
     if (m.width >= 1024 && m.blocks >= 3) assert.ok(m.columns >= 2, `${m.path} at ${m.width}: several columns (${m.columns})`);
   }
-  const allerWide = measures.find(m => m.path === '/aller' && m.width === 2133);
-  console.log(`MEDIDA: columnas de «Útil» por ancho: ${widths.map(w => `${w} px → ${[...new Set(measures.filter(m => m.width === w).map(m => m.columns))].join('/')}`).join(', ')}; /aller a 2133 px: diferencia entre columnas ${allerWide.imbalance} px; máxima en todas las páginas y anchos: ${Math.max(...measures.filter(m => m.columns > 1).map(m => m.imbalance))} px`);
+  const allerWide = measures.find(m => m.path === '/aller/util' && m.width === 2133);
+  console.log(`MEDIDA: columnas de «Útil» por ancho: ${widths.map(w => `${w} px → ${[...new Set(measures.filter(m => m.width === w).map(m => m.columns))].join('/')}`).join(', ')}; /aller/util a 2133 px: diferencia entre columnas ${allerWide.imbalance} px; máxima en todas las páginas y anchos: ${Math.max(...measures.filter(m => m.columns > 1).map(m => m.imbalance))} px`);
   passed('Útil weather on /util: full-width strip under the title, six concejos in a row (three on tablet, two on mobile), outside the box grid; on concejo pages still a box. Útil layout: each box goes to the shortest column (balanced columns, no gaps, reading order kept; the HTML order is unchanged) on /util and the six concejos at 2133, 1440, 1024, 768 and 390 px, one column on mobile, no horizontal overflow');
 
   for (const doc of extra) await payload.delete({ collection: 'municipal-services', id: doc.id, overrideAccess: true });

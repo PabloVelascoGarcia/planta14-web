@@ -17,11 +17,10 @@ const databaseURL = 'postgres://planta14:local-development-only@127.0.0.1:55435/
 if (process.env.CMS_LAUNCH_TEST !== 'true' || (process.env.DATABASE_URL && process.env.DATABASE_URL !== databaseURL)) throw new Error('Use CMS_LAUNCH_TEST=true and the dedicated local database on port 55435');
 const s3Port = 59006, ports = { plain: 3061, indexable: 3062, brokenDb: 3063, brokenS3: 3064 };
 const publicBase = `http://127.0.0.1:${s3Port}/planta14-launch-public`;
-const gaId = 'G-TEST1234';
 Object.assign(process.env, { NODE_ENV: 'production', CMS_ENABLED: 'true', CONTENT_SOURCE: 'payload', PAYLOAD_SECRET: randomUUID() + randomUUID(), DATABASE_URL: databaseURL,
   CMS_SERVER_URL: `http://localhost:${ports.plain}`, S3_BUCKET: 'planta14-launch-private', S3_REGION: 'us-east-1', S3_ENDPOINT: `http://127.0.0.1:${s3Port}`, S3_FORCE_PATH_STYLE: 'true',
   S3_ACCESS_KEY_ID: 'S3RVER', S3_SECRET_ACCESS_KEY: 'S3RVER', PUBLIC_MEDIA_BASE_URL: publicBase, PUBLIC_MEDIA_BUCKET: 'planta14-launch-public', PUBLIC_MEDIA_PREFIX: 'public' });
-for (const key of ['SITE_INDEXABLE', 'GA4_MEASUREMENT_ID', 'SITE_URL', 'URL', 'DEPLOY_PRIME_URL']) delete process.env[key];
+for (const key of ['SITE_INDEXABLE', 'SITE_URL', 'URL', 'DEPLOY_PRIME_URL']) delete process.env[key];
 const reset = new pg.Client({ connectionString: databaseURL });
 await reset.connect();
 await reset.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
@@ -83,7 +82,7 @@ try {
   const heroURL = `${publicBase}/${storedImage.publicKey}/${hero.filename}`;
   assert.equal((await fetch(heroURL)).status, 200, 'public hero variant exists');
 
-  const plain = await start('plain', { GA4_MEASUREMENT_ID: gaId });
+  const plain = await start('plain', {});
   const indexable = await start('indexable', { SITE_INDEXABLE: 'true' });
 
   // --- 1. Without SITE_INDEXABLE=true, every response carries noindex.
@@ -172,82 +171,30 @@ try {
   assert.deepEqual(await s3Down.json(), { status: 'error', checks: { database: 'ok', storage: 'error' } });
   passed('/api/health: 200 with database and storage up; 503 when the database or the storage fail, with no internal details');
 
-  // --- 5. Cookie consent in a real browser (Chromium/Playwright). GA4 is stubbed: no request leaves the machine.
+  // --- 5. Sin cookies ni terceros: no hay analítica de terceros (las estadísticas son propias y sin cookies), así que
+  // no hay banner de cookies ni ninguna petición fuera del propio sitio al visitar las páginas públicas.
   const require = createRequire(import.meta.url);
   const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || undefined, args: ['--no-proxy-server'] });
   try {
     const context = await browser.newContext();
-    const gaRequests = [];
-    await context.route(/googletagmanager\.com|google-analytics\.com/, async route => {
-      gaRequests.push(route.request().url());
-      // Stub of gtag.js: behaves like GA4 by writing its first-party cookies.
-      await route.fulfill({ contentType: 'text/javascript', body: `document.cookie="_ga=GA1.1.111.222; path=/; max-age=63072000"; document.cookie="_ga_TEST1234=GS1.1.333; path=/; max-age=63072000"; window.__launchGaLoaded=true;` });
-    });
+    const foreign = [];
+    // Propio: el sitio y su almacén público de imágenes (PUBLIC_MEDIA_BASE_URL; en la prueba, otro puerto local).
+    const own = [new URL(plain.url).origin, publicBase].filter(Boolean);
+    context.on('request', request => { const url = request.url(); if (!/^(data|blob):/.test(url) && !own.some(o => url.startsWith(o))) foreign.push(url); });
     const errors = []; context.on('page', p => p.on('pageerror', e => errors.push(e.message)));
     const tab = await context.newPage();
-    await tab.goto(`${plain.url}/noticia/noticia-publicada-lanzamiento`);
-    const banner = tab.getByRole('dialog', { name: 'Cookies de medición' });
-    await banner.waitFor();
-    await tab.waitForTimeout(500);
-    assert.equal(gaRequests.length, 0, 'GA4 not requested before consent');
-    assert.equal(await tab.locator('script[src*="googletagmanager"], link[href*="googletagmanager"], link[href*="google-analytics"]').count(), 0, 'no script, preload or preconnect before consent');
-    assert.deepEqual((await context.cookies()).map(c => c.name), [], 'no cookies at all before a decision');
-    const [reject, accept] = [banner.getByRole('button', { name: 'Rechazar' }), banner.getByRole('button', { name: 'Aceptar' })];
-    const [rb, ab] = [await reject.boundingBox(), await accept.boundingBox()];
-    assert.equal(Math.round(rb.height), Math.round(ab.height)); assert(Math.abs(rb.width - ab.width) < 2, 'reject as prominent as accept');
-    assert.equal(await reject.evaluate(e => getComputedStyle(e).backgroundColor), await accept.evaluate(e => getComputedStyle(e).backgroundColor));
-    if (process.env.MANUAL_SCREENSHOTS === 'true') await tab.screenshot({ path: 'docs/img/lanzamiento-banner-cookies.png' });
-    await reject.click();
-    await tab.reload(); await tab.waitForTimeout(500);
-    assert.equal(await banner.count(), 0, 'decision remembered');
-    assert.equal(gaRequests.length, 0, 'GA4 never loaded after rejecting');
-    assert.deepEqual((await context.cookies()).map(c => `${c.name}=${decodeURIComponent(c.value)}`), ['planta14_consent=1:rejected']);
-    await tab.getByRole('button', { name: 'Configurar cookies' }).click();
-    await banner.getByRole('button', { name: 'Aceptar' }).click();
-    await tab.waitForFunction(() => document.cookie.includes('_ga='));
-    assert(gaRequests.some(u => u.includes(`id=${gaId}`)), 'GA4 loaded after accepting');
+    for (const path of ['/', '/noticia/noticia-publicada-lanzamiento', '/lena', '/agenda', '/cookies', '/privacidad']) {
+      await tab.goto(`${plain.url}${path}`, { waitUntil: 'networkidle' });
+      assert.equal(await tab.getByRole('dialog').count(), 0, `${path}: no cookie banner`);
+    }
+    assert.deepEqual(foreign, [], 'nothing loaded from third parties');
+    assert.deepEqual((await context.cookies()).map(c => c.name), [], 'no cookies for readers');
+    const cookiesText = await (await fetch(`${plain.url}/cookies`)).text();
+    assert.ok(!/Google|Analytics|_ga\b|planta14_consent/.test(cookiesText) && cookiesText.includes('Texto pendiente de revisión por abogado'), 'cookies policy without GA4; legal review notice kept');
+    assert.ok(!/Google Analytics|Configurar cookies/.test(await (await fetch(`${plain.url}/privacidad`)).text()), 'privacy policy without GA4');
     assert(errors.length === 0, errors.join('\n'));
-    await tab.reload(); await tab.waitForTimeout(500);
-    assert(gaRequests.length >= 2, 'accepted consent is remembered and GA4 loads on the next page');
-    const mirror = await context.newPage();
-    await mirror.goto(`${plain.url}/lena`);
-    await mirror.waitForFunction(() => window.__launchGaLoaded === true);
-    // Withdraw consent from the footer: GA cookies removed and GA4 no longer loaded.
-    await tab.getByRole('button', { name: 'Configurar cookies' }).click();
-    const before = gaRequests.length;
-    await Promise.all([tab.waitForEvent('load'), mirror.waitForEvent('load'), banner.getByRole('button', { name: 'Rechazar' }).click()]);
-    await tab.waitForTimeout(500);
-    assert.deepEqual((await context.cookies()).map(c => c.name).filter(n => n.startsWith('_ga')), [], 'analytics cookies removed on withdrawal');
-    assert.equal(gaRequests.length, before, 'GA4 not loaded after withdrawing consent');
-    assert.equal(await tab.locator('#planta14-ga4').count(), 0);
-    assert.equal(await mirror.locator('#planta14-ga4').count(), 0, 'withdrawal propagated to another open tab without persistent storage');
-    await mirror.close();
-    // An already visited page (and a warm script) must re-check consent when reached via Back.
-    await tab.getByRole('button', { name: 'Configurar cookies' }).click();
-    await banner.getByRole('button', { name: 'Aceptar' }).click();
-    await tab.waitForFunction(() => document.cookie.includes('_ga='));
-    await tab.goto('about:blank');
-    await context.addCookies([{ name: 'planta14_consent', value: '1%3Arejected', url: plain.url }]);
-    const beforeBack = gaRequests.length;
-    await tab.goBack(); await tab.waitForTimeout(700);
-    assert.equal(gaRequests.length, beforeBack, 'Back/Forward cannot load GA after consent was withdrawn in another tab');
-    assert.equal(await tab.locator('#planta14-ga4').count(), 0);
-    assert.deepEqual((await context.cookies()).filter(c => c.name.startsWith('_ga')), []);
-    // Malformed cookies fail closed and show a working choice instead of throwing URIError.
-    await context.addCookies([{ name: 'planta14_consent', value: '%E0%A4%A', url: plain.url }]);
-    await tab.reload(); await banner.waitFor();
-    assert.equal(gaRequests.length, beforeBack);
-    // A site without GA4 configured shows no banner and sets no cookies.
-    const other = await browser.newContext();
-    const otherTab = await other.newPage();
-    await otherTab.goto(`${indexable.url}/`);
-    await otherTab.waitForTimeout(500);
-    assert.equal(await otherTab.getByRole('dialog').count(), 0);
-    assert.deepEqual(await other.cookies(), []);
-    passed('cookies: no GA4 and no cookies before consent; reject as easy as accept; accept loads GA4; choice changed from the footer removes GA cookies');
-    const { testCachedConsent } = await import('./launch-cached-consent.mjs');
-    await testCachedConsent(browser, plain.url, gaId);
+    passed('cookies: no third-party analytics (GA4 removed), no cookie banner, no cookies for readers and nothing loaded from third parties; cookie and privacy policies without GA4');
 
     if (process.env.MANUAL_SCREENSHOTS === 'true') {
       const { captureManual } = await import('./manual-screenshots.mjs');

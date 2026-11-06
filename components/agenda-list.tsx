@@ -17,7 +17,7 @@ async function payloadAgenda(limit: number): Promise<AgendaItem[]> {
   const municipal = await Promise.all((await getMunicipalContents()).filter(c => c.type === 'event' && c.eventAt).map(async c => {
     // Solo los eventos de concejos con el espacio municipal activo (los inactivos no publican agenda municipal).
     const space = await getSpace(c.space);
-    return space && spaceIsActive(space) ? { title: c.title, date: c.eventAt!.slice(0, 10), time: c.eventAt!.slice(11, 16) || undefined, place: c.place || '', concejo: space.name.replace('Ayuntamiento de ', ''), description: 'Publica el ayuntamiento', sort: c.eventAt! } : null;
+    return space && spaceIsActive(space) ? { title: c.title, date: c.eventAt!.slice(0, 10), time: c.eventAt!.slice(11, 16) || undefined, place: c.place || '', concejo: space.name.replace('Ayuntamiento de ', ''), description: c.excerpt ? `${c.excerpt} · Publica el ayuntamiento` : 'Publica el ayuntamiento', href: `/${space.id}?seccion=event`, sort: c.eventAt! } : null;
   }));
   const general = (await getArticles()).filter(a => a.eventAt && slugify(a.topic) === 'agenda').map(a => ({
     title: a.title, date: a.eventAt!.slice(0, 10), time: a.eventAt!.slice(11, 16) || undefined, place: a.eventPlace || '', concejo: a.concejo,

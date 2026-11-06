@@ -1,16 +1,18 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 
 /**
  * Mapa de OpenStreetMap (teselas oficiales, con su atribución) con el recorrido simplificado de una ruta o un punto.
- * Se carga cuando el mapa entra en pantalla; sin JavaScript queda el enlace a openstreetmap.org.
+ * Solo se carga cuando el lector pulsa «Ver el mapa»: hasta entonces la página no pide nada a terceros. Sin
+ * JavaScript queda el enlace a openstreetmap.org.
  */
 export function UtilMap({ track, point, title }: { track?: [number, number][][] | null; point?: [number, number] | null; title: string }) {
   const box = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
   useEffect(() => {
     const element = box.current;
-    if (!element) return;
+    if (!element || !shown) return;
     let map: import("leaflet").Map | null = null, cancelled = false;
     const draw = async () => {
       const L = await import("leaflet");
@@ -27,13 +29,14 @@ export function UtilMap({ track, point, title }: { track?: [number, number][][] 
         map.setView(point, 15);
       }
     };
-    const observer = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { observer.disconnect(); void draw(); } }, { rootMargin: "200px" });
-    observer.observe(element);
-    return () => { cancelled = true; observer.disconnect(); map?.remove(); };
-  }, [track, point, title]);
+    void draw();
+    return () => { cancelled = true; map?.remove(); };
+  }, [track, point, title, shown]);
   const center = track?.[0]?.[0] ?? point;
   return <figure className="util-map" data-util-map={track?.length ? "track" : "point"} data-track-points={track?.reduce((n, s) => n + s.length, 0) ?? 0}>
-    <div ref={box} className="util-map-canvas" role="img" aria-label={`Mapa: ${title}`} />
+    <div ref={box} className={`util-map-canvas${shown ? "" : " is-waiting"}`} role="img" aria-label={`Mapa: ${title}`}>
+      {shown ? null : <button type="button" className="util-map-show" onClick={() => setShown(true)} data-util-map-show>Ver el mapa<small>Se carga desde OpenStreetMap</small></button>}
+    </div>
     {center ? <figcaption><a href={`https://www.openstreetmap.org/?mlat=${center[0]}&mlon=${center[1]}#map=15/${center[0]}/${center[1]}`} target="_blank" rel="noopener noreferrer">Ver en OpenStreetMap ↗</a></figcaption> : null}
   </figure>;
 }

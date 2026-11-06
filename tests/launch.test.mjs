@@ -37,22 +37,6 @@ for (const [value, source] of [[undefined, 'payload'], ['true', undefined], ['tr
 delete process.env.SITE_INDEXABLE; delete process.env.CONTENT_SOURCE;
 console.log('PASS: noindex unless SITE_INDEXABLE=true with real content (never for demo); private areas always noindex; proxy and site-config agree');
 
-const consent = await load('lib/consent.ts');
-assert.equal(consent.analyticsId({}), null);
-assert.equal(consent.analyticsId({ GA4_MEASUREMENT_ID: 'UA-123' }), null);
-assert.equal(consent.analyticsId({ GA4_MEASUREMENT_ID: '<script>' }), null);
-assert.equal(consent.analyticsId({ GA4_MEASUREMENT_ID: ' G-ABC123XYZ ' }), 'G-ABC123XYZ');
-assert.equal(consent.readConsent(''), null);
-assert.equal(consent.readConsent('a=1; planta14_consent=1%3Aaccepted'), 'accepted');
-assert.equal(consent.readConsent('planta14_consent=1:rejected; b=2'), 'rejected');
-assert.equal(consent.readConsent('planta14_consent=0:accepted'), null, 'old versions ask again');
-assert.equal(consent.readConsent('planta14_consent=1:maybe'), null);
-assert.equal(consent.readConsent('planta14_consent=%E0%A4%A'), null, 'malformed cookie fails closed');
-assert.equal(consent.readConsent('planta14_consent=1:accepted:extra'), null);
-assert.match(consent.consentCookie('rejected', true), /^planta14_consent=1%3Arejected; Max-Age=15552000; Path=\/; SameSite=Lax; Secure$/);
-for (const name of ['_ga', '_ga_ABC123', '_gid', '_gat', '_gat_UA']) assert(consent.isAnalyticsCookie(name), name);
-for (const name of ['planta14_consent', 'payload-token', '_gax']) assert(!consent.isAnalyticsCookie(name), name);
-console.log('PASS: GA4 id validation, consent cookie format/versioning and analytics cookie detection');
 
 const { createHealthProbe } = await load('lib/health-probe.ts');
 let calls = 0, clock = 1, finish;

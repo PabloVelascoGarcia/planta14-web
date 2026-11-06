@@ -84,6 +84,7 @@ export interface Config {
     'municipal-services': MunicipalService;
     'util-visibility': UtilVisibility;
     subscribers: Subscriber;
+    newsletters: Newsletter;
     'audit-log': AuditLog;
     'public-media-ops': PublicMediaOp;
     'payload-kv': PayloadKv;
@@ -110,6 +111,7 @@ export interface Config {
     'municipal-services': MunicipalServicesSelect<false> | MunicipalServicesSelect<true>;
     'util-visibility': UtilVisibilitySelect<false> | UtilVisibilitySelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
+    newsletters: NewslettersSelect<false> | NewslettersSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'public-media-ops': PublicMediaOpsSelect<false> | PublicMediaOpsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -577,10 +579,19 @@ export interface Festival {
    * Día en que termina (el mismo si dura un día).
    */
   endDate?: string | null;
+  unpublishedNotice?: string | null;
   /**
-   * Solo con «Confirmada» y las fechas rellenas se puede publicar. Las fiestas del catálogo entran con «Fecha pendiente» o «Fecha orientativa (2025)».
+   * Solo con «Confirmada» y las fechas rellenas se puede publicar. «Por regla» lleva las fechas que da la costumbre (24 de junio…), sin confirmar: no se publica hasta confirmarlas. Las fiestas del catálogo entran con «Por regla», «Fecha pendiente» o «Fecha orientativa (2025)».
    */
-  dateStatus: 'confirmada' | 'pendiente' | 'orientativa';
+  dateStatus: 'confirmada' | 'por-regla' | 'pendiente' | 'orientativa';
+  /**
+   * De dónde sale la fecha (y la regla, si es «por regla»). Comprueba el programa de la edición antes de confirmarla.
+   */
+  dateSource?: string | null;
+  /**
+   * Día en que se consultó la fuente de la fecha (AAAA-MM-DD).
+   */
+  dateCheckedAt?: string | null;
   /**
    * Solo de referencia: fechas documentadas en 2025. No se publican ni se trasladan a otro año.
    */
@@ -1003,6 +1014,10 @@ export interface MunicipalService {
    * Página oficial de la que sale el dato.
    */
   sourceUrl?: string | null;
+  /**
+   * Día en que se comprobó el dato en la fuente (AAAA-MM-DD). Sale junto a la fuente: «comprobado el 04/11/2026». Sin fuente o sin fecha: «Fuente pendiente de comprobar».
+   */
+  checkedAt?: string | null;
   doubts?: string | null;
   externalID?: string | null;
   /**
@@ -1062,6 +1077,51 @@ export interface Subscriber {
   };
   unsubscribeToken?: string | null;
   lastEmailAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Envío del boletín a los suscriptores confirmados. Escribe el asunto, una entradilla si quieres y elige las noticias (al crearlo salen las de los últimos 7 días). Guarda, pulsa «Enviarme una prueba» y, si está bien, «Enviar a todos».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletters".
+ */
+export interface Newsletter {
+  id: number;
+  subject: string;
+  /**
+   * Unas líneas antes de las noticias. Párrafos separados por una línea en blanco.
+   */
+  intro?: string | null;
+  /**
+   * Solo noticias publicadas, en este orden. Cada suscriptor recibe las de sus concejos (todas, si no eligió ninguno).
+   */
+  articles?: (number | Article)[] | null;
+  status?: ('borrador' | 'enviando' | 'enviado' | 'interrumpido') | null;
+  testSentAt?: string | null;
+  startedAt?: string | null;
+  finishedAt?: string | null;
+  sentBy?: (number | null) | User;
+  stats?: {
+    sent?: number | null;
+    failed?: number | null;
+    unsubscribed?: number | null;
+    skipped?: number | null;
+  };
+  /**
+   * Fallos (correo enmascarado) y resumen del envío.
+   */
+  log?: string | null;
+  contentChangedAt?: string | null;
+  sentTo?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1200,6 +1260,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'subscribers';
         value: number | Subscriber;
+      } | null)
+    | ({
+        relationTo: 'newsletters';
+        value: number | Newsletter;
       } | null)
     | ({
         relationTo: 'audit-log';
@@ -1392,7 +1456,10 @@ export interface FestivalsSelect<T extends boolean = true> {
   town?: T;
   startDate?: T;
   endDate?: T;
+  unpublishedNotice?: T;
   dateStatus?: T;
+  dateSource?: T;
+  dateCheckedAt?: T;
   referenceDates?: T;
   usualDates?: T;
   description?: T;
@@ -1727,6 +1794,7 @@ export interface MunicipalServicesSelect<T extends boolean = true> {
   hours?: T;
   notes?: T;
   sourceUrl?: T;
+  checkedAt?: T;
   doubts?: T;
   externalID?: T;
   order?: T;
@@ -1774,6 +1842,33 @@ export interface SubscribersSelect<T extends boolean = true> {
       };
   unsubscribeToken?: T;
   lastEmailAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletters_select".
+ */
+export interface NewslettersSelect<T extends boolean = true> {
+  subject?: T;
+  intro?: T;
+  articles?: T;
+  status?: T;
+  testSentAt?: T;
+  startedAt?: T;
+  finishedAt?: T;
+  sentBy?: T;
+  stats?:
+    | T
+    | {
+        sent?: T;
+        failed?: T;
+        unsubscribed?: T;
+        skipped?: T;
+      };
+  log?: T;
+  contentChangedAt?: T;
+  sentTo?: T;
   updatedAt?: T;
   createdAt?: T;
 }

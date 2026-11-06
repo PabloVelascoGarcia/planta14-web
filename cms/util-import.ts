@@ -79,7 +79,7 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
     if (skip) continue;
     const label = `${name} (${town.name})`;
     const where: Where = { externalID: { equals: id } };
-    const existing = (await payload.find({ collection, where, limit: 1, depth: 0, overrideAccess: true })).docs[0] as { id: number; image?: unknown; track?: unknown } | undefined;
+    const existing = (await payload.find({ collection, where, limit: 1, depth: 0, overrideAccess: true })).docs[0] as { id: number; image?: unknown; track?: unknown; checkedAt?: string | null } | undefined;
     const foto = kind === 'patrimonio' ? (item.foto as Item | null) : null;
     const trackURL = kind === 'rutas' ? (urls(item.gpxOficial)[0] ?? urls(item.enlaceAlternativo).find(u => !/wikiloc\./i.test(u)) ?? null) : null;
     if (existing) {
@@ -88,7 +88,9 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
       if (trackURL && !(Array.isArray(existing.track) && existing.track.length) && !opts.soloComprobar) {
         const t = await route(trackURL, name); if (t.track) Object.assign(patch, { track: t.track, trackNote: t.note });
       }
-      if (Object.keys(patch).length) { await payload.update({ collection, id: existing.id, overrideAccess: true, data: patch as never }); report.completadas.push(`${label}: ${Object.keys(patch).includes('image') ? 'foto' : 'recorrido'}`); }
+      // Servicios: la fecha de comprobación, si faltaba (los importados antes de guardarla).
+      if (kind === 'servicios' && !existing.checkedAt && (data as { checkedAt?: string | null }).checkedAt && !opts.soloComprobar) patch.checkedAt = (data as { checkedAt: string }).checkedAt;
+      if (Object.keys(patch).length) { await payload.update({ collection, id: existing.id, overrideAccess: true, data: patch as never }); report.completadas.push(`${label}: ${Object.keys(patch).includes('image') ? 'foto' : Object.keys(patch).includes('track') ? 'recorrido' : 'fecha de comprobación'}`); }
       else report.existentes.push(label);
       continue;
     }
@@ -132,6 +134,7 @@ export async function importUtil(payload: Payload, kind: UtilImportKind, json: u
     return { name, town: town.id, category: SERVICE_TYPES[type], place: text(item.localidad), address: text(item.direccion),
       phone: phones.map(p => p.replace(/^(\d{3})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4')).join(' · ') || null, email: text(item.correo), web: urls(item.web)[0] ?? null,
       hours: text(item.horario), notes: OPERATIONAL[normal(item.estadoOperativo)] ?? null, sourceUrl: urls(item.fuentes)[0] ?? null,
+      checkedAt: /^\d{4}-\d{2}-\d{2}$/.test(String(item.comprobacion ?? '')) ? String(item.comprobacion) : null,
       doubts: doubts(item.dudas), externalID: id, order: type === 'ayuntamiento' ? 1 : 100 };
   }
 

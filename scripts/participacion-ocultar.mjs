@@ -11,7 +11,7 @@ export async function run(ctx) {
 
   // Por defecto, todo sale (con los seis espacios activos; la activación se prueba en participacion-activacion.mjs).
   await ctx.activate(ctx.SIX);
-  const before = await page(`${web}/lena`);
+  const before = await page(`${web}/lena/util`);
   for (const id of ['farmacias', 'patrimonio', 'rutas', 'subvenciones', 'empleo', 'servicios']) assert.ok(block(before, id) !== null, `by default ${id} is shown`);
 
   // El ayuntamiento oculta dos servicios desde su panel (navegador real).
@@ -26,15 +26,16 @@ export async function run(ctx) {
   await form.getByLabel('Farmacias de guardia').uncheck();
   await form.getByRole('button', { name: 'Guardar ↗' }).click();
   await form.getByText('Guardado. Los servicios desmarcados ya no salen en tu concejo.').waitFor();
-  const lena = await page(`${web}/lena`);
+  const lena = await page(`${web}/lena/util`);
   assert.ok(block(lena, 'patrimonio') === null && block(lena, 'farmacias') === null && block(lena, 'rutas') !== null && block(lena, 'empleo') !== null, 'hidden on the concejo page');
-  assert.ok(lena.includes('data-municipal-util') && lena.includes('municipal-section-heading'), 'the rest of the concejo page (news, editorial) is untouched');
+  const lenaHome = await page(`${web}/lena`);
+  assert.ok(lenaHome.includes('data-municipal-util') && lenaHome.includes('municipal-section-heading') && !lenaHome.includes('data-util-summary-pharmacies') && !lenaHome.includes('data-util-access-link="patrimonio"'), 'the summary drops what is hidden; the rest of the concejo page is untouched');
   const util = await page(`${web}/util`);
   assert.ok(!block(util, 'concejo-lena').includes('/lena/util/patrimonio') && block(util, 'concejo-mieres').includes('/mieres/util/patrimonio') && block(util, 'farmacias') !== null, '/util: only Lena items are removed');
   assert.equal((await fetch(`${web}/lena/util/patrimonio`)).status, 404, 'hidden: its «Ver todos» page is gone');
   assert.equal((await fetch(`${web}/util/patrimonio/santa-cristina-de-lena-lena`)).status, 404, 'and its cards');
   assert.ok(!(await page(`${web}/util/patrimonio`)).includes('Santa Cristina') && (await page(`${web}/util/patrimonio`)).includes('Bustiello'), 'heritage list too');
-  assert.ok(block(await page(`${web}/mieres`), 'farmacias') !== null, 'other concejos keep everything');
+  assert.ok(block(await page(`${web}/mieres/util`), 'farmacias') !== null, 'other concejos keep everything');
   // Lo vuelve a mostrar.
   await tab.reload();
   await form.waitFor();
@@ -42,7 +43,7 @@ export async function run(ctx) {
   await form.getByLabel('Patrimonio').check();
   await form.getByRole('button', { name: 'Guardar ↗' }).click();
   await form.getByText('Guardado.', { exact: false }).waitFor();
-  assert.ok(block(await page(`${web}/lena`), 'patrimonio') !== null, 'shown again');
+  assert.ok(block(await page(`${web}/lena/util`), 'patrimonio') !== null, 'shown again');
   await panel.close();
 
   // Reglas del servidor: solo su concejo, solo claves válidas, solo con el espacio activo; nadie más que la administración.
@@ -63,7 +64,7 @@ export async function run(ctx) {
   const adminCookie = await signIn(users.admin.email);
   const riosa = await town('riosa');
   assert.equal((await post(adminCookie, { hidden: ['rutas', 'empleo'], town: riosa.id })).status, 200);
-  const riosaPage = await page(`${web}/riosa`);
+  const riosaPage = await page(`${web}/riosa/util`);
   assert.ok(block(riosaPage, 'rutas') === null && block(riosaPage, 'empleo') === null && block(riosaPage, 'subvenciones') !== null, 'administration choice applied');
   assert.ok(!(await page(`${web}/util`)).includes('ayuntamientoriosa.com'), '/util drops that concejo link');
   await post(adminCookie, { hidden: [], town: riosa.id }); await post(lenaCookie, { hidden: [] });

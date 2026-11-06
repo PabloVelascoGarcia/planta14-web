@@ -234,19 +234,29 @@ export async function run(ctx) {
     // Página del concejo: cada bloque automático con su atribución y su hora; el resto, enlaces a la fuente oficial.
     // Aquí, los seis espacios activos (la activación se prueba aparte, en participacion-activacion.mjs).
     await ctx.activate(ctx.SIX);
-    const lena = await page(`${web}/lena`);
+    // En la página del concejo, un resumen compacto; las cajas, en /[concejo]/util (con sus pestañas).
+    const lenaHome = await page(`${web}/lena`);
+    const lena = await page(`${web}/lena/util`);
     const block = (html, id) => html.split(`data-util="${id}"`)[1]?.split('</section>')[0] ?? '';
-    assert.ok(lena.includes('data-municipal-util') && lena.includes('href="#util"') && !lena.includes('data-util="carreteras"'), 'Útil section on the concejo page');
+    const summary = lenaHome.split('data-util-summary="true"')[1]?.split('</section>')[0] ?? '';
+    assert.ok(lenaHome.includes('data-municipal-util') && lenaHome.includes('href="#util"') && !lenaHome.includes('data-util="servicios"') && !lenaHome.includes('data-util-service='), 'concejo page: compact summary, no long lists');
+    assert.ok(summary.includes('data-util-summary-weather') && summary.includes('Hoy') && summary.includes('Mañana') && (summary.match(/data-weather-icon=/g) ?? []).length === 2 && summary.includes('© AEMET'), `summary: today and tomorrow with icons in one line: ${summary.slice(0, 900)}`);
+    assert.ok(summary.includes('data-util-summary-pajares') && /Puerto de Pajares \(N-630\):<\/strong>/.test(summary.replaceAll('<!-- -->', '')) && summary.includes('farmasturias.org'), 'summary: Pajares and pharmacies');
+    for (const key of ['servicios', 'patrimonio', 'rutas', 'subvenciones', 'empleo']) assert.ok(summary.includes(`data-util-access-link="${key}"`) && summary.includes(`href="/lena/util/${key}"`), `summary: access to ${key} with its count`);
+    assert.ok(summary.includes('href="/lena/util"') && summary.includes('Todo lo útil de Lena'), '«Todo lo útil de Lena»');
+    assert.ok(lena.includes('data-municipal-util-page="lena"') && lena.includes('municipal-masthead') && /<a[^>]*aria-current="page"[^>]*>Útil<\/a>|<a[^>]*href="\/lena\/util"[^>]*aria-current="page"/.test(lena) && lena.includes('href="/lena?seccion=notice"'), '/lena/util inside the municipal space, with its tabs');
+    assert.ok(lenaHome.includes('data-municipal-util-tab') && lenaHome.includes('href="/lena/util"'), '«Útil» tab in the municipal space');
+    assert.ok(!lena.includes('data-motto="cabecera"'), 'no newspaper header on /lena/util (it has its own)');
     const winter = block(lena, 'invierno');
     const pajares = winter.split('data-util-pajares')[1].split('</div>')[0];
     assert.ok(pajares.includes('2 incidencias') && pajares.includes('N-630, km 85') && pajares.includes('Meteorología adversa · Nevada · Carretera cortada') && pajares.includes('Villamanín (León)')
       && !pajares.includes('km 10,') && !pajares.includes('km 200') && !/abierto/i.test(pajares), `Pajares from the DGT (N-630, Lena and Villamanín), never «abierto»: ${pajares}`);
     assert.ok(pajares.includes('Dirección General de Tráfico (DGT), Punto de Acceso Nacional') && pajares.includes('licencia CC BY') && pajares.includes('Parte de la DGT: <time') && pajares.includes('>04/11/2026, 21:00</time>') && pajares.includes('Consultado'), `DGT attribution, report time and download time: ${pajares}`);
     assert.ok(winter.includes('valgrande-pajares.com/parte-de-nieve-meteo') && !winter.includes('San Isidro') && !winter.includes('Fuentes de Invierno') && !winter.includes('AS-112'), 'Lena: Valgrande as a link only');
-    const aller = await page(`${web}/aller`);
+    const aller = await page(`${web}/aller/util`);
     assert.ok(block(aller, 'invierno').includes('112asturias.es/estado-carreteras') && block(aller, 'invierno').includes('fuentesdeinvierno.com') && !block(aller, 'invierno').includes('data-util-pajares')
       && !block(aller, 'invierno').includes('data-util-source'), 'Aller: San Isidro and Fuentes de Invierno as links only, no data');
-    assert.ok(!(await page(`${web}/mieres`)).includes('data-util="invierno"'), 'no winter block where it does not apply');
+    assert.ok(!(await page(`${web}/mieres/util`)).includes('data-util="invierno"'), 'no winter block where it does not apply');
     const weather = block(lena, 'tiempo');
     assert.ok(weather.includes('Nieve débil') && weather.includes('Cota de nieve 900 m') && weather.includes('Lluvia 80%') && weather.includes('9° / 1°')
       && weather.includes('© AEMET') && weather.includes('Información elaborada por la Agencia Estatal de Meteorología') && weather.includes('Elaborada: 04/11/2026 19:00'), `AEMET forecast (ISO-8859-15) with attribution: ${weather.slice(0, 900)}`);
@@ -280,10 +290,12 @@ export async function run(ctx) {
     }
     assert.ok(block(lena, 'farmacias').includes('farmasturias.org') && !block(lena, 'farmacias').includes('data-util-source'), 'pharmacies: link only');
     assert.ok(block(lena, 'patrimonio').includes('Santa Cristina de Lena') && block(lena, 'patrimonio').includes('class="util-thumb"') && !block(lena, 'patrimonio').includes('Bustiello'), 'heritage of the concejo, with its photo');
-    const noPhoto = block(await page(`${web}/mieres`), 'patrimonio');
+    const noPhoto = block(await page(`${web}/mieres/util`), 'patrimonio');
     assert.ok(noPhoto.includes('Bustiello') && !noPhoto.includes('util-thumb') && !noPhoto.includes('data-util-neutral'), 'no photo: text only, no empty box');
     assert.ok(block(lena, 'rutas').includes('Ruta de ejemplo en Lena') && block(lena, 'rutas').includes('Ruta de ejemplo en Aller'), 'routes of the concejo, also shared ones');
     const servicesBlock = block(lena, 'servicios');
+    const flat = servicesBlock.replaceAll('<!-- -->', '');
+    assert.ok(/Fuente: <a[^>]*href="https:\/\/www\.aytolena\.es\/"[^>]*>aytolena\.es<\/a> · comprobado el 04\/11\/2026/.test(flat) && flat.includes('Fuente pendiente de comprobar'), `services: source and check date, or «Fuente pendiente de comprobar»: ${flat.slice(0, 1500)}`);
     assert.ok(servicesBlock.includes('Ayuntamiento de Lena (EJEMPLO)') && servicesBlock.includes('tel:000000001') && servicesBlock.includes('000 00 00 02') && servicesBlock.includes('Cierre anunciado.')
       && !servicesBlock.includes('Biblioteca') && !servicesBlock.includes('Farmacia') && !servicesBlock.includes('Dudoso'), `municipal services directory of the concejo: ${servicesBlock}`);
     const hits = { ...state.hits };
@@ -297,7 +309,7 @@ export async function run(ctx) {
     assert.equal(state.searches - searches, 4, 'two 429 retried, then both searches');
     assert.equal(state.details, details, 'details reused (no new detail requests within 24 hours)');
     assert.ok(/falla la fuente BDNS: subvenciones/.test(ctx.logs()) && /429/.test(ctx.logs()) && !ctx.logs().includes('clave-de-prueba'), 'errors logged with the source and the code, without the key');
-    assert.ok(block(await page(`${web}/lena`), 'subvenciones').includes('900001'), 'grants still served');
+    assert.ok(block(await page(`${web}/lena/util`), 'subvenciones').includes('900001'), 'grants still served');
     passed('BDNS and the other sources are only queried by the server-side refresh (BDNS at most every UTIL_BDNS_REFRESH_HOURS, 6 by default): visits only read the cache; 429/5xx retried with growing waits (Retry-After honoured), details reused for 24 hours, errors logged without personal data or keys');
 
     // /util general y fichas con mapa.
@@ -314,7 +326,10 @@ export async function run(ctx) {
       `AEMET attribution once, at the end of the weather block, with issue and download times: ${aemetEnd.slice(0, 400)}`);
     // En /util, lo regional y un bloque por concejo activo con sus listas («Ver todos») y el empleo de su ayuntamiento.
     assert.ok(!util.includes('data-util="patrimonio"') && !util.includes('data-util="servicios"') && block(util, 'concejo-mieres').includes('href="/mieres/util/patrimonio"') && block(util, 'concejo-lena').includes('href="/lena/util/patrimonio"'), 'heritage of each active concejo, in its block');
-    assert.ok((block(util, 'empleo').match(/data-util-link/g) ?? []).length === 1 && ctx.SIX.every(t => util.includes(`data-util="concejo-${t}"`)) && util.includes('ayuntamientoriosa.com'), 'BOPA in the regional block; the six town halls in their blocks');
+    assert.ok((block(util, 'empleo').match(/data-util-link/g) ?? []).length === 1 && ctx.SIX.every(t => util.includes(`data-util="concejo-${t}"`) && util.includes(`href="/${t}/util"`)), 'BOPA in the regional block; one compact row per active concejo with «Todo lo útil»');
+    assert.ok(block(await page(`${web}/riosa/util`), 'empleo').includes('ayuntamientoriosa.com'), 'each town hall jobs link in its concejo Útil');
+    const rows = util.split('data-util-towns')[1] ?? '';
+    assert.ok(rows.includes('data-util-access-link="servicios"') && !rows.includes('data-util-service='), '/util: concejo rows are compact (counts, no long lists)');
     const ficha = await page(`${web}/util/patrimonio/santa-cristina-de-lena-lena`);
     assert.ok(ficha.includes('data-util-photo') && ficha.includes('Autora de prueba / Wikimedia Commons / CC BY-SA 4.0') && ficha.includes(commons.paginaCommons) && ficha.includes('data-util-map="point"') && ficha.includes('mlat=43.128594') && ficha.includes('Segundo párrafo de ejemplo')
       && ficha.includes('Punto del mapa: EJEMPLO: punto aproximado') && ficha.includes('BIC, monumento · Decreto de prueba') && ficha.includes('turismoasturias.es'), `heritage card with OSM map and sources: ${ficha.slice(ficha.indexOf('data-util-place'), ficha.indexOf('data-util-place') + 2500)}`);
@@ -327,7 +342,11 @@ export async function run(ctx) {
     // En el navegador: el recorrido se dibuja sobre OpenStreetMap; en el CMS, los avisos de revisión.
     const viewer = await browser.newContext();
     const mapTab = await viewer.newPage();
-    await mapTab.goto(`${web}/util/rutas/gran-ruta-de-prueba-riosa`);
+    // Nada de OpenStreetMap hasta pulsar «Ver el mapa».
+    const tiles = []; viewer.on('request', r => { if (/openstreetmap\.org/.test(r.url())) tiles.push(r.url()); });
+    await mapTab.goto(`${web}/util/rutas/gran-ruta-de-prueba-riosa`, { waitUntil: 'networkidle' });
+    assert.equal(tiles.length, 0, 'no third-party request before «Ver el mapa»');
+    await mapTab.click('[data-util-map-show]');
     await mapTab.locator('.util-map-canvas .leaflet-overlay-pane path').first().waitFor();
     assert.equal(await mapTab.locator('.util-map-canvas .leaflet-overlay-pane path.leaflet-interactive').count(), 2, 'GR 206: one line with two stages plus the start marker');
     assert.ok(await mapTab.locator('.leaflet-control-attribution').innerText().then(t => t.includes('colaboradores de OpenStreetMap')), 'OSM attribution');
@@ -351,25 +370,25 @@ export async function run(ctx) {
     state.boe = 'fail';
     await db(sql`UPDATE external_cache SET fetched_at = now() - interval '5 hours' WHERE key = 'boe:empleo'`);
     const mailsBefore = (await mails()).length;
-    assert.ok(block(await page(`${web}/lena`), 'empleo').includes('Ayuntamiento de Lena'), 'stale data while the source is down');
+    assert.ok(block(await page(`${web}/lena/util`), 'empleo').includes('Ayuntamiento de Lena'), 'stale data while the source is down');
     await waitFor(async () => (await mails()).length > mailsBefore, 'failure email');
     const alert = (await mails()).slice(mailsBefore).find(m => m.subject === 'Útil: no responde la fuente «BOE: oposiciones y concursos»');
     assert.ok(alert && alert.to.includes(users.admin.email) && alert.text.includes('HTTP 500') && alert.text.includes('sigue enseñando el último dato bueno'), 'email to the administration');
-    const stale = block(await page(`${web}/lena`), 'empleo');
+    const stale = block(await page(`${web}/lena/util`), 'empleo');
     assert.ok(stale.includes('data-util-stale') && stale.includes('Ayuntamiento de Lena'), 'marked as not updated now');
     await db(sql`UPDATE external_cache SET checked_at = now() - interval '1 hour' WHERE key = 'boe:empleo'`);
-    await page(`${web}/lena`);
+    await page(`${web}/lena/util`);
     await waitFor(async () => (await db(sql`SELECT checked_at > now() - interval '1 minute' AS fresh FROM external_cache WHERE key = 'boe:empleo'`)).rows[0].fresh, 'retried');
     assert.equal((await mails()).length, mailsBefore + 1, 'no second email within 12 hours');
     state.bdns = 'fail';
     await db(sql`DELETE FROM external_cache WHERE key = 'bdns:abiertas'`);
     await waitFor(async () => (await db(sql`SELECT count(*)::int AS n FROM external_cache WHERE key = 'bdns:abiertas' AND error IS NOT NULL`)).rows[0].n === 1, 'BDNS failure recorded');
-    const down = await page(`${web}/lena`);
+    const down = await page(`${web}/lena/util`);
     assert.ok(block(down, 'subvenciones').includes('data-util-unavailable') && block(down, 'tiempo').includes('Nieve débil'), 'a source without data: notice in its block, the rest of the page works');
     await waitFor(async () => (await mails()).some(m => m.subject === 'Útil: no responde la fuente «BDNS: subvenciones»' && m.text.includes('ese bloque enseña un aviso')), 'second source email');
     state.boe = 'ok'; state.bdns = 'ok';
     await db(sql`UPDATE external_cache SET fetched_at = now() - interval '5 hours', checked_at = now() - interval '1 hour' WHERE key = 'boe:empleo'`);
-    await page(`${web}/lena`);
+    await page(`${web}/lena/util`);
     await waitFor(async () => (await db(sql`SELECT error IS NULL AS ok FROM external_cache WHERE key = 'boe:empleo'`)).rows[0].ok, 'recovered');
     passed('Útil sources failing: the page keeps working, shows the last good datum with its time (or a notice) and emails the administration at most once every 12 hours per source; it recovers on its own');
 
@@ -401,13 +420,13 @@ export async function run(ctx) {
     await editor.getByRole('button', { name: 'Guardar los cambios ↗' }).click();
     await editor.getByText('Guardado. Ya sale en «Útil» de tu concejo.').waitFor();
     await panel.close();
-    const services = block(await page(`${web}/lena`), 'servicios');
+    const services = block(await page(`${web}/lena/util`), 'servicios');
     assert.ok(services.includes('Punto limpio de Villallana') && services.includes('tel:985490000') && services.includes('De 8:00 a 20:00'), 'published at once in Útil');
     passed('municipal services directory: each town hall edits its own from its panel (add, edit, remove; the server forces its concejo), the administration edits all, journalists and other town halls cannot');
 
     // Sin clave de AEMET el bloque del tiempo no sale.
     await stop(); await start({ ...sources, AEMET_API_KEY: '' });
-    const noKey = await page(`${web}/lena`);
+    const noKey = await page(`${web}/lena/util`);
     assert.ok(!noKey.includes('data-util="tiempo"') && noKey.includes('data-util="subvenciones"'), 'no AEMET key: no weather block');
     passed('AEMET: with no AEMET_API_KEY in the .env the weather block is not shown');
   } finally {

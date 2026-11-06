@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { UTIL_BOX_LIMIT, UTIL_LINKS, type UtilData } from "@/lib/util";
+import { UTIL_BOX_LIMIT, UTIL_LINKS, utilCounts, type UtilData } from "@/lib/util";
 import { townName, UTIL_TOWNS, type Cached } from "@/lib/util-sources";
 import { formatDate } from "@/lib/utils";
 import { UtilGrid } from "./util-grid";
@@ -37,9 +37,10 @@ function Official({ href, children }: { href: string; children: ReactNode }) {
 const aemetTime = (iso: string) => iso.replace(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}).*$/, "$3/$2/$1 $4:$5");
 /** Una hora o, si los concejos difieren, el intervalo («entre … y …»). */
 function span(values: string[], format: (v: string) => string | null) {
-  const sorted = [...new Set(values)].sort();
-  if (!sorted.length) return null;
-  return sorted.length === 1 ? format(sorted[0]) : `entre ${format(sorted[0])} y ${format(sorted[sorted.length - 1])}`;
+  // Se compara ya con formato (al minuto): si la primera y la última coinciden, una sola hora.
+  const shown = [...new Set([...values].sort().map(format).filter((v): v is string => Boolean(v)))];
+  if (!shown.length) return null;
+  return shown.length === 1 ? shown[0] : `entre ${shown[0]} y ${shown[shown.length - 1]}`;
 }
 /**
  * Atribución de AEMET, una sola vez al final del bloque del tiempo, como piden sus condiciones de reutilización: autoría
@@ -102,7 +103,15 @@ export function ServiceItem({ s }: { s: Service }) {
     {s.address || s.place ? <span>{[s.address, s.address?.includes(s.place ?? "@@") ? null : s.place].filter(Boolean).join(", ")}</span> : null}
     {s.phone ? <span>Tel. {s.phone.split(" · ").map((p, i) => <span key={p}>{i ? " · " : ""}<a href={`tel:${p.replace(/[^\d+]/g, "")}`}>{p}</a></span>)}</span> : null}
     {s.email ? <span><a href={`mailto:${s.email}`}>{s.email}</a></span> : null}{s.hours ? <span className="util-hours">{s.hours}</span> : null}
-    {s.web ? <span><a href={s.web} {...out}>Web ↗</a></span> : null}{s.notes ? <small>{s.notes}</small> : null}</li>;
+    {s.web ? <span><a href={s.web} {...out}>Web ↗</a></span> : null}{s.notes ? <small>{s.notes}</small> : null}
+    <ServiceSource s={s} /></li>;
+}
+/** Fuente y fecha de comprobación del dato; sin fuente, «Fuente pendiente de comprobar». */
+function ServiceSource({ s }: { s: Service }) {
+  if (!s.sourceUrl) return <small className="util-service-source" data-util-service-source="pendiente">Fuente pendiente de comprobar</small>;
+  const host = (() => { try { return new URL(s.sourceUrl).hostname.replace(/^www\./, ""); } catch { return s.sourceUrl; } })();
+  const day = s.checkedAt?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return <small className="util-service-source" data-util-service-source>Fuente: <a href={s.sourceUrl} {...out}>{host}</a>{day ? ` · comprobado el ${day[3]}/${day[2]}/${day[1]}` : " · fecha de comprobación pendiente"}</small>;
 }
 export function PlaceItem({ p, kind, town }: { p: Place; kind: "patrimonio" | "rutas"; town: string | null }) {
   return <li>{kind === "patrimonio" ? <Thumb photo={p.photo} /> : null}<Link href={`/util/${kind}/${p.slug}`}><strong>{p.name}</strong><small>{[!town ? p.townName : null, p.detail].filter(Boolean).join(" · ")}</small>{p.summary ? <span>{p.summary}</span> : null}</Link></li>;
@@ -130,7 +139,8 @@ export function UtilBlocks({ data }: { data: UtilData }) {
   const base = town ? `/${town}/util` : "/util";
   // En /util, las ayudas y el empleo de los ayuntamientos van en el bloque de cada concejo activo.
   const grants = data.grants.data?.filter(g => town || !isTown(g.scope)) ?? null;
-  const jobs = data.jobs.data?.filter(j => town || !isTown(j.scope)) ?? null;
+  // Empleo: en /util también el de los ayuntamientos activos (cada anuncio con su concejo).
+  const jobs = data.jobs.data ?? null;
   return <UtilGrid>
     {show("invierno") && winter ? <Block id="invierno" title="Puertos y estaciones de esquí" kicker="Invierno">
       {lenaWinter ? <div className="util-card" data-util-pajares>
@@ -192,7 +202,7 @@ export function UtilBlocks({ data }: { data: UtilData }) {
 
     {show("empleo") ? <Block id="empleo" title="Empleo público" kicker="Oposiciones y bolsas">
       {jobs ? jobs.length ? <ul className="util-list">{jobs.slice(0, UTIL_BOX_LIMIT).map(j => <JobItem key={j.id} j={j} town={town} />)}</ul>
-        : <p>En los últimos 45 días el BOE no ha publicado convocatorias {town ? "de este ayuntamiento ni del Principado" : "del Principado"}.</p> : <Unavailable cached={data.jobs} what="el BOE" />}
+        : <p data-util-jobs-empty>En los últimos 45 días el BOE no ha publicado convocatorias {town ? "de este ayuntamiento" : "de los ayuntamientos del Caudal"}.</p> : <Unavailable cached={data.jobs} what="el BOE" />}
       {jobs?.length ? <More href={`${base}/empleo`} count={jobs.length} label="Ver todas" /> : null}
       <p className="util-source" data-util-source>Fuente: <a href="https://www.boe.es/" {...out}>Agencia Estatal Boletín Oficial del Estado</a> (RSS de oposiciones y concursos, sección II.B). Selección por concejo de Planta 14;
         el texto auténtico es el publicado en el BOE<Checked at={data.jobs.fetchedAt} /><Stale error={data.jobs.data ? data.jobs.error : null} />.</p>
@@ -200,28 +210,47 @@ export function UtilBlocks({ data }: { data: UtilData }) {
       {town && UTIL_LINKS.empleoMunicipal[town] ? <Official href={UTIL_LINKS.empleoMunicipal[town]}>Empleo en el Ayuntamiento de {townName(town)}</Official> : null}
     </Block> : null}
 
-    {!town ? data.activeTowns.length ? UTIL_TOWNS.filter(t => data.activeTowns.includes(t.slug)).map(t => <TownCard key={t.slug} data={data} slug={t.slug} name={t.name} />)
-      : null : null}
   </UtilGrid>;
 }
 
-/** En /util, un bloque por cada concejo con el espacio municipal activo, con lo que ese ayuntamiento publica. */
-function TownCard({ data, slug, name }: { data: UtilData; slug: string; name: string }) {
-  const hidden = data.hiddenByTown[slug] ?? [];
-  const on = (key: string) => !hidden.includes(key);
-  const heritage = data.heritage.filter(p => p.town === slug), routes = data.routes.filter(p => p.town === slug);
-  const grants = data.grants.data?.filter(g => g.scope === slug) ?? [], jobs = data.jobs.data?.filter(j => j.scope === slug) ?? [];
-  const services = data.servicesByTown[slug] ?? 0;
-  const items = [
-    on("servicios") && services ? [`/${slug}/util/servicios`, `Servicios municipales (${services})`] : null,
-    on("patrimonio") && heritage.length ? [`/${slug}/util/patrimonio`, `Patrimonio (${heritage.length})`] : null,
-    on("rutas") && routes.length ? [`/${slug}/util/rutas`, `Rutas (${routes.length})`] : null,
-    on("subvenciones") && grants.length ? [`/${slug}/util/subvenciones`, `Ayudas del ayuntamiento (${grants.length})`] : null,
-    on("empleo") && jobs.length ? [`/${slug}/util/empleo`, `Empleo del ayuntamiento (${jobs.length})`] : null,
-  ].filter((x): x is string[] => Boolean(x));
-  return <Block id={`concejo-${slug}`} title={name} kicker="Tu concejo">
-    {items.length ? <ul className="util-list" data-util-town-links>{items.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul> : <p className="util-empty">Todavía no hay servicios publicados.</p>}
-    {on("empleo") && UTIL_LINKS.empleoMunicipal[slug] ? <Official href={UTIL_LINKS.empleoMunicipal[slug]}>Empleo en el Ayuntamiento de {name}</Official> : null}
-    <Link href={`/${slug}#util`} className="municipal-read-link">Todo lo útil de {name} ↗</Link>
-  </Block>;
+/** Fila de accesos con recuento («Servicios 18 · Patrimonio 8 · …») y «Todo lo útil de …». */
+export function UtilAccessRow({ counts, slug, name }: { counts: ReturnType<typeof utilCounts>; slug: string; name: string }) {
+  return <div className="util-access" data-util-access={slug}>
+    {counts.length ? <ul className="util-access-row">{counts.map(c => <li key={c.key}><Link href={c.href} data-util-access-link={c.key}>{c.label} <strong>{c.count}</strong></Link></li>)}</ul> : null}
+    <Link href={`/${slug}/util`} className="municipal-read-link util-access-all" data-util-all>Todo lo útil de {name} ↗</Link>
+  </div>;
+}
+
+/** /util: una fila compacta por cada concejo con el espacio municipal activo. */
+export function UtilTownRows({ towns }: { towns: { slug: string; name: string; counts: ReturnType<typeof utilCounts> }[] }) {
+  if (!towns.length) return null;
+  return <section className="util-towns" aria-labelledby="util-concejos" data-util-towns>
+    <h2 id="util-concejos" className="util-weather-title">En cada concejo</h2>
+    {towns.map(t => <div key={t.slug} className="util-town-row" data-util={`concejo-${t.slug}`}><h3>{t.name}</h3><UtilAccessRow counts={t.counts} slug={t.slug} name={t.name} /></div>)}
+  </section>;
+}
+
+/**
+ * Página de un concejo activo: resumen compacto de «Útil» al final. El tiempo de hoy y mañana en una línea, el puerto
+ * (Pajares en Lena, San Isidro en Aller), farmacias y la fila de accesos. Respeta lo que el ayuntamiento haya ocultado.
+ */
+export function UtilSummary({ data, name }: { data: UtilData; name: string }) {
+  const slug = data.town ?? "";
+  const show = (key: string) => !data.hidden.includes(key);
+  const forecast = data.forecasts?.find(f => f.town === slug)?.forecast;
+  const [today, tomorrow] = forecast?.data?.days ?? [];
+  const incidents = data.pajares.data?.incidents.length;
+  return <div className="util-summary" data-util-summary>
+    {show("tiempo") && today ? <p className="util-summary-line is-row" data-util-summary-weather>
+      <span className="util-summary-day"><WeatherIcon sky={today.sky} size={26} /><strong>Hoy</strong> {today.sky ? `${today.sky}, ` : ""}{today.max ?? "–"}° / {today.min ?? "–"}°{today.rain !== null ? ` · lluvia ${today.rain}%` : ""}</span>
+      {tomorrow ? <span className="util-summary-day"><WeatherIcon sky={tomorrow.sky} size={22} /><strong>Mañana</strong> {tomorrow.max ?? "–"}° / {tomorrow.min ?? "–"}°</span> : null}
+      <small className="util-source">© AEMET. <a href={UTIL_LINKS.aemet} {...out}>Información elaborada por la Agencia Estatal de Meteorología</a></small>
+    </p> : null}
+    {show("invierno") && slug === "lena" ? <p className="util-summary-line" data-util-summary-pajares><strong>Puerto de Pajares (N-630):</strong>{" "}
+      {incidents === undefined ? "sin datos de la DGT ahora mismo" : incidents ? `la DGT registra ${incidents === 1 ? "una incidencia" : `${incidents} incidencias`}` : "la DGT no registra incidencias"}
+      {data.pajares.fetchedAt ? <small className="util-source"> · DGT, <Checked at={data.pajares.fetchedAt} label="consultado" /></small> : null}</p> : null}
+    {show("invierno") && slug === "aller" ? <p className="util-summary-line"><strong>Puerto de San Isidro (AS-112):</strong> <a href={UTIL_LINKS.sanIsidro} {...out}>estado en 112 Asturias ↗</a></p> : null}
+    {show("farmacias") ? <p className="util-summary-line"><a href={UTIL_LINKS.farmacias} {...out} data-util-summary-pharmacies>Farmacias de guardia (Colegio de Farmacéuticos) ↗</a></p> : null}
+    <UtilAccessRow counts={utilCounts(data)} slug={slug} name={name} />
+  </div>;
 }

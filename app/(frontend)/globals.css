@@ -108,7 +108,7 @@ img {
 .numbered-story { display: grid; grid-template-columns: 22px 1fr; gap: 11px; }
 .story-number { padding-top: 19px; color: #a4522d; font-family: var(--font-serif); font-style: italic; font-size: 17px; }
 .numbered-story article { padding-block: 17px; }
-.numbered-story article > div { font-size: 9px; letter-spacing: .09em; }
+.numbered-story article > div { font-size: 13px; }
 .numbered-story article > a { font-size: 20px; line-height: 1.2; }
 .editorial-link { display: flex; justify-content: space-between; margin-top: 15px; padding: 17px 0; border-top: 2px solid #1c1917; font-size: 12px; font-weight: 700; }
 .search-form { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; align-items: end; gap: 16px; padding: 25px; margin-top: 30px; background: #ece8e0; }
@@ -234,7 +234,10 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
 .legal-page p, .legal-page li { font-size: 16px; line-height: 1.75; margin-top: 12px; }
 .legal-page ul { list-style: disc; padding-left: 22px; }
 .legal-page a { color: #a4522d; text-decoration: underline; text-underline-offset: 3px; }
-.legal-page table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+.legal-table { overflow-x: auto; margin-top: 16px; max-width: 100%; }
+.legal-table:focus-visible { outline: 2px solid #a4522d; outline-offset: 2px; }
+.legal-page table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; }
+.legal-page td { overflow-wrap: anywhere; }
 .legal-page th, .legal-page td { border-bottom: 1px solid #1c191726; padding: 10px 8px; text-align: left; vertical-align: top; }
 .legal-review { border: 2px solid #a4522d; background: #fbf1eb; padding: 14px 18px; margin-top: 18px; font-size: 14px !important; font-weight: 700; }
 .legal-meta { color: #57534e; font-size: 13px !important; }
@@ -258,4 +261,33 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
 @media (min-width: 1024px) and (pointer: fine) {
   .footer-list { margin-top: 10px; gap: 6px; }
   .footer-link { min-height: 0; min-width: 0; line-height: 1.5; }
+}
+
+/* Etiqueta «Opinión» en las tarjetas. */
+.opinion-tag { display: inline-block; background: #28241f; color: #fffdf9; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; }
+
+/* Boletín: zonas táctiles de 44 px en pantallas táctiles; en ordenador con ratón, casillas, campo y botón compactos. */
+.nl-check, .nl-link { min-height: 44px; }
+.nl-field { min-height: 44px; }
+@media (min-width: 1024px) and (pointer: fine) {
+  .nl-check { min-height: 28px; }
+  .nl-link { min-height: 28px; }
+  .nl-field { min-height: 38px; font-size: 15px; }
+}
+
+/* Móvil: cabecera del periódico compacta (la foto de apertura de la portada se ve en la primera pantalla a 390 × 844)
+   y concejos en una fila desplazable con 44 px de zona táctil, sin agrandar la letra. */
+@media (max-width: 767px) {
+  .masthead-topline { display: none; }
+  .masthead { padding-top: 12px; padding-bottom: 0; }
+  .brand { font-size: 46px; }
+  .masthead-tagline { padding: 2px 0 10px; }
+  .territory-nav { border-top-width: 2px; }
+  .territory-group, .territory-group + .territory-group { padding: 0; align-items: center; gap: 10px; }
+  .territory-towns { flex-wrap: nowrap; overflow-x: auto; gap: 0 4px; scrollbar-width: none; margin-right: -16px; padding-right: 16px; }
+  .territory-towns::-webkit-scrollbar { display: none; }
+  .territory-towns a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; white-space: nowrap; }
+  .territory-name { display: inline-flex; align-items: center; min-height: 44px; }
+  .section-menu summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 0; }
+  .front-opening { padding-top: 16px; }
 }

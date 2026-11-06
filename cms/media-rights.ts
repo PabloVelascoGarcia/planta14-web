@@ -16,8 +16,20 @@ export const readMedia: Access = (args) => {
   return publicMediaFilter;
 };
 
-export async function validatePublishedImages(data: Record<string, unknown>, req: PayloadRequest) {
-  if (data._status !== 'published') return;
+/**
+ * ¿Este guardado publica de verdad? Al publicar (_status «published») o al guardar sin más algo que ya estaba
+ * publicado. Guardar un borrador (_status «draft» o ?draft=true) o despublicar nunca cuenta como publicar: así las
+ * comprobaciones de «para publicar…» no impiden despublicar ni guardar borradores.
+ */
+export function isPublishing(data: Record<string, unknown>, originalDoc: Record<string, unknown> | undefined | null, req: PayloadRequest) {
+  const requested = data._status;
+  if (requested === 'draft' || String((req.query as Record<string, unknown> | undefined)?.draft) === 'true') return false;
+  return requested === 'published' || (requested === undefined && originalDoc?._status === 'published');
+}
+
+export async function validatePublishedImages(data: Record<string, unknown>, req: PayloadRequest, originalDoc?: Record<string, unknown> | null) {
+  if (originalDoc !== undefined ? !isPublishing(data, originalDoc, req) : data._status !== 'published') return;
+  if (originalDoc) data = { ...originalDoc, ...data };
   const identity = data.identity as { heroImage?: unknown; crestImage?: unknown } | undefined;
   for (const value of [data.image, data.seoImage, identity?.heroImage, identity?.crestImage]) {
     const id = relationID(value);

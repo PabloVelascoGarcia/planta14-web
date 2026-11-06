@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getArticle, getArticles } from "@/lib/cms";
 import { ArticleView } from "@/components/article-view";
-import { Newsletter } from "@/components/newsletter";
 import { relatedArticles } from "@/lib/front-page";
 import { siteUrl } from "@/lib/site-config";
 import { slugify } from "@/lib/utils";
@@ -46,7 +45,6 @@ export default async function ArticlePage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd(article)) }} />
       <StatsScope town={slugify(article.concejo)} section={slugify(article.topic)} />
       <ArticleView article={article} related={related} shareUrl={`${siteUrl}/noticia/${article.slug}`} />
-      <div className="mt-12 max-w-[760px]"><Newsletter source="noticia" /></div>
     </article>
   );
 }

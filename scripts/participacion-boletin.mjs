@@ -5,13 +5,14 @@ export async function run(ctx) {
   const linkIn = (mail, path) => mail?.text.match(new RegExp(`https?://\\S+${path}\\?t=\\S+`))?.[0]?.replace(origin, web);
   const lastMailTo = async to => (await mails()).filter(m => m.to === to).at(-1);
 
-  // Dónde está el formulario: portada, pie, noticias y fichas de fiestas.
+  // Dónde está el formulario: el bloque verde solo en la portada; en las demás páginas, el del pie.
   const home = await page(`${web}/`);
   for (const source of ['portada', 'pie']) assert.ok(home.includes(`data-subscribe-form="${source}"`), `form in ${source}`);
   const articleSlug = home.match(/href="\/noticia\/([^"]+)"/)[1];
-  assert.ok((await page(`${web}/noticia/${articleSlug}`)).includes('data-subscribe-form="noticia"'), 'form in articles');
+  const articleHTML = await page(`${web}/noticia/${articleSlug}`);
+  assert.ok(!articleHTML.includes('data-subscribe-form="noticia"') && !articleHTML.includes('data-newsletter=') && articleHTML.includes('data-subscribe-form="pie"'), 'articles: only the footer form');
   const fiestaSlug = (await page(`${web}/fiestas`)).match(/href="\/fiestas\/([a-z0-9-]+-\d{4})"/)[1];
-  assert.ok((await page(`${web}/fiestas/${fiestaSlug}`)).includes('data-subscribe-form="fiesta"'), 'form in fiesta pages');
+  assert.ok(!(await page(`${web}/fiestas/${fiestaSlug}`)).includes('data-subscribe-form="fiesta"'), 'fiesta pages: only the footer form');
   assert.ok(home.includes('href="/privacidad"') && home.includes('Me podré dar de baja con un clic'), 'clear consent with privacy link');
 
   // Alta desde la portada: consentimiento obligatorio, concejos y contenidos, doble confirmación.
@@ -59,8 +60,8 @@ export async function run(ctx) {
   await tab.locator('[data-token-result="false"]', { hasText: 'ya se ha usado' }).waitFor();
   // Cambio de preferencias de quien ya está suscrito: también se confirma por correo.
   await payload.update({ collection: 'subscribers', id: s.id, overrideAccess: true, data: { lastEmailAt: new Date(Date.now() - 3600_000).toISOString() } });
-  await tab.goto(`${web}/fiestas/${fiestaSlug}`);
-  const fiestaForm = tab.locator('[data-subscribe-form="fiesta"]');
+  await tab.goto(`${web}/`);
+  const fiestaForm = tab.locator('[data-subscribe-form="portada"]');
   await fiestaForm.locator('input[name="email"]').fill('lectora@example.org');
   await fiestaForm.locator('input[value="avisos"]').uncheck();
   await fiestaForm.locator('input[value="lena"]').check();
@@ -75,7 +76,7 @@ export async function run(ctx) {
   await tab.click('button:has-text("Confirmar la suscripción")');
   await tab.locator('[data-token-result="true"]').waitFor();
   s = await subscriber('lectora@example.org');
-  assert.ok(s.towns.map(t => t.slug).join() === 'lena' && s.topics.join() === 'finde' && s.source === 'fiesta', 'preferences changed after confirming');
+  assert.ok(s.towns.map(t => t.slug).join() === 'lena' && s.topics.join() === 'finde' && s.source === 'portada', 'preferences changed after confirming');
   // Pie (opciones plegadas): alta con los contenidos por defecto.
   await tab.goto(`${web}/agenda`);
   const footer = tab.locator('[data-subscribe-form="pie"]');
@@ -85,7 +86,7 @@ export async function run(ctx) {
   await tab.locator('[data-subscribe-done]').first().waitFor();
   assert.equal((await subscriber('vecino@example.org')).source, 'pie');
   await context.close();
-  passed('newsletter sign-up: forms on the home page, footer (options folded), articles and fiesta pages, with a clear consent and privacy link; consent required; double opt-in (the email link opens a page whose button confirms, once); preferences (concejos and «Qué hacer este finde» / «Avisos de mi concejo») applied only on confirmation, also when changing them; at most one email every two minutes; List-Unsubscribe one-click headers');
+  passed('newsletter sign-up: the green block only on the home page (two columns) and the compact footer form elsewhere (options behind «Elegir concejos»), with a clear consent and privacy link; consent required; double opt-in (the email link opens a page whose button confirms, once); preferences (concejos and «Qué hacer este finde» / «Avisos de mi concejo») applied only on confirmation, also when changing them; at most one email every two minutes; List-Unsubscribe one-click headers');
 
   // Baja con un clic: botón de la página del enlace y POST de un clic del programa de correo.
   const vecino = await subscriber('vecino@example.org');

@@ -30,11 +30,12 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
     assert.ok(!/href="[^"]*\/panel(\/|")/.test(page), `no link to a /panel from ${url}`);
   }
   assert.ok(!home.includes('Prueba cómo se publica un aviso'), 'no «Prueba cómo se publica un aviso»');
-  const municipalBlock = home.slice(home.indexOf('data-block="ayuntamientos"'), home.indexOf('id="concejos"'));
+  const municipalBlock = home.slice(home.indexOf('data-block="ayuntamientos"'), home.indexOf('data-block="opinion"'));
   assert.ok(municipalBlock.includes('href="/mieres"') && municipalBlock.includes('Descubre el espacio de Mieres'), 'active space Mieres');
   assert.ok(municipalBlock.includes('href="/lena"') && municipalBlock.includes('Descubre el espacio de Lena'), 'active space Lena');
   assert.ok(!municipalBlock.includes('href="/aller"') && !municipalBlock.includes('Descubre el espacio de Aller'), 'Aller (inactive) is not offered');
-  assert.ok(municipalBlock.includes('href="#concejos"') && home.includes('id="concejos"'), 'link to the list of the six concejos');
+  assert.ok(!home.includes('id="concejos"') && !home.includes('Los seis concejos del Caudal') && !home.includes('Mapa informativo'), 'no «Mapa informativo» block (the concejos are in the header)');
+  for (const kicker of ['El pulso del territorio', 'Cerca de ti']) assert.ok(!home.includes(kicker), `no kicker «${kicker}»`);
   for (const town of ['mieres', 'lena', 'aller', 'morcin', 'riosa', 'ribera-de-arriba']) assert.ok(home.includes(`href="/${town}"`), `concejo ${town} listed`);
   passed('«Tu ayuntamiento, aquí»: no «Prueba cómo se publica un aviso»; no public page links to a /panel; it offers the active spaces (Mieres and Lena, not Aller) and a link to the list of the six concejos');
 

@@ -28,7 +28,7 @@ export const UTIL_LINKS = {
 export type Photo = { url: string; srcSet?: string; alt: string; credit: string; source: string | null };
 export type Place = { slug: string; name: string; town: string; townName: string; summary: string | null; detail: string | null; photo: Photo | null; mapped: boolean; kind: string | null };
 export type Service = { id: number; name: string; town: string; category: string; place: string | null; address: string | null; phone: string | null; email: string | null;
-  web: string | null; hours: string | null; notes: string | null; sourceUrl: string | null };
+  web: string | null; hours: string | null; notes: string | null; sourceUrl: string | null; checkedAt: string | null };
 export type UtilData = {
   town: string | null; hidden: string[]; hiddenByTown: Record<string, string[]>; activeTowns: string[];
   pajares: Cached<{ publishedAt: string | null; incidents: RoadIncident[] }>;
@@ -85,7 +85,7 @@ export async function getUtilData(town: string | null): Promise<UtilData> {
     heritage: heritage.filter(p => shown("patrimonio", town ?? p.town) && active.has(p.town)), routes: routes.filter(p => shown("rutas", town ?? p.town) && active.has(p.town)),
     servicesByTown: town ? {} : services.reduce<Record<string, number>>((acc, doc) => { const slug = townOf(doc).slug; if (active.has(slug) && !(hiddenByTown[slug] ?? []).includes("servicios")) acc[slug] = (acc[slug] ?? 0) + 1; return acc; }, {}),
     services: (town ? services : []).map(doc => ({ id: doc.id, name: doc.name, town: townOf(doc).slug, category: doc.category, place: doc.place || null, address: doc.address || null,
-      phone: doc.phone || null, email: doc.email || null, web: doc.web || null, hours: doc.hours || null, notes: doc.notes || null, sourceUrl: doc.sourceUrl || null })),
+      phone: doc.phone || null, email: doc.email || null, web: doc.web || null, hours: doc.hours || null, notes: doc.notes || null, sourceUrl: doc.sourceUrl || null, checkedAt: (doc as { checkedAt?: string | null }).checkedAt || null })),
   };
 }
 
@@ -124,6 +124,13 @@ export const UTIL_LIST_TYPES = {
 } as const;
 export type UtilListType = keyof typeof UTIL_LIST_TYPES;
 export const isUtilListType = (value: string): value is UtilListType => Object.hasOwn(UTIL_LIST_TYPES, value);
+/** Accesos con recuento de un concejo (los mismos números que sus páginas «Ver todos»), sin lo que haya ocultado. */
+export function utilCounts(data: UtilData): { key: UtilListType; label: string; count: number; href: string }[] {
+  const town = data.town ?? "";
+  const counts: [UtilListType, string, number][] = [["servicios", "Servicios", data.services.length], ["patrimonio", "Patrimonio", data.heritage.length],
+    ["rutas", "Rutas", data.routes.length], ["subvenciones", "Ayudas", data.grants.data?.length ?? 0], ["empleo", "Empleo", data.jobs.data?.length ?? 0]];
+  return counts.filter(([key, , count]) => count > 0 && !data.hidden.includes(key)).map(([key, label, count]) => ({ key, label, count, href: `/${town}/util/${key}` }));
+}
 /** Máximo de elementos por caja de «Útil»; el resto, en la página «Ver todos». */
 export const UTIL_BOX_LIMIT = 5;
 
