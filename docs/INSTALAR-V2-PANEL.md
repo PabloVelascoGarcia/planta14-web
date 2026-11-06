@@ -2,9 +2,9 @@
 
 Para Claude Code en el PC de Pablo (Code local), con el agente SSH cargado.
 
-Rama **`desarrollo/planta14-v2-panel`**, creada desde `desarrollo/planta14-v2-final` (`ff10f48`). **Commit a instalar: PENDIENTE.** En esta misma rama se añadirán en unos días los cambios que pidan los periodistas; entonces se pasará una sola vez la batería completa, se fijará aquí el commit (y su hash completo en los pasos) y se hará un único despliegue. No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
+Rama **`desarrollo/planta14-v2-panel`**, creada desde `desarrollo/planta14-v2-final` (`ff10f48`). **Commit a instalar: `a2d7404`** (`a2d7404c1dbe06e74c5e02d9604fd58ec571d30e`). El commit siguiente solo completa este documento. Los cambios que pidan los periodistas (su documento de Word) irán en un encargo posterior. No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
 
-Se instala sobre `d7d348f` (la versión final de salida). Una migración nueva, `20261106_124731_redaccion`: amplía «Pendientes de revisar» (concejo, sugerencias, decisión, quién y cuándo), añade los motivos de rechazo, las preferencias «Resumen diario» y «Fuera hasta» de cada usuario y el concejo oculto **Caudal** para lo comarcal.
+Se instala sobre `d7d348f` (la versión final de salida). Una migración nueva, `20261106_214802_redaccion`: amplía «Pendientes de revisar» (concejo, sugerencias, decisión, quién y cuándo), añade los motivos de rechazo, las preferencias «Resumen diario» y «Fuera hasta» de cada usuario y el concejo oculto **Caudal** para lo comarcal.
 
 ## Qué cambia
 
@@ -78,24 +78,24 @@ git fetch origin desarrollo/planta14-v2-panel
 ```
 
 ```bash
-git checkout --detach HASH-PENDIENTE
+git checkout --detach a2d7404c1dbe06e74c5e02d9604fd58ec571d30e
 ```
 
 ```bash
 git log -1 --format='%h %s'
 ```
 
-Debe mostrar el commit fijado arriba (pendiente).
+Debe mostrar `a2d7404 Resumen diario: el día enviado se guarda en external_cache, no en los ajustes [skip netlify]`.
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production HASH-PENDIENTE
+bash infra/deploy/deploy.sh --env-file infra/.env.production a2d7404c1dbe06e74c5e02d9604fd58ec571d30e
 ```
 
 ```bash
 echo "código: $?"
 ```
 
-Debe terminar en «Desplegada», con código 0, y aplicar `20261106_124731_redaccion`.
+Debe terminar en «Desplegada», con código 0, y aplicar `20261106_214802_redaccion`.
 
 **3. Comprobar el estado otra vez:**
 
@@ -103,7 +103,7 @@ Debe terminar en «Desplegada», con código 0, y aplicar `20261106_124731_redac
 bash infra/deploy/status.sh --env-file infra/.env.production
 ```
 
-Debe decir `/api/health: ok` y la versión fijada (pendiente).
+Debe decir `/api/health: ok` y la versión `a2d7404`.
 
 **4. Si algo falla: volver a la versión anterior.** Si `deploy.sh` terminó con código 1 o 2, sigue lo que dice. Si el despliegue fue bien pero algo no funciona después, vuelve a desplegar la versión anotada en el paso 1:
 
@@ -158,7 +158,22 @@ Debe terminar en «RESUMEN ENVIADO A …» o «NADA QUE ENVIAR».
 
 ## Resultados de la batería completa
 
-**Pendiente.** Se pasará una sola vez, cuando se decida desplegar (después de los cambios que pidan los periodistas). Hasta entonces, solo pruebas rápidas de lo tocado: ver el informe de cada entrega.
+**Batería completa, una sola pasada, sobre `dfcec0c`:**
+
+| Prueba | Resultado |
+|---|---|
+| `production-deploy-test.sh` | **Una comprobación fallida** de 142: tras la restauración asistida, «mismo número de filas en todas las tablas que antes». El resto (imagen, migraciones, despliegue, vuelta atrás automática, mantenimiento, preproducción, ensayo, cron) correcto, sin volúmenes nuevos |
+| `npm test`, `typecheck`, `lint`, `build` | Correctos; lint con 0 errores y los 16 avisos de estilo de siempre |
+| `test:block2` (8 PASS), `block3` (17), `launch` (5), `instalacion` (16), `ensayo` (8), `formulario` (3), `portada` (9) | Correctos |
+| `test:participacion` | Correcto, 45 PASS: casillas de 32 px o menos con su texto al lado y sin desbordes a 1440, 1024, 768 y 390 px; panel en pestañas; condiciones solo desde el panel; escudos; tiempo con iconos; raya de Morcín; bandeja, avisos, «Fuera hasta», resumen diario y Caudal. Medidas: a 390 × 844 la foto de apertura empieza a 318 px; columnas de «Útil» 3/3/3/2/1 |
+| shellcheck (sin avisos), Caddy (acme e internal), `common-test`, `staging-config-test`, `monitor-test`, `memory-test`, `staging-guard-test` | Correctos |
+| `restore-test.sh` (tres variantes), `offsite-immutable-test`, `pruebas-config-test`, `preproduccion-test`, `postgres-roles-test`, `staging-e2e.sh` (incluye el panel en su pestaña) | SUPERADAS, sin volúmenes nuevos ni restos |
+
+**Causa y arreglo (`a2d7404`):**
+- **Causa:** el temporizador del resumen diario arranca con `/api/health` (lo consulta `deploy.sh`) y, pasadas las 8:00, guardaba el día enviado en el ajuste `newsroom-settings`, que además escribía la primera vez sus cinco motivos por defecto. Esas filas aparecían o desaparecían alrededor de la restauración. No era un fallo de la restauración, sino estado de la web en marcha guardado entre la configuración.
+- **Arreglo:** el día se reserva de forma atómica en `external_cache`, la tabla de estado que ya usa «Útil» y que esa comprobación excluye; solo el primero que la consigue envía, aunque haya reinicios o varios procesos. `newsroom-settings` queda solo con los motivos de rechazo. La migración `redaccion`, que no estaba desplegada, se regenera sin esa columna (`20261106_214802_redaccion`, mismo SQL propio); probada desde cero, hacia atrás y otra vez adelante.
+- **Repetidas:** `production-deploy-test.sh` (**SUPERADO**, también «mismo número de filas»), `test:instalacion` (16 PASS), el bloque de redacción de participación, `npm test`, tipos, lint y build: correctos.
+- **Orden del paso 5:** probada contra la web en local con el CMS activo; da `true` en todo, `200 true` y `404`.
 
 ## Dudas resueltas por prudencia
 
@@ -187,4 +202,5 @@ Debe terminar en «RESUMEN ENVIADO A …» o «NADA QUE ENVIAR».
 23. **Pruebas que leían el panel sin pestaña** (de la entrega de las pestañas): `block3-integration`, `block3-browser`, `infra/test/staging-browser.mjs` y `manual-screenshots` buscaban las publicaciones en `/lena/panel`; ahora van a `?pestana=publicaciones`. `block3` pasa. `block3-browser` (opcional, `CMS_BLOCK3_BROWSER_TEST`) no se puede ejecutar aquí (le falta una herramienta local) y `staging-browser` va en la batería: usan los mismos selectores que ya prueba el bloque del panel.
 24. **Fallo del CI de `d61759c` (exit 134) y arreglo `fce84f0`:** el disparador del resumen estaba en `instrumentation.ts`, que importa Payload; Next lo compila como entrada aparte con todo Payload y el montón de 768 MiB se agota (la misma causa que `1e0985a` el 5/11). Se quita: el temporizador (`ensureDigestTicker`, cada 5 minutos, una vez por proceso) arranca desde `/api/health`, al leer «Útil» y al abrir el inicio del CMS, el mismo arranque probado del refresco de «Útil». **Para Code local no cambia nada** (ni crontab ni `.env`). Tras un despliegue, `deploy.sh` consulta `/api/health` y lo arranca; si el contenedor se reiniciara solo, arranca con la siguiente consulta del monitor (cada 5 minutos), con la primera visita a «Útil» o al CMS; si a las 8:00 no estaba en marcha, el resumen sale al arrancar, una sola vez ese día. `npm test` falla si vuelve a aparecer un `instrumentation.ts`.
     **Memoria de la compilación** (etapa «build» de `infra/app.Dockerfile` repetida en la misma imagen base, `npm ci` limpio, `CMS_ENABLED=false`, 768 MiB de montón; pico del contenedor, incluye la caché de disco): `ff10f48` 2.594 MiB, compila · `d61759c` aborta sin memoria a 1.319 MiB · `fce84f0` 2.568 MiB, compila (−1 %).
+25. **Día del resumen enviado:** se guarda en `external_cache` (clave `newsroom:resumen-diario`), junto a la caché de «Útil», porque es estado de la web en marcha y no configuración. Si se restaura una copia, como mucho se repite un resumen ese día, igual que la caché de «Útil» se vuelve a consultar.
 
