@@ -41,6 +41,11 @@ const api = async (context, method, route, data) => {
   const response = await context.request.fetch(`${origin}/api/cms/${route}`, { method, data, headers: { Origin: origin } });
   return { status: response.status(), json: await response.json().catch(() => null) };
 };
+// La cuenta municipal usa la sesión del panel (cookie planta14_panel): sus llamadas van por el puente /api/panel/api.
+const panelApi = async (context, method, route, data) => {
+  const response = await context.request.fetch(`${origin}/api/panel/api/${route}`, { method, data, headers: { Origin: origin } });
+  return { status: response.status(), json: await response.json().catch(() => null) };
+};
 try {
   // 1. Staging password (Caddy) on the site, the CMS, the API and /media.
   const anonymous = await newContext(null);
@@ -90,23 +95,23 @@ try {
   // y recargar; b) abrir ?pestana=util en la pestaña B; c) volver a A y recargar. Las dos deben seguir dentro.
   {
     const sessionCtx = await newContext();
-    const inside = async page => page.locator('[data-panel-tabs]').count();
+    const inside = async page => { await page.locator('[data-panel-tabs], input[autocomplete="current-password"]').first().waitFor(); return page.locator('[data-panel-tabs]').count(); };
     const a = await sessionCtx.newPage();
-    await a.goto(`${origin}/lena/panel`, { waitUntil: 'networkidle' });
+    await a.goto(`${origin}/lena/panel`, { waitUntil: 'load' });
     await a.getByLabel('Correo electrónico', { exact: true }).fill(accounts.lena);
     await a.getByLabel('Contraseña', { exact: true }).fill(password);
     await a.getByRole('button', { name: /^Entrar/ }).click();
     await a.locator('[data-panel-tabs]').waitFor();
-    await a.reload({ waitUntil: 'networkidle' });
+    await a.reload({ waitUntil: 'load' });
     assert.equal(await inside(a), 1, 'a) F5 keeps the panel session');
     const b = await sessionCtx.newPage();
-    await b.goto(`${origin}/lena/panel?pestana=util`, { waitUntil: 'networkidle' });
+    await b.goto(`${origin}/lena/panel?pestana=util`, { waitUntil: 'load' });
     const cookies = (await sessionCtx.cookies()).map(c => `${c.name} path=${c.path} secure=${c.secure} httpOnly=${c.httpOnly} sameSite=${c.sameSite} expires=${c.expires > 0 ? new Date(c.expires * 1000).toISOString() : 'sesión'}`);
     assert.equal(await inside(b), 1, `b) tab B (?pestana=util) is signed in. Cookies: ${cookies.join(' | ')}`);
     await a.bringToFront();
-    await a.reload({ waitUntil: 'networkidle' });
+    await a.reload({ waitUntil: 'load' });
     assert.equal(await inside(a), 1, `c) tab A is still signed in. Cookies: ${(await sessionCtx.cookies()).map(c => c.name).join(', ')}`);
-    await b.reload({ waitUntil: 'networkidle' });
+    await b.reload({ waitUntil: 'load' });
     assert.equal(await inside(b), 1, 'c) tab B is still signed in');
     await sessionCtx.close();
     pass('panel session shared between tabs behind Caddy (HTTPS + staging password): a) sign in on A, F5 keeps it; b) ?pestana=util on B signed in; c) back on A and reload: both inside');
@@ -131,13 +136,13 @@ try {
   await form.getByLabel('Descripción de la imagen', { exact: true }).fill('Imagen sintética del aviso');
   await form.getByLabel('Autoría o crédito', { exact: true }).fill('Ayuntamiento de Lena (prueba)');
   // Without the declaration the browser blocks the submission (required checkbox) and nothing is uploaded.
-  let uploads = 0; lena.on('request', r => { if (r.method() === 'POST' && r.url().endsWith('/api/cms/media')) uploads++; });
+  let uploads = 0; lena.on('request', r => { if (r.method() === 'POST' && r.url().endsWith('/api/panel/api/media')) uploads++; });
   await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
   await lena.waitForTimeout(800);
   assert.equal(uploads, 0, 'no upload without the rights declaration');
   await form.getByLabel(/declara que tiene los derechos necesarios/).check();
-  const mediaResponse = lena.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/media'));
-  const contentResponse = lena.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/municipal-content'));
+  const mediaResponse = lena.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/panel/api/media'));
+  const contentResponse = lena.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/panel/api/municipal-content'));
   await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
   const media = await (await mediaResponse).json();
   assert.equal((await mediaResponse).status(), 201);
@@ -185,11 +190,11 @@ try {
   pass('the Mieres panel rejects the Lena account (no form, no data)');
 
   // A second, still published notice with image so the backup/restore check covers a live public copy.
-  const keptUpload = await lenaCtx.request.post(`${origin}/api/cms/media`, { headers: { Origin: origin }, multipart: {
+  const keptUpload = await lenaCtx.request.post(`${origin}/api/panel/api/media`, { headers: { Origin: origin }, multipart: {
     file: { name: 'mercado.png', mimeType: 'image/png', buffer: png(800, 450, [164, 82, 45]) },
     _payload: JSON.stringify({ alt: 'Imagen sintética del mercado', credit: 'Ayuntamiento de Lena (prueba)', rightsDeclaration: { declared: true } }) } });
   assert.equal(keptUpload.status(), 201);
-  const keep = await api(lenaCtx, 'POST', 'municipal-content', { type: 'news', title: 'Mercado semanal de Pola de Lena (prueba)', excerpt: 'Noticia sintética.', body: 'Texto propio.', image: (await keptUpload.json()).doc.id, _status: 'published' });
+  const keep = await panelApi(lenaCtx, 'POST', 'municipal-content', { type: 'news', title: 'Mercado semanal de Pola de Lena (prueba)', excerpt: 'Noticia sintética.', body: 'Texto propio.', image: (await keptUpload.json()).doc.id, _status: 'published' });
   assert.equal(keep.status, 201);
   await pub.goto(`${origin}/lena`);
   const keptSrc = await pub.locator('img[alt="Imagen sintética del mercado"]').first().getAttribute('src');

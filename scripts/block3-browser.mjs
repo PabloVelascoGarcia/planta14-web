@@ -21,7 +21,7 @@ export async function testMunicipalBrowser({ url, email, password, editorEmail }
     await form.getByLabel(/^Título/).fill(title);
     await form.getByLabel(/^Resumen/).fill('Resumen propio del ensayo de navegador.');
     await form.getByLabel('¿Qué deben saber los vecinos?', { exact: true }).fill('Texto propio para comprobar publicación y retirada en el navegador real.');
-    const responsePromise = page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/municipal-content'));
+    const responsePromise = page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/panel/api/municipal-content'));
     await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
     const response = await responsePromise;
     assert.equal(response.status(), 201);

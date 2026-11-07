@@ -33,7 +33,7 @@ export async function captureManual({ browser, payload, url, lenaSpace }) {
   await form.getByLabel('Autoría o crédito', { exact: true }).fill('Ayuntamiento de Lena');
   await form.getByLabel(/declara que tiene los derechos necesarios/).check();
   await shot('02-formulario', form);
-  const created = page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/municipal-content'));
+  const created = page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/panel/api/municipal-content'));
   await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
   const { doc } = await (await created).json();
   await page.getByRole('status').filter({ hasText: 'Publicado' }).waitFor();
