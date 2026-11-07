@@ -8,7 +8,7 @@ Se instala sobre `d7d348f` (la versión final de salida). Una migración nueva, 
 
 ## Entrega del 7 de noviembre (sobre `a2d7404`, ya en pruebas)
 
-**Commit a instalar: `HASH-CORTO`** (`HASH-NUEVO`). Se instala sobre `a2d7404`, que es lo que hay en pruebas. **Sin migraciones nuevas.** El commit siguiente solo completa este documento.
+**Commit a instalar: `474dddf`** (`474dddf8dc4b5136fab16c16e5306e65832c1b7d`). Se instala sobre `a2d7404`, que es lo que hay en pruebas. **Sin migraciones nuevas.** El commit siguiente solo completa este documento.
 
 | Punto | Cambio |
 |---|---|
@@ -62,17 +62,17 @@ git fetch origin desarrollo/planta14-v2-panel
 ```
 
 ```bash
-git checkout --detach HASH-NUEVO
+git checkout --detach 474dddf8dc4b5136fab16c16e5306e65832c1b7d
 ```
 
 ```bash
 git log -1 --format='%h %s'
 ```
 
-Debe mostrar `HASH-CORTO` y el asunto del commit.
+Debe mostrar `474dddf` y el asunto del commit.
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production HASH-NUEVO
+bash infra/deploy/deploy.sh --env-file infra/.env.production 474dddf8dc4b5136fab16c16e5306e65832c1b7d
 ```
 
 ```bash
@@ -95,7 +95,7 @@ Debe terminar sin errores (recrea solo el contenedor de Caddy, unos segundos).
 bash infra/deploy/status.sh --env-file infra/.env.production
 ```
 
-Debe decir `/api/health: ok` y la versión `HASH-CORTO`.
+Debe decir `/api/health: ok` y la versión `474dddf`.
 
 **5. Avisar a los ayuntamientos con cuenta** de que tienen que volver a entrar una vez en su panel (la sesión anterior ya no vale). Después, la sesión dura 14 días.
 
@@ -118,7 +118,7 @@ Sin migraciones que deshacer. Al volver, los ayuntamientos vuelven a entrar con 
 ### Comprobaciones después del despliegue
 
 En el ordenador y en el móvil (o el modo móvil del navegador, F12):
-1. **Sesión, en un navegador limpio:** entra en `/mieres/panel` (pestaña A) y recarga; abre `/mieres/panel?pestana=util` en otra pestaña (B): dentro; vuelve a A y recarga: dentro. Abre también el panel desde un enlace en un correo: dentro. En el navegador (F12 → Aplicación → Cookies), `planta14_panel` con HttpOnly, Secure, SameSite Lax y caducidad a 14 días. Con el CMS abierto en el mismo navegador, los dos siguen dentro. «Cerrar sesión» saca de todas las pestañas del panel y no del CMS.
+1. **Sesión, en un navegador limpio:** entra en `/mieres/panel` (pestaña A) y recarga; abre `/mieres/panel?pestana=util` en otra pestaña (B): dentro; vuelve a A y recarga: dentro. Abre también el panel desde un enlace en un correo: dentro. En el navegador (F12 → Aplicación → Cookies), `__Host-planta14_panel` con HttpOnly, Secure, SameSite Lax y caducidad a 14 días. Con el CMS abierto en el mismo navegador, los dos siguen dentro. «Cerrar sesión» saca de todas las pestañas del panel y no del CMS.
 2. **Formulario:** tipo «Noticias» al entrar; «Mostrar el aviso hasta» solo en avisos y ayudas; contador del resumen; «Publicar ahora» sin flecha y «Guardar como borrador» como botón.
 3. **Acceso:** sin el «1»; «…en el espacio del Ayuntamiento de Mieres».
 4. **Bandeja:** con títulos largos y cortos, todas las filas iguales.
@@ -128,7 +128,27 @@ En el ordenador y en el móvil (o el modo móvil del navegador, F12):
 
 ### Resultados de la batería completa (esta entrega)
 
-RESULTADOS-BATERIA
+Batería completa, una sola vez, sobre `474dddf` (7/11), con la base de datos y los contenedores de prueba. **Todo superado; no hizo falta repetir ninguna suite.**
+
+| Suite | Resultado |
+|---|---|
+| `npm test` | 11 PASS |
+| Tipos (`typecheck`) | sin errores |
+| Lint | 0 errores (16 avisos, los de siempre) |
+| Build de producción | correcto |
+| Bloque 2 / bloque 3 (integración) | 8 PASS / 17 PASS |
+| Lanzamiento / instalación / ensayo | 5 / 16 / 8 PASS |
+| Formulario / portada | 3 / 9 PASS |
+| Participación (incluye `participacion-seguridad-panel.mjs`: aislamiento entre concejos, puente cerrado, CSRF, cierre de sesión en el servidor, cambio y restablecimiento de contraseña, cuenta movida o borrada, espacio desactivado, tokens manipulados, fijación de sesión, límite de intentos y auditoría) | 49 PASS |
+| `staging-e2e` (navegador contra la imagen) | 9 PASS, SUPERADO |
+| `staging-config` / monitor / común / memoria / guarda de pruebas | 4 / 4 / 3 / 1 / 1 PASS |
+| Prueba de despliegue de producción (`production-deploy-test`) | SUPERADO (mismo número de filas antes y después) |
+| Restauración de copias (×3), copia externa inmutable, configuración de pruebas, preproducción, roles de Postgres | SUPERADAS |
+| `shellcheck` | sin avisos |
+| Caddy (ACME e interno) | configuración válida |
+| Limpieza | 0 volúmenes nuevos (imagen y sin root), 0 restos en `out/` |
+
+En total, 148 comprobaciones PASS y ningún fallo.
 
 ## Qué cambia
 
