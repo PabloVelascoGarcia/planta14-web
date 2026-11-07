@@ -112,7 +112,7 @@ export async function run(ctx) {
   await new Promise(r => server.listen(mockPort, '127.0.0.1', r));
   // El refresco en el servidor, rápido para la prueba: comprueba cada segundo, reintenta tras 100 ms y espera 1,5 s tras un fallo.
   const sources = { UTIL_DGT_URL: `${mock}/dgt.xml`, AEMET_BASE_URL: `${mock}/aemet`, AEMET_API_KEY: 'clave-de-prueba', UTIL_BDNS_URL: `${mock}/bdns`, UTIL_BOE_RSS_URL: `${mock}/boe.xml`,
-    UTIL_REFRESH_DISABLED: 'false', UTIL_REFRESH_START_SECONDS: '1', UTIL_REFRESH_CHECK_SECONDS: '1', UTIL_RETRY_BASE_MS: '100', UTIL_BACKOFF_BASE_MS: '1500', UTIL_BDNS_PAUSE_MS: '0' };
+    UTIL_INCENDIOS: 'off', UTIL_REFRESH_DISABLED: 'false', UTIL_REFRESH_START_SECONDS: '1', UTIL_REFRESH_CHECK_SECONDS: '1', UTIL_RETRY_BASE_MS: '100', UTIL_BACKOFF_BASE_MS: '1500', UTIL_BDNS_PAUSE_MS: '0' };
   const waitFor = async (check, label, tries = 120) => { for (let i = 0; i < tries; i++) { if (await check()) return; await new Promise(r => setTimeout(r, 250)); } assert.fail(label); };
   try {
     await db(sql`DELETE FROM external_cache`);
@@ -364,7 +364,7 @@ export async function run(ctx) {
     await edit.getByText('Dudoso y coordenadas pendientes').or(edit.getByText('Coordenadas pendientes')).first().waitFor();
     await cms.close();
     passed('Útil imports (datos-servicios bcc03e0 format): Commons photos into Imágenes with author and licence (text only without photo), «coordenadas pendientes» and «dudoso» warnings in the CMS, tracks drawn on OpenStreetMap from direct GPX, the official ZIP (no cycling variant) and WGS 84 PLT, otherwise only the official download link; repeatable without duplicates, filling in what failed before');
-    passed('Útil on each concejo page and /util: only four automatic sources with their attribution and times (Pajares from the DGT, never «abierto»; AEMET per municipality; BDNS calls of the six town halls, the Principado, the IDEPA and the State, each linked to its official call, plus the IDEPA page; BOE jobs); San Isidro, Valgrande-Pajares, Fuentes de Invierno, pharmacies, BOPA and town hall jobs as links only; heritage and routes with an OSM map; municipal services; external queries cached');
+    passed('Útil on each concejo page and /util: the four automatic sources of this block (the 112 fire index has its own) with their attribution and times (Pajares from the DGT, never «abierto»; AEMET per municipality; BDNS calls of the six town halls, the Principado, the IDEPA and the State, each linked to its official call, plus the IDEPA page; BOE jobs); San Isidro, Valgrande-Pajares, Fuentes de Invierno, pharmacies, BOPA and town hall jobs as links only; heritage and routes with an OSM map; municipal services; external queries cached');
 
     // Una fuente falla: la página sigue, se enseña el último dato con su hora y se avisa a la administración (una vez).
     state.boe = 'fail';

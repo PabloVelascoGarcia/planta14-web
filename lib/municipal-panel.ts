@@ -11,7 +11,7 @@ export type PanelItem = {
   withdrawn: boolean; withdrawalReason: string | null; withdrawnAt: string | null; image: number | null; updatedAt: string;
 };
 export type PanelState =
-  | { kind: 'login' }
+  | { kind: 'login'; cmsEmail?: string }
   | { kind: 'forbidden'; email: string; reason: string }
   | { kind: 'editor'; email: string; name: string; spaceID: number; items: PanelItem[]; stats: import('./stats').StatsReport | null; statsMonth: string;
       services: import('../components/municipal-services-editor').ServiceRow[]; utilHidden: string[] };
@@ -22,9 +22,16 @@ export type PanelState =
  */
 export async function municipalPanelState(slug: string): Promise<PanelState> {
   const payload = await contentClient();
-  const { user } = await payload.auth({ headers: await headers() });
+  // Sesión del panel (cookie planta14_panel, 14 días; lib/panel-session.ts); sin ella, la de Payload como antes.
+  const { panelAuthHeaders, readPanelToken } = await import('./panel-session');
+  const requestHeaders = await headers();
+  const { user } = await payload.auth({ headers: panelAuthHeaders(requestHeaders) });
   if (!user || user.collection !== 'users') return { kind: 'login' };
-  if (user.role !== 'municipal') return { kind: 'forbidden', email: user.email, reason: 'Esta cuenta es de Planta 14. Gestiona los contenidos desde /cms.' };
+  // Sin sesión del panel, la del CMS no entra en el panel: se ofrece la entrada (las dos sesiones no se mezclan). Solo una
+  // sesión de Payload de una cuenta municipal (abierta antes de la cookie del panel) sigue valiendo hasta que caduque.
+  if (user.role !== 'municipal') return readPanelToken(requestHeaders)
+    ? { kind: 'forbidden', email: user.email, reason: 'Esta cuenta es de Planta 14. Gestiona los contenidos desde /cms.' }
+    : { kind: 'login', cmsEmail: user.email };
   const spaces = await payload.find({ collection: 'municipal-spaces', user, overrideAccess: false, depth: 0, limit: 1, where: { legacyID: { equals: slug } } });
   const space = spaces.docs[0];
   if (!space || relationID(user.municipalSpace) !== space.id) return { kind: 'forbidden', email: user.email, reason: 'Tu cuenta no gestiona este espacio municipal.' };

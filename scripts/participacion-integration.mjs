@@ -23,7 +23,7 @@ Object.assign(process.env, { NODE_ENV: 'production', CMS_ENABLED: 'true', CONTEN
   S3_ACCESS_KEY_ID: 'S3RVER', S3_SECRET_ACCESS_KEY: 'S3RVER', PUBLIC_MEDIA_BASE_URL: `http://127.0.0.1:${s3Port}/planta14-participacion-public`, PUBLIC_MEDIA_BUCKET: 'planta14-participacion-public',
   PLANTA14_TEST_EMAIL_OUTBOX: outbox,
   // Las pruebas nunca consultan las fuentes reales de «Útil» (el bloque util usa un servidor simulado).
-  UTIL_DGT_URL: 'http://127.0.0.1:9/sin-red', UTIL_BDNS_URL: 'http://127.0.0.1:9/sin-red', UTIL_BOE_RSS_URL: 'http://127.0.0.1:9/sin-red',
+  UTIL_DGT_URL: 'http://127.0.0.1:9/sin-red', UTIL_BDNS_URL: 'http://127.0.0.1:9/sin-red', UTIL_BOE_RSS_URL: 'http://127.0.0.1:9/sin-red', UTIL_INCENDIOS_URL: 'http://127.0.0.1:9/sin-red',
   // Sin refresco de fuentes en segundo plano salvo en el bloque util (que lo activa con su servidor simulado).
   UTIL_REFRESH_DISABLED: 'true' });
 for (const key of ['AEMET_API_KEY', 'AEMET_BASE_URL']) delete process.env[key];
@@ -127,7 +127,7 @@ try {
   assert.ok(juanfranHome.includes('href="/cms/bandeja"') && juanfranHome.includes('data-inbox="compact"'), 'home links to the inbox and shows it');
   passed('«Pendiente de revisar» in the CMS home: municipal publications are not pending; the home shows the inbox and links to /cms/bandeja');
 
-  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs', 'participacion-redaccion.mjs'];
+  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs', 'participacion-redaccion.mjs', 'participacion-sesion.mjs', 'participacion-formulario-panel.mjs', 'participacion-incendios.mjs'];
   // PARTICIPACION_BLOQUES=contrasena,cartas… para pasar solo algunos (pruebas rápidas); por defecto, todos.
   const only = (process.env.PARTICIPACION_BLOQUES || '').split(',').filter(Boolean);
   for (const file of blocks.filter(f => !only.length || only.some(o => f === `participacion-${o}.mjs`))) {

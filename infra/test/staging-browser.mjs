@@ -86,6 +86,32 @@ try {
   await editor.screenshot({ path: path.join(out, '02-cms-editor.png') });
   pass('editor signs in through the /cms login form');
 
+  // 4 bis. Sesión del panel compartida entre pestañas (fallo visto en pruebas): navegador limpio; a) entrar en la pestaña A
+  // y recargar; b) abrir ?pestana=util en la pestaña B; c) volver a A y recargar. Las dos deben seguir dentro.
+  {
+    const sessionCtx = await newContext();
+    const inside = async page => page.locator('[data-panel-tabs]').count();
+    const a = await sessionCtx.newPage();
+    await a.goto(`${origin}/lena/panel`, { waitUntil: 'networkidle' });
+    await a.getByLabel('Correo electrónico', { exact: true }).fill(accounts.lena);
+    await a.getByLabel('Contraseña', { exact: true }).fill(password);
+    await a.getByRole('button', { name: /^Entrar/ }).click();
+    await a.locator('[data-panel-tabs]').waitFor();
+    await a.reload({ waitUntil: 'networkidle' });
+    assert.equal(await inside(a), 1, 'a) F5 keeps the panel session');
+    const b = await sessionCtx.newPage();
+    await b.goto(`${origin}/lena/panel?pestana=util`, { waitUntil: 'networkidle' });
+    const cookies = (await sessionCtx.cookies()).map(c => `${c.name} path=${c.path} secure=${c.secure} httpOnly=${c.httpOnly} sameSite=${c.sameSite} expires=${c.expires > 0 ? new Date(c.expires * 1000).toISOString() : 'sesión'}`);
+    assert.equal(await inside(b), 1, `b) tab B (?pestana=util) is signed in. Cookies: ${cookies.join(' | ')}`);
+    await a.bringToFront();
+    await a.reload({ waitUntil: 'networkidle' });
+    assert.equal(await inside(a), 1, `c) tab A is still signed in. Cookies: ${(await sessionCtx.cookies()).map(c => c.name).join(', ')}`);
+    await b.reload({ waitUntil: 'networkidle' });
+    assert.equal(await inside(b), 1, 'c) tab B is still signed in');
+    await sessionCtx.close();
+    pass('panel session shared between tabs behind Caddy (HTTPS + staging password): a) sign in on A, F5 keeps it; b) ?pestana=util on B signed in; c) back on A and reload: both inside');
+  }
+
   // 5. Lena: panel login, notice with image, declaration required, publication.
   const lenaCtx = await newContext();
   const lena = await lenaCtx.newPage();
@@ -98,21 +124,21 @@ try {
   const title = `Corte de agua programado en Pola de Lena ${randomUUID().slice(0, 6)}`;
   await form.locator('select').first().selectOption('notice');
   await form.getByLabel(/^Título/).fill(title);
-  await form.getByLabel('Resumen', { exact: true }).fill('Aviso sintético de la prueba de staging.');
+  await form.getByLabel(/^Resumen/).fill('Aviso sintético de la prueba de staging.');
   await form.getByLabel('¿Qué deben saber los vecinos?', { exact: true }).fill('Texto propio de la prueba de extremo a extremo; no es un aviso real.');
-  await form.getByLabel('Mostrar el aviso hasta', { exact: true }).fill('2099-12-31');
+  await form.getByLabel(/^Mostrar el aviso hasta/).fill('2099-12-31');
   await form.locator('input[type="file"]').setInputFiles({ name: 'aviso-lena.png', mimeType: 'image/png', buffer: png(900, 500, [36, 112, 74]) });
   await form.getByLabel('Descripción de la imagen', { exact: true }).fill('Imagen sintética del aviso');
   await form.getByLabel('Autoría o crédito', { exact: true }).fill('Ayuntamiento de Lena (prueba)');
   // Without the declaration the browser blocks the submission (required checkbox) and nothing is uploaded.
   let uploads = 0; lena.on('request', r => { if (r.method() === 'POST' && r.url().endsWith('/api/cms/media')) uploads++; });
-  await form.getByRole('button', { name: 'Publicar ahora ↗', exact: true }).click();
+  await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
   await lena.waitForTimeout(800);
   assert.equal(uploads, 0, 'no upload without the rights declaration');
   await form.getByLabel(/declara que tiene los derechos necesarios/).check();
   const mediaResponse = lena.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/media'));
   const contentResponse = lena.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/municipal-content'));
-  await form.getByRole('button', { name: 'Publicar ahora ↗', exact: true }).click();
+  await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
   const media = await (await mediaResponse).json();
   assert.equal((await mediaResponse).status(), 201);
   assert.equal(media.doc.rightsDeclaration.declared, true);

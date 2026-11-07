@@ -46,6 +46,9 @@ export function MunicipalPasswordReset({ space, maintenance = null }: { space: M
         setMessage(/actualiz/i.test(text) ? text : "El enlace no es válido o ha caducado (dura una hora y sirve una sola vez). Pide otro desde el panel.");
         return;
       }
+      // Entra directamente con la sesión del panel (cookie propia de 14 días), no con la de Payload de 2 horas.
+      const email = String(body?.user?.email || "");
+      if (email) await fetch("/api/panel/entrar", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) }).catch(() => undefined);
       setDone(true);
       router.replace(panel);
       router.refresh();

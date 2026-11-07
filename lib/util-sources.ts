@@ -108,12 +108,27 @@ export async function refreshSource(def: SourceDefinition) {
   return false;
 }
 
+// --- Índice de riesgo de incendios del 112 Asturias (lib/fire-index.ts): página oficial leída por el servidor cada
+// hora; las visitas solo leen la caché. UTIL_INCENDIOS=off lo quita (entonces solo sale el enlace a la página oficial).
+const FIRE_URL = () => process.env.UTIL_INCENDIOS_URL || "https://www.112asturias.es/indice-incendios-asturias";
+export const fireIndexEnabled = () => process.env.UTIL_INCENDIOS !== "off";
+async function fetchFireIndex() {
+  const { parseFireIndex } = await import("./fire-index");
+  const response = await fetchSource(FIRE_URL(), {}, 20_000);
+  // La página del 112 va en ISO-8859-1 (Windows-1252); si la cabecera dice otra cosa, se respeta.
+  const charset = /charset=([\w-]+)/i.exec(response.headers.get("content-type") ?? "")?.[1]?.toLowerCase();
+  const html = new TextDecoder(charset && charset !== "iso-8859-1" ? charset : "windows-1252").decode(await response.arrayBuffer());
+  return parseFireIndex(html, Object.fromEntries(UTIL_TOWNS.map(t => [t.slug, t.name])));
+}
+export const fireIndexStatus = () => readCache<import("./fire-index").FireIndex>("incendios:112");
+
 /** Las fuentes automáticas y cada cuánto se refrescan (BDNS: UTIL_BDNS_REFRESH_HOURS, 6 por defecto). */
 export function utilSources(): SourceDefinition[] {
   return [
     { key: "dgt:pajares", label: "DGT: puerto de Pajares", intervalMs: 5 * 60_000, fetch: fetchPajares },
     { key: "bdns:abiertas", label: "BDNS: subvenciones", intervalMs: envNumber("UTIL_BDNS_REFRESH_HOURS", 6) * HOUR, fetch: fetchGrants },
     { key: "boe:empleo", label: "BOE: oposiciones y concursos", intervalMs: 3 * HOUR, fetch: previous => fetchJobs(previous as Job[] | null) },
+    ...(fireIndexEnabled() ? [{ key: "incendios:112", label: "112 Asturias: índice de riesgo de incendios", intervalMs: HOUR, fetch: fetchFireIndex }] : []),
     ...(aemetEnabled() ? UTIL_TOWNS.map(t => ({ key: `aemet:${t.aemet}`, label: `AEMET: predicción de ${t.name}`, intervalMs: 2 * HOUR, fetch: () => fetchForecast(t) })) : []),
   ];
 }

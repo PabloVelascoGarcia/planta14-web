@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StatsScope } from "@/components/stats-beacon";
-import { UtilBlocks, UtilTownRows, WeatherStrip } from "@/components/util-blocks";
+import { FireStrip, UtilBlocks, UtilTownRows, WeatherStrip } from "@/components/util-blocks";
 import { getUtilData, utilCounts } from "@/lib/util";
 import { UTIL_TOWNS } from "@/lib/util-sources";
 
@@ -23,6 +23,7 @@ export default async function UtilPage() {
       <p className="mt-4 text-lg leading-7 text-coal-800">Lo práctico de las Cuencas en un sitio: carreteras y puertos, el tiempo, farmacias, ayudas, empleo público, patrimonio y rutas. Cada dato lleva su fuente y la hora a la que se actualizó.</p>
     </header>
     <WeatherStrip data={data} />
+    <FireStrip data={data} />
     <nav aria-label="Útil por concejo" className="mt-6 flex flex-wrap gap-2">
       {/* Concejo activo: su «Útil»; inactivo: su página (nunca #util, que no tiene). */}
       {UTIL_TOWNS.map(t => <Link key={t.slug} href={data.activeTowns.includes(t.slug) ? `/${t.slug}/util` : `/${t.slug}`} className="inline-flex min-h-11 items-center border border-coal-900/25 px-4 text-[15px] font-bold hover:border-copper">{t.name}</Link>)}

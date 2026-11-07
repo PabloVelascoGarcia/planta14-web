@@ -81,7 +81,7 @@ import previous_{$CADDY_PREVIOUS_DOMAIN_REDIRECT:off}
 
 	# Modo mantenimiento (infra/deploy/mantenimiento.sh y deploy.sh): mientras exista el archivo "activo" en la
 	# carpeta montada, se rechaza toda escritura (sin reconstruir ni reiniciar: se comprueba en cada petición).
-	# La lectura sigue funcionando: web pública, /cms y paneles. Se permiten: iniciar y cerrar sesión, las
+	# La lectura sigue funcionando: web pública, /cms y paneles. Se permiten: iniciar y cerrar sesión (también la del panel), las
 	# lecturas de Payload por POST (X-Payload-HTTP-Method-Override: GET) y las funciones de servidor del /cms,
 	# que la propia app bloquea si escriben (cms/maintenance.ts).
 	@maintenance_write {
@@ -90,7 +90,7 @@ import previous_{$CADDY_PREVIOUS_DOMAIN_REDIRECT:off}
 			try_files /activo
 		}
 		not method GET HEAD OPTIONS
-		not path /cms /cms/* /api/cms/users/login /api/cms/users/logout /api/cms/users/refresh-token
+		not path /cms /cms/* /api/cms/users/login /api/cms/users/logout /api/cms/users/refresh-token /api/panel/entrar /api/panel/salir /api/panel/sesion
 		not header X-Payload-HTTP-Method-Override GET
 	}
 	handle @maintenance_write {

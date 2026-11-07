@@ -9,6 +9,8 @@ Guía rápida para el personal del ayuntamiento. Si tienes dudas, escribe a **in
 
 La cuenta te la da Planta 14 y es solo para ti: no la compartas. Si crees que alguien conoce tu contraseña, avísanos.
 
+**La sesión dura 14 días** y se alarga sola cada vez que usas el panel. Vale para todas las pestañas del navegador: puedes abrir el panel en varias (o desde un enlace en un correo) sin volver a entrar. Solo termina si pulsas **Cerrar sesión** o si pasan 14 días sin usarlo. En un ordenador compartido, pulsa siempre **Cerrar sesión** al terminar.
+
 **¿Has olvidado tu contraseña?**
 1. En la pantalla de entrada, pulsa **«¿Has olvidado tu contraseña?»** y escribe tu correo.
 2. Recibirás un correo de Planta 14 con un enlace. Sirve una vez y caduca en una hora; si no lo ves, mira en el correo no deseado.
@@ -31,14 +33,14 @@ Arriba del panel hay seis pestañas. Cada una tiene su propio enlace, así que p
 
 En el móvil, las pestañas van en una sola fila: desliza con el dedo hacia la izquierda para ver las demás.
 
-## 3. Publicar un aviso (pestaña «Publicar»)
+## 3. Publicar (pestaña «Publicar»)
 
-1. En **Tipo**, elige *Avisos* (o noticia, agenda, ayuda o anuncio).
-2. Escribe el **título**, un **resumen** corto y el **texto** completo.
-3. Indica hasta qué día debe verse el aviso. Después desaparece solo.
-4. Pulsa **Publicar ahora**. Aparece al momento en tu espacio.
+1. En **Tipo**, elige qué publicas. Por defecto sale *Noticias*; cámbialo a *Avisos*, *Agenda*, *Ayudas y subvenciones* o *Tablón de anuncios* si toca.
+2. Escribe el **título**, un **resumen** corto y el **texto** completo. Debajo del título y del resumen ves cuántos caracteres llevas (140 y 300 como máximo).
+3. Solo en **avisos** y **ayudas**: en **Mostrar el aviso hasta** (o **Mostrar la ayuda hasta**) indica el último día que debe verse. Después desaparece sola. Si lo dejas vacío, se ve hasta que la despubliques.
+4. Pulsa **Publicar ahora**: aparece al momento en tu espacio.
 
-Si todavía no está listo, pulsa **Guardar como borrador**: solo lo ve tu ayuntamiento.
+Si todavía no está listo, pulsa **Guardar como borrador** (el botón de al lado): solo lo ve tu ayuntamiento.
 
 ## 4. Añadir una imagen
 
@@ -80,7 +82,7 @@ Planta 14 puede retirar una publicación si incumple las condiciones de uso o la
 
 ## 7. Las otras pestañas
 
-- **Útil.** La página de tu concejo tiene una sección «Útil»: el tiempo, puertos y estaciones de esquí, farmacias de guardia, directorio de servicios municipales, patrimonio, rutas, subvenciones y empleo público. Por defecto salen todos. Desmarca los que no quieras mostrar y pulsa **Guardar**. Las noticias y los contenidos de Planta 14 no se pueden ocultar.
+- **Útil.** La página de tu concejo tiene una sección «Útil»: el tiempo, puertos y estaciones de esquí, farmacias de guardia, directorio de servicios municipales, patrimonio, rutas, subvenciones y empleo público. Por defecto salen todos. Desmarca los que no quieras mostrar y pulsa **Guardar**. Las noticias y los contenidos de Planta 14 no se pueden ocultar, ni tampoco el **índice de riesgo de incendios** de 112 Asturias, que sale siempre junto al tiempo por ser un dato de seguridad.
 - **Directorio.** La lista de los servicios del ayuntamiento, uno por línea, con un buscador. Para añadir uno, pulsa **Añadir servicio**, rellena el formulario y pulsa **Añadir al directorio**. Para corregir uno, pulsa **Editar** en su línea: el formulario se abre ahí mismo; al terminar, pulsa **Guardar los cambios**. También puedes **Quitar** un servicio. Los cambios salen al momento en «Útil».
 - **Sugerencias.** Marca los servicios de Planta 14 que os interesarían, cuéntanos lo que quieras y pulsa **Enviar la sugerencia**. Lo lee la redacción de Planta 14, empezando por el periodista de vuestro concejo, que recibe un aviso.
 - **Visitas.** El total del mes y una fila de barras, una por día (pasa el ratón por encima para ver la cifra); debajo, las páginas más vistas, de dónde llegan (buscadores, redes, WhatsApp…) y las secciones. Solo de tu concejo. Se pueden descargar en **CSV** (Excel) o en **PDF**. No usamos cookies ni guardamos datos personales de quien visita.

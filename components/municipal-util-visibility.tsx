@@ -12,7 +12,7 @@ export function MunicipalUtilVisibility({ hidden, territory, disabled = false }:
   async function save() {
     setBusy(true); setMessage("");
     try {
-      const response = await fetch("/api/cms/util-visibility/concejo", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hidden: off }) });
+      const response = await fetch("/api/panel/api/util-visibility/concejo", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hidden: off }) });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body?.error || "No se ha podido guardar.");
       setMessage(off.length ? "Guardado. Los servicios desmarcados ya no salen en tu concejo." : "Guardado. Salen todos los servicios.");

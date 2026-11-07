@@ -5,8 +5,9 @@ import { townName, UTIL_TOWNS, type Cached } from "@/lib/util-sources";
 import { formatDate } from "@/lib/utils";
 import { UtilGrid } from "./util-grid";
 import { WeatherIcon } from "./weather-icon";
+import { FIRE_INDEX_LICENCE, FIRE_INDEX_PAGE, FIRE_INDEX_SOURCE, fireTextColor, type FireLevel } from "@/lib/fire-index";
 
-// Bloques de la sección «Útil» (servidor). Cada dato automático (DGT, AEMET, BDNS, BOE) lleva la atribución que piden
+// Bloques de la sección «Útil» (servidor). Cada dato automático (DGT, AEMET, BDNS, BOE, índice de incendios del 112) lleva la atribución que piden
 // sus condiciones y la hora de consulta; si una fuente falla se enseña el último dato bueno con su hora, o un aviso, y el
 // resto de la página sigue igual. Lo demás son enlaces claros a la fuente oficial, sin extraer datos.
 
@@ -31,6 +32,36 @@ function Block({ id, title, kicker, children }: { id: string; title: string; kic
 /** Enlace claro a la fuente oficial (datos que no se extraen). */
 function Official({ href, children }: { href: string; children: ReactNode }) {
   return <p className="util-official" data-util-link><a href={href} {...out} className="municipal-read-link">{children} ↗</a></p>;
+}
+
+// --- Índice de riesgo de incendios del 112 Asturias (lib/fire-index.ts). Dato de seguridad: el nivel con su color y su
+// texto, la fecha del índice, la hora de consulta, la fuente con su licencia y el enlace oficial. Sin dato válido de hoy
+// (lectura fallida, formato cambiado o índice de otro día), solo el enlace: nunca un nivel dudoso.
+const madridHourMinute = (iso: string) => new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+function FireBadge({ level }: { level: FireLevel }) {
+  return <span className="util-fire-badge" style={{ background: level.color, color: fireTextColor(level.level) }} data-fire-level={level.level}>{level.level} · {level.label}</span>;
+}
+function FireSource({ fire }: { fire: UtilData["fire"] }) {
+  if (!fire.index) return null;
+  return <small className="util-source util-fire-source" data-fire-source>Índice del {fire.index.day.split("-").reverse().join("/")}{fire.fetchedAt ? `, consultado a las ${madridHourMinute(fire.fetchedAt)}` : ""}.
+    {" "}Fuente: <a href={FIRE_INDEX_PAGE} {...out}>{FIRE_INDEX_SOURCE}</a>. {FIRE_INDEX_LICENCE}.</small>;
+}
+function FireLinkOnly() {
+  return <a href={FIRE_INDEX_PAGE} {...out} className="municipal-read-link" data-fire-link-only>Índice de riesgo de incendios (112 Asturias) ↗</a>;
+}
+/** Una línea por concejo (resumen y /[concejo]/util). */
+function FireTown({ data, slug }: { data: UtilData; slug: string }) {
+  const level = data.fire.index?.levels[slug];
+  return level ? <><span className="util-fire-line"><strong>Riesgo de incendios hoy:</strong> <FireBadge level={level} /> <a href={FIRE_INDEX_PAGE} {...out}>Ver el índice oficial ↗</a></span><FireSource fire={data.fire} /></> : <FireLinkOnly />;
+}
+/** /util: los seis concejos en una fila, junto a la franja del tiempo. */
+export function FireStrip({ data }: { data: UtilData }) {
+  const index = data.fire.index;
+  return <section className="util-fire" data-util="incendios" data-util-fire-strip aria-labelledby="util-incendios">
+    <h2 id="util-incendios" className="util-fire-title">Riesgo de incendios hoy</h2>
+    {index ? <><ul className="util-fire-towns">{UTIL_TOWNS.map(t => <li key={t.slug} data-fire-town={t.slug}><span>{t.name}</span> {index.levels[t.slug] ? <FireBadge level={index.levels[t.slug]} /> : <span className="util-fire-none">sin información</span>}</li>)}</ul>
+      <p className="util-fire-foot"><a href={FIRE_INDEX_PAGE} {...out}>Ver el índice oficial ↗</a> <FireSource fire={data.fire} /></p></> : <p><FireLinkOnly /></p>}
+  </section>;
 }
 
 /** «AAAA-MM-DDTHH:MM…» de AEMET (hora peninsular) → «DD/MM/AAAA HH:MM». */
@@ -174,6 +205,10 @@ export function UtilBlocks({ data }: { data: UtilData }) {
       <AemetSource forecasts={forecasts.map(f => f.forecast)} />
     </Block> : null}
 
+    {town ? <Block id="incendios" title="Riesgo de incendios" kicker="112 Asturias">
+      <div className="util-fire-town" data-util-fire={town}><FireTown data={data} slug={town} /></div>
+    </Block> : null}
+
     {show("farmacias") ? <Block id="farmacias" title="Farmacias de guardia" kicker="Salud">
       <p>Las guardias las publica el Colegio Oficial de Farmacéuticos de Asturias.</p>
       <Official href={UTIL_LINKS.farmacias}>Buscador de farmacias de guardia del Colegio</Official>
@@ -252,6 +287,7 @@ export function UtilSummary({ data, name }: { data: UtilData; name: string }) {
       {tomorrow ? <span className="util-summary-day"><WeatherIcon sky={tomorrow.sky} size={22} /><strong>Mañana</strong> {tomorrow.max ?? "–"}° / {tomorrow.min ?? "–"}°</span> : null}
       <small className="util-source">© AEMET. <a href={UTIL_LINKS.aemet} {...out}>Información elaborada por la Agencia Estatal de Meteorología</a></small>
     </p> : null}
+    <p className="util-summary-line util-fire-town" data-util-summary-fire><FireTown data={data} slug={slug} /></p>
     {show("invierno") && slug === "lena" ? <p className="util-summary-line" data-util-summary-pajares><strong>Puerto de Pajares (N-630):</strong>{" "}
       {incidents === undefined ? "sin datos de la DGT ahora mismo" : incidents ? `la DGT registra ${incidents === 1 ? "una incidencia" : `${incidents} incidencias`}` : "la DGT no registra incidencias"}
       {data.pajares.fetchedAt ? <small className="util-source"> · DGT, <Checked at={data.pajares.fetchedAt} label="consultado" /></small> : null}</p> : null}

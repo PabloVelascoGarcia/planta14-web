@@ -22,7 +22,7 @@ export function MunicipalSuggestions({ disabled = false }: { disabled?: boolean 
     if (!chosen.length && !text.trim()) { setMessage("Marca algún servicio o escribe tu sugerencia."); return; }
     setBusy(true); setMessage("");
     try {
-      const response = await fetch("/api/cms/suggestions", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ services: chosen, text: text.trim() }) });
+      const response = await fetch("/api/panel/api/suggestions", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ services: chosen, text: text.trim() }) });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body?.errors?.[0]?.message || "No se ha podido enviar.");
       setChosen([]); setText(""); setMessage("Gracias. Hemos recibido tu sugerencia y la leerá el equipo de Planta 14.");

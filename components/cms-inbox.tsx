@@ -2,7 +2,7 @@ import type { AdminViewServerProps, Payload } from "payload";
 import Link from "next/link";
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { CmsInboxActions } from "./cms-inbox-actions";
-import { CmsWithdraw } from "./cms-withdraw";
+import { CmsPublicationRow } from "./cms-withdraw";
 
 type CmsUser = { id: number | string; role?: string | null; collection?: string };
 type Notice = { id: number; kind: string; title: string; createdAt: string; town?: unknown; assignedTo?: unknown; festival?: unknown; letter?: unknown; suggestion?: unknown;
@@ -102,15 +102,10 @@ async function MunicipalPublications({ payload, user, filter }: { payload: Paylo
       const c = raw as unknown as { id: number; title: string; type: string; space: number; _status?: string; updatedAt?: string; withdrawal?: { withdrawn?: boolean | null; reason?: string | null } };
       const space = spaces.find(s => s.id === c.space);
       const withdrawn = Boolean(c.withdrawal?.withdrawn);
-      return <li key={c.id} style={row} data-publication-item={c.id}>
-        <span style={small}>{municipalTypeLabels[c.type] ?? c.type}</span><strong>{c.title}</strong>
-        <span style={small}>{space?.name} · <span data-publication-status>{withdrawn ? `Retirado: ${c.withdrawal?.reason ?? ""}` : c._status === "published" ? "Publicado" : "Borrador"}</span> · {when(c.updatedAt)}</span>
-        <span style={{ display: "flex", gap: 12, marginLeft: "auto", flexWrap: "wrap", alignItems: "center" }}>
-          {c._status === "published" && !withdrawn ? <a href={`/${space?.legacyID ?? ""}${c.type !== "news" ? `?seccion=${c.type}` : ""}`} target="_blank" rel="noopener" style={link} data-publication-web>Ver en la web</a> : null}
-          <a href={`/cms/collections/municipal-content/${c.id}`} style={link}>Abrir</a>
-          {!withdrawn ? <CmsWithdraw id={c.id} title={c.title} /> : null}
-        </span>
-      </li>;
+      return <CmsPublicationRow key={c.id} row={{ id: c.id, title: c.title, typeLabel: municipalTypeLabels[c.type] ?? c.type, spaceName: space?.name ?? "",
+        status: withdrawn ? `Retirado: ${c.withdrawal?.reason ?? ""}` : c._status === "published" ? "Publicado" : "Borrador", date: when(c.updatedAt),
+        webHref: c._status === "published" && !withdrawn ? `/${space?.legacyID ?? ""}${c.type !== "news" ? `?seccion=${c.type}` : ""}` : null,
+        cmsHref: `/cms/collections/municipal-content/${c.id}`, withdrawn }} />;
     })}</ul> : <p style={small}>No hay publicaciones de estos concejos.</p>}
   </section>;
 }

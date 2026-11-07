@@ -99,6 +99,8 @@ Si lo que ha fallado es una **actualización** de la web, no sigas este apartado
 5. Envíale el enlace de su panel (`https://planta14.com/lena/panel`) y el manual (`docs/MANUAL-AYUNTAMIENTOS.md`) por correo. Dale **la contraseña por otra vía**, por ejemplo por teléfono.
 6. Antes de dar acceso, el ayuntamiento debe haber firmado el contrato y el encargo de tratamiento (`docs/legal/ENCARGO-TRATAMIENTO-AYUNTAMIENTOS.md`).
 
+**Sesión del panel:** dura 14 días y se alarga sola con el uso. Es una cookie propia del panel, compartida por todas las pestañas, que solo se borra con **Cerrar sesión** o al caducar. Es independiente de la del CMS: en el mismo navegador se puede estar dentro del CMS (redacción) y del panel (cuenta municipal) a la vez sin que una eche a la otra. Para echar a una cuenta municipal de todos sus dispositivos, cámbiale la contraseña o bórrala.
+
 **Para dar de baja una cuenta:** en **Users**, ábrela y bórrala. Lo que publicó se mantiene y el registro de auditoría conserva quién lo hizo.
 
 **Para retirar una publicación municipal:** lo más rápido es la bandeja (`/cms/bandeja`, «Publicado por los ayuntamientos», apartado 27). También en `/cms`: ve a **Municipal Contents**, ábrela, marca **Retirado**, escribe el **Motivo** y pulsa **Save Draft** (guardar borrador). La retirada afecta también a la versión pública. Comprueba en una ventana privada que ya no aparece; el ayuntamiento verá el motivo en su panel. No restaures una versión anterior para eludir una retirada.
@@ -546,13 +548,14 @@ En su panel, cada ayuntamiento tiene un **Buzón de sugerencias**:
 
 Está en **`/util`** (enlace «Útil» en el menú) y en **`/<concejo>/util`** (pestaña «Útil» de cada espacio municipal activo). La página del concejo lleva al final un resumen compacto (apartado 25). Cada dato automático lleva su **fuente** y la **hora** a la que se consultó.
 
-**Datos automáticos.** Son cuatro fuentes, con permiso de reutilización comprobado:
+**Datos automáticos.** Son cinco fuentes. Las cuatro primeras tienen permiso de reutilización comprobado; el índice de incendios, ver su fila:
 
 | Bloque | Fuente | Detalles |
 |---|---|---|
 | Puerto de Pajares (N-630) | DGT, Punto de Acceso Nacional (licencia CC BY) | Dice si la DGT registra incidencias en la N-630 de Lena y Villamanín, con la hora del parte. **Nunca dice «abierto».** Se consulta cada 5 minutos como mucho. |
 | El tiempo | AEMET OpenData, predicción por municipio | Solo sale si hay **`AEMET_API_KEY`** en el `.env` del servidor. Las claves nuevas de AEMET duran tres meses: renuévala a tiempo. |
 | Subvenciones abiertas | Base de Datos Nacional de Subvenciones | Convocatorias abiertas de los seis ayuntamientos, del Principado, del IDEPA y de la Administración del Estado. No incluye concesiones directas ni nominativas. Cada una enlaza a su convocatoria oficial. Hay además un enlace fijo a las ayudas del IDEPA. |
+| Riesgo de incendios | 112 Asturias (Servicio de Emergencias del Principado, SEPA), página oficial del índice | Nivel diario de cada concejo (1 Bajo a 5 Extremo), con su color y su texto, junto al tiempo: en el resumen del concejo, en `/<concejo>/util` y en una fila de `/util`. Lleva siempre la fecha del índice, la hora de consulta, la fuente y el enlace a la página oficial. **Es un dato de seguridad:** si la lectura falla, la página del 112 cambia de formato o el índice no es de hoy, no sale ningún nivel, solo el enlace «Índice de riesgo de incendios (112 Asturias)». No hay servicio de datos ni licencia publicada para este índice: se lee la página oficial (su aviso legal, que es el de la aplicación «Asturias 112», no lo prohíbe). Se consulta cada hora. Los ayuntamientos no lo pueden ocultar. Para quitarlo y dejar solo el enlace: `UTIL_INCENDIOS=off` en el `.env` del servidor. |
 | Empleo público | BOE (sección II.B) | Convocatorias de los seis ayuntamientos y del Principado de los últimos 45 días. Un anuncio municipal solo entra si lo firma uno de los seis ayuntamientos («del Ayuntamiento de Lena…») y solo sale en ese concejo; otros ayuntamientos asturianos (Grado, Langreo…) no entran aunque el BOE ponga «(Asturias)». |
 
 **Solo enlaces a la fuente oficial,** sin datos copiados: puerto de San Isidro (112 Asturias), Valgrande-Pajares, Fuentes de Invierno, farmacias de guardia (Colegio de Farmacéuticos), empleo en el BOPA y empleo en cada ayuntamiento. No se copian porque no hay permiso de reutilización confirmado o no hay una fuente automática fiable.

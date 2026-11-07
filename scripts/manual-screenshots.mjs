@@ -24,9 +24,9 @@ export async function captureManual({ browser, payload, url, lenaSpace }) {
   await form.waitFor();
   await form.locator('select').first().selectOption('notice');
   await form.getByLabel(/^Título/).fill('Corte de agua en la calle Mayor el jueves');
-  await form.getByLabel('Resumen', { exact: true }).fill('El jueves, de 9:00 a 13:00, no habrá agua en la calle Mayor por obras.');
+  await form.getByLabel(/^Resumen/).fill('El jueves, de 9:00 a 13:00, no habrá agua en la calle Mayor por obras.');
   await form.getByLabel('¿Qué deben saber los vecinos?', { exact: true }).fill('Ejemplo para el manual: el servicio se restablecerá a las 13:00. Disculpad las molestias.');
-  await form.getByLabel('Mostrar el aviso hasta', { exact: true }).fill('2099-12-31');
+  await form.getByLabel(/^Mostrar el aviso hasta/).fill('2099-12-31');
   const png = await sharp({ create: { width: 1200, height: 675, channels: 3, background: '#2f6d8c' } }).png().toBuffer();
   await form.locator('input[type="file"]').setInputFiles({ name: 'calle-mayor.png', mimeType: 'image/png', buffer: png });
   await form.getByLabel('Descripción de la imagen', { exact: true }).fill('Calle Mayor de Pola de Lena');
@@ -34,7 +34,7 @@ export async function captureManual({ browser, payload, url, lenaSpace }) {
   await form.getByLabel(/declara que tiene los derechos necesarios/).check();
   await shot('02-formulario', form);
   const created = page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/municipal-content'));
-  await form.getByRole('button', { name: 'Publicar ahora ↗', exact: true }).click();
+  await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
   const { doc } = await (await created).json();
   await page.getByRole('status').filter({ hasText: 'Publicado' }).waitFor();
   // Pestaña «Mis publicaciones»: solo el título y la primera fila (la publicación nueva), no toda la lista.

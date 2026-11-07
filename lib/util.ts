@@ -1,11 +1,11 @@
 import type { Where } from "payload";
 import { contentSource } from "./content-source";
-import { aemetEnabled, aemetForecast, ensureUtilRefresher, openGrants, pajaresStatus, publicJobs, UTIL_TOWNS,
+import { aemetEnabled, aemetForecast, ensureUtilRefresher, fireIndexEnabled, fireIndexStatus, openGrants, pajaresStatus, publicJobs, UTIL_TOWNS,
   type Cached, type Forecast, type Grant, type Job, type RoadIncident } from "./util-sources";
 
 // Sección «Útil»: qué se enseña en /util y en la página de cada concejo. Cada servicio sale por defecto en todos los
 // concejos; un ayuntamiento puede ocultarlo en su concejo desde su panel (en /util se quita lo de ese concejo).
-// Solo cuatro fuentes son automáticas (DGT/Pajares, AEMET, BDNS y BOE); el resto son enlaces a la fuente oficial.
+// Cinco fuentes son automáticas (DGT/Pajares, AEMET, BDNS, BOE y el índice de incendios del 112); el resto son enlaces a la fuente oficial.
 
 export { UTIL_SERVICES, type UtilService } from "./util-services";
 
@@ -34,6 +34,8 @@ export type UtilData = {
   pajares: Cached<{ publishedAt: string | null; incidents: RoadIncident[] }>;
   forecasts: { town: string; forecast: Cached<Forecast> }[] | null;
   grants: Cached<Grant[]>; jobs: Cached<Job[]>;
+  /** Índice de riesgo de incendios del 112: solo si la última lectura fue buena y es de hoy; si no, null (solo el enlace). */
+  fire: { index: import("./fire-index").FireIndex | null; fetchedAt: string | null };
   heritage: Place[]; routes: Place[]; services: Service[];
   /** En /util: número de servicios publicados de cada concejo activo. */
   servicesByTown: Record<string, number>;
@@ -52,7 +54,7 @@ const summary = (text: string | null | undefined) => {
 /** Datos de «Útil» de un concejo (o de todos con town = null). Nunca lanza: cada bloque trae su error. */
 export async function getUtilData(town: string | null): Promise<UtilData> {
   const empty = { data: null, fetchedAt: null, error: null };
-  if (contentSource() !== "payload") return { town, hidden: [], hiddenByTown: {}, activeTowns: [], pajares: empty, forecasts: null, grants: empty, jobs: empty, heritage: [], routes: [], services: [], servicesByTown: {} };
+  if (contentSource() !== "payload") return { town, hidden: [], hiddenByTown: {}, activeTowns: [], pajares: empty, forecasts: null, grants: empty, jobs: empty, fire: { index: null, fetchedAt: null }, heritage: [], routes: [], services: [], servicesByTown: {} };
   ensureUtilRefresher();
   void import("@/cms/newsroom").then(m => m.ensureDigestTicker()).catch(() => undefined);
   const { contentClient } = await import("./payload-content");
@@ -60,13 +62,17 @@ export async function getUtilData(town: string | null): Promise<UtilData> {
   const townWhere: Where = town ? { "town.slug": { equals: town } } : {};
   const towns = town ? UTIL_TOWNS.filter(t => t.slug === town) : UTIL_TOWNS;
   const showsPajares = !town || town === "lena";
-  const [pajares, grants, jobs, forecasts, heritage, routes, services, hiddenByTown] = await Promise.all([
+  const [pajares, grants, jobs, forecasts, heritage, routes, services, hiddenByTown, fireCache] = await Promise.all([
     showsPajares ? safe(pajaresStatus()) : Promise.resolve(empty), safe(openGrants()), safe(publicJobs()),
     aemetEnabled() ? Promise.all(towns.map(async t => ({ town: t.slug, forecast: await safe(aemetForecast(t.slug)!) }))) : Promise.resolve(null),
     getPlaces("heritage", town), getPlaces("routes", town),
     payload.find({ collection: "municipal-services", depth: 1, pagination: false, sort: "order", overrideAccess: false, where: townWhere }).then(r => r.docs).catch(() => []),
     hiddenByConcejo(),
+    fireIndexEnabled() ? safe(fireIndexStatus()) : Promise.resolve(empty),
   ]);
+  const { fireIndexForToday } = await import("./fire-index");
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
+  const fireIndex = fireIndexForToday(fireCache as Cached<import("./fire-index").FireIndex>, today);
   const active = await activeTowns();
   const hidden = town ? hiddenByTown[town] ?? [] : [];
   // En /util (todos los concejos) se quita de cada servicio lo del concejo que lo ha ocultado.
@@ -78,6 +84,7 @@ export async function getUtilData(town: string | null): Promise<UtilData> {
   const inTown = (scope: string) => !town || scope === town || !isTown(scope);
   return {
     town, hidden, hiddenByTown, activeTowns: [...active], pajares,
+    fire: { index: fireIndex, fetchedAt: fireIndex ? fireCache.fetchedAt : null },
     // El tiempo es regional (Planta 14): sale para los seis concejos, salvo el que lo haya ocultado en su página.
     forecasts: forecasts?.filter(f => town || !(hiddenByTown[f.town] ?? []).includes("tiempo")) ?? null,
     grants: { ...grants, data: grants.data?.filter(g => inTown(g.scope) && shown("subvenciones", g.scope)) ?? null },

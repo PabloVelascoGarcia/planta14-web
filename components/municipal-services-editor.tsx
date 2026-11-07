@@ -17,7 +17,7 @@ export function MunicipalServicesEditor({ services, disabled = false }: { servic
   const [busy, setBusy] = useState(false);
   const set = (patch: Partial<typeof blank>) => setForm(current => ({ ...current, ...patch }));
   async function call(path: string, method: string, body?: unknown) {
-    const response = await fetch(`/api/cms/municipal-services${path}`, { method, credentials: "same-origin", headers: body ? { "Content-Type": "application/json" } : undefined, body: body ? JSON.stringify(body) : undefined });
+    const response = await fetch(`/api/panel/api/municipal-services${path}`, { method, credentials: "same-origin", headers: body ? { "Content-Type": "application/json" } : undefined, body: body ? JSON.stringify(body) : undefined });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data?.errors?.[0]?.data?.errors?.[0]?.message || data?.errors?.[0]?.message || "No se ha podido guardar.");
   }

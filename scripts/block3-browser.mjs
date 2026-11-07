@@ -19,10 +19,10 @@ export async function testMunicipalBrowser({ url, email, password, editorEmail }
     await form.waitFor({ state: 'visible' });
     const title = 'Aviso original de prueba en navegador';
     await form.getByLabel(/^Título/).fill(title);
-    await form.getByLabel('Resumen', { exact: true }).fill('Resumen propio del ensayo de navegador.');
+    await form.getByLabel(/^Resumen/).fill('Resumen propio del ensayo de navegador.');
     await form.getByLabel('¿Qué deben saber los vecinos?', { exact: true }).fill('Texto propio para comprobar publicación y retirada en el navegador real.');
     const responsePromise = page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/cms/municipal-content'));
-    await form.getByRole('button', { name: 'Publicar ahora ↗', exact: true }).click();
+    await form.getByRole('button', { name: 'Publicar ahora', exact: true }).click();
     const response = await responsePromise;
     assert.equal(response.status(), 201);
     const { doc } = await response.json();

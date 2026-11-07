@@ -13,7 +13,8 @@ import { MunicipalUtilVisibility } from "./municipal-util-visibility";
 
 type ContentType = PanelItem["type"];
 const types = sections.filter(s => s.id !== "contact") as { id: ContentType; label: string }[];
-const api = "/api/cms";
+// Puente del panel a la API de Payload con la sesión del panel (app/api/panel/api).
+const api = "/api/panel/api";
 
 async function request(path: string, init: RequestInit) {
   const response = await fetch(`${api}${path}`, { credentials: "same-origin", ...init });
@@ -23,7 +24,7 @@ async function request(path: string, init: RequestInit) {
 }
 const json = (method: string, body: unknown): RequestInit => ({ method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 
-const empty = { id: null as number | null, type: "notice" as ContentType, title: "", excerpt: "", body: "", expiresAt: "", eventDate: "", eventTime: "18:00", place: "", deadline: "", image: null as number | null };
+const empty = { id: null as number | null, type: "news" as ContentType, title: "", excerpt: "", body: "", expiresAt: "", eventDate: "", eventTime: "18:00", place: "", deadline: "", image: null as number | null };
 type Draft = typeof empty;
 function fromItem(item: PanelItem): Draft {
   return { id: item.id, type: item.type, title: item.title, excerpt: item.excerpt, body: item.body, expiresAt: item.expiresAt || "",
@@ -39,8 +40,13 @@ function Login({ onDone }: { onDone: () => void }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
-    try { await request("/users/login", json("POST", { email, password })); onDone(); }
-    catch { setMessage("No se ha podido iniciar sesión. Revisa el correo y la contraseña."); }
+    try {
+      // Sesión del panel: cookie propia, compartida por todas las pestañas, 14 días renovados con el uso.
+      const response = await fetch("/api/panel/entrar", { ...json("POST", { email, password }), credentials: "same-origin" });
+      const body = await response.json().catch(() => ({})) as { error?: string };
+      if (!response.ok) throw new Error(body.error || "No se ha podido iniciar sesión. Revisa el correo y la contraseña.");
+      onDone();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "No se ha podido iniciar sesión. Revisa el correo y la contraseña."); }
   }
   async function sendReset(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +60,7 @@ function Login({ onDone }: { onDone: () => void }) {
     } finally { setBusy(false); }
   }
   if (forgot) return <form onSubmit={sendReset} className="municipal-form" data-forgot-password>
-    <div className="municipal-step"><span>1</span><h3>¿Has olvidado tu contraseña?</h3></div>
+    <div className="municipal-step is-single"><h3>¿Has olvidado tu contraseña?</h3></div>
     <p className="municipal-form-help">Escribe el correo de la cuenta de tu ayuntamiento y te enviaremos un enlace para elegir una nueva.</p>
     <label>Correo electrónico<input type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} required /></label>
     <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy}>{busy ? "Enviando…" : "Enviar el enlace ↗"}</button></div>
@@ -62,7 +68,7 @@ function Login({ onDone }: { onDone: () => void }) {
     <button type="button" className="municipal-text-link" onClick={() => { setForgot(false); setMessage(""); }}>← Volver a entrar</button>
   </form>;
   return <form onSubmit={submit} className="municipal-form">
-    <div className="municipal-step"><span>1</span><h3>Entra con la cuenta de tu ayuntamiento</h3></div>
+    <div className="municipal-step is-single"><h3>Entra con la cuenta de tu ayuntamiento</h3></div>
     <label>Correo electrónico<input type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} required /></label>
     <label>Contraseña<input type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required /></label>
     <div className="municipal-publish-actions"><button type="submit" className="municipal-cta">Entrar ↗</button><small>Las cuentas municipales las crea Planta 14.</small></div>
@@ -130,6 +136,9 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
   const [busy, setBusy] = useState(false);
   const set = (patch: Partial<Draft>) => setDraft(current => ({ ...current, ...patch }));
   const [tab, setTabState] = useState<PanelTab>(PANEL_TABS.some(t => t.id === initialTab) ? initialTab as PanelTab : "publicar");
+  // Renovación con el uso: al abrir el panel con sesión, la cookie del panel se alarga a 14 días si tiene más de uno.
+  const signedIn = state.kind === "editor";
+  useEffect(() => { if (signedIn) void fetch("/api/panel/sesion", { method: "POST", credentials: "same-origin" }).catch(() => undefined); }, [signedIn]);
   // Cada pestaña tiene su enlace: se cambia sin recargar y la dirección queda en la barra (?pestana=…).
   const setTab = (next: PanelTab) => { setTabState(next); window.history.replaceState(null, "", next === "publicar" ? window.location.pathname : `?pestana=${next}`); };
   useEffect(() => { const onPop = () => { const t = new URLSearchParams(window.location.search).get("pestana"); setTabState(PANEL_TABS.some(x => x.id === t) ? t as PanelTab : "publicar"); }; window.addEventListener("popstate", onPop); return () => window.removeEventListener("popstate", onPop); }, []);
@@ -141,7 +150,7 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
   const locked = busy || Boolean(maintenance);
 
   async function logout() {
-    await fetch(`${api}/users/logout`, { method: "POST", credentials: "same-origin" }).catch(() => undefined);
+    await fetch("/api/panel/salir", { method: "POST", credentials: "same-origin" }).catch(() => undefined);
     router.refresh();
   }
   async function save(publish: boolean) {
@@ -160,7 +169,7 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
       }
       const data = {
         type: draft.type, title: draft.title.trim(), excerpt: draft.excerpt.trim(), body: draft.body.trim(), image,
-        expiresAt: draft.type === "notice" ? draft.expiresAt || null : null,
+        expiresAt: draft.type === "notice" || draft.type === "grant" ? draft.expiresAt || null : null,
         eventAt: draft.type === "event" ? `${draft.eventDate}T${draft.eventTime || "00:00"}` : null,
         place: draft.type === "event" ? draft.place.trim() : null,
         deadline: draft.type === "grant" ? draft.deadline || null : null,
@@ -190,7 +199,8 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
     <div className="container-p14 municipal-panel-body">
       {maintenance ? <div className="municipal-demo-banner" role="status" data-maintenance="on"><span className="municipal-example">Mantenimiento</span><p>{maintenance}</p></div> : null}
       {state.kind === "login" ? <>
-        <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>Publica en tu<br />espacio municipal.</h2></div><p>Lo que publiques aparece al momento<br />en {space.name}.</p></div>
+        <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>Publica en tu<br />espacio municipal.</h2></div><p>Lo que publiques aparece al momento<br />en el espacio del {space.name}.</p></div>
+        {state.cmsEmail ? <p className="municipal-form-help" data-panel-cms-note>Has entrado en el CMS como {state.cmsEmail}. Gestiona los contenidos desde /cms. Para el panel, entra con la cuenta del ayuntamiento: las dos sesiones no se mezclan.</p> : null}
         <div className="municipal-panel-grid"><Login onDone={() => router.refresh()} /></div>
         <p className="municipal-panel-terms"><Link href="/condiciones-cuentas-municipales" target="_blank" data-panel-terms>Condiciones de uso del espacio municipal</Link></p>
       </> : null}
@@ -208,19 +218,21 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
             <div className="municipal-step"><span>1</span><h3>¿Qué quieres contar?</h3></div>
             <label>Tipo<select value={draft.type} onChange={e => set({ type: e.target.value as ContentType })}>{types.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
             <label>Título<input value={draft.title} onChange={e => set({ title: e.target.value })} maxLength={140} required /><small>{draft.title.length}/140 caracteres</small></label>
-            <label>Resumen<textarea value={draft.excerpt} onChange={e => set({ excerpt: e.target.value })} maxLength={300} rows={2} required /></label>
+            <label>Resumen<textarea value={draft.excerpt} onChange={e => set({ excerpt: e.target.value })} maxLength={300} rows={2} required /><small data-excerpt-count>{draft.excerpt.length}/300 caracteres</small></label>
             <label>¿Qué deben saber los vecinos?<textarea value={draft.body} onChange={e => set({ body: e.target.value })} maxLength={5000} rows={6} required /></label>
-            {draft.type === "notice" ? <label>Mostrar el aviso hasta<input type="date" value={draft.expiresAt} onChange={e => set({ expiresAt: e.target.value })} /></label> : null}
             {draft.type === "event" ? <><div className="municipal-field-row"><label>Fecha del evento<input type="date" value={draft.eventDate} required onChange={e => set({ eventDate: e.target.value })} /></label><label>Hora<input type="time" value={draft.eventTime} onChange={e => set({ eventTime: e.target.value })} /></label></div>
               <label>Lugar<input value={draft.place} maxLength={160} required onChange={e => set({ place: e.target.value })} /></label></> : null}
             {draft.type === "grant" ? <label>Plazo de solicitud<input type="date" value={draft.deadline} onChange={e => set({ deadline: e.target.value })} /></label> : null}
-            <div className="municipal-step"><span>2</span><h3>Imagen (opcional)</h3></div>
+            {/* Solo en avisos y ayudas: después de esa fecha deja de verse en la web. */}
+            {draft.type === "notice" || draft.type === "grant" ? <label data-expires-field>{draft.type === "notice" ? "Mostrar el aviso hasta" : "Mostrar la ayuda hasta"}<input type="date" value={draft.expiresAt} onChange={e => set({ expiresAt: e.target.value })} /><small>Después de ese día deja de verse en la web. Vacío: se ve hasta que lo despubliques.</small></label> : null}
+            <div className="municipal-step is-separated"><span>2</span><h3>Imagen (opcional)</h3></div>
             <label>Archivo JPEG, PNG o WebP, hasta 10 MB<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
             {file ? <><label>Descripción de la imagen<input value={alt} onChange={e => setAlt(e.target.value)} required /></label><label>Autoría o crédito<input value={credit} onChange={e => setCredit(e.target.value)} required /></label>
               <label className="municipal-declaration"><input type="checkbox" checked={declared} onChange={e => setDeclared(e.target.checked)} required /> {space.name} declara que tiene los derechos necesarios para publicar esta imagen en Planta 14 y que el autor o crédito indicado es correcto.</label>
               <p className="municipal-field-help">Los derechos quedan a nombre de {space.name}. <Link href="/condiciones-cuentas-municipales#declaracion-imagen" target="_blank">Qué implica esta declaración ↗</Link></p></> : draft.image ? <p className="municipal-field-help">Se mantiene la imagen actual.</p> : null}
-            <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={locked}>Publicar ahora ↗</button><small>Aparece al momento en tu espacio.</small></div>
-            <button type="button" className="municipal-reset" disabled={locked} onClick={() => void save(false)}>Guardar como borrador</button>
+            <div className="municipal-publish-actions"><div className="municipal-publish-buttons"><button type="submit" className="municipal-cta" disabled={locked}>Publicar ahora</button>
+              <button type="button" className="municipal-cta is-secondary" disabled={locked} onClick={() => void save(false)} data-save-draft>Guardar como borrador</button></div>
+              <small data-publish-note>«Publicar ahora»: aparece al momento en tu espacio. «Guardar como borrador»: solo lo ve tu ayuntamiento.</small></div>
             {draft.id ? <button type="button" className="municipal-reset" onClick={() => setDraft(empty)}>Cancelar la edición</button> : null}
             <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
           </form>
