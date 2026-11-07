@@ -8,8 +8,9 @@ export async function GET(request: Request) {
   const { contentClient } = await import("@/lib/payload-content");
   const payload = await contentClient();
   // Las descargas del panel municipal llegan con su cookie (planta14_panel); las del CMS, con la de Payload.
-  const { panelAuthHeaders } = await import("@/lib/panel-session");
-  const { user } = await payload.auth({ headers: panelAuthHeaders(await headers()) });
+  const { panelUser } = await import("@/lib/panel-session");
+  const requestHeaders = await headers();
+  const user = (await panelUser(payload, requestHeaders))?.user ?? (await payload.auth({ headers: requestHeaders })).user;
   if (!user || user.collection !== "users") return new Response("Inicia sesión", { status: 401 });
   const params = new URL(request.url).searchParams;
   const { monthRange, statsReport, TOWNS } = await import("@/lib/stats");

@@ -118,6 +118,22 @@ try {
     return response.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
   };
   ctx.signIn = signIn;
+  // Entrar en el panel desde su formulario, en un contexto del navegador (la cookie __Host- la pone el servidor).
+  ctx.panelLogin = async (context, base, slug, email) => {
+    const tab = await context.newPage();
+    await tab.goto(`${base}/${slug}/panel`, { waitUntil: 'load' });
+    await tab.getByLabel('Correo electrónico', { exact: true }).fill(email);
+    await tab.getByLabel('Contraseña', { exact: true }).fill(password);
+    await tab.getByRole('button', { name: /^Entrar/ }).click();
+    await tab.locator('[data-panel-tabs]').waitFor();
+    await tab.close();
+  };
+  // Sesión del panel municipal (cookie propia, lib/panel-session.ts), como al entrar desde el formulario del panel.
+  ctx.panelSignIn = async email => {
+    const response = await fetch(`${web}/api/panel/entrar`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ email, password }) });
+    assert.equal(response.status, 200, `panel login ${email}: ${await response.clone().text()}`);
+    return response.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
+  };
   for (const u of [users.andres, users.juanfran]) await payload.update({ collection: 'users', id: u.id, overrideAccess: true, data: { password } });
   const dashboard = async email => (await (await fetch(`${web}/cms`, { headers: { Cookie: await signIn(email), 'Sec-Fetch-Site': 'same-origin' } })).text()).replaceAll('<!-- -->', '');
   const juanfranHome = await dashboard('juansantospolalena@gmail.com'), andresHome = await dashboard('velascolne@gmail.com');
@@ -127,7 +143,7 @@ try {
   assert.ok(juanfranHome.includes('href="/cms/bandeja"') && juanfranHome.includes('data-inbox="compact"'), 'home links to the inbox and shows it');
   passed('«Pendiente de revisar» in the CMS home: municipal publications are not pending; the home shows the inbox and links to /cms/bandeja');
 
-  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs', 'participacion-redaccion.mjs', 'participacion-sesion.mjs', 'participacion-formulario-panel.mjs', 'participacion-incendios.mjs'];
+  const blocks = ['participacion-contrasena.mjs', 'participacion-cartas.mjs', 'participacion-sugerencias.mjs', 'participacion-estadisticas.mjs', 'participacion-util.mjs', 'participacion-ocultar.mjs', 'participacion-activacion.mjs', 'participacion-fiestas.mjs', 'participacion-boletin.mjs', 'participacion-boletin-envio.mjs', 'participacion-pie.mjs', 'participacion-portada.mjs', 'participacion-cierre.mjs', 'participacion-panel.mjs', 'participacion-redaccion.mjs', 'participacion-sesion.mjs', 'participacion-formulario-panel.mjs', 'participacion-incendios.mjs', 'participacion-seguridad-panel.mjs'];
   // PARTICIPACION_BLOQUES=contrasena,cartas… para pasar solo algunos (pruebas rápidas); por defecto, todos.
   const only = (process.env.PARTICIPACION_BLOQUES || '').split(',').filter(Boolean);
   for (const file of blocks.filter(f => !only.length || only.some(o => f === `participacion-${o}.mjs`))) {

@@ -2,7 +2,7 @@
 // en toda la web (comprobación visual que habría detectado el fallo de /[concejo]/panel), panel en pestañas, condiciones
 // solo desde el panel, escudos a la misma altura, el tiempo con iconos en /[concejo]/util y la raya de /morcin.
 export async function run(ctx) {
-  const { payload, users, password, web, page, passed, assert, browser, signIn, town } = ctx;
+  const { payload, users, password, web, page, passed, assert, browser, town } = ctx;
   await ctx.activate(ctx.SIX.filter(t => t !== 'morcin'));
   const mieresSpace = (await payload.find({ collection: 'municipal-spaces', where: { legacyID: { equals: 'mieres' } }, overrideAccess: true })).docs[0];
   const email = 'mieres-panel@planta14.example';
@@ -13,7 +13,6 @@ export async function run(ctx) {
   const mieres = await town('mieres');
   if (!(await payload.count({ collection: 'municipal-services', where: { town: { equals: mieres.id } }, overrideAccess: true })).totalDocs)
     for (const name of ['Biblioteca municipal', 'Polideportivo de Oñón']) await payload.create({ collection: 'municipal-services', overrideAccess: true, data: { name, town: mieres.id, category: 'cultura' } });
-  const cookie = (await signIn(mieresUser.email)).split('; ').map(c => { const [name, ...v] = c.split('='); return { name, value: v.join('='), url: web }; });
 
   // 1. Casillas y radios: ≤ 32 px de ancho, su texto en la misma fila y sin desplazamiento horizontal.
   const checkboxes = async (tab, label) => tab.evaluate(label => {
@@ -41,7 +40,7 @@ export async function run(ctx) {
   for (const [w, h] of [[1440, 900], [1024, 900], [768, 1024], [390, 844]]) {
     const mobile = w < 500;
     const context = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile });
-    await context.addCookies(cookie);
+    await ctx.panelLogin(context, web, 'mieres', mieresUser.email);
     const tab = await context.newPage();
     for (const t of tabs) {
       await tab.goto(`${web}/mieres/panel?pestana=${t}`, { waitUntil: 'networkidle' });
@@ -64,14 +63,14 @@ export async function run(ctx) {
   // Capturas para revisarlas a mano (solo con PANEL_SHOTS_DIR).
   if (process.env.PANEL_SHOTS_DIR) for (const [w, h, m] of [[1440, 900, false], [390, 844, true]]) {
     const c = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: m, hasTouch: m });
-    await c.addCookies(cookie);
+    await ctx.panelLogin(c, web, 'mieres', mieresUser.email);
     const p = await c.newPage();
     for (const t of ['publicar', 'publicaciones', 'util', 'directorio', 'sugerencias', 'visitas']) { await p.goto(`${web}/mieres/panel?pestana=${t}`, { waitUntil: 'networkidle' }); await p.screenshot({ path: `${process.env.PANEL_SHOTS_DIR}/pn-${t}-${w}.png` }); }
     await c.close();
   }
   // 2. Panel en pestañas con enlace propio; listas compactas; visitas en una fila de barras; sin boletín en el pie.
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-  await context.addCookies(cookie);
+  await ctx.panelLogin(context, web, 'mieres', mieresUser.email);
   const tab = await context.newPage();
   await tab.goto(`${web}/mieres/panel`, { waitUntil: 'networkidle' });
   assert.ok(await tab.locator('[data-panel-section="publicar"]').count() && await tab.locator('[data-panel-tab="publicar"][aria-current="page"]').count(), 'Publicar by default');
@@ -106,7 +105,7 @@ export async function run(ctx) {
     assert.ok(await tab.locator('[data-stats-export="csv"]').count() && await tab.locator('[data-stats-export="pdf"]').count(), 'CSV and PDF');
   }
   const mobileTabs = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  await mobileTabs.addCookies(cookie);
+  await ctx.panelLogin(mobileTabs, web, 'mieres', mieresUser.email);
   const phone = await mobileTabs.newPage();
   await phone.goto(`${web}/mieres/panel`, { waitUntil: 'networkidle' });
   const tabsBox = await phone.locator('[data-panel-tabs]').evaluate(e => ({ h: e.getBoundingClientRect().height, scroll: e.scrollWidth > e.clientWidth, overflow: getComputedStyle(e).overflowX }));

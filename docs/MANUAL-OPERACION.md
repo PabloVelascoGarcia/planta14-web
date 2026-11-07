@@ -99,7 +99,7 @@ Si lo que ha fallado es una **actualización** de la web, no sigas este apartado
 5. Envíale el enlace de su panel (`https://planta14.com/lena/panel`) y el manual (`docs/MANUAL-AYUNTAMIENTOS.md`) por correo. Dale **la contraseña por otra vía**, por ejemplo por teléfono.
 6. Antes de dar acceso, el ayuntamiento debe haber firmado el contrato y el encargo de tratamiento (`docs/legal/ENCARGO-TRATAMIENTO-AYUNTAMIENTOS.md`).
 
-**Sesión del panel:** dura 14 días y se alarga sola con el uso. Es una cookie propia del panel, compartida por todas las pestañas, que solo se borra con **Cerrar sesión** o al caducar. Es independiente de la del CMS: en el mismo navegador se puede estar dentro del CMS (redacción) y del panel (cuenta municipal) a la vez sin que una eche a la otra. Para echar a una cuenta municipal de todos sus dispositivos, cámbiale la contraseña o bórrala.
+**Sesión del panel:** dura 14 días y se alarga sola con el uso. Es una cookie propia del panel (`__Host-planta14_panel`), compartida por todas las pestañas, que solo se borra con **Cerrar sesión** o al caducar. Es independiente de la del CMS: en el mismo navegador se puede estar dentro del CMS (redacción) y del panel (cuenta municipal) a la vez sin que una eche a la otra; la sesión del CMS no abre el panel. **Cierran todas las sesiones de una cuenta municipal:** cambiarle la contraseña (o que la restablezca), cambiarle el rol o el espacio, borrarla, o desactivar su espacio municipal (aunque se vuelva a activar, tendrán que entrar de nuevo). Cinco contraseñas equivocadas bloquean la cuenta 10 minutos.
 
 **Para dar de baja una cuenta:** en **Users**, ábrela y bórrala. Lo que publicó se mantiene y el registro de auditoría conserva quién lo hizo.
 

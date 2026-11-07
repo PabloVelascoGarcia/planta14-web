@@ -403,7 +403,7 @@ export async function run(ctx) {
     assert.notEqual((await fetch(`${web}/api/cms/municipal-services/${mieresService.id}`, { method: 'DELETE', headers: as(lenaCookie) })).status, 200, 'cannot delete another concejo');
     assert.equal((await fetch(`${web}/api/cms/municipal-services`, { method: 'POST', headers: as(editorCookie), body: JSON.stringify({ name: 'Redacción', category: 'otros', town: mieresService.town }) })).status, 403, 'journalists do not edit it');
     const panel = await browser.newContext();
-    await panel.addCookies(lenaCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
+    await ctx.panelLogin(panel, origin, 'lena', users.lena.email);
     const tab = await panel.newPage();
     await tab.goto(`${origin}/lena/panel?pestana=directorio`);
     const editor = tab.locator('[data-services-editor]');

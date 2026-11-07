@@ -138,7 +138,12 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
   const [tab, setTabState] = useState<PanelTab>(PANEL_TABS.some(t => t.id === initialTab) ? initialTab as PanelTab : "publicar");
   // Renovación con el uso: al abrir el panel con sesión, la cookie del panel se alarga a 14 días si tiene más de uno.
   const signedIn = state.kind === "editor";
-  useEffect(() => { if (signedIn) void fetch("/api/panel/sesion", { method: "POST", credentials: "same-origin" }).catch(() => undefined); }, [signedIn]);
+  // Si la sesión ya no vale (cerrada en otra pestaña, contraseña cambiada, espacio desactivado), vuelve a la entrada.
+  useEffect(() => {
+    if (!signedIn) return;
+    void fetch("/api/panel/sesion", { method: "POST", credentials: "same-origin" })
+      .then(async response => { await response.text(); if (response.status === 401) router.refresh(); }).catch(() => undefined);
+  }, [signedIn, router]);
   // Cada pestaña tiene su enlace: se cambia sin recargar y la dirección queda en la barra (?pestana=…).
   const setTab = (next: PanelTab) => { setTabState(next); window.history.replaceState(null, "", next === "publicar" ? window.location.pathname : `?pestana=${next}`); };
   useEffect(() => { const onPop = () => { const t = new URLSearchParams(window.location.search).get("pestana"); setTabState(PANEL_TABS.some(x => x.id === t) ? t as PanelTab : "publicar"); }; window.addEventListener("popstate", onPop); return () => window.removeEventListener("popstate", onPop); }, []);

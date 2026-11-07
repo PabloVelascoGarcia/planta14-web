@@ -6,7 +6,7 @@ export async function run(ctx) {
   const town = async slug => (await payload.find({ collection: 'towns', where: { slug: { equals: slug } }, overrideAccess: true })).docs[0];
   const [lenaTown, mieresTown] = [await town('lena'), await town('mieres')];
   await payload.update({ collection: 'users', id: users.lena.id, overrideAccess: true, data: { password } });
-  const lenaCookie = await signIn(users.lena.email);
+  let lenaCookie = await signIn(users.lena.email);
   const post = (cookie, body) => fetch(`${web}/api/cms/util-visibility/concejo`, { method: 'POST', headers: { ...(cookie ? { Cookie: cookie } : {}), 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
   // Por defecto, todo sale (con los seis espacios activos; la activación se prueba en participacion-activacion.mjs).
@@ -16,7 +16,7 @@ export async function run(ctx) {
 
   // El ayuntamiento oculta dos servicios desde su panel (navegador real).
   const panel = await browser.newContext();
-  await panel.addCookies(lenaCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
+  await ctx.panelLogin(panel, origin, 'lena', users.lena.email);
   const tab = await panel.newPage();
   await tab.goto(`${origin}/lena/panel?pestana=util`);
   const form = tab.locator('[data-util-visibility]');
@@ -57,9 +57,13 @@ export async function run(ctx) {
   const lenaSpace = (await payload.find({ collection: 'municipal-spaces', where: { legacyID: { equals: 'lena' } }, overrideAccess: true })).docs[0];
   const subscription = lenaSpace.subscription;
   await payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, overrideAccess: true, data: { subscription: { ...subscription, status: 'inactive' } } });
+  // Desactivar el espacio cierra las sesiones de sus cuentas; al volver a entrar, la administración decide.
+  assert.equal((await post(lenaCookie, { hidden: [] })).status, 401, 'inactive space: the previous session no longer works');
+  lenaCookie = await signIn(users.lena.email);
   const inactive = await post(lenaCookie, { hidden: [] });
   assert.ok(inactive.status === 403 && (await inactive.json()).error.includes('lo decide la administración'), 'inactive space: the administration decides');
   await payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, overrideAccess: true, data: { subscription } });
+  lenaCookie = await signIn(users.lena.email);
   // La administración decide en cualquier concejo (también en los que no tienen espacio activo); aquí, Riosa.
   const adminCookie = await signIn(users.admin.email);
   const riosa = await town('riosa');

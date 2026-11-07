@@ -22,16 +22,16 @@ export type PanelState =
  */
 export async function municipalPanelState(slug: string): Promise<PanelState> {
   const payload = await contentClient();
-  // Sesión del panel (cookie planta14_panel, 14 días; lib/panel-session.ts); sin ella, la de Payload como antes.
-  const { panelAuthHeaders, readPanelToken } = await import('./panel-session');
+  // Solo la sesión del panel (lib/panel-session.ts): token del panel válido, cuenta municipal y espacio activo.
+  const { panelUser } = await import('./panel-session');
   const requestHeaders = await headers();
-  const { user } = await payload.auth({ headers: panelAuthHeaders(requestHeaders) });
-  if (!user || user.collection !== 'users') return { kind: 'login' };
-  // Sin sesión del panel, la del CMS no entra en el panel: se ofrece la entrada (las dos sesiones no se mezclan). Solo una
-  // sesión de Payload de una cuenta municipal (abierta antes de la cookie del panel) sigue valiendo hasta que caduque.
-  if (user.role !== 'municipal') return readPanelToken(requestHeaders)
-    ? { kind: 'forbidden', email: user.email, reason: 'Esta cuenta es de Planta 14. Gestiona los contenidos desde /cms.' }
-    : { kind: 'login', cmsEmail: user.email };
+  const session = await panelUser(payload, requestHeaders);
+  if (!session) {
+    // Con la sesión del CMS abierta (redacción) se ofrece la entrada con una nota: las dos sesiones no se mezclan.
+    const { user: cms } = await payload.auth({ headers: requestHeaders }).catch(() => ({ user: null }));
+    return cms && cms.collection === 'users' && cms.role !== 'municipal' ? { kind: 'login', cmsEmail: cms.email } : { kind: 'login' };
+  }
+  const user = session.user;
   const spaces = await payload.find({ collection: 'municipal-spaces', user, overrideAccess: false, depth: 0, limit: 1, where: { legacyID: { equals: slug } } });
   const space = spaces.docs[0];
   if (!space || relationID(user.municipalSpace) !== space.id) return { kind: 'forbidden', email: user.email, reason: 'Tu cuenta no gestiona este espacio municipal.' };

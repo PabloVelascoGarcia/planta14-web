@@ -46,7 +46,7 @@ export async function run(ctx) {
   await c.close();
 
   // La cookie: httpOnly, Secure, SameSite=Lax, ruta /, unos 14 días; la de Payload no se usa en el panel.
-  const cookie = (await context.cookies(origin)).find(x => x.name === 'planta14_panel');
+  const cookie = (await context.cookies(origin)).find(x => x.name === '__Host-planta14_panel');
   const days = (cookie.expires * 1000 - Date.now()) / 86400_000;
   assert.ok(cookie.httpOnly && cookie.secure && cookie.sameSite === 'Lax' && cookie.path === '/' && days > 13.9 && days <= 14.01, `panel cookie attributes ${JSON.stringify(cookie)}`);
   assert.ok(!(await context.cookies(origin)).some(x => x.name === 'payload-token'), 'no Payload cookie from the panel login');
@@ -89,22 +89,22 @@ export async function run(ctx) {
   const sid = (await sessions())[0].id;
   const old = Math.floor(Date.now() / 1000) - 3 * 86400;
   const fields = getFieldsToSign({ collectionConfig: payload.collections.users.config, email, user: { ...(await payload.findByID({ collection: 'users', id: user.id, overrideAccess: true, depth: 0 })), collection: 'users' } });
-  const oldToken = await new SignJWT({ ...fields, sid }).setProtectedHeader({ alg: 'HS256', authVersion: JWT_AUTH_VERSION, typ: 'JWT' }).setIssuedAt(old).setExpirationTime(old + 14 * 86400).sign(new TextEncoder().encode(payload.secret));
-  await context.addCookies([{ name: 'planta14_panel', value: oldToken, url: origin, httpOnly: true, secure: true, sameSite: 'Lax' }]);
-  await a.reload({ waitUntil: 'load' });
-  assert.ok(await inside(a), 'an 3-day-old panel session is still valid');
-  await a.waitForResponse(r => r.url().endsWith('/api/panel/sesion')).catch(() => undefined);
-  await a.waitForTimeout(500);
-  const renewed = (await context.cookies(origin)).find(x => x.name === 'planta14_panel');
-  assert.ok(renewed.value !== oldToken && (renewed.expires * 1000 - Date.now()) / 86400_000 > 13.9, 'renewed to 14 days with use');
+  const oldToken = await new SignJWT({ ...fields, sid, aud: 'planta14-panel' }).setProtectedHeader({ alg: 'HS256', authVersion: JWT_AUTH_VERSION, typ: 'JWT' }).setIssuedAt(old).setExpirationTime(old + 14 * 86400).sign(new TextEncoder().encode(payload.secret));
+  // (Una cookie __Host- no se puede poner a mano en el navegador: se pide la renovación como la hace el panel al abrirse.)
+  const renewal = await fetch(`${web}/api/panel/sesion`, { method: 'POST', headers: { Cookie: `__Host-planta14_panel=${oldToken}`, Origin: origin } });
+  assert.equal(renewal.status, 200, 'a 3-day-old panel session is still valid');
+  const issued = renewal.headers.getSetCookie().find(c => c.startsWith('__Host-planta14_panel='));
+  assert.ok(issued && !issued.includes(oldToken) && /Max-Age=1209600/.test(issued) && /HttpOnly/.test(issued) && /Secure/.test(issued) && /SameSite=Lax/.test(issued), `renewed to 14 days with use: ${issued}`);
   assert.ok(new Date((await sessions()).find(s => s.id === sid).expiresAt).getTime() > Date.now() + 13.9 * 86400_000, 'server session renewed too');
+  const fresh = await fetch(`${web}/api/panel/sesion`, { method: 'POST', headers: { Cookie: issued.split(';')[0], Origin: origin } });
+  assert.ok(fresh.status === 200 && !fresh.headers.getSetCookie().length, 'a fresh token is not renewed again (once a day at most)');
 
   // «Cerrar sesión»: sale del panel (en todas las pestañas), borra la sesión y no toca la del CMS.
   await a.getByRole('button', { name: /Cerrar sesión/ }).click();
   await a.getByLabel('Contraseña', { exact: true }).waitFor();
   await b.reload({ waitUntil: 'load' });
   assert.ok(!(await inside(b)), 'logout signs out every tab');
-  assert.ok(!(await context.cookies(origin)).some(x => x.name === 'planta14_panel') && !(await sessions()).some(s => s.id === sid), 'cookie and session removed');
+  assert.ok(!(await context.cookies(origin)).some(x => x.name === '__Host-planta14_panel') && !(await sessions()).some(s => s.id === sid), 'cookie and session removed');
   await cms.reload({ waitUntil: 'load' });
   await cms.locator('[data-cms-dashboard], input[name="password"]').first().waitFor();
   assert.ok(await cms.locator('[data-cms-dashboard]').count(), 'the CMS session is untouched');

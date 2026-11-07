@@ -1,4 +1,4 @@
-import { APIError, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field, type FieldHook } from 'payload';
+import { APIError, type CollectionAfterChangeHook, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field, type FieldHook } from 'payload';
 import { revalidateAfterChange, revalidateAfterDelete } from './revalidate';
 import { BlockquoteFeature, BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { toLexical } from '../lib/rich-text';
@@ -277,12 +277,27 @@ const identity: Field = {
   ],
 };
 
+/**
+ * Un espacio municipal que deja de estar activo (estado, fechas) cierra todas las sesiones de sus cuentas municipales:
+ * aunque vuelva a activarse, tendrán que entrar de nuevo. (El panel ya rechaza un espacio inactivo en cada petición.)
+ */
+const closePanelSessionsIfInactive: CollectionAfterChangeHook = async ({ doc, req }) => {
+  const live = await req.payload.findByID({ collection: 'municipal-spaces', id: doc.id, depth: 0, overrideAccess: true, req }).catch(() => null) as { subscription?: { status?: string; startsAt?: string | null; endsAt?: string | null } } | null;
+  const s = live?.subscription, now = new Date();
+  const active = Boolean(s) && (s!.status === 'demo' || (s!.status === 'active' && (!s!.startsAt || new Date(s!.startsAt) <= now) && (!s!.endsAt || new Date(`${s!.endsAt}T23:59:59`) >= now)));
+  if (active) return doc;
+  const accounts = await req.payload.find({ collection: 'users', where: { municipalSpace: { equals: doc.id } }, depth: 0, pagination: false, overrideAccess: true, req });
+  const { revokeAllSessions } = await import('../lib/panel-session');
+  await revokeAllSessions(req.payload, accounts.docs.map(u => u.id));
+  return doc;
+};
+
 export const MunicipalSpaces: CollectionConfig = {
   slug: 'municipal-spaces', admin: { useAsTitle: 'name' },
   versions: { drafts: true },
   access: { read: municipalSpaceRead, readVersions: editorialVersions, create: adminOnly, update: adminOnly, delete: adminOnly },
   // Las fotos de la identidad de un espacio publicado son públicas (copia pública, como las de las noticias).
-  hooks: { beforeChange: [validateImages], afterChange: [syncLinkedMedia, revalidateAfterChange], afterDelete: [syncLinkedMediaAfterDelete, revalidateAfterDelete] },
+  hooks: { beforeChange: [validateImages], afterChange: [syncLinkedMedia, revalidateAfterChange, closePanelSessionsIfInactive], afterDelete: [syncLinkedMediaAfterDelete, revalidateAfterDelete] },
   fields: [key, text('name', true), { name: 'town', type: 'relationship', relationTo: 'towns', required: true, unique: true },
     text('medium', true),
     { name: 'subscription', type: 'group', fields: [

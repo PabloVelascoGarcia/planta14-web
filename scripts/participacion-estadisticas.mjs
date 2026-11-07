@@ -82,7 +82,7 @@ export async function run(ctx) {
   const lenaCSV = await (await fetch(`${web}/api/estadisticas?formato=csv&concejo=mieres`, as(lenaCookie))).text();
   assert.ok(lenaCSV.includes('"Lena"') && lenaCSV.includes('"/lena";"1"') && !lenaCSV.includes('"/fiestas"') && !lenaCSV.includes('"/";'), 'municipal export: only its concejo');
   const panel = await browser.newContext();
-  await panel.addCookies(lenaCookie.split('; ').map(pair => { const [name, ...value] = pair.split('='); return { name, value: value.join('='), url: origin }; }));
+  await ctx.panelLogin(panel, origin, 'lena', users.lena.email);
   const lena = await panel.newPage();
   await lena.goto(`${origin}/lena/panel?pestana=visitas`);
   await lena.locator('[data-municipal-stats] [data-stats-total]').waitFor();

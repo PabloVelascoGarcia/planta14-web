@@ -37,6 +37,8 @@ export const Users: CollectionConfig = {
       const space = relationID(next.municipalSpace);
       if (next.role === 'municipal' && space === null) throw new APIError('Una cuenta municipal debe estar vinculada a un espacio municipal', 400);
       if (next.role !== 'municipal' && space !== null) throw new APIError('Solo las cuentas municipales se vinculan a un espacio municipal', 400);
+      // Cambiar el rol o el espacio de una cuenta cierra todas sus sesiones (también las del panel municipal).
+      if (originalDoc && (next.role !== originalDoc.role || space !== relationID(originalDoc.municipalSpace))) data.sessions = [];
       return data;
     }],
   },

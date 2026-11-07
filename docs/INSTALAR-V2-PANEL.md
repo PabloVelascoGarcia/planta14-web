@@ -2,38 +2,133 @@
 
 Para Claude Code en el PC de Pablo (Code local), con el agente SSH cargado.
 
-Rama **`desarrollo/planta14-v2-panel`**, creada desde `desarrollo/planta14-v2-final` (`ff10f48`). **Commit a instalar: `a2d7404`** (`a2d7404c1dbe06e74c5e02d9604fd58ec571d30e`). El commit siguiente solo completa este documento. Los cambios que pidan los periodistas (su documento de Word) irán en un encargo posterior. No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
+Rama **`desarrollo/planta14-v2-panel`**, creada desde `desarrollo/planta14-v2-final` (`ff10f48`). **En pruebas: `a2d7404`** (entrega del 6 de noviembre, más abajo). **Commit a instalar ahora: el del apartado «Entrega del 7 de noviembre».** No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
 
 Se instala sobre `d7d348f` (la versión final de salida). Una migración nueva, `20261106_214802_redaccion`: amplía «Pendientes de revisar» (concejo, sugerencias, decisión, quién y cuándo), añade los motivos de rechazo, las preferencias «Resumen diario» y «Fuera hasta» de cada usuario y el concejo oculto **Caudal** para lo comarcal.
 
 ## Entrega del 7 de noviembre (sobre `a2d7404`, ya en pruebas)
 
-**Commit a instalar: PENDIENTE.** Se fijará aquí, con su hash completo, cuando se decida desplegar (una sola batería y un solo despliegue). Se instala sobre `a2d7404`, que es lo que hay en pruebas. **Sin migraciones nuevas.** Vuelta atrás: volver a desplegar `a2d7404` (pasos 2 y 4, con ese hash).
+**Commit a instalar: `HASH-CORTO`** (`HASH-NUEVO`). Se instala sobre `a2d7404`, que es lo que hay en pruebas. **Sin migraciones nuevas.** El commit siguiente solo completa este documento.
 
 | Punto | Cambio |
 |---|---|
-| 1. Sesión del panel (grave) | **Causa:** el panel usaba la cookie de Payload (`payload-token`). (1) Payload solo la acepta si el navegador declara la navegación del mismo sitio (`Sec-Fetch-Site`): al abrir el panel en otra pestaña desde un enlace de otro sitio (correo web, WhatsApp, un documento) pedía la contraseña aunque la sesión siguiera viva (reproducido en un navegador real). (2) Caducaba a las 2 horas y el panel nunca la renovaba. (3) Era la misma que la del CMS: entrar o salir en uno echaba al otro en el mismo navegador. **Arreglo:** cookie propia del panel, `planta14_panel` (httpOnly, Secure, SameSite=Lax, ruta /), compartida por todas las pestañas, 14 días renovados con el uso (al abrir el panel, si tiene más de un día). Es un token de Payload cuya sesión queda en el usuario, que Payload valida por cabecera, sin depender de `Sec-Fetch-Site`. Solo la borran «Cerrar sesión» o la caducidad. Rutas nuevas: `/api/panel/entrar`, `/api/panel/salir`, `/api/panel/sesion` y el puente `/api/panel/api/…` (las llamadas del panel a Payload van con la sesión del panel y sin la cookie del CMS; para guardar, solo desde la propia web). Sin sesión del panel, la del CMS ya no entra en el panel: sale la entrada con una nota. Las sesiones de Payload de cuentas municipales abiertas antes del despliegue siguen valiendo hasta que caduquen (2 horas). Caddy (`infra/Caddyfile.production`): entrar, salir y renovar se permiten durante el mantenimiento, como el inicio de sesión del CMS (**hay que aplicar Caddy**, paso 3 bis). |
+| 1. Sesión del panel (grave) | Cookie `__Host-planta14_panel` en producción (ver la revisión de seguridad). **Causa:** el panel usaba la cookie de Payload (`payload-token`). (1) Payload solo la acepta si el navegador declara la navegación del mismo sitio (`Sec-Fetch-Site`): al abrir el panel en otra pestaña desde un enlace de otro sitio (correo web, WhatsApp, un documento) pedía la contraseña aunque la sesión siguiera viva (reproducido en un navegador real). (2) Caducaba a las 2 horas y el panel nunca la renovaba. (3) Era la misma que la del CMS: entrar o salir en uno echaba al otro en el mismo navegador. **Arreglo:** cookie propia del panel (httpOnly, Secure, SameSite=Lax, ruta /), compartida por todas las pestañas, 14 días renovados con el uso (al abrir el panel, si tiene más de un día). Es un token de Payload cuya sesión queda en el usuario, que Payload valida por cabecera, sin depender de `Sec-Fetch-Site`. Solo la borran «Cerrar sesión» o la caducidad. Rutas nuevas: `/api/panel/entrar`, `/api/panel/salir`, `/api/panel/sesion` y el puente `/api/panel/api/…`, limitado a las llamadas del panel. Sin sesión del panel, la del CMS no entra en el panel: sale la entrada con una nota. Tras el despliegue, **cada ayuntamiento tiene que volver a entrar una vez** en su panel (la cookie de Payload ya no abre el panel). Caddy (`infra/Caddyfile.production`): entrar, salir y renovar se permiten durante el mantenimiento, como el inicio de sesión del CMS (**hay que aplicar Caddy**, paso 3 bis). |
 | 2. Formulario de publicar | Tipo por defecto «Noticias». «Mostrar el aviso hasta» (y «Mostrar la ayuda hasta») solo en avisos y ayudas, con su explicación, separado por una raya del paso «2 Imagen (opcional)». Contador de caracteres también en el resumen. |
 | 3. Botones y textos | «Publicar ahora» sin ↗. «Guardar como borrador» como botón secundario, al lado y del mismo tamaño. Nota bajo los botones y ayudas de los campos a 13 px con contraste AA. |
 | 4. Pantalla de acceso | Sin el «1» suelto (también en «¿Has olvidado tu contraseña?»). «Lo que publiques aparece al momento en el espacio del Ayuntamiento de …». |
 | 5. Bandeja | «Publicado por los ayuntamientos»: todas las filas con la misma disposición (tipo y título en una línea, recortado con «…» si no cabe y completo al pasar el ratón; ayuntamiento, estado y fecha debajo; acciones a la derecha). «Retirar» abre el motivo debajo, a todo el ancho. |
 | 6. Riesgo de incendios | Nivel diario del índice de 112 Asturias por concejo (1 Bajo a 5 Extremo, color y texto) en el resumen de cada concejo, en `/[concejo]/util` y en una fila de `/util`, con la fecha del índice, la hora de consulta, la fuente con su licencia y el enlace a la página oficial. Lo lee el servidor cada hora (misma caché que «Útil»); las visitas no consultan al 112. Si la lectura falla, el formato cambia o el índice no es de hoy, no sale ningún nivel, solo «Índice de riesgo de incendios (112 Asturias)». `UTIL_INCENDIOS=off` en el `.env` lo deja solo en enlace. Fuente y licencia: ver las dudas 26 y 27. |
-| 7. Manuales | Ayuntamiento: sesión de 14 días, formulario (tipo, «Mostrar … hasta», contador, botones), índice de incendios. Operación: sesión del panel (apartado 5) y la fuente nueva de «Útil» (apartado 22). |
+| 7. Manuales | Ayuntamiento: sesión de 14 días (y que tras esta versión hay que volver a entrar una vez), formulario (tipo, «Mostrar … hasta», contador, botones), índice de incendios. Operación: sesión del panel (apartado 5) y la fuente nueva de «Útil» (apartado 22). |
 
-**3 bis. Aplicar Caddy** (después del despliegue, por el cambio en las rutas permitidas durante el mantenimiento):
+
+### Revisión de seguridad de la sesión del panel (antes de la batería)
+
+Revisados la cookie del panel, la firma de los tokens y el puente `/api/panel/api`. Lo encontrado y corregido:
+
+| # | Hallazgo en `6b0fb3a` | Corrección |
+|---|---|---|
+| S1 | El puente reenviaba **cualquier** ruta de la API de Payload (usuarios, noticias, ajustes, lecturas…). Las reglas de acceso de Payload frenaban lo indebido, pero el puente no se limitaba a lo necesario. | **Lista cerrada** con las nueve llamadas del panel (subir imagen; crear y editar su contenido; alta, cambio y baja de servicios; sugerencia; visibilidad de «Útil»; «¿Has olvidado tu contraseña?»), todas para cambiar datos; nada de lecturas ni parámetros extra (`depth`, `where`…). Lo demás: 404. |
+| S2 | Sin cookie del panel, el puente reenviaba la petición **con la cookie del CMS**: un segundo acceso a la API para cualquier sesión del CMS. | El puente exige la sesión del panel (salvo «¿Has olvidado tu contraseña?») y nunca reenvía cookies. La cookie de Payload ya **no abre el panel**. |
+| S3 | Un **token del CMS** servía como cookie del panel (los dos se firman igual). | Los tokens del panel llevan `aud: planta14-panel` y solo se aceptan esos. Además: cuenta municipal, con espacio y espacio activo, en cada petición. |
+| S4 | **Desactivar el espacio** no cortaba las sesiones (el puente seguía aceptando escrituras, aunque la página diera 404); **cambiar el rol o el espacio** de la cuenta tampoco. | El panel y el puente rechazan un espacio inactivo en cada petición; al desactivarlo se borran las sesiones de sus cuentas (no reviven al reactivarlo). Cambiar el rol o el espacio de una cuenta borra sus sesiones. «Entrar» con el espacio inactivo: 403 con aviso. |
+| S5 | La cookie se podía **fijar desde otro subdominio** (no llevaba prefijo). | En producción se llama `__Host-planta14_panel`: el navegador solo la acepta con Secure, ruta / y sin Domain. «Entrar» crea siempre una sesión nueva. |
+
+**Ya estaba bien (comprobado con pruebas):** «Cerrar sesión» borra la sesión en el servidor (una copia de la cookie deja de valer); cambiar o restablecer la contraseña borra las sesiones (Payload); firma y caducidad las valida Payload; para cambiar datos, solo desde la propia web (Origin o `Sec-Fetch-Site: same-origin`; también entrar, salir y renovar); límite de intentos de Payload (5 fallos bloquean la cuenta 10 minutos) porque «Entrar» usa `payload.login`; las escrituras por el puente quedan en la auditoría con la cuenta municipal, como el acceso normal (Payload no registra los inicios de sesión en ningún acceso). **Una cookie copiada vale lo que una contraseña** hasta que se cierre sesión, caduque o se cambie la contraseña: es httpOnly (el JavaScript de la página no la lee) y Secure.
+
+**Pruebas:** `scripts/participacion-seguridad-panel.mjs`, una por punto: aislamiento por concejo y rutas no permitidas; CSRF (Origin ajeno, `cross-site`, `same-site`, sin cabeceras; en el puente, entrar, salir y renovar); «Cerrar sesión» y copia de la cookie; contraseña cambiada y restablecida, cuenta movida de espacio, espacio desactivado (también tras reactivarlo) y cuenta borrada; firma cambiada, datos cambiados, sin firma, otra clave, caducado, sesión de otra cuenta, token del CMS y basura; fijación y atributos de la cookie; bloqueo por intentos y auditoría.
+
+### Pasos en pruebas.planta14.com
+
+**1. Entrar y ver el estado:**
+
+```bash
+ssh planta14@87.106.30.18
+```
+
+```bash
+cd /srv/planta14/app
+```
+
+```bash
+bash infra/deploy/status.sh --env-file infra/.env.production
+```
+
+Debe decir `/api/health: ok`, sin mantenimiento ni restauración pendiente, y la versión `a2d7404`.
+
+**2. Fijar el commit y desplegar:**
+
+```bash
+git fetch origin desarrollo/planta14-v2-panel
+```
+
+```bash
+git checkout --detach HASH-NUEVO
+```
+
+```bash
+git log -1 --format='%h %s'
+```
+
+Debe mostrar `HASH-CORTO` y el asunto del commit.
+
+```bash
+bash infra/deploy/deploy.sh --env-file infra/.env.production HASH-NUEVO
+```
+
+```bash
+echo "código: $?"
+```
+
+Debe terminar en «Desplegada», con código 0. No aplica migraciones.
+
+**3. Aplicar Caddy** (cambian las rutas permitidas durante el mantenimiento: entrar, salir y renovar la sesión del panel):
 
 ```bash
 bash infra/deploy/aplicar-caddy.sh --env-file infra/.env.production
 ```
 
-**Comprobaciones de esta entrega:**
+Debe terminar sin errores (recrea solo el contenedor de Caddy, unos segundos).
+
+**4. Estado otra vez:**
+
+```bash
+bash infra/deploy/status.sh --env-file infra/.env.production
+```
+
+Debe decir `/api/health: ok` y la versión `HASH-CORTO`.
+
+**5. Avisar a los ayuntamientos con cuenta** de que tienen que volver a entrar una vez en su panel (la sesión anterior ya no vale). Después, la sesión dura 14 días.
+
+**6. Si algo falla:** si `deploy.sh` terminó con código 1 o 2, sigue lo que dice. Si fue bien pero algo no funciona, vuelve a `a2d7404`:
+
+```bash
+git checkout --detach a2d7404c1dbe06e74c5e02d9604fd58ec571d30e
+```
+
+```bash
+bash infra/deploy/deploy.sh --env-file infra/.env.production a2d7404c1dbe06e74c5e02d9604fd58ec571d30e
+```
+
+```bash
+bash infra/deploy/aplicar-caddy.sh --env-file infra/.env.production
+```
+
+Sin migraciones que deshacer. Al volver, los ayuntamientos vuelven a entrar con la sesión anterior (2 horas).
+
+### Comprobaciones después del despliegue
+
+En el ordenador y en el móvil (o el modo móvil del navegador, F12):
 1. **Sesión, en un navegador limpio:** entra en `/mieres/panel` (pestaña A) y recarga; abre `/mieres/panel?pestana=util` en otra pestaña (B): dentro; vuelve a A y recarga: dentro. Abre también el panel desde un enlace en un correo: dentro. En el navegador (F12 → Aplicación → Cookies), `planta14_panel` con HttpOnly, Secure, SameSite Lax y caducidad a 14 días. Con el CMS abierto en el mismo navegador, los dos siguen dentro. «Cerrar sesión» saca de todas las pestañas del panel y no del CMS.
 2. **Formulario:** tipo «Noticias» al entrar; «Mostrar el aviso hasta» solo en avisos y ayudas; contador del resumen; «Publicar ahora» sin flecha y «Guardar como borrador» como botón.
 3. **Acceso:** sin el «1»; «…en el espacio del Ayuntamiento de Mieres».
 4. **Bandeja:** con títulos largos y cortos, todas las filas iguales.
 5. **Incendios:** en `/mieres` (resumen), `/mieres/util` y `/util`, el nivel de hoy con su color y texto, «Índice del dd/mm/aaaa, consultado a las hh:mm», la fuente y el enlace. Compara con https://www.112asturias.es/indice-incendios-asturias. La primera lectura llega en el primer minuto tras desplegar (la arranca `/api/health`).
 
-**Pruebas rápidas de esta entrega:** ver el informe de la entrega. La batería completa, cuando se decida desplegar.
+6. **Seguridad, en el navegador:** con el panel abierto, F12 → Aplicación → Cookies: `__Host-planta14_panel` con HttpOnly, Secure, SameSite Lax, ruta / y caducidad a 14 días. Pulsa «Cerrar sesión» y recarga otra pestaña del panel: pide entrar. Con la cuenta de la redacción en el CMS, `/mieres/panel` muestra la entrada con la nota «Has entrado en el CMS como …».
+
+### Resultados de la batería completa (esta entrega)
+
+RESULTADOS-BATERIA
 
 ## Qué cambia
 
@@ -237,7 +332,10 @@ Debe terminar en «RESUMEN ENVIADO A …» o «NADA QUE ENVIAR».
 28. **Índice que no es de hoy o lectura fallida:** no se muestra el último nivel bueno (al revés que el resto de «Útil»), porque un nivel de ayer puede ser peligroso. Si el 112 no da nivel de un concejo («Sin información»), en ese concejo sale solo el enlace.
 29. **Hora del dato:** la página del 112 solo da la fecha del índice, no la hora; se muestra la fecha del índice y la hora a la que la consultamos.
 30. **Colores:** los de la leyenda de niveles (verde, amarillo, naranja, rojo, granate), con el naranja oscurecido para que el texto blanco tenga contraste AA; el nivel va siempre también en texto. Los ayuntamientos no lo pueden ocultar (dato de seguridad).
-31. **Sesión del panel y cuentas abiertas antes:** quien ya estuviera dentro del panel con la cookie de Payload sigue dentro hasta que caduque (2 horas); al volver a entrar ya usa la sesión del panel. Una cuenta de la redacción en el panel ve la entrada con una nota («Has entrado en el CMS como … Para el panel, entra con la cuenta del ayuntamiento»), no «Sin acceso», para que se pueda entrar en el panel sin salir del CMS.
+31. **Cuentas abiertas antes del despliegue:** tras la revisión de seguridad, la cookie de Payload ya no abre el panel (era la vía de los hallazgos S2 y S3): cada ayuntamiento entra una vez tras el despliegue. Una cuenta de la redacción en el panel ve la entrada con una nota («Has entrado en el CMS como … Para el panel, entra con la cuenta del ayuntamiento»), no «Sin acceso», para que se pueda entrar en el panel sin salir del CMS.
 32. **Renovación:** la cookie se renueva al abrir el panel si tiene más de un día (no en cada petición), para no escribir en la base de datos a cada clic.
 33. **«Mostrar la ayuda hasta»:** en las ayudas el campo se llama así (en los avisos, «Mostrar el aviso hasta»), con la misma función; se guarda igual que el de los avisos.
+34. **Nombre de la cookie:** en producción `__Host-planta14_panel` (en lugar de `planta14_panel`): el prefijo hace que el navegador la rechace si no viene con Secure, ruta / y sin Domain, que es lo que impide fijarla desde otro subdominio. En desarrollo sin HTTPS sigue siendo `planta14_panel`.
+35. **Inicios de sesión en la auditoría:** el acceso normal (Payload) no los registra; el del panel tampoco, para que sean iguales. Sí quedan, como siempre, todas las escrituras con la cuenta. Registrar entradas y salidas exigiría ampliar el registro de auditoría (migración): lo dejo para cuando se pida.
+36. **Acceso directo a la API de Payload con una cuenta municipal** (`/api/cms/users/login` y luego `/api/cms/…`): es el acceso normal de Payload, anterior a este cambio, con sus reglas de acceso (cada ayuntamiento solo su espacio) y su protección CSRF; el panel ya no lo usa. No lo cierro aquí para no tocar las pruebas que lo usan; si se quiere cerrar a las cuentas municipales, es un cambio aparte.
 

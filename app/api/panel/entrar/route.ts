@@ -1,5 +1,5 @@
 import { cmsEnabled } from "@/cms/environment";
-import { clearPanelCookie, createPanelSession, panelCookie, revokeSession, sameOrigin, tokenSid } from "@/lib/panel-session";
+import { clearPanelCookie, createPanelSession, panelCookie, revokeSession, sameOrigin, tokenSid, verifyPanelToken } from "@/lib/panel-session";
 
 // Entrada al panel municipal: comprueba la contraseña con Payload (mismos intentos máximos y bloqueo) y abre la sesión
 // del panel (cookie planta14_panel, 14 días). Solo para cuentas municipales: la redacción entra en /cms.
@@ -24,6 +24,11 @@ export async function POST(request: Request) {
   // payload.login abre de paso su propia sesión de 2 horas, que el panel no usa: se quita.
   await revokeSession(payload, result.user.id, result.token ? tokenSid(result.token) : undefined);
   if (result.user.role !== "municipal") return json({ error: "Esta cuenta es de Planta 14: entra en /cms." }, 403, clearPanelCookie());
+  // Sesión nueva siempre (nunca se reutiliza una que llegue de fuera: sin fijación de sesión).
   const { token } = await createPanelSession(payload, result.user.id);
+  if (!(await verifyPanelToken(payload, token))) {
+    await revokeSession(payload, result.user.id, tokenSid(token));
+    return json({ error: "El espacio municipal de esta cuenta no está activo. Escribe a Planta 14." }, 403, clearPanelCookie());
+  }
   return json({ ok: true }, 200, panelCookie(token));
 }
