@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`d7d348fcb9f873307b9f8ed5afa3c5f602c1c9fe`** (`d7d348f`, rama `desarrollo/planta14-v2-final`). Desplegada el **6 de noviembre de 2026 a las 12:27** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `a66deb2`, y `deploy.sh` la conserva para poder volver a ella.
+**`a2d7404c1dbe06e74c5e02d9604fd58ec571d30e`** (`a2d7404`, rama `desarrollo/planta14-v2-panel`). Desplegada el **7 de noviembre de 2026 a las 01:11** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `d7d348f`, y `deploy.sh` la conserva para poder volver a ella.
 
 > **Fechas de contrato.** En pruebas, Mieres y Lena empiezan el 3 de noviembre de 2026, y Aller y Riosa no tienen fecha. **En producción, todos los espacios municipales empiezan el 1 de enero de 2027, Mieres incluido.**
 
@@ -35,6 +35,37 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a a2d7404: panel municipal en pestañas y redacción (7 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-PANEL.md` (`d794cac`). Todo se hizo en una sola conexión SSH, a la 01:01 de Madrid. No se han tocado el DNS, los buckets, las claves, el `.env` ni el ensayo. **No se lanzó `npm run cms:resumen` ni se envió ningún correo a los redactores.** El paso 6 del documento (navegador) queda para Pablo.
+
+**Espacios municipales:** sin cambios, comprobado antes y después. Activos: Mieres, Lena, Aller y Riosa. Inactivos: Morcín y Ribera de Arriba.
+
+| Paso | Resultado |
+|---|---|
+| Estado previo | `d7d348f` (versión de vuelta atrás), `/api/health: ok` y mantenimiento desactivado |
+| `deploy.sh … a2d7404…` | **Código 0, «Desplegada».** Construcción de 10 minutos y copia previa `…20261107T001128Z.dump.age` (492K). El mantenimiento duró 26 segundos. Registro: `/srv/planta14/state/deploy-a2d7404.log` |
+| Estado después | `a2d7404`, `/api/health: ok` |
+| 1. Migración | Aplicada `20261106_214802_redaccion` |
+| 1. Concejo «Caudal» | En `towns`: `caudal`, «Caudal», `visible = false`, origen `redaccion`. Sin espacio municipal. `/caudal` da 404 y no hay enlace en el menú |
+| 2. Orden del paso 5 | `pie sin condiciones: true` · `condiciones noindex: 200 true` · `condiciones fuera del sitemap: true` · `Caudal oculto (menú, sin página): true 404` · `Caudal en el formulario de fiestas: true` |
+| 3. `/mieres/panel` sin sesión | Responde 200 con la pantalla de acceso, que pide contraseña. Tiene el enlace «Condiciones de uso del espacio municipal» → `/condiciones-cuentas-municipales` y no lleva el boletín en el pie |
+| 4. Páginas | Responden 200: `/`, `/mieres`, `/aller`, `/lena`, `/aller/util`, `/morcin`, `/util`, `/fiestas` y `/api/health` |
+| Resumen diario | Ningún día reservado en `external_cache`. El primero saldrá solo a partir de las 8:00, si hay algo |
+
+**Memoria de la compilación**, medida cada segundo, con 610 muestras. Registro: `/srv/planta14/state/memoria-compilacion-a2d7404.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.152 MiB al empezar; **máximo 2.326 MiB** |
+| Swap (4.095 MiB en total) | 65 MiB al empezar; **máximo 947 MiB**, el más alto hasta ahora (antes, entre 514 y 785); 65 MiB al terminar |
+| RSS máximo de los procesos `node` de la compilación | 657 MiB |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:**
+- las comprobaciones en el navegador del paso 6 de `docs/INSTALAR-V2-PANEL.md`;
+- comprobar el primer resumen diario y los avisos con un caso real (paso 7).
 
 ### Actualización a d7d348f: versión final de salida (6 de noviembre de 2026)
 
