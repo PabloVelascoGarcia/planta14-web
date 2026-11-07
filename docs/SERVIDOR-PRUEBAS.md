@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`a2d7404c1dbe06e74c5e02d9604fd58ec571d30e`** (`a2d7404`, rama `desarrollo/planta14-v2-panel`). Desplegada el **7 de noviembre de 2026 a las 01:11** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `d7d348f`, y `deploy.sh` la conserva para poder volver a ella.
+**`474dddf8dc4b5136fab16c16e5306e65832c1b7d`** (`474dddf`, rama `desarrollo/planta14-v2-panel`). Desplegada el **7 de noviembre de 2026 a las 16:18** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `a2d7404`, y `deploy.sh` la conserva para poder volver a ella.
 
 > **Fechas de contrato.** En pruebas, Mieres y Lena empiezan el 3 de noviembre de 2026, y Aller y Riosa no tienen fecha. **En producción, todos los espacios municipales empiezan el 1 de enero de 2027, Mieres incluido.**
 
@@ -35,6 +35,39 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a 474dddf: sesión propia del panel, formulario e índice de incendios (7 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-PANEL.md` (`19e10ec`), apartado «Entrega del 7 de noviembre», con `aplicar-caddy.sh` después de `deploy.sh`. CI en verde. Todo se hizo en **una sola conexión SSH**, de 16:07 a 16:18 de Madrid. No se han tocado el DNS, los buckets, las claves, el `.env` ni el ensayo. **`UTIL_INCENDIOS` no está en el `.env`: el índice queda activo.** No se lanzó `npm run cms:resumen` ni se envió ningún correo a los redactores (en `external_cache` hay 1 reserva del resumen antes y después, la del envío automático). Las comprobaciones de sesión en el navegador quedan para Pablo.
+
+**Espacios municipales:** sin cambios, comprobado antes y después. Activos: Mieres, Lena, Aller y Riosa. Inactivos: Morcín y Ribera de Arriba.
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo | `a2d7404`, `/api/health: ok`, mantenimiento desactivado |
+| 2. Fijar el commit | `git log -1`: `474dddf Sesión del panel: revisión de seguridad (…)` |
+| 2. `deploy.sh … 474dddf…` | **Código 0, «Desplegada».** 642 s en total. Copia previa `…20261107T151750Z.dump.age` (500K). «Sin migraciones nuevas». El mantenimiento duró 19 segundos (16:17:49 a 16:18:08). Se borró la imagen antigua `a66deb2`. Registro: `/srv/planta14/state/deploy-474dddf.log` |
+| 3. `aplicar-caddy.sh` | Código 0. `/api/health: 200`, portada sin contraseña: 401 (contraseña de preproducción puesta). `Caddyfile.production` permite en mantenimiento `/api/panel/entrar`, `/api/panel/salir` y `/api/panel/sesion` |
+| 4. Estado después | `474dddf`, `/api/health: ok`, app `healthy` |
+| Páginas | Responden 200: `/`, `/mieres`, `/aller`, `/lena`, `/aller/util`, `/morcin`, `/util`, `/fiestas` y `/api/health` |
+| Panel | `/mieres/panel` sin sesión: 200, con el enlace a las condiciones. `GET /api/panel/sesion` y `GET /api/panel/api/users`: 405 (solo admiten POST) |
+| Índice de incendios | Primera lectura a las 16:18. `/util`: los 6 concejos con nivel «1 · Bajo», «Índice del 07/11/2026, consultado a las 16:18». `/aller/util`: «1 · Bajo», misma fecha y hora. Sin el aviso de «solo enlace» |
+
+**Memoria de la compilación**, medida cada segundo, con 606 muestras. Registro: `/srv/planta14/state/memoria-compilacion-474dddf.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.047 MiB al empezar; **máximo 2.286 MiB**; 974 MiB al terminar |
+| Swap (4.095 MiB en total) | 64 MiB al empezar; **máximo 1.103 MiB**, de nuevo el más alto hasta ahora (antes, entre 514 y 947); 65 MiB al terminar |
+| RSS máximo de los procesos `node` (incluida la app en marcha) | 673 MiB |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:**
+- las comprobaciones en el navegador de `docs/INSTALAR-V2-PANEL.md` (sesión y cookie `__Host-planta14_panel`, formulario, acceso, bandeja, incendios y seguridad);
+- avisar a los ayuntamientos con cuenta de que tienen que volver a entrar una vez en su panel (paso 5);
+- vigilar la swap en la compilación: sube con cada versión.
+
+**Vuelta atrás**, si hiciera falta: paso 6 del documento (`a2d7404`, `deploy.sh` y `aplicar-caddy.sh`, sin migraciones que deshacer).
 
 ### Actualización a a2d7404: panel municipal en pestañas y redacción (7 de noviembre de 2026)
 
