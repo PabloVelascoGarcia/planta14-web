@@ -60,9 +60,9 @@ export async function run(ctx) {
   await payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, overrideAccess: true, data: { subscription: { ...subscription, status: 'inactive' } } });
   // Desactivar el espacio cierra las sesiones de sus cuentas; al volver a entrar, la administración decide.
   assert.equal((await post(lenaCookie, { hidden: [] })).status, 401, 'inactive space: the previous session no longer works');
-  lenaCookie = await signIn(users.lena.email);
-  const inactive = await post(lenaCookie, { hidden: [] });
-  assert.ok(inactive.status === 403 && (await inactive.json()).error.includes('lo decide la administración'), 'inactive space: the administration decides');
+  // Con el espacio inactivo, la cuenta municipal ni siquiera entra en su panel (y no tiene otra forma de entrar).
+  const inactive = await fetch(`${web}/api/panel/entrar`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ email: users.lena.email, password }) });
+  assert.ok(inactive.status === 403 && (await inactive.json()).error.includes('no está activo'), 'inactive space: no panel session');
   await payload.update({ collection: 'municipal-spaces', id: lenaSpace.id, overrideAccess: true, data: { subscription } });
   lenaCookie = await signIn(users.lena.email);
   // La administración decide en cualquier concejo (también en los que no tienen espacio activo); aquí, Riosa.
