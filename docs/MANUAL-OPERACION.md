@@ -328,6 +328,25 @@ Guarda una vez con **Guardar borrador**. Arriba aparecen dos botones:
 
 Solo la ve quien tiene sesión en el CMS: no es pública hasta que se publica. Las fotos aún no publicadas se ven en la vista previa, pero no en la web.
 
+### Ayuda dentro del CMS y del panel
+
+El manual de la redacción (`docs/MANUAL-REDACCION.md`) se ve en **Ayuda** (menú del CMS y tarjeta del inicio,
+`/cms/ayuda`), con índice, buscador y **Descargar en PDF**; su apartado de administración solo lo ve la
+administración. El del ayuntamiento (`docs/MANUAL-AYUNTAMIENTOS.md`) está en la pestaña **Ayuda** del panel municipal.
+Se generan en cada compilación desde esos archivos: al desplegar una versión, la Ayuda queda al día sola.
+
+### Firma «El Director»
+
+Una vez por instalación (se puede repetir sin duplicar nada):
+
+```bash
+bash infra/deploy/firma-direccion.sh --env-file infra/.env.production --admin CORREO-DE-ADMINISTRACIÓN-DE-PABLO
+```
+
+Crea el autor **El Director** (definitivo, sin foto ni biografía) y lo deja como **firma fija** de esa cuenta de
+administración y de `pvelasco@assa.as` («Pablo Velasco (redactor)»): sus noticias salen siempre firmadas así y no
+pueden elegir otra firma. La firma fija de cualquier otra cuenta se marca a mano en **Usuarios → Firma fija**.
+
 ### Firma por defecto
 
 Para que el autor venga puesto, la administración abre **Usuarios →** la cuenta de la persona → **Firma (autor vinculado)** y elige su autor. Se puede cambiar en cada noticia.
