@@ -6,7 +6,7 @@ Rama **`desarrollo/planta14-v2-redaccion`**, creada desde `desarrollo/planta14-v
 `474dddf`, que es lo que hay en pruebas, más el documento de instalación). No se han tocado `main`,
 `mejora/presentacion-la-voz` ni el servidor. Sin PR.
 
-**Commit a instalar: `HASH-CORTO`** (`HASH-NUEVO`). Se instala sobre `474dddf`. **Una migración nueva**,
+**Commit a instalar: `a79e302`** (`a79e3023d1adc628d63b92a7e08ec5b0cbe13052`). Se instala sobre `474dddf`. **Una migración nueva**,
 `20261123_132459_redaccion_imagenes` (abajo). **Caddy no cambia** (no hace falta `aplicar-caddy.sh`). El commit
 siguiente solo completa este documento.
 
@@ -116,17 +116,17 @@ git fetch origin desarrollo/planta14-v2-redaccion
 ```
 
 ```bash
-git checkout --detach HASH-NUEVO
+git checkout --detach a79e3023d1adc628d63b92a7e08ec5b0cbe13052
 ```
 
 ```bash
 git log -1 --format='%h %s'
 ```
 
-Debe mostrar `HASH-CORTO` y el asunto del commit.
+Debe mostrar `a79e302` y el asunto del commit.
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production HASH-NUEVO
+bash infra/deploy/deploy.sh --env-file infra/.env.production a79e3023d1adc628d63b92a7e08ec5b0cbe13052
 ```
 
 ```bash
@@ -149,7 +149,7 @@ Anota el máximo de la línea «Swap» (la última vez, 1.103 MiB). Si sale clar
 bash infra/deploy/status.sh --env-file infra/.env.production
 ```
 
-Debe decir `/api/health: ok` y la versión `HASH-CORTO`.
+Debe decir `/api/health: ok` y la versión `a79e302`.
 
 **5. Si algo falla:** si `deploy.sh` terminó con código 1 o 2, sigue lo que dice (si la migración llegó a aplicarse,
 `deploy.sh` deja el modo mantenimiento y las instrucciones de restauración asistida). Si fue bien pero algo no
@@ -218,4 +218,37 @@ muestran cómo debe verse cada cosa.
 
 ## Resultados de la batería completa (esta entrega)
 
-RESULTADOS-BATERIA
+Batería completa una vez sobre `d0d78da` (el código de la aplicación es el mismo que en `a79e302`; después solo
+cambian pruebas y documentos). Lo que falló se corrigió y se repitió solo esa suite, sobre `a79e302`.
+
+| Suite | Resultado |
+|---|---|
+| `npm test` | 11 PASS |
+| Tipos (`typecheck`) | sin errores |
+| Lint | 0 errores (24 avisos; antes 16: los nuevos son `<img>` en las imágenes del texto y la galería, a propósito, como en el resto de la web) |
+| Build de producción | correcto (ver la nota sobre Next.js) |
+| Bloque 2 | 8 PASS (repetida: la ficha de la noticia sin foto ahora lleva la plantilla) |
+| Bloque 3 | 17 PASS |
+| Lanzamiento | 5 PASS (repetida: `og:image` es ahora la imagen para redes generada) |
+| Instalación | 16 PASS (repetida: «Concejo principal») |
+| Ensayo / portada | 8 / 9 PASS |
+| Formulario | 3 PASS (repetida: la barra del editor tiene ahora el botón de bloques delante de «Texto normal») |
+| Participación | **60 PASS** (repetida entera: ajustes de las pruebas al cierre de la API a las cuentas municipales, a la columna `extra_towns`, a la imagen para redes en Discover y a la franja de concejos del móvil; incluye los bloques nuevos `redaccion-noticias` y `seguridad-api`) |
+| `staging-e2e` (navegador contra la imagen) | 9 PASS, SUPERADO |
+| `staging-config` / monitor / común / memoria / guarda de pruebas | 4 / 4 / 3 / 1 / 1 PASS |
+| Restauración de copias (×3, también con la imagen y sin privilegios), copia externa inmutable, configuración de pruebas, preproducción, roles de Postgres | SUPERADAS |
+| `shellcheck` / Caddy (ACME e interno) | sin avisos / válida |
+| Limpieza | 0 volúmenes nuevos, 0 restos en `out/` |
+| **`production-deploy-test.sh`** | **No se ha podido pasar aquí** (abajo) |
+
+**`production-deploy-test.sh` y el aviso de Next.js.** Esa prueba compila cada versión en una copia limpia. Next.js
+16.4.3 detecta que la compilación la lanza un agente de IA (este entorno) y la detiene una vez con un aviso de seguridad
+(«Your version of Next.js is affected by a known security vulnerability»). Al repetirla en la misma carpeta, continúa;
+en una copia limpia, no. En el servidor y en el CI no hay agente y no ocurre (el CI compila la imagen en verde). No he
+intentado esquivar el aviso. **Pásala tú en Code local antes de desplegar:**
+
+```bash
+bash infra/test/production-deploy-test.sh
+```
+
+Debe terminar en «RESULTADO: … SUPERADO». Comprueba el despliegue, la migración nueva y la vuelta atrás.
