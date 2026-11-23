@@ -283,7 +283,7 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
   .brand { font-size: 46px; }
   .masthead-tagline { padding: 2px 0 10px; }
   .territory-nav { border-top-width: 2px; }
-  .territory-group, .territory-group + .territory-group { padding: 0; align-items: center; gap: 10px; }
+  .territory-group, .territory-group + .territory-group { padding: 0; align-items: center; gap: 10px; min-width: 0; }
   .territory-towns { flex-wrap: nowrap; overflow-x: auto; gap: 0 4px; scrollbar-width: none; margin-right: -16px; padding-right: 16px; }
   .territory-towns::-webkit-scrollbar { display: none; }
   .territory-towns a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; white-space: nowrap; }

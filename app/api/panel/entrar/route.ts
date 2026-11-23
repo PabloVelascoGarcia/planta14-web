@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const payload = await contentClient();
   let result: { user: { id: number; role?: string | null }; token?: string };
   try {
-    result = await payload.login({ collection: "users", data: { email, password } }) as never;
+    result = await payload.login({ collection: "users", data: { email, password }, context: { panelLogin: true } }) as never;
   } catch (error) {
     const message = error instanceof Error && /bloquead|locked|actualiz/i.test(error.message) ? error.message : "No se ha podido iniciar sesión. Revisa el correo y la contraseña.";
     return json({ error: message }, 401);

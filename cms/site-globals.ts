@@ -1,5 +1,5 @@
 import type { GlobalConfig, Payload } from 'payload';
-import { adminOnly, editorialUser } from './access';
+import { adminOnly, editorialUser, notMunicipal } from './access';
 
 // Ajustes globales del sitio, visibles y editables solo por la administración (la web los lee en el servidor).
 
@@ -14,7 +14,7 @@ const mottoChoice = (name: string, label: string, def: string, description: stri
 export const Mottos: GlobalConfig = {
   slug: 'mottos',
   label: 'Lemas',
-  access: { read: () => true, update: adminOnly },
+  access: { read: notMunicipal, update: adminOnly },
   admin: { description: 'Los tres lemas de Planta 14 y dónde va cada uno. Sin punto final, como criterio. Solo la administración.' },
   fields: [
     { name: 'lema1', label: 'Lema 1', type: 'text', required: true, maxLength: 80, defaultValue: DEFAULT_MOTTOS[0] },
@@ -29,7 +29,7 @@ export const Mottos: GlobalConfig = {
 export const FooterSettings: GlobalConfig = {
   slug: 'footer-settings',
   label: 'Pie de página',
-  access: { read: () => true, update: adminOnly },
+  access: { read: notMunicipal, update: adminOnly },
   admin: { description: 'Enlaces opcionales del pie. Solo la administración.' },
   fields: [
     { name: 'whatsapp', label: 'Enlace de WhatsApp', type: 'text', maxLength: 300,
@@ -51,7 +51,7 @@ export const DEFAULT_PRINCIPLES = [
 export const Principles: GlobalConfig = {
   slug: 'principles',
   label: 'Principios editoriales',
-  access: { read: () => true, update: adminOnly },
+  access: { read: notMunicipal, update: adminOnly },
   admin: { description: 'Texto de /principios (enlazado en el pie). Solo la administración.' },
   fields: [
     { name: 'provisional', label: 'Mostrar el aviso «Texto provisional pendiente de revisión.»', type: 'checkbox', defaultValue: true,
@@ -70,7 +70,7 @@ export const DEFAULT_FIESTAS_DAYS_BEFORE = 7;
 export const FiestasSettings: GlobalConfig = {
   slug: 'fiestas-settings',
   label: 'Fiestas en portada',
-  access: { read: () => true, update: editorialUser },
+  access: { read: notMunicipal, update: editorialUser },
   admin: { description: 'Bloque «Fiestas esta semana» de la portada y de la página de cada concejo. Lo cambia la redacción.' },
   fields: [
     { name: 'daysBefore', label: 'Días antes del comienzo', type: 'number', required: true, min: 0, max: 30, defaultValue: DEFAULT_FIESTAS_DAYS_BEFORE,
@@ -87,7 +87,7 @@ export const FiestasSettings: GlobalConfig = {
 export const LettersSettings: GlobalConfig = {
   slug: 'letters-settings',
   label: 'Cartas activas',
-  access: { read: () => true, update: adminOnly },
+  access: { read: notMunicipal, update: adminOnly },
   admin: { description: 'Cartas de los lectores en la web. Desactivadas: no se ven ni se pueden enviar. Solo la administración.' },
   hooks: { afterChange: [async ({ doc }) => { const { revalidateSite } = await import('./revalidate'); await revalidateSite(); return doc; }] },
   fields: [

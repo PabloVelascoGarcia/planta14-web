@@ -1,7 +1,7 @@
 import { APIError, type Access, type CollectionBeforeChangeHook, type CollectionConfig, type Endpoint, type Field, type PayloadRequest } from 'payload';
 import { revalidateAfterChange, revalidateAfterDelete } from './revalidate';
 import { UTIL_SERVICES } from '../lib/util-services';
-import { adminOnly, editorialUser, municipalSpaceOf, relationID } from './access';
+import { adminOnly, editorialUser, municipalSpaceOf, notMunicipal, relationID } from './access';
 import { auditAfterChange, auditAfterDelete } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete } from './media-rights';
 import { slugText } from './content-collections';
@@ -50,7 +50,14 @@ const setReview: CollectionBeforeChangeHook = ({ data, originalDoc }) => {
   return data;
 };
 const published = { name: 'published', label: 'Publicado', type: 'checkbox' as const, defaultValue: true, index: true, admin: { position: 'sidebar' as const } };
-const publicRead: Access = (args) => editorialUser(args) || { published: { equals: true } };
+/** Patrimonio y rutas publicadas: públicas; nunca para las cuentas municipales (su panel no las usa). */
+const publicRead: Access = (args) => editorialUser(args) || (notMunicipal(args) ? { published: { equals: true } } : false);
+/** Directorio y visibilidad de «Útil»: públicos; una cuenta municipal solo lee los de su concejo. */
+const ownTownOrPublic: Access = async (args) => {
+  if (editorialUser(args) || notMunicipal(args)) return true;
+  const town = await municipalTownOf(args.req);
+  return town === null ? false : { town: { equals: town } };
+};
 
 /** Slug único a partir del nombre y el concejo. */
 const slugFrom = (collection: 'heritage' | 'routes'): CollectionBeforeChangeHook => async ({ data, originalDoc, req }) => {
@@ -157,7 +164,7 @@ const serviceTown: CollectionBeforeChangeHook = async ({ data, req }) => {
 export const MunicipalServices: CollectionConfig = {
   slug: 'municipal-services',
   labels: { singular: 'Servicio municipal', plural: 'Servicios municipales' },
-  access: { read: () => true, create: servicesCreate, update: servicesWrite, delete: servicesWrite },
+  access: { read: ownTownOrPublic, create: servicesCreate, update: servicesWrite, delete: servicesWrite },
   admin: { useAsTitle: 'name', defaultColumns: ['name', 'town', 'category', 'phone'], description: 'Directorio de servicios municipales de la sección «Útil». Lo edita la administración y cada ayuntamiento el de su concejo desde su panel. Se puede importar con npm run cms:servicios:importar.' },
   hooks: { beforeChange: [serviceTown], afterChange: [auditAfterChange], afterDelete: [auditAfterDelete] },
   fields: [
@@ -214,7 +221,7 @@ const visibilityEndpoint: Endpoint = {
 export const UtilVisibility: CollectionConfig = {
   slug: 'util-visibility',
   labels: { singular: 'Útil: servicios ocultos', plural: 'Útil: servicios ocultos' },
-  access: { read: () => true, create: adminOnly, update: adminOnly, delete: adminOnly },
+  access: { read: ownTownOrPublic, create: adminOnly, update: adminOnly, delete: adminOnly },
   admin: { useAsTitle: 'summary', defaultColumns: ['town', 'hidden', 'updatedBy', 'updatedAt'],
     description: 'Servicios de «Útil» que no salen en un concejo. Cada ayuntamiento los elige desde su panel; en los concejos sin espacio municipal activo, decide la administración. Las noticias y lo editorial no se pueden ocultar.' },
   endpoints: [visibilityEndpoint],

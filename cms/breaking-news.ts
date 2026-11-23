@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload';
-import { editorialUser } from './access';
+import { editorialUser, notMunicipal } from './access';
 import { MAINTENANCE_MESSAGE, maintenanceActive } from './maintenance';
 import { APIError } from 'payload';
 
@@ -9,7 +9,7 @@ export const BreakingNews: GlobalConfig = {
   slug: 'breaking-news',
   label: 'Última hora',
   admin: { description: 'Barra roja bajo la cabecera de la web. Se quita sola a la hora de caducidad, o desmarcando «Mostrar».' },
-  access: { read: () => true, update: editorialUser },
+  access: { read: notMunicipal, update: editorialUser },
   hooks: { beforeChange: [({ data }) => {
     if (maintenanceActive()) throw new APIError(MAINTENANCE_MESSAGE, 503, undefined, true);
     if (data.active && !String(data.text ?? '').trim()) throw new APIError('Escribe el texto de la última hora', 400);

@@ -39,7 +39,7 @@ export function MunicipalPasswordReset({ space, maintenance = null }: { space: M
     if (password !== repeat) { setMessage("Las dos contraseñas no coinciden."); return; }
     setBusy(true);
     try {
-      const response = await fetch("/api/cms/users/reset-password", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, password }) });
+      const response = await fetch("/api/panel/api/users/reset-password", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, password }) });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) {
         const text = String(body?.errors?.[0]?.message || body?.message || "");

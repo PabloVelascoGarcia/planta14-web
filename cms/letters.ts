@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv, createHmac, hkdfSync, randomBytes } from 'node:crypto';
 import { APIError, type CollectionAfterChangeHook, type CollectionBeforeChangeHook, type CollectionConfig, type FieldHook, type Payload, type PayloadRequest } from 'payload';
-import { adminOnly, editorialUser, relationID } from './access';
+import { adminOnly, editorialUser, notMunicipal, relationID } from './access';
 import { emailAvailable } from './email';
 import { lettersEnabled } from './site-globals';
 
@@ -105,7 +105,8 @@ export const Letters: CollectionConfig = {
   access: {
     // El público solo ve las aprobadas (y solo nombre, apellidos, concejo, título, texto y fecha).
     // Con «Cartas activas» desactivado solo la administración la ve (la redacción ni siquiera la tiene en el menú).
-    read: async (args) => adminOnly(args) || (await lettersEnabled(args.req.payload) && (editorialUser(args) || { status: { equals: 'aprobada' } })),
+    // Las cartas publicadas son públicas, pero nunca para las cuentas municipales.
+    read: async (args) => adminOnly(args) || (await lettersEnabled(args.req.payload) && (editorialUser(args) || (notMunicipal(args) ? { status: { equals: 'aprobada' } } : false))),
     create: () => false, update: async (args) => adminOnly(args) || (editorialUser(args) && await lettersEnabled(args.req.payload)), delete: adminOnly,
   },
   admin: { useAsTitle: 'summary', defaultColumns: ['summary', 'town', 'status', 'createdAt'],

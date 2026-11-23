@@ -5,6 +5,7 @@ import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
 import { withPublicMediaLock } from './public-media-lock';
 import { loteField } from './lote';
+import { fromBridge } from '../lib/panel-bridge';
 import { forgotPasswordOptions, MIN_PASSWORD_LENGTH } from './password-reset';
 
 /** Text stored with each municipal upload (versioned so the evidence says what was declared). */
@@ -20,6 +21,14 @@ export const Users: CollectionConfig = {
   // Municipal accounts use /[municipality]/panel, never the /cms administration.
   access: { admin: editorialUser, create: adminOnly, read: ownUserOrAdmin, update: adminOnly, delete: adminOnly },
   hooks: {
+    // Una cuenta municipal solo inicia sesión desde el panel de su concejo («Entrar», que usa la API local del servidor, o
+    // restablecer la contraseña por el puente del panel); nunca en /cms ni por la API REST de Payload.
+    beforeLogin: [({ req, user }) => {
+      if ((user as { role?: string }).role === 'municipal' && req.payloadAPI !== 'local' && req.context?.panelLogin !== true && !fromBridge(req.headers)) {
+        throw new APIError('Las cuentas municipales entran por el panel de su concejo.', 403, undefined, true);
+      }
+      return user;
+    }],
     beforeOperation: [({ operation, req, args }) => {
       if (operation === 'create' && !adminOnly({ req }) && req.context.cmsBootstrap !== true) {
         throw new APIError('Crea el primer administrador mediante cms:bootstrap', 403);

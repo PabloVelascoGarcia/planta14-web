@@ -1,5 +1,6 @@
 import * as payloadRest from "@/app/(payload)/api/cms/[...slug]/route";
 import { panelUser, sameOrigin } from "@/lib/panel-session";
+import { BRIDGE_HEADER, bridgeSecret } from "@/lib/panel-bridge";
 
 // Puente del panel municipal a la API de Payload (/api/cms/…). No es un acceso general: solo las llamadas que hace el
 // panel (lista cerrada), solo para cambiar datos y solo desde la propia web (CSRF). Llega a Payload como la cuenta
@@ -13,6 +14,7 @@ const ID = "[1-9][0-9]{0,9}";
 /** Llamadas del panel: método, ruta y si necesita sesión (solo «¿Has olvidado tu contraseña?» no). */
 const ROUTES: { method: Method; path: RegExp; anonymous?: true }[] = [
   { method: "POST", path: /^users\/forgot-password$/, anonymous: true },
+  { method: "POST", path: /^users\/reset-password$/, anonymous: true },
   { method: "POST", path: /^media$/ },
   { method: "POST", path: /^municipal-content$/ },
   { method: "PATCH", path: new RegExp(`^municipal-content/${ID}$`) },
@@ -39,6 +41,8 @@ function forward(method: Method) {
     const headers = new Headers();
     for (const name of ["content-type", "accept", "accept-language"]) { const value = request.headers.get(name); if (value) headers.set(name, value); }
     headers.set("DisableAutologin", "true");
+    // Marca interna del puente: solo así acepta la API de Payload a una cuenta municipal (lib/panel-bridge.ts).
+    headers.set(BRIDGE_HEADER, bridgeSecret());
     if (!route.anonymous) {
       const { contentClient } = await import("@/lib/payload-content");
       const session = await panelUser(await contentClient(), request.headers);
@@ -48,7 +52,16 @@ function forward(method: Method) {
     url.pathname = `/api/cms/${path}`;
     const inner = new Request(url, { method, headers, body: await request.arrayBuffer() });
     const handler = payloadRest[method] as unknown as (request: Request, context: Context) => Promise<Response>;
-    return handler(inner, { params: Promise.resolve({ slug }) });
+    const response = await handler(inner, { params: Promise.resolve({ slug }) });
+    // El panel nunca recibe la cookie ni el token de Payload (p. ej. al restablecer la contraseña): solo su propia sesión.
+    const out = new Headers(response.headers);
+    out.delete("set-cookie");
+    const type = out.get("content-type") || "";
+    if (!type.includes("application/json")) return new Response(response.body, { status: response.status, headers: out });
+    const body = await response.json().catch(() => null) as Record<string, unknown> | null;
+    if (body && typeof body === "object") { delete body.token; delete body.refreshedToken; }
+    out.delete("content-length");
+    return new Response(JSON.stringify(body), { status: response.status, headers: out });
   };
 }
 export const POST = forward("POST");
