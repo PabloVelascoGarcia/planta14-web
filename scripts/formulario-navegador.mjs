@@ -30,7 +30,7 @@ export async function run({ tab, origin, email, password, photo, payload, firma,
   await tab.keyboard.type('El Ayuntamiento aprobó anoche unas cuentas de ');
   await tab.keyboard.press('Control+b'); await tab.keyboard.type('42 millones de euros'); await tab.keyboard.press('Control+b');
   await tab.keyboard.type('.');
-  const blockType = async option => { await tab.locator('.toolbar-popup__dropdown').first().click(); await tab.locator(`text="${option}" >> visible=true`).first().click(); };
+  const blockType = async option => { await tab.locator('.toolbar-popup__dropdown').filter({ hasText: /Texto normal|Encabezado|Cita en bloque|Lista/ }).first().click(); await tab.locator(`text="${option}" >> visible=true`).first().click(); };
   await tab.keyboard.press('Enter'); await blockType('Encabezado 2'); await tab.keyboard.type('Las inversiones');
   await tab.keyboard.press('Enter'); await tab.keyboard.type('La mayor partida es para la reforma de la plaza.');
   await tab.keyboard.press('Enter'); await blockType('Cita en bloque'); await tab.keyboard.type('Es un presupuesto para los barrios.');

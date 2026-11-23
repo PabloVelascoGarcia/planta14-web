@@ -184,7 +184,7 @@ try {
   for (const [slug, plural] of Object.entries({ users: 'Usuarios', media: 'Imágenes', articles: 'Noticias', authors: 'Autores', sections: 'Secciones', towns: 'Concejos', 'municipal-spaces': 'Espacios municipales', 'municipal-content': 'Contenidos municipales' })) assert.equal(labels[slug], plural, slug);
   const flat = fields => fields.flatMap(x => x.type === 'tabs' ? x.tabs.flatMap(t => flat(t.fields)) : (x.type === 'collapsible' || x.type === 'row') ? flat(x.fields) : [x]);
   const field = (slug, ...path) => { let fields = payload.collections[slug].config.fields; let f; for (const name of path) { f = flat(fields).find(x => x.name === name); fields = f?.fields; } return f; };
-  assert.equal(field('articles', 'title').label, 'Título'); assert.equal(field('articles', 'town').label, 'Concejo');
+  assert.equal(field('articles', 'title').label, 'Título'); assert.equal(field('articles', 'town').label, 'Concejo principal');
   assert.equal(field('municipal-spaces', 'subscription').label, 'Suscripción'); assert.equal(field('municipal-spaces', 'subscription', 'status').label, 'Estado');
   assert.deepEqual(field('municipal-spaces', 'subscription', 'status').options.map(o => o.label), ['Demostración', 'Activo', 'Inactivo']);
   assert.deepEqual(field('users', 'role').options.map(o => [o.value, o.label]), [['admin', 'Administración'], ['editor', 'Redacción'], ['municipal', 'Ayuntamiento']]);

@@ -7,7 +7,7 @@ export async function run(ctx) {
   const waitFor = async (check, label) => { for (let i = 0; i < 60; i++) { if (await check()) return; await new Promise(r => setTimeout(r, 250)); } assert.fail(label); };
   await payload.db.drizzle.execute(sql`DELETE FROM stats_daily`);
   const columns = (await payload.db.drizzle.execute(sql`SELECT column_name FROM information_schema.columns WHERE table_name = 'stats_daily' ORDER BY ordinal_position`)).rows.map(r => r.column_name);
-  assert.deepEqual(columns, ['day', 'path', 'town', 'section', 'source', 'views'], 'only aggregated counters: no IP, browser or identifiers');
+  assert.deepEqual(columns, ['day', 'path', 'town', 'section', 'source', 'views', 'extra_towns'], 'only aggregated counters (extra_towns: other concejos of the article): no IP, browser or identifiers');
 
   // Visitas de personas (navegador normal): portada, concejo, noticia desde Google y desde WhatsApp.
   const human = { userAgent: 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36' };

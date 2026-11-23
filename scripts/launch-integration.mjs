@@ -126,12 +126,15 @@ try {
   const page = await html(`${indexable.url}/noticia/noticia-publicada-lanzamiento`);
   assert.equal(decode(meta(page, 'property', 'og:title')), 'Noticia publicada para el lanzamiento');
   assert.equal(decode(meta(page, 'property', 'og:description')), base.excerpt);
-  assert.equal(decode(meta(page, 'property', 'og:image')), heroURL, 'og:image is the absolute public hero variant');
-  assert.equal(meta(page, 'property', 'og:image:width'), String(hero.width));
+  // Imagen para redes generada con el diseño de Planta 14 (24/11): 1200×630, con la versión de la noticia.
+  const ogImage = decode(meta(page, 'property', 'og:image'));
+  assert.match(ogImage, /^http:\/\/localhost:3062\/noticia\/noticia-publicada-lanzamiento\/redes\.jpg\?v=[a-z0-9]+$/, 'og:image is the generated Planta 14 card');
+  assert.equal(meta(page, 'property', 'og:image:width'), '1200');
+  assert.equal(meta(page, 'property', 'og:image:height'), '630');
   assert.equal(meta(page, 'property', 'og:type'), 'article');
   assert.equal(decode(meta(page, 'property', 'og:url')), 'http://localhost:3062/noticia/noticia-publicada-lanzamiento');
   assert.equal(meta(page, 'name', 'twitter:card'), 'summary_large_image');
-  assert.equal(decode(meta(page, 'name', 'twitter:image')), heroURL);
+  assert.equal(decode(meta(page, 'name', 'twitter:image')), ogImage);
   assert.match(page, /<link rel="canonical" href="http:\/\/localhost:3062\/noticia\/noticia-publicada-lanzamiento"/);
   const ldRaw = page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
   assert(ldRaw, 'JSON-LD present');

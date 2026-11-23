@@ -113,9 +113,10 @@ try {
 
   const current = await payload.findByID({ collection: 'articles', id: article.id, depth: 2, overrideAccess: true });
   const fixture = { id: String(article.id), slug: articleData.slug, title: articleData.title, excerpt: articleData.excerpt, body: articleData.body,
-    image: '/images/placeholder.svg', imageAlt: '', imageCredit: '', date: articleData.date, author: author.name, authorSlug: author.slug,
+    // Sin foto: la plantilla de su sección (24/11), con el crédito «Planta 14».
+    image: '/plantillas/cultura.png', imageAlt: '', imageCredit: 'Planta 14', imageTemplate: true, date: articleData.date, author: author.name, authorSlug: author.slug,
     comarca: 'Caudal', concejo: 'Mieres', topic: 'Cultura', status: 'published', publishedAt: articleData.publishedAt, seoTitle: articleData.title,
-    seoDescription: articleData.excerpt, seoImage: '/images/placeholder.svg', main: true, featured: false, opinion: false };
+    seoDescription: articleData.excerpt, seoImage: '/images/placeholder.svg', main: true, featured: false, opinion: false, version: current.updatedAt };
   assert.deepEqual(JSON.parse(JSON.stringify(adapter.articleContract(current))), fixture);
   await writeFile(path.join(directory, 'articles.json'), JSON.stringify([fixture, { ...fixture, id: String(draft.id), slug: draft.slug, title: draft.title, status: 'draft', main: false }]));
   await writeFile(path.join(directory, 'authors.json'), JSON.stringify([{ name: author.name, slug: author.slug, role: 'Redacción', bio: 'Texto original de prueba automática.' }]));
