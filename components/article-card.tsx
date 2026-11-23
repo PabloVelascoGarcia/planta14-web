@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Article } from "@/lib/mock-data";
-import { shortPublished, slugify } from "@/lib/utils";
+import { shortPublished } from "@/lib/utils";
+import { concejoHref, sectionHref } from "@/lib/taxonomy";
 import { ArticleImage } from "@/components/article-image";
 
 type ArticleCardProps = {
@@ -65,7 +66,8 @@ function Meta({ article }: { article: Article }) {
   return (
     <div className="article-meta flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-steel" data-article-meta>
       {opinion ? <><span className="opinion-tag" data-opinion-tag>Opinión</span><span className="font-bold text-coal-900" data-opinion-author>{article.author}</span></>
-        : <Link href={`/concejo/${slugify(article.concejo)}`} className="font-bold text-coal-900 hover:text-copper">{article.concejo}</Link>}
+        : <><Link href={concejoHref(article.concejo)} className="font-bold text-coal-900 hover:text-copper">{article.concejo}</Link>
+          <span aria-hidden="true">·</span><Link href={sectionHref(article.topic)} className="hover:text-copper" data-card-section>{article.topic}</Link></>}
       <span aria-hidden="true">·</span>
       <time dateTime={article.publishedAt || article.date}>{shortPublished(article)}</time>
     </div>

@@ -27,10 +27,11 @@ async function articlesOf(payload: Payload, doc: Doc) {
   const ids = (doc.articles ?? []).map(relationID).filter((id): id is number => id !== null);
   if (!ids.length) return [];
   const found = (await payload.find({ collection: 'articles', where: { and: [{ id: { in: ids } }, { _status: { equals: 'published' } }] }, depth: 1, pagination: false, overrideAccess: true })).docs as unknown as
-    { id: number; title: string; excerpt?: string; slug: string; opinion?: boolean; town?: { id: number; name: string } | number; author?: { name?: string } | number }[];
+    { id: number; title: string; excerpt?: string; slug: string; opinion?: boolean; town?: { id: number; name: string } | number; otherTowns?: ({ id: number } | number)[] | null; author?: { name?: string } | number }[];
   const site = await siteURL();
   return ids.map(id => found.find(a => a.id === id)).filter((a): a is NonNullable<typeof a> => Boolean(a)).map(a => ({
-    townID: typeof a.town === 'object' && a.town ? a.town.id : typeof a.town === 'number' ? a.town : null,
+    // Concejo principal y «otros concejos»: la noticia va a quien sigue cualquiera de ellos.
+    townIDs: [a.town, ...(a.otherTowns ?? [])].map(relationID).filter((t): t is number => t !== null),
     title: a.title, excerpt: a.excerpt ?? '', url: `${site}/noticia/${a.slug}`, town: typeof a.town === 'object' && a.town ? a.town.name : '', opinion: Boolean(a.opinion),
     author: typeof a.author === 'object' && a.author?.name ? a.author.name : 'Planta 14',
   }));
@@ -61,7 +62,7 @@ export async function sendToAll(payload: Payload, id: number, limits = sendingLi
     const now = await payload.findByID({ collection: 'subscribers', id: r.id, depth: 0, overrideAccess: true }).catch(() => null) as { status?: string } | null;
     if (now?.status !== 'confirmado') { stats.unsubscribed++; sentTo.add(r.id); continue; }
     const towns = (r.towns ?? []).map(relationID).filter((t): t is number => t !== null);
-    const mine = towns.length ? articles.filter(a => a.townID !== null && towns.includes(a.townID)) : articles;
+    const mine = towns.length ? articles.filter(a => a.townIDs.some(t => towns.includes(t))) : articles;
     if (!mine.length || !r.unsubscribeToken) { stats.skipped++; sentTo.add(r.id); continue; }
     if (inBatch >= limits.batch) { await save({}); await sleep(limits.pauseMs); inBatch = 0; }
     const out = await unsubscribe(r.unsubscribeToken);

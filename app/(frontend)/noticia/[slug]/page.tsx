@@ -6,6 +6,7 @@ import { relatedArticles } from "@/lib/front-page";
 import { siteUrl } from "@/lib/site-config";
 import { slugify } from "@/lib/utils";
 import { StatsScope } from "@/components/stats-beacon";
+import { articleConcejos } from "@/lib/taxonomy";
 import { articleJsonLd, articleMetadata, jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -43,7 +44,7 @@ export default async function ArticlePage({ params }: PageProps) {
   return (
     <article className="container-p14 py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd(article)) }} />
-      <StatsScope town={slugify(article.concejo)} section={slugify(article.topic)} />
+      <StatsScope town={slugify(article.concejo)} section={slugify(article.topic)} extraTowns={articleConcejos(article).slice(1).map(slugify)} />
       <ArticleView article={article} related={related} shareUrl={`${siteUrl}/noticia/${article.slug}`} />
     </article>
   );

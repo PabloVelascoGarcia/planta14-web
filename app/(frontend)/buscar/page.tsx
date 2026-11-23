@@ -1,3 +1,4 @@
+import { articleConcejos, articleTopics, inConcejo } from "@/lib/taxonomy";
 import type { Metadata } from "next";
 import { ArticleCard } from "@/components/article-card";
 import { getArticles } from "@/lib/cms";
@@ -13,8 +14,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const concejo = typeof params.concejo === "string" ? params.concejo : "";
   const words = slugify(query).split("-").filter(Boolean);
   const results = (await getArticles()).filter(article => {
-    const text = slugify([article.title, article.excerpt, article.concejo, article.topic, article.author, ...article.body].join(" "));
-    return words.every(word => text.includes(word)) && (!concejo || slugify(article.concejo) === concejo);
+    const text = slugify([article.title, article.excerpt, ...articleConcejos(article), ...articleTopics(article), ...(article.tags ?? []).map(t => t.name), article.author, ...article.body].join(" "));
+    return words.every(word => text.includes(word)) && (!concejo || inConcejo(article, concejo));
   });
   return <div className="container-p14 py-10">
     <p className="editorial-kicker">Explora tu territorio</p>

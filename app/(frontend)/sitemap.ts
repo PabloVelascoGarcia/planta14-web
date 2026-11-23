@@ -1,6 +1,7 @@
 import { siteUrl, isIndexable } from "@/lib/site-config";
 import type { MetadataRoute } from "next";
-import { getArticles, getAuthors } from "@/lib/cms";
+import { getArticles, getAuthors, getGalleryArticles, getTagCounts } from "@/lib/cms";
+import { MULTIMEDIA_MIN, TAG_INDEX_MIN } from "@/lib/taxonomy";
 import { territories, topics } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 
@@ -52,5 +53,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...[...active].map(town => ({ url: `${baseUrl}/${town}/util` })),
     ...[...active].flatMap(town => Object.keys(UTIL_LIST_TYPES).filter(type => !(hidden[town] ?? []).includes(type)).map(type => ({ url: `${baseUrl}/${town}/util/${type}` }))),
   ];
-  return [...staticRoutes, ...utilRoutes, ...articleRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes, ...municipalRoutes];
+  // Etiquetas con al menos 2 noticias y /multimedia con al menos 6 galerías (las demás no se indexan).
+  const tagRoutes = (await getTagCounts()).filter(tag => tag.count >= TAG_INDEX_MIN).map(tag => ({ url: `${baseUrl}/etiqueta/${tag.slug}` }));
+  const multimediaRoutes = (await getGalleryArticles()).length >= MULTIMEDIA_MIN ? [{ url: `${baseUrl}/multimedia` }] : [];
+  return [...staticRoutes, ...utilRoutes, ...articleRoutes, ...tagRoutes, ...multimediaRoutes, ...comarcaRoutes, ...concejoRoutes, ...topicRoutes, ...authorRoutes, ...municipalRoutes];
 }

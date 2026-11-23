@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { sectionHref } from "@/lib/taxonomy";
 import { visibleTowns } from "@/lib/demo/territories";
 import { territories, topics } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
@@ -21,7 +22,7 @@ function twoLines(text: string) {
   return <>{text.slice(0, cut)}<br />{text.slice(cut + 1)}</>;
 }
 
-export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories, demo = true, tagline = "Una voz para las Cuencas", sideNote = "Donde otros no llegan" }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]>; demo?: boolean; tagline?: string; sideNote?: string }) {
+export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().map(t => t.slug), navigationTerritories = territories, demo = true, tagline = "Una voz para las Cuencas", sideNote = "Donde otros no llegan", multimedia = false }: { sectionNames?: string[]; townSlugs?: string[]; navigationTerritories?: Record<string, string[]>; demo?: boolean; tagline?: string; sideNote?: string; multimedia?: boolean }) {
   const pathname = usePathname();
   // `townSlugs`: concejos con espacio municipal activo (su página, su panel y su «Útil» llevan su propia cabecera).
   if (townSlugs.some(slug => pathname === `/${slug}` || pathname === `/${slug}/panel` || pathname === `/${slug}/util`)) return null;
@@ -51,13 +52,15 @@ export function Header({ sectionNames = demoTopics, townSlugs = visibleTowns().m
         <details className="section-menu">
           <summary>Explorar secciones <span aria-hidden="true">+</span></summary>
           <nav aria-label="Secciones" className="topic-nav">
-            {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
+            {sectionNames.map((topic) => <Link key={topic} href={sectionHref(topic)}>{topic}</Link>)}
+            {multimedia ? <Link href="/multimedia" data-nav-multimedia>Multimedia</Link> : null}
             <Link href="/fiestas">Fiestas</Link>
             <Link href="/util">Útil</Link>
           </nav>
         </details>
         <nav aria-label="Secciones destacadas" className="desktop-topics">
-          {sectionNames.map((topic) => <Link key={topic} href={topic === "Opinión" ? "/opinion" : topic === "Agenda" ? "/agenda" : `/tema/${slugify(topic)}`}>{topic}</Link>)}
+          {sectionNames.map((topic) => <Link key={topic} href={sectionHref(topic)}>{topic}</Link>)}
+          {multimedia ? <Link href="/multimedia" data-nav-multimedia>Multimedia</Link> : null}
           <Link href="/fiestas">Fiestas</Link>
           <Link href="/util">Útil</Link>
         </nav>

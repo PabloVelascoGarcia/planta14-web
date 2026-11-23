@@ -133,6 +133,8 @@ export const Festivals: CollectionConfig = {
       ...help('Actos por días y horas. Puedes usar negrita, listas y enlaces.') },
     { name: 'image', label: 'Cartel (opcional)', type: 'upload', relationTo: 'media',
       ...help('Se ve pequeño y enmarcado en la ficha; nunca en los listados. Súbelo con «Crear» y marca la declaración de derechos.') },
+    { name: 'imagePoster', label: 'Mostrar entera (cartel)', type: 'checkbox', defaultValue: true,
+      ...help('Marcada (lo normal en las fiestas): el cartel se ve completo, sin recortar. Desmárcala si es una foto que se puede encuadrar.') },
     { name: 'chronicle', label: 'Crónica', type: 'relationship', relationTo: 'articles', ...help('Cuando se publique la crónica de la fiesta, enlázala aquí.') },
     { name: 'recurring', label: 'Se repite cada año', type: 'checkbox', defaultValue: true, ...help('Las fiestas que se repiten se pueden duplicar para el año siguiente con un clic.') },
     { name: 'organizer', label: 'Organiza (no se publica)', type: 'text', access: editorialOnly, ...help('Comisión de fiestas, asociación… Solo lo ve la redacción.') },

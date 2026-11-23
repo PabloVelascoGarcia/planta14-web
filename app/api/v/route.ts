@@ -13,13 +13,15 @@ export async function POST(request: Request) {
     if (isBot(request.headers.get("user-agent")) || /(^|;\s*)payload-token=/.test(request.headers.get("cookie") || "")) return done();
     const raw = await request.text();
     if (raw.length > 2000) return done();
-    const data = JSON.parse(raw || "{}") as { p?: string; r?: string; u?: string; t?: string; s?: string };
+    const data = JSON.parse(raw || "{}") as { p?: string; r?: string; u?: string; t?: string; s?: string; x?: string };
     const path = String(data.p || "").split(/[?#]/)[0];
     if (!isTrackable(path)) return done();
     const town = (TOWNS as readonly string[]).includes(String(data.t)) ? String(data.t) : "";
     const section = /^[a-z0-9-]{1,60}$/.test(String(data.s || "")) ? String(data.s) : "";
+    // Otros concejos de la noticia (varios concejos): cuentan en las estadísticas de cada uno, sin duplicar el total.
+    const extraTowns = [...new Set(String(data.x || "").split(",").filter(t => (TOWNS as readonly string[]).includes(t) && t !== town))];
     const { recordView } = await import("@/lib/stats");
-    await recordView({ path, town, section, source: classifySource(String(data.r || "").slice(0, 500), String(data.u || "").slice(0, 40), new URL(siteUrl).hostname) });
+    await recordView({ path, town, section, extraTowns, source: classifySource(String(data.r || "").slice(0, 500), String(data.u || "").slice(0, 40), new URL(siteUrl).hostname) });
   } catch { /* una visita sin contar nunca rompe nada */ }
   return done();
 }

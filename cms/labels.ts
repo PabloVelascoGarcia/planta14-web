@@ -9,6 +9,7 @@ const collectionLabels: Record<string, [string, string]> = {
   articles: ['Noticia', 'Noticias'],
   authors: ['Autor', 'Autores'],
   sections: ['Sección', 'Secciones'],
+  tags: ['Etiqueta', 'Etiquetas'],
   towns: ['Concejo', 'Concejos'],
   'municipal-spaces': ['Espacio municipal', 'Espacios municipales'],
   'municipal-content': ['Contenido municipal', 'Contenidos municipales'],

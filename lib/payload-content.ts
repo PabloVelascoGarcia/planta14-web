@@ -9,7 +9,10 @@ function madridLocal(iso: string | null | undefined) {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 }
 import { publicURL } from '../cms/public-media';
-import type { Article as PayloadArticle, Author as PayloadAuthor, Media, MunicipalContent as PayloadMunicipalContent, MunicipalSpace as PayloadSpace, Town } from '../cms/payload-types';
+import { isTemplate } from '../cms/article-images';
+import { slugText } from './slug';
+import type { Article as PayloadArticle, Author as PayloadAuthor, Media, MunicipalContent as PayloadMunicipalContent, MunicipalSpace as PayloadSpace, Section, Tag, Town } from '../cms/payload-types';
+export type PublicImage = { url: string; srcSet?: string; alt: string; credit: string; width?: number; height?: number; focus?: string; ai?: boolean };
 
 export async function contentClient() {
   if (process.env.CMS_ENABLED !== 'true') throw new Error('CONTENT_SOURCE=payload requiere CMS_ENABLED=true');
@@ -51,21 +54,86 @@ export function shareImage(value?: number | Media | null): Article['shareImage']
   const original = { url: mediaURL(value), width: value.width ?? undefined, height: value.height ?? undefined, alt: value.alt };
   return variant('hero') ?? ((value.width ?? 0) >= 1200 ? original : variant('card') ?? original);
 }
+/** Punto de interés de una imagen como `object-position` («50% 30%»); vacío si es el centro. */
+export function imageFocus(value?: number | Media | null): string | undefined {
+  if (!value || typeof value === 'number') return undefined;
+  const x = Number(value.focalX ?? 50), y = Number(value.focalY ?? 50);
+  return Number.isFinite(x) && Number.isFinite(y) && (Math.round(x) !== 50 || Math.round(y) !== 50) ? `${Math.round(x)}% ${Math.round(y)}%` : undefined;
+}
+const isAI = (value?: number | Media | null) => Boolean(value && typeof value === 'object' && value.imageKind === 'ia');
+/** Imagen pública de un bloque del texto (o null si no es pública). */
+export function publicImage(value?: number | Media | null): PublicImage | null {
+  if (!value || typeof value === 'number' || mediaURL(value) === '/images/placeholder.svg') return null;
+  return { url: mediaURL(value), ...(imageSrcSet(value) ? { srcSet: imageSrcSet(value) } : {}), alt: value.alt || '', credit: value.credit || '',
+    ...(value.width ? { width: value.width, height: value.height ?? undefined } : {}), ...(imageFocus(value) ? { focus: imageFocus(value) } : {}), ...(isAI(value) ? { ai: true } : {}) };
+}
+type BlockNode = { type?: string; children?: BlockNode[]; fields?: Record<string, unknown> & { blockType?: string } };
+const idOf = (value: unknown) => typeof value === 'number' ? value : value && typeof value === 'object' ? Number((value as { id?: unknown }).id) : NaN;
+/**
+ * Texto con los bloques «Imagen» y «Galería» resueltos a sus imágenes públicas (URL, srcset, pie, crédito, cartel). Un
+ * bloque cuya imagen no es pública (sin derechos, sin copia) no se muestra.
+ */
+export function resolveBodyBlocks(body: unknown, media: (number | Media)[] | null | undefined): unknown {
+  if (!body || typeof body !== 'object') return body;
+  const byID = new Map((media ?? []).filter((m): m is Media => typeof m === 'object' && m !== null).map(m => [m.id, m]));
+  const resolve = (value: unknown) => publicImage(typeof value === 'object' && value && 'url' in value ? value as Media : byID.get(idOf(value)) ?? null);
+  const walk = (node: BlockNode): BlockNode | null => {
+    if (node.type === 'block' && node.fields) {
+      const f = node.fields;
+      if (f.blockType === 'imagen') {
+        const image = resolve(f.image);
+        return image ? { ...node, fields: { blockType: 'imagen', image, caption: String(f.caption ?? ''), credit: String(f.credit ?? '') || image.credit, poster: Boolean(f.poster) } } : null;
+      }
+      if (f.blockType === 'galeria') {
+        const images = ((f.images as { image?: unknown; caption?: unknown; credit?: unknown }[]) ?? []).map(item => {
+          const image = resolve(item.image);
+          return image ? { image, caption: String(item.caption ?? ''), credit: String(item.credit ?? '') || image.credit } : null;
+        }).filter(Boolean);
+        return images.length ? { ...node, fields: { blockType: 'galeria', images } } : null;
+      }
+      return null;
+    }
+    return node.children ? { ...node, children: node.children.map(walk).filter((n): n is BlockNode => n !== null) } : node;
+  };
+  const root = (body as { root?: BlockNode }).root;
+  return root ? { ...body, root: walk(root) } : body;
+}
+/** Plantilla de la sección principal (o la elegida) cuando no hay foto: public/plantillas/[slug].png, crédito «Planta 14». */
+function templateImage(doc: PayloadArticle, sectionSlug: string) {
+  const chosen = doc.template && doc.template !== 'none' ? doc.template : null;
+  const slug = chosen ?? (isTemplate(sectionSlug) ? sectionSlug : 'planta14');
+  return { image: `/plantillas/${slug}.png`, imageAlt: '', imageCredit: 'Planta 14', imageTemplate: true as const };
+}
+
 export function articleContract(doc: PayloadArticle): Article {
   const author = populated(doc.author);
   const town = populated(doc.town);
   const section = populated(doc.section);
   const image = typeof doc.image === 'object' ? doc.image : null;
+  const others = (doc.otherTowns ?? []).filter((t): t is Town => typeof t === 'object' && t !== null && t.id !== town.id);
+  const secondary = (doc.secondarySections ?? []).filter((t): t is Section => typeof t === 'object' && t !== null && t.id !== section.id).slice(0, 2);
+  const tags = (doc.tags ?? []).filter((t): t is Tag => typeof t === 'object' && t !== null && Boolean(t.slug)).slice(0, 5);
+  const hasPhoto = mediaURL(doc.image) !== '/images/placeholder.svg';
+  const body = resolveBodyBlocks(doc.body, doc.bodyImages);
   return {
     id: doc.legacyID || String(doc.id), slug: doc.slug || String(doc.id), title: doc.title, excerpt: doc.excerpt,
-    body: lexicalToParagraphs(doc.body), ...(toLexical(doc.body) && !isPlainParagraphs(doc.body) ? { bodyRich: toLexical(doc.body)! } : {}), image: mediaURL(doc.image), ...(imageSrcSet(doc.image) ? { imageSrcSet: imageSrcSet(doc.image) } : {}), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
+    body: lexicalToParagraphs(doc.body), ...(toLexical(body) && !isPlainParagraphs(body) ? { bodyRich: toLexical(body)! } : {}),
+    ...(hasPhoto ? { image: mediaURL(doc.image), ...(imageSrcSet(doc.image) ? { imageSrcSet: imageSrcSet(doc.image) } : {}), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
+      ...(imageFocus(image) ? { imageFocus: imageFocus(image) } : {}), ...(isAI(image) ? { imageAI: true } : {}),
+      ...(image?.width && image.height ? { imageWidth: image.width, imageHeight: image.height } : {}) } : templateImage(doc, slugText(section.name))),
+    ...(doc.imagePoster ? { imagePoster: true } : {}),
     date: doc.date || madridLocal(doc.publishedAt).slice(0, 10), author: author.name, authorSlug: author.slug,
     comarca: town.comarca, concejo: town.name, topic: section.name, status: 'published',
+    ...(others.length ? { concejos: [town.name, ...others.map(t => t.name)] } : {}),
+    ...(secondary.length ? { topics: [section.name, ...secondary.map(t => t.name)] } : {}),
+    ...(tags.length ? { tags: tags.map(t => ({ name: t.name, slug: t.slug! })) } : {}),
+    ...(doc.hasGallery ? { hasGallery: true } : {}), version: String(doc.updatedAt || doc.publishedAt || ''),
     publishedAt: doc.publishedAt || doc.date || '', scheduledAt: doc.scheduledAt || undefined,
     seoTitle: doc.seoTitle || doc.title, seoDescription: doc.seoDescription || doc.excerpt, seoImage: mediaURL(doc.seoImage || doc.image),
     main: Boolean(doc.main), featured: Boolean(doc.featured), opinion: Boolean(doc.opinion),
     // Optional keys only when present, so the presentation contract stays identical without them.
     ...(shareImage(doc.seoImage || doc.image) ? { shareImage: shareImage(doc.seoImage || doc.image) } : {}),
+    ...(doc.seoImage && mediaURL(doc.seoImage) !== '/images/placeholder.svg' ? { customShareImage: true } : {}),
     sourceName: doc.sourceName || undefined, sourceUrl: doc.sourceUrl || undefined, sourceAuthor: doc.sourceAuthor || undefined,
     ...(doc.showInTown === false ? { showInTown: false } : {}),
     ...(doc.agenda?.eventAt ? { eventAt: madridLocal(doc.agenda.eventAt), ...(doc.agenda.place ? { eventPlace: doc.agenda.place } : {}) } : {}),
@@ -141,11 +209,14 @@ export async function payloadMunicipalContent(): Promise<MunicipalContent[]> {
 
 export async function payloadNavigation() {
   const payload = await contentClient();
-  const [sections, towns] = await Promise.all([
+  const [sections, towns, galleries] = await Promise.all([
     payload.find({ collection: 'sections', overrideAccess: false, pagination: false, sort: 'position' }),
     payload.find({ collection: 'towns', overrideAccess: false, pagination: false, where: { visible: { equals: true } }, sort: 'id' }),
+    // «Multimedia» entra en el menú solo con al menos 6 noticias publicadas con galería.
+    payload.count({ collection: 'articles', overrideAccess: false, where: { and: [{ _status: { equals: 'published' } }, { hasGallery: { equals: true } }] } }),
   ]);
-  return { sectionNames: sections.docs.map(s => s.name), townSlugs: towns.docs.map(t => t.slug),
+  const { MULTIMEDIA_MIN } = await import('./taxonomy');
+  return { sectionNames: sections.docs.map(s => s.name), townSlugs: towns.docs.map(t => t.slug), multimedia: galleries.totalDocs >= MULTIMEDIA_MIN,
     navigationTerritories: Object.fromEntries([...new Set(towns.docs.map(t => t.comarca))].map(comarca => [comarca, towns.docs.filter(t => t.comarca === comarca).map(t => t.name)])) };
 }
 

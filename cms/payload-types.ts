@@ -74,6 +74,7 @@ export interface Config {
     letters: Letter;
     authors: Author;
     sections: Section;
+    tags: Tag;
     towns: Town;
     'municipal-spaces': MunicipalSpace;
     'municipal-content': MunicipalContent;
@@ -101,6 +102,7 @@ export interface Config {
     letters: LettersSelect<false> | LettersSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     towns: TownsSelect<false> | TownsSelect<true>;
     'municipal-spaces': MunicipalSpacesSelect<false> | MunicipalSpacesSelect<true>;
     'municipal-content': MunicipalContentSelect<false> | MunicipalContentSelect<true>;
@@ -232,6 +234,10 @@ export interface Author {
  */
 export interface Media {
   id: number;
+  /**
+   * «Ilustración generada con IA» lleva siempre el rótulo «Ilustración generada con IA» junto a la imagen y en su pie; no se puede quitar ni cambiar después a fotografía. Su uso lo decide la dirección.
+   */
+  imageKind?: ('foto' | 'grafico' | 'ia') | null;
   /**
    * Qué se ve en la foto, para quien no puede verla (lectores de pantalla y buscadores).
    */
@@ -430,7 +436,7 @@ export interface Article {
    */
   excerpt: string;
   /**
-   * Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas.
+   * Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas. Para meter una foto o una galería en el texto, pulsa «+» al principio de una línea vacía (o escribe «/») y elige «Imagen» o «Galería».
    */
   body: {
     root: {
@@ -448,21 +454,59 @@ export interface Article {
     [k: string]: unknown;
   };
   /**
-   * Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos.
+   * Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos. Para encuadrarla en las tarjetas, abre la imagen y marca su punto de interés.
    */
   image?: (number | null) | Media;
+  /**
+   * Para carteles: la foto principal se ve completa en la noticia (con fondo neutro alrededor) y entera dentro de su hueco en las tarjetas, sin cortar el texto.
+   */
+  imagePoster?: boolean | null;
+  /**
+   * Si no tienes foto, elige con un clic una plantilla gráfica (lleva el crédito «Planta 14»). Si no eliges ninguna, se usa la de la sección principal.
+   */
+  template?:
+    | (
+        | 'none'
+        | 'sucesos'
+        | 'economia'
+        | 'empresas'
+        | 'politica'
+        | 'sociedad'
+        | 'deportes'
+        | 'cultura'
+        | 'patrimonio'
+        | 'opinion'
+        | 'agenda'
+        | 'formacion'
+        | 'ayudas'
+        | 'empleo'
+        | 'fiestas'
+      )
+    | null;
   /**
    * La firma de la noticia. Si tu cuenta tiene una firma vinculada, ya viene puesta.
    */
   author: number | Author;
   /**
-   * El concejo del que trata. Decide en qué página de concejo puede salir.
+   * El concejo del que trata sobre todo: manda en la dirección, las migas y la etiqueta visible. «Caudal» si afecta a toda la comarca (sale en portada y en la página del Caudal, no en cada concejo).
    */
   town: number | Town;
   /**
-   * Sección de la web (Sociedad, Deportes, Opinión, Agenda…).
+   * Si también afecta a otros concejos: la noticia sale en sus páginas, en el boletín de quien los sigue y en sus estadísticas.
+   */
+  otherTowns?: (number | Town)[] | null;
+  /**
+   * Sección de la web (Sociedad, Deportes, Opinión, Agenda…). Manda en la dirección, las migas y la etiqueta visible.
    */
   section: number | Section;
+  /**
+   * La noticia sale también en las páginas de estas secciones.
+   */
+  secondarySections?: (number | Section)[] | null;
+  /**
+   * Temas de la noticia. Escribe para buscar las que ya existen; si no está, pulsa «+» para crearla (no se repiten aunque cambien mayúsculas o tildes). Salen al pie de la noticia, enlazadas.
+   */
+  tags?: (number | Tag)[] | null;
   /**
    * Márcalo en columnas y tribunas: se presentan como opinión, no como información.
    */
@@ -529,6 +573,8 @@ export interface Article {
    */
   slug?: string | null;
   date?: string | null;
+  bodyImages?: (number | Media)[] | null;
+  hasGallery?: boolean | null;
   legacyID?: string | null;
   provenance?: string | null;
   /**
@@ -552,6 +598,25 @@ export interface Section {
   slug: string;
   name: string;
   position?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Temas que agrupan noticias de distintas secciones y concejos (p. ej. «Minería», «Fiestas de San Juan»). Cada etiqueta tiene su página en /etiqueta/….
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  /**
+   * Corto y en minúscula salvo nombres propios: «minería», «Hunosa», «fiestas de San Juan».
+   */
+  name: string;
+  /**
+   * Se crea sola a partir del nombre.
+   */
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -630,6 +695,10 @@ export interface Festival {
    * Se ve pequeño y enmarcado en la ficha; nunca en los listados. Súbelo con «Crear» y marca la declaración de derechos.
    */
   image?: (number | null) | Media;
+  /**
+   * Marcada (lo normal en las fiestas): el cartel se ve completo, sin recortar. Desmárcala si es una foto que se puede encuadrar.
+   */
+  imagePoster?: boolean | null;
   /**
    * Cuando se publique la crónica de la fiesta, enlázala aquí.
    */
@@ -1233,6 +1302,10 @@ export interface PayloadLockedDocument {
         value: number | Section;
       } | null)
     | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
         relationTo: 'towns';
         value: number | Town;
       } | null)
@@ -1360,6 +1433,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  imageKind?: T;
   alt?: T;
   credit?: T;
   sourceURL?: T;
@@ -1428,9 +1502,14 @@ export interface ArticlesSelect<T extends boolean = true> {
   excerpt?: T;
   body?: T;
   image?: T;
+  imagePoster?: T;
+  template?: T;
   author?: T;
   town?: T;
+  otherTowns?: T;
   section?: T;
+  secondarySections?: T;
+  tags?: T;
   opinion?: T;
   agenda?:
     | T
@@ -1451,6 +1530,8 @@ export interface ArticlesSelect<T extends boolean = true> {
   sourceAuthor?: T;
   slug?: T;
   date?: T;
+  bodyImages?: T;
+  hasGallery?: T;
   legacyID?: T;
   provenance?: T;
   lote?: T;
@@ -1478,6 +1559,7 @@ export interface FestivalsSelect<T extends boolean = true> {
   description?: T;
   program?: T;
   image?: T;
+  imagePoster?: T;
   chronicle?: T;
   recurring?: T;
   organizer?: T;
@@ -1561,6 +1643,16 @@ export interface SectionsSelect<T extends boolean = true> {
   slug?: T;
   name?: T;
   position?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2204,6 +2296,52 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock".
+ */
+export interface ImageBlock {
+  /**
+   * Elige una de Imágenes o súbela con «Crear»: pide descripción, autoría y la declaración de derechos.
+   */
+  image: number | Media;
+  /**
+   * Qué se ve y dónde. Obligatorio.
+   */
+  caption: string;
+  /**
+   * Si lo dejas vacío, se usa la autoría guardada con la imagen en Imágenes.
+   */
+  credit?: string | null;
+  /**
+   * Para carteles y documentos: la imagen se ve completa, sin recortar, con fondo neutro alrededor.
+   */
+  poster?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imagen';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * De 2 a 12 imágenes. Se ven en cuadrícula; al pulsar, en grande (con flechas, teclado o deslizando en el móvil).
+   */
+  images: {
+    image: number | Media;
+    caption: string;
+    /**
+     * Si lo dejas vacío, se usa la autoría guardada con la imagen en Imágenes.
+     */
+    credit?: string | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'galeria';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

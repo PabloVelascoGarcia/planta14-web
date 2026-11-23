@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { sectionHref } from "@/lib/taxonomy";
 import { AdSlot } from "@/components/ad-slot";
 import { AgendaList } from "@/components/agenda-list";
 import { ArticleCard } from "@/components/article-card";
@@ -36,7 +37,7 @@ export default async function Home() {
     <div className="pb-10">
       <section className="container-p14 front-opening">
         <article className="lead-story" data-block="principal">
-          <div className="flex items-center gap-3 editorial-kicker"><Link href={`/concejo/${slugify(mainArticle.concejo)}`}>{mainArticle.concejo}</Link><span aria-hidden="true">/</span><span>{mainArticle.topic}</span></div>
+          <div className="flex items-center gap-3 editorial-kicker"><Link href={`/concejo/${slugify(mainArticle.concejo)}`}>{mainArticle.concejo}</Link><span aria-hidden="true">/</span><Link href={sectionHref(mainArticle.topic)} data-main-section>{mainArticle.topic}</Link></div>
           <h1><Link href={`/noticia/${mainArticle.slug}`}>{mainArticle.title}</Link></h1>
           <p className="lead-excerpt">{mainArticle.excerpt}</p>
           <Link href={`/noticia/${mainArticle.slug}`} className="lead-image" aria-label={`Leer: ${mainArticle.title}`}>

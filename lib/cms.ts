@@ -7,6 +7,7 @@ import type { Article, Author } from "@/lib/mock-data";
 import { articles as seedArticles, authors as seedAuthors } from "@/lib/mock-data";
 import { slugify } from "@/lib/utils";
 import { contentSource } from './content-source';
+import { hasTag, inConcejo, inTopic } from './taxonomy';
 
 const dataDir = process.env.CMS_DEMO_DATA_DIR || path.join(process.cwd(), "data");
 const articlesFile = path.join(dataDir, "articles.json");
@@ -142,12 +143,37 @@ export async function getArticlesByComarca(comarca: string) {
 export async function getArticlesByConcejo(concejo: string) {
   const allArticles = await getArticles();
   // Solo las que tienen marcada «Mostrar en la página del concejo» (por defecto, todas).
-  return allArticles.filter((article) => slugify(article.concejo) === concejo && article.showInTown !== false);
+  // Varios concejos: sale en la página de cada uno (concejo principal u «otros concejos»).
+  return allArticles.filter((article) => inConcejo(article, concejo) && article.showInTown !== false);
 }
 
 export async function getArticlesByTopic(topic: string) {
   const allArticles = await getArticles();
-  return allArticles.filter((article) => slugify(article.topic) === topic);
+  // Sección principal o secundaria.
+  return allArticles.filter((article) => inTopic(article, topic));
+}
+
+/** Noticias de una etiqueta (y su nombre), de la más reciente a la más antigua. */
+export async function getArticlesByTag(slug: string) {
+  const articles = (await getArticles()).filter((article) => hasTag(article, slug));
+  const name = articles[0]?.tags?.find(tag => tag.slug === slug)?.name;
+  return { name, articles };
+}
+
+/** Etiquetas con su número de noticias publicadas (sitemap e indexación). */
+export async function getTagCounts() {
+  const counts = new Map<string, { name: string; slug: string; count: number }>();
+  for (const article of await getArticles()) for (const tag of article.tags ?? []) {
+    const current = counts.get(tag.slug) ?? { ...tag, count: 0 };
+    current.count += 1;
+    counts.set(tag.slug, current);
+  }
+  return [...counts.values()];
+}
+
+/** Noticias con al menos una galería (/multimedia). */
+export async function getGalleryArticles() {
+  return (await getArticles()).filter((article) => article.hasGallery);
 }
 
 export async function getArticlesByAuthor(author: string) {

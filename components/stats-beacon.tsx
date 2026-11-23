@@ -14,7 +14,7 @@ export function StatsBeacon() {
       try {
         const scope = document.querySelector<HTMLElement>("[data-stats]");
         const params = new URLSearchParams(window.location.search);
-        const body = JSON.stringify({ p: pathname, r: document.referrer, u: params.get("utm_source") || "", t: scope?.dataset.statsTown || "", s: scope?.dataset.statsSection || "" });
+        const body = JSON.stringify({ p: pathname, r: document.referrer, u: params.get("utm_source") || "", t: scope?.dataset.statsTown || "", s: scope?.dataset.statsSection || "", x: scope?.dataset.statsExtra || "" });
         if (!navigator.sendBeacon?.("/api/v", body)) void fetch("/api/v", { method: "POST", body, keepalive: true });
       } catch { /* nada */ }
     };
@@ -24,7 +24,7 @@ export function StatsBeacon() {
   return null;
 }
 
-/** Concejo y sección de la página para las estadísticas (lo lee StatsBeacon). */
-export function StatsScope({ town, section }: { town?: string; section?: string }) {
-  return <span hidden data-stats data-stats-town={town || ""} data-stats-section={section || ""} />;
+/** Concejo, sección y otros concejos de la página (noticias en varios concejos) para las estadísticas (lo lee StatsBeacon). */
+export function StatsScope({ town, section, extraTowns }: { town?: string; section?: string; extraTowns?: string[] }) {
+  return <span hidden data-stats data-stats-town={town || ""} data-stats-section={section || ""} {...(extraTowns?.length ? { "data-stats-extra": extraTowns.join(",") } : {})} />;
 }

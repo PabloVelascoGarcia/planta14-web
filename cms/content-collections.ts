@@ -1,12 +1,14 @@
-import { APIError, type CollectionAfterChangeHook, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field, type FieldHook } from 'payload';
+import { APIError, type CollectionAfterChangeHook, type CollectionBeforeChangeHook, type CollectionBeforeOperationHook, type CollectionConfig, type Field, type FieldHook, type Where } from 'payload';
 import { revalidateAfterChange, revalidateAfterDelete } from './revalidate';
-import { BlockquoteFeature, BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
+import { BlockquoteFeature, BlocksFeature, BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { toLexical } from '../lib/rich-text';
 import { adminOnly, articlesRead, editorialContentRead, editorialUser, editorialVersions, municipalContentCreate, municipalContentRead, municipalContentUpdate,
   municipalContentVersions, municipalSpaceOf, municipalSpaceRead, notMunicipal, relationID } from './access';
 import { auditAfterChange, auditAfterDelete, rememberMainState } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
 import { loteField } from './lote';
+import { CAUDAL } from '../lib/caudal';
+import { deriveBodyImages, GalleryBlock, ImageBlock, templateOptions } from './article-images';
 
 const text = (name: string, required = false): Field => ({ name, type: 'text', required });
 const key: Field = { name: 'legacyID', type: 'text', unique: true, index: true };
@@ -111,9 +113,47 @@ export const Authors: CollectionConfig = {
     { name: 'email', type: 'email', access: { read: editorialUser } }, { name: 'avatar', type: 'relationship', relationTo: 'media' }, loteField],
 };
 
-/** Editor del texto de las noticias: párrafos, negrita, cursiva, enlaces, ladillos, citas y listas, y nada más. */
+/**
+ * Editor del texto de las noticias: párrafos, negrita, cursiva, enlaces, ladillos, citas, listas y los bloques «Imagen» y
+ * «Galería» (botón «+» o «/imagen», «/galería»), y nada más.
+ */
 const articleEditor = lexicalEditor({ features: () => [ParagraphFeature(), BoldFeature(), ItalicFeature(), LinkFeature({ enabledCollections: [] }),
-  HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }), BlockquoteFeature(), UnorderedListFeature(), OrderedListFeature(), FixedToolbarFeature(), InlineToolbarFeature()] });
+  HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }), BlockquoteFeature(), UnorderedListFeature(), OrderedListFeature(),
+  BlocksFeature({ blocks: [ImageBlock, GalleryBlock] }), FixedToolbarFeature(), InlineToolbarFeature()] });
+
+type Rel = number | { id: number } | null | undefined;
+const ids = (value: unknown) => (Array.isArray(value) ? value : []).map(v => relationID(v as Rel)).filter((v): v is number => v !== null);
+/**
+ * Varios concejos y secciones: el principal manda (dirección, migas, etiqueta); los demás, sin repetir el principal y como
+ * máximo 2 secciones secundarias. «Caudal» (toda la comarca) no se combina con otros concejos ni se puede añadir como
+ * «otro concejo».
+ */
+const classification: CollectionBeforeChangeHook = async ({ data, originalDoc, req }) => {
+  const has = (key: string) => Object.prototype.hasOwnProperty.call(data, key);
+  const town = relationID(has('town') ? data.town : originalDoc?.town);
+  const section = relationID(has('section') ? data.section : originalDoc?.section);
+  if (has('otherTowns') || has('town')) {
+    const others = [...new Set(ids(has('otherTowns') ? data.otherTowns : originalDoc?.otherTowns))].filter(id => id !== town);
+    if (others.length) {
+      const caudal = await req.payload.find({ collection: 'towns', where: { slug: { equals: CAUDAL.slug } }, depth: 0, limit: 1, overrideAccess: true, req });
+      const caudalID = caudal.docs[0]?.id;
+      if (caudalID !== undefined && others.includes(caudalID)) throw new APIError('«Caudal» no puede ser un concejo secundario: si afecta a toda la comarca, ponlo como concejo principal.', 400, undefined, true);
+      if (caudalID !== undefined && town === caudalID) throw new APIError('Con «Caudal» como concejo principal no hace falta añadir otros concejos: ya sale en la portada y en la página del Caudal.', 400, undefined, true);
+    }
+    data.otherTowns = others;
+  }
+  if (has('secondarySections') || has('section')) {
+    const secondary = [...new Set(ids(has('secondarySections') ? data.secondarySections : originalDoc?.secondarySections))].filter(id => id !== section);
+    if (secondary.length > 2) throw new APIError('Como máximo 2 secciones secundarias.', 400, undefined, true);
+    data.secondarySections = secondary;
+  }
+  if (has('tags')) {
+    const tags = [...new Set(ids(data.tags))];
+    if (tags.length > 5) throw new APIError('Como máximo 5 etiquetas.', 400, undefined, true);
+    data.tags = tags;
+  }
+  return data;
+};
 /** Slug: se genera del título al crear si se deja vacío; siempre sin tildes, eñes ni espacios, y único. */
 export function slugText(value: string) {
   return value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 90).replace(/-+$/, '');
@@ -164,7 +204,7 @@ const previewURL = ({ data }: { data: { id?: number | string } }) => `${process.
 export const Articles: CollectionConfig = {
   slug: 'articles', ...published,
   access: { ...published.access, read: articlesRead },
-  hooks: { ...published.hooks, beforeChange: [articleDates, ...published.hooks.beforeChange] },
+  hooks: { ...published.hooks, beforeChange: [articleDates, classification, deriveBodyImages, ...published.hooks.beforeChange] },
   admin: { useAsTitle: 'title', hideAPIURL: true, defaultColumns: ['title', '_status', 'publishedAt', 'town', 'createdBy'],
     livePreview: { url: previewURL, breakpoints: [{ name: 'movil', label: 'Móvil', width: 390, height: 844 }, { name: 'tableta', label: 'Tableta', width: 820, height: 1180 }, { name: 'escritorio', label: 'Escritorio', width: 1366, height: 900 }] },
     preview: (doc) => previewURL({ data: doc as { id?: number } }) },
@@ -175,16 +215,30 @@ export const Articles: CollectionConfig = {
         { name: 'excerpt', label: 'Entradilla', type: 'textarea', required: true, ...help('Una o dos frases que resumen la noticia. Sale bajo el titular y en las tarjetas de la portada.') },
         { name: 'body', label: 'Texto', type: 'richText', required: true, editor: articleEditor,
           hooks: { beforeValidate: [({ value }) => toLexical(value) ?? value] },
-          ...help('Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas.') },
+          ...help('Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas. Para meter una foto o una galería en el texto, pulsa «+» al principio de una línea vacía (o escribe «/») y elige «Imagen» o «Galería».') },
         { name: 'image', label: 'Foto principal', type: 'upload', relationTo: 'media',
-          ...help('Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos.') },
+          ...help('Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos. Para encuadrarla en las tarjetas, abre la imagen y marca su punto de interés.') },
+        { name: 'imagePoster', label: 'Mostrar entera (cartel)', type: 'checkbox',
+          ...help('Para carteles: la foto principal se ve completa en la noticia (con fondo neutro alrededor) y entera dentro de su hueco en las tarjetas, sin cortar el texto.') },
+        { name: 'template', label: 'Sin foto: plantilla de Planta 14', type: 'radio', options: [{ value: 'none', label: 'Ninguna' }, ...templateOptions], defaultValue: 'none',
+          admin: { layout: 'horizontal', condition: data => !data?.image, description: 'Si no tienes foto, elige con un clic una plantilla gráfica (lleva el crédito «Planta 14»). Si no eliges ninguna, se usa la de la sección principal.' } },
       ] },
       { label: 'Clasificación', fields: [
         { name: 'author', label: 'Autor', type: 'relationship', relationTo: 'authors', required: true,
           defaultValue: ({ user }: { user?: { author?: number | { id: number } | null } | null }) => (user?.author && typeof user.author === 'object' ? user.author.id : user?.author) ?? undefined,
           ...help('La firma de la noticia. Si tu cuenta tiene una firma vinculada, ya viene puesta.') },
-        { name: 'town', label: 'Concejo', type: 'relationship', relationTo: 'towns', required: true, ...help('El concejo del que trata. Decide en qué página de concejo puede salir.') },
-        { name: 'section', label: 'Sección', type: 'relationship', relationTo: 'sections', required: true, ...help('Sección de la web (Sociedad, Deportes, Opinión, Agenda…).') },
+        { name: 'town', label: 'Concejo principal', type: 'relationship', relationTo: 'towns', required: true,
+          ...help('El concejo del que trata sobre todo: manda en la dirección, las migas y la etiqueta visible. «Caudal» si afecta a toda la comarca (sale en portada y en la página del Caudal, no en cada concejo).') },
+        { name: 'otherTowns', label: 'Otros concejos (opcional)', type: 'relationship', relationTo: 'towns', hasMany: true,
+          filterOptions: ({ data }) => ({ and: [{ slug: { not_equals: CAUDAL.slug } }, { visible: { equals: true } }, ...(relationID(data?.town) ? [{ id: { not_equals: relationID(data?.town) } }] : [])] as Where[] }),
+          ...help('Si también afecta a otros concejos: la noticia sale en sus páginas, en el boletín de quien los sigue y en sus estadísticas.') },
+        { name: 'section', label: 'Sección principal', type: 'relationship', relationTo: 'sections', required: true,
+          ...help('Sección de la web (Sociedad, Deportes, Opinión, Agenda…). Manda en la dirección, las migas y la etiqueta visible.') },
+        { name: 'secondarySections', label: 'Secciones secundarias (opcional, máximo 2)', type: 'relationship', relationTo: 'sections', hasMany: true, maxRows: 2,
+          filterOptions: ({ data }) => (relationID(data?.section) ? { id: { not_equals: relationID(data?.section) } } : true),
+          ...help('La noticia sale también en las páginas de estas secciones.') },
+        { name: 'tags', label: 'Etiquetas (opcional, máximo 5)', type: 'relationship', relationTo: 'tags', hasMany: true, maxRows: 5,
+          ...help('Temas de la noticia. Escribe para buscar las que ya existen; si no está, pulsa «+» para crearla (no se repiten aunque cambien mayúsculas o tildes). Salen al pie de la noticia, enlazadas.') },
         { name: 'opinion', label: 'Es un artículo de opinión', type: 'checkbox', ...help('Márcalo en columnas y tribunas: se presentan como opinión, no como información.') },
         { name: 'agenda', label: 'Agenda', type: 'group', ...help('Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.'), fields: [
           { name: 'eventAt', label: 'Fecha y hora de la actividad', type: 'date', admin: { ...dateTime, description: 'Cuándo empieza la actividad.' } },
@@ -221,6 +275,10 @@ export const Articles: CollectionConfig = {
       hooks: { beforeValidate: [articleSlug] },
       admin: { position: 'sidebar', description: 'Se crea sola a partir del título. Puedes cambiarla; se quitan tildes, eñes y espacios, y no se repite.' } },
     { name: 'date', type: 'text', admin: { hidden: true } },
+    // Imágenes de los bloques del texto (copia pública y comprobación de derechos) y si lleva galería (/multimedia). Lo
+    // rellena el servidor al guardar (cms/article-images.ts).
+    { name: 'bodyImages', type: 'relationship', relationTo: 'media', hasMany: true, admin: { hidden: true } },
+    { name: 'hasGallery', type: 'checkbox', index: true, defaultValue: false, admin: { hidden: true } },
     { ...key, label: 'Identificador de origen', admin: { position: 'sidebar', ...adminOnlyReadOnly } } as Field,
     { name: 'provenance', label: 'Procedencia', type: 'text', admin: { position: 'sidebar', ...adminOnlyReadOnly } },
     loteField,

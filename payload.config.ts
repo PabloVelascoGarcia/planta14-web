@@ -17,6 +17,7 @@ import { Heritage, Routes, MunicipalServices, UtilVisibility } from './cms/util'
 import { Newsletters } from './cms/newsletters';
 import { FiestasSettings, FooterSettings, LettersSettings, Mottos, Principles } from './cms/site-globals';
 import { NewsroomSettings } from './cms/newsroom';
+import { Tags } from './cms/tags';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { smtpOptions, testOutboxAdapter } from './cms/email';
 import { withMaintenanceGuard } from './cms/maintenance';
@@ -41,7 +42,7 @@ export default buildConfig({
       // Bandeja «Pendiente de revisar» de la redacción: /cms/bandeja.
       bandeja: { Component: '/components/cms-inbox#InboxView', path: '/bandeja' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
-  collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, Newsletters, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
+  collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Tags, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, Newsletters, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   globals: [BreakingNews, Mottos, FooterSettings, Principles, FiestasSettings, LettersSettings, NewsroomSettings],
   db: postgresAdapter({ pool: { connectionString: settings.databaseURL }, push: false, migrationDir: path.resolve(baseDir, 'cms/migrations') }),
   plugins: [s3Storage({

@@ -163,7 +163,7 @@ async function publicCopyComplete(doc: MediaFile, key: string, bucket: string) {
 export async function countPublishedUses(payload: Payload, id: number, req?: PayloadRequest) {
   const published = { _status: { equals: 'published' } } as const;
   const [articles, municipal, spaces, festivals, heritage] = await Promise.all([
-    payload.count({ collection: 'articles', overrideAccess: true, req, where: { and: [published, { or: [{ image: { equals: id } }, { seoImage: { equals: id } }] }] } }),
+    payload.count({ collection: 'articles', overrideAccess: true, req, where: { and: [published, { or: [{ image: { equals: id } }, { seoImage: { equals: id } }, { bodyImages: { in: [id] } }] }] } }),
     payload.count({ collection: 'municipal-content', overrideAccess: true, req, where: { and: [published, { 'withdrawal.withdrawn': { not_equals: true } }, { image: { equals: id } }] } }),
     // Foto de cabecera y escudo de la identidad visual de un espacio municipal publicado.
     payload.count({ collection: 'municipal-spaces', overrideAccess: true, req, where: { and: [published, { or: [{ 'identity.heroImage': { equals: id } }, { 'identity.crestImage': { equals: id } }] }] } }),

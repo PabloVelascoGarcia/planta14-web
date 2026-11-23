@@ -151,6 +151,9 @@ export const Media: CollectionConfig = {
         if (req.user?.collection !== 'users' || req.user.role !== 'admin') throw new APIError('Solo la administración puede declarar los derechos de esta imagen', 403);
         data.rightsDeclaration = { declared: true, statement: adminDeclaration.statement, declaredBy: req.user.id, declaredAt: new Date().toISOString() };
       }
+      // «Ilustración generada con IA»: una vez guardada así, no se puede convertir en fotografía ni en otro tipo (el rótulo
+      // no se puede quitar). Si fue un error, se sube el archivo de nuevo.
+      if (originalDoc?.imageKind === 'ia' && data.imageKind !== undefined && data.imageKind !== 'ia') throw new APIError('Esta imagen está marcada como «Ilustración generada con IA» y no se puede cambiar a otro tipo. Si fue un error, súbela de nuevo.', 400, undefined, true);
       const next = { ...originalDoc, ...data };
       if (!next.rightsHolder || !next.rightsType) throw new APIError('Indica titular y tipo de derechos de la imagen', 400);
       if (next.rightsScope !== 'publicable' && (originalDoc?.publishedUses ?? 0) > 0) throw new APIError('Despublica el contenido antes de retirar los derechos', 400);
@@ -168,8 +171,13 @@ export const Media: CollectionConfig = {
     }],
     afterDelete: [auditAfterDelete],
   },
-  upload: { disableLocalStorage: true, mimeTypes: ['image/jpeg', 'image/png', 'image/webp'], imageSizes: [{ name: 'card', width: 800 }, { name: 'hero', width: 1600 }] },
+  // Punto de interés (focalPoint): al abrir una imagen, «Editar imagen» → punto de interés. Lo respetan todos los recortes
+  // de la web (tarjetas, portada, imagen para redes).
+  upload: { disableLocalStorage: true, focalPoint: true, crop: true, mimeTypes: ['image/jpeg', 'image/png', 'image/webp'], imageSizes: [{ name: 'card', width: 800 }, { name: 'hero', width: 1600 }] },
   fields: [
+    { name: 'imageKind', label: 'Tipo de imagen', type: 'select', defaultValue: 'foto',
+      options: [{ value: 'foto', label: 'Fotografía' }, { value: 'grafico', label: 'Gráfico, cartel o ilustración (hecho por personas)' }, { value: 'ia', label: 'Ilustración generada con IA' }],
+      admin: { description: '«Ilustración generada con IA» lleva siempre el rótulo «Ilustración generada con IA» junto a la imagen y en su pie; no se puede quitar ni cambiar después a fotografía. Su uso lo decide la dirección.' } },
     { name: 'alt', type: 'text', required: true, admin: { description: 'Qué se ve en la foto, para quien no puede verla (lectores de pantalla y buscadores).' } },
     { name: 'credit', type: 'text', required: true, admin: { description: 'Autor o autora de la foto, tal como debe aparecer: «Foto: …».' } },
     { name: 'sourceURL', type: 'text', admin: { description: 'Opcional: enlace a la foto original si viene de otra web (por ejemplo, su ficha en Wikimedia Commons).' } },

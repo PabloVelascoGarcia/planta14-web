@@ -38,6 +38,27 @@ export type Article = {
   /** Agenda general (sección Agenda): fecha y hora del evento (AAAA-MM-DD o AAAA-MM-DDTHH:MM) y lugar. */
   eventAt?: string;
   eventPlace?: string;
+  /** Todos los concejos (nombres), el principal primero. Sin él, solo `concejo`. */
+  concejos?: string[];
+  /** Todas las secciones (nombres), la principal primero (máximo 2 secundarias). Sin él, solo `topic`. */
+  topics?: string[];
+  /** Etiquetas (temas), con su página /etiqueta/[slug]. */
+  tags?: { name: string; slug: string }[];
+  /** Foto principal: «Mostrar entera (cartel)», punto de interés («50% 30%») e «Ilustración generada con IA». */
+  imagePoster?: boolean;
+  imageFocus?: string;
+  /** Medidas de la foto principal (para mostrar entera una foto vertical). */
+  imageWidth?: number;
+  imageHeight?: number;
+  imageAI?: boolean;
+  /** Plantilla gráfica de Planta 14 en lugar de foto. */
+  imageTemplate?: boolean;
+  /** Imagen para redes elegida a mano (si no, se genera la de Planta 14). */
+  customShareImage?: boolean;
+  /** Lleva al menos una galería (/multimedia). */
+  hasGallery?: boolean;
+  /** Versión (fecha de modificación) para la imagen para redes. */
+  version?: string;
 };
 
 export type Author = {

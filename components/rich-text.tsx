@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { safeHref, type LexicalNode, type LexicalState } from "@/lib/rich-text";
+import { BodyGallery, BodyImageFigure, type BodyImage } from "@/components/body-media";
 
 // Pinta el texto de una noticia con el diseño público. Solo los elementos permitidos en el CMS; el resto se ignora.
 // Un párrafo de texto simple sale como <p>texto</p>, igual que antes del texto enriquecido.
@@ -33,6 +34,16 @@ function renderNode(node: LexicalNode, key: number): ReactNode {
       if (!href) return <span key={key}>{renderChildren(node.children)}</span>;
       const external = /^https?:/i.test(href) && node.fields?.newTab;
       return <a key={key} href={href} className="text-copper underline underline-offset-2" {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{renderChildren(node.children)}</a>;
+    }
+    case "block": {
+      // Bloques «Imagen» y «Galería», ya resueltos a sus imágenes públicas; un bloque sin imagen pública no sale.
+      const f = node.fields as unknown as { blockType?: string; image?: BodyImage; caption?: string; credit?: string; poster?: boolean; images?: { image?: BodyImage; caption?: string; credit?: string }[] } | undefined;
+      if (f?.blockType === "imagen" && f.image?.url) return <BodyImageFigure key={key} image={f.image} caption={f.caption ?? ""} credit={f.credit ?? ""} poster={f.poster} />;
+      if (f?.blockType === "galeria") {
+        const images = (f.images ?? []).filter(item => item.image?.url).map(item => ({ image: item.image!, caption: item.caption ?? "", credit: item.credit ?? "" }));
+        return images.length ? <BodyGallery key={key} images={images} /> : null;
+      }
+      return null;
     }
     default: return node.children ? <span key={key}>{renderChildren(node.children)}</span> : null;
   }

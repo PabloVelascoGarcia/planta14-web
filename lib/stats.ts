@@ -47,17 +47,19 @@ async function db() {
 }
 
 /** Suma una visita (una sola sentencia; no espera a nada más). */
-export async function recordView(entry: { path: string; town: string; section: string; source: Source }) {
+export async function recordView(entry: { path: string; town: string; section: string; source: Source; extraTowns?: string[] }) {
   const { payload, sql } = await db();
-  await payload.db.drizzle.execute(sql`INSERT INTO stats_daily (day, path, town, section, source, views)
-    VALUES (${madridDay()}, ${entry.path}, ${entry.town}, ${entry.section}, ${entry.source}, 1)
-    ON CONFLICT (day, path, town, section, source) DO UPDATE SET views = stats_daily.views + 1`);
+  const extra = entry.extraTowns?.length ? `,${entry.extraTowns.join(",")},` : "";
+  await payload.db.drizzle.execute(sql`INSERT INTO stats_daily (day, path, town, section, source, views, extra_towns)
+    VALUES (${madridDay()}, ${entry.path}, ${entry.town}, ${entry.section}, ${entry.source}, 1, ${extra})
+    ON CONFLICT (day, path, town, section, source) DO UPDATE SET views = stats_daily.views + 1, extra_towns = EXCLUDED.extra_towns`);
 }
 
 /** Informe de un periodo (días AAAA-MM-DD incluidos), de todos los concejos o de uno. */
 export async function statsReport(from: string, to: string, town: string | null = null): Promise<StatsReport> {
   const { payload, sql } = await db();
-  const where = town ? sql`day BETWEEN ${from} AND ${to} AND town = ${town}` : sql`day BETWEEN ${from} AND ${to}`;
+  // Un concejo: sus páginas y las noticias que lo tienen entre sus «otros concejos».
+  const where = town ? sql`day BETWEEN ${from} AND ${to} AND (town = ${town} OR extra_towns LIKE ${`%,${town},%`})` : sql`day BETWEEN ${from} AND ${to}`;
   const rows = (await payload.db.drizzle.execute(sql`SELECT to_char(day, 'YYYY-MM-DD') AS day, path, town, section, source, views FROM stats_daily WHERE ${where}`)).rows as Row[];
   const sum = (key: keyof Row, onlyExternal = false) => {
     const map = new Map<string, number>();

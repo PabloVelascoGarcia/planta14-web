@@ -36,9 +36,10 @@ export function frontPage(articles: Article[]): FrontPage | null {
   return { main, latest, featured, caudal, opinion, more };
 }
 
-/** Relacionadas: del mismo concejo primero, después de la misma sección; nunca agenda ni la propia noticia. */
+/** Relacionadas: con una etiqueta en común primero, después del mismo concejo y de la misma sección; nunca agenda ni la propia noticia. */
 export function relatedArticles(article: Article, articles: Article[], count = 3): Article[] {
   const pool = articles.filter(item => item.slug !== article.slug && !isAgenda(item));
-  const ordered = [...pool.filter(item => item.concejo === article.concejo), ...pool.filter(item => item.topic === article.topic)];
+  const tags = new Set((article.tags ?? []).map(t => t.slug));
+  const ordered = [...pool.filter(item => (item.tags ?? []).some(t => tags.has(t.slug))), ...pool.filter(item => item.concejo === article.concejo), ...pool.filter(item => item.topic === article.topic)];
   return [...new Map(ordered.map(item => [item.slug, item])).values()].slice(0, count);
 }
