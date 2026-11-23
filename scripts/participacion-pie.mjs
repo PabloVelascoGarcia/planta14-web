@@ -64,7 +64,11 @@ export async function run(ctx) {
       // Separación entre enlaces seguidos de una lista del pie (de un enlace al siguiente).
       const steps = [...footer.querySelectorAll('.footer-list')].flatMap(list => { const tops = [...list.querySelectorAll('a')].map(a => a.getBoundingClientRect().top); return tops.slice(1).map((t, i) => Math.round(t - tops[i])); });
       const tagline = document.querySelector('[data-motto="cabecera"]'), note = document.querySelector('[data-motto="lateral"]');
-      const header = { taglinePx: parseFloat(getComputedStyle(tagline).fontSize), noteStyle: [getComputedStyle(note).fontStyle, getComputedStyle(note).fontSize, getComputedStyle(note).display], headerOverflow: [...document.querySelectorAll('header *')].some(e => e.getBoundingClientRect().right > window.innerWidth + 1) };
+      const header = { taglinePx: parseFloat(getComputedStyle(tagline).fontSize), noteStyle: [getComputedStyle(note).fontStyle, getComputedStyle(note).fontSize, getComputedStyle(note).display], headerOverflow: document.scrollingElement.scrollWidth > window.innerWidth + 1 || [...document.querySelectorAll('header *')].some(e => {
+        // Lo que queda dentro de una franja con desplazamiento propio (concejos en el móvil) no desborda la página.
+        for (let p = e.parentElement; p && p.tagName !== 'HEADER'; p = p.parentElement) if (['auto', 'scroll', 'hidden'].includes(getComputedStyle(p).overflowX)) return false;
+        return e.getBoundingClientRect().right > window.innerWidth + 1;
+      }) };
       for (const e of footer.querySelectorAll('a, button, summary, input, select')) {
         const s = getComputedStyle(e); const r0 = e.getBoundingClientRect();
         if (s.visibility === 'hidden' || s.display === 'none' || !r0.width || e.closest('[aria-hidden="true"]')) continue;
