@@ -6,5 +6,6 @@ export const loteField: Field = {
   name: 'lote', label: 'Lote de la carga de ensayo', type: 'select', index: true,
   options: [{ label: 'Ensayo (se borra al retirar el ensayo)', value: 'ensayo' }, { label: 'Definitivo (se conserva)', value: 'definitivo' }],
   access: { read: adminOnly, create: adminOnly, update: adminOnly },
-  admin: { position: 'sidebar', description: 'Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.' },
+  // También oculto en el formulario para la redacción (no solo sin acceso).
+  admin: { condition: (_data, _sibling, { user }) => (user as { role?: string } | null | undefined)?.role === 'admin', position: 'sidebar', description: 'Solo para la carga de ensayo. «Ensayo» se borra con npm run cms:ensayo:retirar; vacío o «Definitivo», nunca.' },
 };

@@ -128,6 +128,30 @@ const ids = (value: unknown) => (Array.isArray(value) ? value : []).map(v => rel
  * máximo 2 secciones secundarias. «Caudal» (toda la comarca) no se combina con otros concejos ni se puede añadir como
  * «otro concejo».
  */
+/** Firma fija de la cuenta (campo «Firma fija» de Usuarios): el id de su autor, o null. */
+function lockedAuthor(user: unknown): number | null {
+  const u = user as { collection?: string; authorLocked?: boolean | null; author?: unknown } | null | undefined;
+  return u?.collection === 'users' && u.authorLocked ? relationID(u.author) : null;
+}
+/** Una cuenta con firma fija solo firma con ella (al crear siempre; al editar, no puede poner otra distinta). */
+const authorRules: CollectionBeforeChangeHook = ({ data, originalDoc, operation, req }) => {
+  const locked = lockedAuthor(req.user);
+  if (locked === null) return data;
+  if (operation === 'create') { data.author = locked; return data; }
+  const requested = Object.prototype.hasOwnProperty.call(data, 'author') ? relationID(data.author) : null;
+  if (requested !== null && requested !== locked && requested !== relationID(originalDoc?.author)) throw new APIError('Tu cuenta solo puede firmar con su firma.', 403, undefined, true);
+  return data;
+};
+/** «Es un artículo de opinión» sigue a la sección: marcada si la principal o una secundaria es Opinión; si no, desmarcada. */
+const opinionFromSections: CollectionBeforeChangeHook = async ({ data, originalDoc, req }) => {
+  const has = (key: string) => Object.prototype.hasOwnProperty.call(data, key);
+  const sections = [relationID(has('section') ? data.section : originalDoc?.section), ...ids(has('secondarySections') ? data.secondarySections : originalDoc?.secondarySections)].filter((id): id is number => id !== null);
+  if (!sections.length) return data;
+  const opinion = await req.payload.find({ collection: 'sections', where: { slug: { equals: 'opinion' } }, depth: 0, limit: 1, overrideAccess: true, req });
+  const opinionID = opinion.docs[0]?.id;
+  data.opinion = opinionID !== undefined && sections.includes(opinionID);
+  return data;
+};
 const classification: CollectionBeforeChangeHook = async ({ data, originalDoc, req }) => {
   const has = (key: string) => Object.prototype.hasOwnProperty.call(data, key);
   const town = relationID(has('town') ? data.town : originalDoc?.town);
@@ -204,7 +228,7 @@ const previewURL = ({ data }: { data: { id?: number | string } }) => `${process.
 export const Articles: CollectionConfig = {
   slug: 'articles', ...published,
   access: { ...published.access, read: articlesRead },
-  hooks: { ...published.hooks, beforeChange: [articleDates, classification, deriveBodyImages, ...published.hooks.beforeChange] },
+  hooks: { ...published.hooks, beforeChange: [articleDates, authorRules, classification, opinionFromSections, deriveBodyImages, ...published.hooks.beforeChange] },
   admin: { useAsTitle: 'title', hideAPIURL: true, defaultColumns: ['title', '_status', 'publishedAt', 'town', 'createdBy'],
     livePreview: { url: previewURL, breakpoints: [{ name: 'movil', label: 'Móvil', width: 390, height: 844 }, { name: 'tableta', label: 'Tableta', width: 820, height: 1180 }, { name: 'escritorio', label: 'Escritorio', width: 1366, height: 900 }] },
     preview: (doc) => previewURL({ data: doc as { id?: number } }) },
@@ -226,6 +250,8 @@ export const Articles: CollectionConfig = {
       { label: 'Clasificación', fields: [
         { name: 'author', label: 'Autor', type: 'relationship', relationTo: 'authors', required: true,
           defaultValue: ({ user }: { user?: { author?: number | { id: number } | null } | null }) => (user?.author && typeof user.author === 'object' ? user.author.id : user?.author) ?? undefined,
+          // Firma fija: la única que se puede elegir es la de la cuenta.
+          filterOptions: ({ user }) => (lockedAuthor(user) !== null ? { id: { equals: lockedAuthor(user) } } : true),
           ...help('La firma de la noticia. Si tu cuenta tiene una firma vinculada, ya viene puesta.') },
         { name: 'town', label: 'Concejo principal', type: 'relationship', relationTo: 'towns', required: true,
           ...help('El concejo del que trata sobre todo: manda en la dirección, las migas y la etiqueta visible. «Caudal» si afecta a toda la comarca (sale en portada y en la página del Caudal, no en cada concejo).') },
@@ -239,7 +265,8 @@ export const Articles: CollectionConfig = {
           ...help('La noticia sale también en las páginas de estas secciones.') },
         { name: 'tags', label: 'Etiquetas (opcional, máximo 5)', type: 'relationship', relationTo: 'tags', hasMany: true, maxRows: 5,
           ...help('Temas de la noticia. Escribe para buscar las que ya existen; si no está, pulsa «+» para crearla (no se repiten aunque cambien mayúsculas o tildes). Salen al pie de la noticia, enlazadas.') },
-        { name: 'opinion', label: 'Es un artículo de opinión', type: 'checkbox', ...help('Márcalo en columnas y tribunas: se presentan como opinión, no como información.') },
+        { name: 'opinion', label: 'Es un artículo de opinión', type: 'checkbox', admin: { readOnly: true,
+          description: 'Se marca sola al guardar si la sección principal o una secundaria es Opinión, y se desmarca si se quita. Las piezas de opinión se presentan como opinión, no como información.' } },
         { name: 'agenda', label: 'Agenda', type: 'group', ...help('Solo para actividades de la sección Agenda: con fecha, aparecen en la agenda de la web hasta que pasan.'), fields: [
           { name: 'eventAt', label: 'Fecha y hora de la actividad', type: 'date', admin: { ...dateTime, description: 'Cuándo empieza la actividad.' } },
           { name: 'place', label: 'Lugar', type: 'text', ...help('Dónde es la actividad (local, calle, pueblo).') },

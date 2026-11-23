@@ -29,6 +29,7 @@ export async function CmsDashboard({ payload, user }: { payload: Payload; user?:
     { id: "borradores", href: `${list}?where[and][0][_status][equals]=draft&where[and][1][createdBy][equals]=${user.id}`, title: "Mis borradores", text: "Noticias que has creado y aún no están publicadas.", value: drafts.totalDocs },
     { id: "hoy", href: `${list}?where[and][0][_status][equals]=published&where[and][1][date][equals]=${today}`, title: "Publicadas hoy", text: `Noticias publicadas con fecha de hoy (${today.split("-").reverse().join("/")}).`, value: publishedToday.totalDocs },
     { id: "pendientes", href: "/cms/bandeja", title: "Pendiente de revisar", text: "Fiestas enviadas, sugerencias y cartas de tus concejos que esperan una decisión. Se resuelven en un clic.", value: unreviewed.totalDocs },
+    { id: "ayuda", href: "/cms/ayuda", title: "Ayuda", text: "El manual de la redacción, con capturas, buscador y descarga en PDF." },
   ];
   if (user.role === "admin") links.push(
     { id: "estadisticas", href: "/cms/estadisticas", title: "Estadísticas", text: "Visitas por día, páginas más vistas y procedencia, con CSV y PDF mensuales." },

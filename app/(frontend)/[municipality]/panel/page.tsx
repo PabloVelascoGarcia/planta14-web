@@ -16,5 +16,13 @@ export default async function Page({ params, searchParams }: { params: Promise<{
   if (contentSource() === "demo") return <MunicipalPanel space={space} />;
   const { municipalPanelState } = await import("@/lib/municipal-panel");
   const { MAINTENANCE_MESSAGE, maintenanceActive } = await import("@/cms/maintenance");
-  return <MunicipalCmsPanel space={space} state={await municipalPanelState(space.id)} maintenance={maintenanceActive() ? MAINTENANCE_MESSAGE : null} initialTab={typeof pestana === "string" ? pestana : "publicar"} />;
+  const state = await municipalPanelState(space.id);
+  // Ayuda: el manual del ayuntamiento, solo con la sesión municipal (pestaña «Ayuda»).
+  const help = state.kind === "editor" ? await (async () => {
+    const { getManual, helpSections } = await import("@/lib/manuals");
+    const manual = await getManual("ayuntamiento");
+    const updated = new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Madrid" }).format(new Date(manual.generatedAt));
+    return { title: manual.title, sections: helpSections("ayuntamiento", manual), updated };
+  })() : null;
+  return <MunicipalCmsPanel space={space} state={state} help={help} maintenance={maintenanceActive() ? MAINTENANCE_MESSAGE : null} initialTab={typeof pestana === "string" ? pestana : "publicar"} />;
 }

@@ -36,11 +36,16 @@ export default buildConfig({
   i18n: { supportedLanguages: { es }, fallbackLanguage: 'es' },
   routes: { admin: '/cms', api: '/api/cms' },
   // Fechas del CMS (listas, «Última modificación», versiones) como dd/MM/yyyy HH:mm.
-  admin: { dateFormat: 'dd/MM/yyyy HH:mm', user: 'users', disable: !settings.enabled, components: { header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'],
+  admin: { meta: { titleSuffix: ' · Planta 14', icons: [{ rel: 'icon', type: 'image/png', url: '/marca/planta14-icono.png' }] },
+    dateFormat: 'dd/MM/yyyy HH:mm', user: 'users', disable: !settings.enabled, components: { graphics: { Logo: '/components/cms-graphics#CmsLogo', Icon: '/components/cms-graphics#CmsIcon' },
+    header: ['/components/cms-maintenance-banner#CmsMaintenanceBanner'], beforeDashboard: ['/components/cms-dashboard#CmsDashboard'],
     // Estadísticas propias (solo administración): /cms/estadisticas.
     views: { estadisticas: { Component: '/components/stats-admin-view#StatsAdminView', path: '/estadisticas' },
       // Bandeja «Pendiente de revisar» de la redacción: /cms/bandeja.
-      bandeja: { Component: '/components/cms-inbox#InboxView', path: '/bandeja' } } }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
+      bandeja: { Component: '/components/cms-inbox#InboxView', path: '/bandeja' },
+      // Ayuda: el manual de la redacción (docs/MANUAL-REDACCION.md), con buscador y descarga en PDF: /cms/ayuda.
+      ayuda: { Component: '/components/cms-help#HelpView', path: '/ayuda' } },
+    beforeNavLinks: ['/components/cms-help#CmsHelpLink'] }, importMap: { baseDir, importMapFile: path.resolve(baseDir, 'app/(payload)/cms/importMap.js') } },
   // Solo lectura durante el modo mantenimiento (cms/maintenance.ts).
   collections: [Users, Media, Articles, Festivals, Letters, Authors, Sections, Tags, Towns, MunicipalSpaces, MunicipalContent, Notifications, Suggestions, Heritage, Routes, MunicipalServices, UtilVisibility, Subscribers, Newsletters, AuditLog, PublicMediaOps].map(withMaintenanceGuard).map(withSpanishLabels),
   globals: [BreakingNews, Mottos, FooterSettings, Principles, FiestasSettings, LettersSettings, NewsroomSettings],

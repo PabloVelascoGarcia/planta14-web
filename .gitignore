@@ -9,3 +9,6 @@ public/uploads
 *.tsbuildinfo
 .local/
 audit-*.json
+
+# Manuales para la Ayuda (los genera npm run build desde docs/)
+/generated/

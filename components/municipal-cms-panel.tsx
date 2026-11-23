@@ -8,6 +8,7 @@ import type { PanelItem, PanelState } from "@/lib/municipal-panel";
 import { MunicipalMasthead } from "./municipal-masthead";
 import { MunicipalSuggestions } from "./municipal-suggestions";
 import { StatsReportView } from "./stats-report-view";
+import { HelpBrowser, type HelpSectionView } from "./help-browser";
 import { MunicipalServicesEditor } from "./municipal-services-editor";
 import { MunicipalUtilVisibility } from "./municipal-util-visibility";
 
@@ -116,7 +117,7 @@ function PublicationsList({ items, locked, message, typeFilter, statusFilter, pa
 /** Pestañas del panel, cada una con su enlace (?pestana=…). «Publicar» es la de por defecto. */
 export const PANEL_TABS = [
   { id: "publicar", label: "Publicar" }, { id: "publicaciones", label: "Mis publicaciones" }, { id: "util", label: "Útil" },
-  { id: "directorio", label: "Directorio" }, { id: "sugerencias", label: "Sugerencias" }, { id: "visitas", label: "Visitas" },
+  { id: "directorio", label: "Directorio" }, { id: "sugerencias", label: "Sugerencias" }, { id: "visitas", label: "Visitas" }, { id: "ayuda", label: "Ayuda" },
 ] as const;
 export type PanelTab = typeof PANEL_TABS[number]["id"];
 const PAGE_SIZE = 10;
@@ -124,7 +125,7 @@ const shortDay = (iso: string) => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/
 const statusOf = (item: PanelItem) => item.withdrawn ? "retirado" : item.live === "published" ? (item.hasDraft ? "cambios" : "publicado") : "borrador";
 const STATUS_LABEL: Record<string, string> = { publicado: "Publicado", cambios: "Publicado · cambios sin publicar", borrador: "Borrador", retirado: "Retirado por Planta 14" };
 
-export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab = "publicar" }: { space: MunicipalSpace; state: PanelState; maintenance?: string | null; initialTab?: string }) {
+export function MunicipalCmsPanel({ space, state, help = null, maintenance = null, initialTab = "publicar" }: { space: MunicipalSpace; state: PanelState; help?: { title: string; sections: HelpSectionView[]; updated: string } | null; maintenance?: string | null; initialTab?: string }) {
   const identity = space.identity;
   const router = useRouter();
   const [draft, setDraft] = useState<Draft>(empty);
@@ -207,6 +208,9 @@ export function MunicipalCmsPanel({ space, state, maintenance = null, initialTab
         <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>Publica en tu<br />espacio municipal.</h2></div><p>Lo que publiques aparece al momento<br />en el espacio del {space.name}.</p></div>
         {state.cmsEmail ? <p className="municipal-form-help" data-panel-cms-note>Has entrado en el CMS como {state.cmsEmail}. Gestiona los contenidos desde /cms. Para el panel, entra con la cuenta del ayuntamiento: las dos sesiones no se mezclan.</p> : null}
         <div className="municipal-panel-grid"><Login onDone={() => router.refresh()} /></div>
+        {tab === "ayuda" ? <div className="municipal-help" id="ayuda-inicio" data-panel-section="ayuda">{help
+          ? <HelpBrowser title={help.title} sections={help.sections} pdfHref="/api/ayuda/pdf?manual=ayuntamiento" updated={help.updated} />
+          : <p className="municipal-field-help">La ayuda no está disponible ahora mismo. Escribe a info@planta14.com.</p>}</div> : null}
         <p className="municipal-panel-terms"><Link href="/condiciones-cuentas-municipales" target="_blank" data-panel-terms>Condiciones de uso del espacio municipal</Link></p>
       </> : null}
       {state.kind === "forbidden" ? <div className="municipal-demo-banner"><span className="municipal-example">Sin acceso</span><p>{state.reason} ({state.email})</p><button type="button" className="municipal-reset" onClick={logout}>Cerrar sesión</button></div> : null}

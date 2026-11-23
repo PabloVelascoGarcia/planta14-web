@@ -184,6 +184,10 @@ export interface User {
    */
   author?: (number | null) | Author;
   /**
+   * Marcada: la cuenta solo puede firmar con su firma vinculada (viene puesta y es la única que puede elegir).
+   */
+  authorLocked?: boolean | null;
+  /**
    * Obligatorio para cuentas municipales; prohibido para las demás.
    */
   municipalSpace?: (number | null) | MunicipalSpace;
@@ -508,7 +512,7 @@ export interface Article {
    */
   tags?: (number | Tag)[] | null;
   /**
-   * Márcalo en columnas y tribunas: se presentan como opinión, no como información.
+   * Se marca sola al guardar si la sección principal o una secundaria es Opinión, y se desmarca si se quita. Las piezas de opinión se presentan como opinión, no como información.
    */
   opinion?: boolean | null;
   /**
@@ -1407,6 +1411,7 @@ export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
   author?: T;
+  authorLocked?: T;
   municipalSpace?: T;
   dailyDigest?: T;
   awayUntil?: T;

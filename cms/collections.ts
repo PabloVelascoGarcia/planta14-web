@@ -23,9 +23,13 @@ export const Users: CollectionConfig = {
   hooks: {
     // Una cuenta municipal solo inicia sesión desde el panel de su concejo («Entrar», que usa la API local del servidor, o
     // restablecer la contraseña por el puente del panel); nunca en /cms ni por la API REST de Payload.
-    beforeLogin: [({ req, user }) => {
+    // Este hook solo se ejecuta con la contraseña ya comprobada: a quien no la sabe no se le dice que la cuenta es municipal.
+    beforeLogin: [async ({ req, user }) => {
       if ((user as { role?: string }).role === 'municipal' && req.payloadAPI !== 'local' && req.context?.panelLogin !== true && !fromBridge(req.headers)) {
-        throw new APIError('Las cuentas municipales entran por el panel de su concejo.', 403, undefined, true);
+        const spaceID = relationID((user as { municipalSpace?: unknown }).municipalSpace);
+        const space = spaceID ? await req.payload.findByID({ collection: 'municipal-spaces', id: spaceID, depth: 0, overrideAccess: true, req }).catch(() => null) : null;
+        const panel = space?.legacyID ? ` Entra en tu panel: /${space.legacyID}/panel` : '';
+        throw new APIError(`Las cuentas municipales entran por el panel de su concejo.${panel}`, 403, undefined, true);
       }
       return user;
     }],
@@ -57,6 +61,10 @@ export const Users: CollectionConfig = {
     // Firma que se pone por defecto en sus noticias.
     { name: 'author', label: 'Firma (autor vinculado)', type: 'relationship', relationTo: 'authors',
       admin: { condition: (data) => data?.role !== 'municipal', description: 'Autor que se pondrá por defecto en las noticias de esta cuenta.' },
+      access: { create: adminOnly, update: adminOnly } },
+    // Firma fija (p. ej. «El Director» para las cuentas de la dirección): solo puede firmar con su firma vinculada.
+    { name: 'authorLocked', label: 'Firma fija', type: 'checkbox', defaultValue: false,
+      admin: { condition: (data) => data?.role !== 'municipal', description: 'Marcada: la cuenta solo puede firmar con su firma vinculada (viene puesta y es la única que puede elegir).' },
       access: { create: adminOnly, update: adminOnly } },
     { name: 'municipalSpace', label: 'Espacio municipal', type: 'relationship', relationTo: 'municipal-spaces', index: true,
       admin: { condition: (data) => data?.role === 'municipal', description: 'Obligatorio para cuentas municipales; prohibido para las demás.' },
