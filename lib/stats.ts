@@ -6,6 +6,8 @@ export const SOURCES = ["buscadores", "redes", "whatsapp", "directo", "otros", "
 export type Source = typeof SOURCES[number];
 export const sourceLabels: Record<Source, string> = { buscadores: "Buscadores", redes: "Redes sociales", whatsapp: "WhatsApp", directo: "Directo", otros: "Otras webs", interna: "Desde Planta 14" };
 
+export { sectionLabel } from "./stats-labels";
+
 const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|embedly|quora link|whatsapp\/|telegrambot|preview|headless|lighthouse|pingdom|uptime|monitor|python|curl|wget|httpclient|java\/|go-http|axios|node-fetch|scrapy|feed/i;
 /** Robots, comprobadores y vistas previas de enlaces (WhatsApp, Telegram…) no cuentan como visitas. */
 export const isBot = (userAgent: string | null) => !userAgent || BOT.test(userAgent);

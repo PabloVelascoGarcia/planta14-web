@@ -36,7 +36,7 @@ export function MunicipalSuggestions({ disabled = false }: { disabled?: boolean 
       {services.map(([value, label]) => <label key={value} className="municipal-check"><input type="checkbox" checked={chosen.includes(value)} onChange={e => setChosen(c => e.target.checked ? [...c, value] : c.filter(x => x !== value))} /> {label}</label>)}
     </fieldset>
     <label>Tu sugerencia (opcional)<textarea value={text} onChange={e => setText(e.target.value)} maxLength={2000} rows={4} /></label>
-    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy || disabled}>{busy ? "Enviando…" : "Enviar la sugerencia ↗"}</button></div>
+    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy || disabled}>{busy ? "Enviando…" : "Enviar la sugerencia"}</button></div>
     <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
   </form>;
 }

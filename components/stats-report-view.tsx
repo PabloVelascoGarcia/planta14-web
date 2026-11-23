@@ -1,4 +1,5 @@
 import type { StatsReport } from "@/lib/stats";
+import { sectionLabel } from "@/lib/stats-labels";
 
 const sourceLabels: Record<string, string> = { buscadores: "Buscadores", redes: "Redes sociales", whatsapp: "WhatsApp", directo: "Directo", otros: "Otras webs", interna: "Desde Planta 14" };
 const towns: Record<string, string> = { mieres: "Mieres", lena: "Lena", aller: "Aller", morcin: "Morcín", riosa: "Riosa", "ribera-de-arriba": "Ribera de Arriba" };
@@ -38,7 +39,7 @@ export function StatsReportView({ report, exportBase, compact = false }: { repor
     <section><h3>Procedencia</h3><p style={{ margin: "0 0 8px", fontSize: 13, opacity: 0.75 }}>Visitas que llegan de fuera de Planta 14. «Directo»: dirección escrita, favoritos o aplicaciones que no dicen de dónde vienen.</p>
       <table style={table}><tbody>{external.map(s => <tr key={s.source} data-stats-source={s.source}><td style={{ ...cell, width: 160 }}>{sourceLabels[s.source]}</td><td style={{ ...cell, width: 90, textAlign: "right" }}>{n(s.views)}</td><td style={{ ...cell, width: 60, textAlign: "right" }}>{externalTotal ? Math.round((s.views / externalTotal) * 100) : 0} %</td><td style={cell}><span style={bar(s.views, externalTotal)} /></td></tr>)}</tbody></table></section>
     {!report.town && report.byTown.length ? <section><h3>Por concejo</h3><table style={table}><tbody>{report.byTown.map(t => <tr key={t.town}><td style={cell}>{towns[t.town] ?? t.town}</td><td style={{ ...cell, width: 90, textAlign: "right" }}>{n(t.views)}</td></tr>)}</tbody></table></section> : null}
-    {report.bySection.length ? <section><h3>Por sección</h3><table style={table}><tbody>{report.bySection.map(s => <tr key={s.section}><td style={cell}>{s.section}</td><td style={{ ...cell, width: 90, textAlign: "right" }}>{n(s.views)}</td></tr>)}</tbody></table></section> : null}
+    {report.bySection.length ? <section><h3>Por sección</h3><table style={table}><tbody>{report.bySection.map(s => <tr key={s.section}><td style={cell} data-stats-section={s.section}>{sectionLabel(s.section)}</td><td style={{ ...cell, width: 90, textAlign: "right" }}>{n(s.views)}</td></tr>)}</tbody></table></section> : null}
     <p style={{ fontSize: 13, opacity: 0.75, margin: 0 }}>Estadísticas propias de Planta 14, sin cookies ni datos personales: solo se cuentan páginas vistas. No incluyen robots ni personas con sesión en el CMS.</p>
   </div>;
 }

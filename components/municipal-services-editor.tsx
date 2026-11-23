@@ -57,7 +57,7 @@ export function MunicipalServicesEditor({ services, disabled = false }: { servic
       <label>Web<input value={form.web} onChange={e => set({ web: e.target.value })} maxLength={300} placeholder="https://" /></label>
       <label className="is-wide">Horario<textarea value={form.hours} onChange={e => set({ hours: e.target.value })} maxLength={500} rows={2} /></label>
       <label className="is-wide">Observaciones<textarea value={form.notes} onChange={e => set({ notes: e.target.value })} maxLength={600} rows={2} /></label>
-      <div className="municipal-publish-actions is-wide"><button type="submit" className="municipal-cta" disabled={locked}>{form.id ? "Guardar los cambios ↗" : "Añadir al directorio ↗"}</button>
+      <div className="municipal-publish-actions is-wide"><button type="submit" className="municipal-cta" disabled={locked}>{form.id ? "Guardar los cambios" : "Añadir al directorio"}</button>
         <button type="button" className="municipal-text-link" onClick={close}>Cancelar</button></div>
     </form>;
   return <section className="municipal-form municipal-services-editor" aria-label="Directorio de servicios municipales" data-services-editor>

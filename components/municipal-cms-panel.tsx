@@ -63,7 +63,7 @@ function Login({ onDone }: { onDone: () => void }) {
     <div className="municipal-step is-single"><h3>¿Has olvidado tu contraseña?</h3></div>
     <p className="municipal-form-help">Escribe el correo de la cuenta de tu ayuntamiento y te enviaremos un enlace para elegir una nueva.</p>
     <label>Correo electrónico<input type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} required /></label>
-    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy}>{busy ? "Enviando…" : "Enviar el enlace ↗"}</button></div>
+    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy}>{busy ? "Enviando…" : "Enviar el enlace"}</button></div>
     <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
     <button type="button" className="municipal-text-link" onClick={() => { setForgot(false); setMessage(""); }}>← Volver a entrar</button>
   </form>;
@@ -71,7 +71,7 @@ function Login({ onDone }: { onDone: () => void }) {
     <div className="municipal-step is-single"><h3>Entra con la cuenta de tu ayuntamiento</h3></div>
     <label>Correo electrónico<input type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} required /></label>
     <label>Contraseña<input type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required /></label>
-    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta">Entrar ↗</button><small>Las cuentas municipales las crea Planta 14.</small></div>
+    <div className="municipal-publish-actions"><button type="submit" className="municipal-cta">Entrar</button><small>Las cuentas municipales las crea Planta 14.</small></div>
     <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
     <button type="button" className="municipal-text-link" onClick={() => { setForgot(true); setMessage(""); }}>¿Has olvidado tu contraseña?</button>
   </form>;

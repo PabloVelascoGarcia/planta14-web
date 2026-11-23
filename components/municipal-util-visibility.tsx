@@ -25,7 +25,7 @@ export function MunicipalUtilVisibility({ hidden, territory, disabled = false }:
     <p className="municipal-form-help">Por defecto salen todos en <a href={`/${territory}/util`} className="municipal-text-link">el «Útil» de tu concejo</a>. Desmarca los que no quieras mostrar. Las noticias y los contenidos de Planta 14 no se pueden ocultar.</p>
     <fieldset className="municipal-checks">{UTIL_SERVICES.map(s => <label key={s.key} className="municipal-check"><input type="checkbox" checked={!off.includes(s.key)} disabled={busy || disabled}
       onChange={e => setOff(current => e.target.checked ? current.filter(k => k !== s.key) : [...current, s.key])} /> {s.label}</label>)}</fieldset>
-    <div className="municipal-publish-actions"><button type="button" className="municipal-cta" onClick={save} disabled={busy || disabled}>{busy ? "Guardando…" : "Guardar ↗"}</button></div>
+    <div className="municipal-publish-actions"><button type="button" className="municipal-cta" onClick={save} disabled={busy || disabled}>{busy ? "Guardando…" : "Guardar"}</button></div>
     <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
   </section>;
 }

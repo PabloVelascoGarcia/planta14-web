@@ -1,5 +1,5 @@
 import { simplePdf, type PdfLine } from "./simple-pdf";
-import { sourceLabels, type StatsReport } from "./stats";
+import { sectionLabel, sourceLabels, type StatsReport } from "./stats";
 
 const TOWN_NAMES: Record<string, string> = { mieres: "Mieres", lena: "Lena", aller: "Aller", morcin: "Morcín", riosa: "Riosa", "ribera-de-arriba": "Ribera de Arriba" };
 export const townName = (slug: string | null) => (slug ? TOWN_NAMES[slug] ?? slug : "Todos los concejos");
@@ -10,7 +10,7 @@ const csvCell = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""'
 export function statsCSV(report: StatsReport, month: string) {
   const rows: unknown[][] = [["Planta 14 · visitas", townName(report.town), monthName(month)], [], ["Día", "Visitas"], ...report.byDay.map(d => [d.day, d.views]), ["Total", report.total], [],
     ["Página", "Visitas"], ...report.topPages.map(p => [p.path, p.views]), [], ["Procedencia", "Visitas"], ...report.bySource.map(s => [sourceLabels[s.source], s.views]),
-    ...(report.town ? [] : [[], ["Concejo", "Visitas"], ...report.byTown.map(t => [townName(t.town), t.views])]), [], ["Sección", "Visitas"], ...report.bySection.map(s => [s.section, s.views]),
+    ...(report.town ? [] : [[], ["Concejo", "Visitas"], ...report.byTown.map(t => [townName(t.town), t.views])]), [], ["Sección", "Visitas"], ...report.bySection.map(s => [sectionLabel(s.section), s.views]),
     [], ["Sin cookies ni datos personales: solo contadores de páginas vistas. No incluye robots ni personas con sesión en el CMS."]];
   return `﻿${rows.map(r => r.map(csvCell).join(";")).join("\r\n")}\r\n`;
 }

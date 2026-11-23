@@ -72,7 +72,7 @@ export function MunicipalPasswordReset({ space, maintenance = null }: { space: M
           <p className="municipal-form-help">Al menos {MIN_PASSWORD_LENGTH} caracteres. Mejor una frase larga o una generada por un gestor de contraseñas.</p>
           <label>Contraseña nueva<input type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} value={password} onChange={e => setPassword(e.target.value)} required /></label>
           <label>Repite la contraseña<input type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} value={repeat} onChange={e => setRepeat(e.target.value)} required /></label>
-          <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy || Boolean(maintenance)}>{busy ? "Guardando…" : "Guardar y entrar ↗"}</button></div>
+          <div className="municipal-publish-actions"><button type="submit" className="municipal-cta" disabled={busy || Boolean(maintenance)}>{busy ? "Guardando…" : "Guardar y entrar"}</button></div>
           <div role="status" className={message ? "municipal-form-status" : ""}>{message}</div>
           <Link className="municipal-text-link" href={panel}>Volver al panel</Link>
         </form>}
