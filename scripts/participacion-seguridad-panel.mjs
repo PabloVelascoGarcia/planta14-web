@@ -103,7 +103,8 @@ export async function run(ctx) {
     'caducado': await new SignJWT({ ...forged, iat: forged.iat - 30 * 86400, exp: forged.iat - 86400 }).setProtectedHeader({ alg: 'HS256', authVersion: JWT_AUTH_VERSION, typ: 'JWT' }).sign(new TextEncoder().encode(payload.secret)),
     'sesión de otra cuenta': await new SignJWT({ ...getFieldsToSign({ collectionConfig: payload.collections.users.config, email: mieresUser.email, user: { ...mieresUser, collection: 'users' } }), sid: forged.sid, aud: 'planta14-panel' })
       .setProtectedHeader({ alg: 'HS256', authVersion: JWT_AUTH_VERSION, typ: 'JWT' }).setIssuedAt().setExpirationTime('1d').sign(new TextEncoder().encode(payload.secret)),
-    'token del CMS (Payload) como cookie del panel': (await signIn(lenaUser.email)).split('; ').find(c => c.startsWith('payload-token=')).slice('payload-token='.length),
+    // Un token de Payload (la cuenta municipal ya no lo obtiene por /api/cms; aquí, con la API local del servidor).
+    'token del CMS (Payload) como cookie del panel': (await payload.login({ collection: 'users', data: { email: lenaUser.email, password } })).token,
     'basura': 'no-es-un-token',
   };
   for (const [what, token] of Object.entries(variants)) {
