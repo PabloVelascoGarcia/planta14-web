@@ -12,9 +12,14 @@ export async function run(ctx) {
     ?? await payload.create({ collection: 'authors', overrideAccess: true, data: { name: 'Redacción', slug: 'redaccion' } });
   const editor = { user: users.editor, overrideAccess: false };
   let n = 0;
-  const image = async (width, height, data = {}) => {
+  // Con MANUAL_REDACCION (capturas del manual), paisajes y un cartel dibujados en SVG; si no, colores lisos.
+  const art = (width, height, i, poster) => Buffer.from(poster
+    ? `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#f3e3c2"/><rect x="6%" y="5%" width="88%" height="90%" fill="none" stroke="#7a2e3a" stroke-width="18"/><text x="50%" y="22%" font-family="DejaVu Serif" font-weight="bold" font-size="${width / 9}" text-anchor="middle" fill="#7a2e3a">FIESTAS</text><text x="50%" y="34%" font-family="DejaVu Serif" font-size="${width / 14}" text-anchor="middle" fill="#7a2e3a">de Santa Bárbara</text><circle cx="50%" cy="56%" r="${width / 5}" fill="#e0a43a"/><text x="50%" y="82%" font-family="DejaVu Sans" font-size="${width / 22}" text-anchor="middle" fill="#3a2a20">Mieres · 4 de diciembre</text><text x="50%" y="88%" font-family="DejaVu Sans" font-size="${width / 30}" text-anchor="middle" fill="#3a2a20">Verbena · Misa · Comida popular</text></svg>`
+    : `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${['#9cc3e0', '#f2b880', '#b9d4e8', '#c9dfc2'][i % 4]}"/><stop offset="1" stop-color="#f4efe6"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#s)"/><path d="M0 ${height * 0.62} Q ${width * 0.25} ${height * 0.42} ${width * 0.5} ${height * 0.6} T ${width} ${height * 0.5} V ${height} H 0 Z" fill="${['#4f6b4a', '#6d7f45', '#3f5d4a', '#5b6e3c'][i % 4]}"/><path d="M0 ${height * 0.78} Q ${width * 0.4} ${height * 0.62} ${width} ${height * 0.8} V ${height} H 0 Z" fill="#2f4030"/><rect x="${width * 0.18}" y="${height * 0.36}" width="${width * 0.05}" height="${height * 0.3}" fill="#5a3b2a"/><rect x="${width * 0.15}" y="${height * 0.33}" width="${width * 0.11}" height="${height * 0.04}" fill="#7a5038"/></svg>`);
+  const image = async (width, height, data = {}, poster = false) => {
     const file = `${ctx.directory}/redaccion-${++n}.jpg`;
-    await sharp({ create: { width, height, channels: 3, background: ['#557766', '#995533', '#335599', '#777733'][n % 4] } }).jpeg().toFile(file);
+    if (process.env.MANUAL_REDACCION) await sharp(art(width, height, n, poster)).jpeg({ quality: 85 }).toFile(file);
+    else await sharp({ create: { width, height, channels: 3, background: ['#557766', '#995533', '#335599', '#777733'][n % 4] } }).jpeg().toFile(file);
     return payload.create({ collection: 'media', ...editor, filePath: file, data: { alt: `Imagen ${n}`, credit: `Autora ${n}`, rightsHolder: 'Planta 14', rightsType: 'propia', rightsConfirm: true, ...data } });
   };
   const text = t => ({ type: 'paragraph', direction: 'ltr', format: '', indent: 0, version: 1, textFormat: 0, textStyle: '', children: [{ type: 'text', text: t, format: 0, detail: 0, mode: 'normal', style: '', version: 1 }] });
@@ -73,7 +78,7 @@ export async function run(ctx) {
   // --- 7. Foto vertical entera en la noticia; 8. carteles.
   assert.ok((await html(`/noticia/${verticalArticle.slug}`)).includes('data-article-image-whole'), 'a vertical main photo is shown whole');
   assert.ok(!multiPage.includes('data-article-image-whole'), 'a horizontal one keeps its 16:10 crop');
-  const poster = await image(1240, 1754);
+  const poster = await image(1240, 1754, {}, true);
   const posterArticle = await article({ title: 'Cartel de las fiestas de Santa Bárbara', image: poster.id, imagePoster: true, section: cultura.id });
   assert.ok((await html(`/noticia/${posterArticle.slug}`)).includes('data-article-image-whole'), 'poster whole in the article');
   const culture = await html('/tema/cultura');
@@ -175,6 +180,12 @@ export async function run(ctx) {
   assert.doesNotMatch(robots(await html('/multimedia')), /noindex/, '/multimedia with 6: indexable');
   const sitemap = await (await fetch(`${web}/sitemap.xml`)).text();
   assert.ok(sitemap.includes('/etiqueta/mineria') && !sitemap.includes('/etiqueta/hunosa') && sitemap.includes('/multimedia'), 'sitemap: tags with 2 or more and /multimedia with 6');
+  if (process.env.MANUAL_REDACCION) {
+    const { captureRedaccion } = await import('./manual-redaccion-screenshots.mjs');
+    const problems = await captureRedaccion({ browser: ctx.browser ?? await (await import('playwright')).chromium.launch(), web, cmsOrigin: ctx.origin, password: ctx.password, editorEmail: users.editor.email,
+      articles: { multi, poster: posterArticle, noPhoto, gallery: withGallery, vertical: verticalArticle, ai: aiMain }, media: { photo }, dir: process.env.MANUAL_REDACCION, checkDir: process.env.COMPROBACION_VISUAL });
+    console.log(`CAPTURAS: ${problems.length ? problems.join(' | ') : 'todas'}`);
+  }
   await stop(); await start();
   passed('redacción (buscadores): una etiqueta con menos de 2 noticias no se indexa ni va al sitemap; con 2 o más, sí; /multimedia, solo con al menos 6 galerías');
 }

@@ -101,6 +101,8 @@ Si lo que ha fallado es una **actualización** de la web, no sigas este apartado
 
 **Sesión del panel:** dura 14 días y se alarga sola con el uso. Es una cookie propia del panel (`__Host-planta14_panel`), compartida por todas las pestañas, que solo se borra con **Cerrar sesión** o al caducar. Es independiente de la del CMS: en el mismo navegador se puede estar dentro del CMS (redacción) y del panel (cuenta municipal) a la vez sin que una eche a la otra; la sesión del CMS no abre el panel. **Cierran todas las sesiones de una cuenta municipal:** cambiarle la contraseña (o que la restablezca), cambiarle el rol o el espacio, borrarla, o desactivar su espacio municipal (aunque se vuelva a activar, tendrán que entrar de nuevo). Cinco contraseñas equivocadas bloquean la cuenta 10 minutos.
 
+**Las cuentas municipales solo usan su panel** (desde el 24/11): no pueden entrar en `/cms` ni usar la API de Payload (`/api/cms`), ni con su contraseña ni con la cookie del panel (responde 403). Todo lo que hacen (publicar, directorio, «Útil», sugerencias, restablecer la contraseña) pasa por el puente del panel, que solo permite esas llamadas y solo sobre lo de su concejo. Tampoco pueden leer nada de la redacción ni de la administración (noticias, fiestas, cartas, etiquetas, suscriptores, boletines, auditoría, ajustes…).
+
 **Para dar de baja una cuenta:** en **Users**, ábrela y bórrala. Lo que publicó se mantiene y el registro de auditoría conserva quién lo hizo.
 
 **Para retirar una publicación municipal:** lo más rápido es la bandeja (`/cms/bandeja`, «Publicado por los ayuntamientos», apartado 27). También en `/cms`: ve a **Municipal Contents**, ábrela, marca **Retirado**, escribe el **Motivo** y pulsa **Save Draft** (guardar borrador). La retirada afecta también a la versión pública. Comprueba en una ventana privada que ya no aparece; el ayuntamiento verá el motivo en su panel. No restaures una versión anterior para eludir una retirada.
@@ -271,15 +273,17 @@ La administración ve todos los pendientes, los **espacios municipales** y los *
 
 ### El formulario, pestaña a pestaña
 
-Cada campo lleva debajo una ayuda breve. Solo son obligatorios título, entradilla, texto, autor, concejo y sección.
+Cada campo lleva debajo una ayuda breve. Solo son obligatorios título, entradilla, texto, autor, concejo principal y sección principal.
+
+**Varios concejos y secciones, etiquetas, fotos y galerías en el texto, punto de interés, carteles, plantillas sin foto, ilustraciones generadas con IA e imagen para redes:** guía para periodistas, con capturas, en `docs/MANUAL-REDACCION.md`.
 
 | Pestaña | Qué hay |
 |---|---|
-| **Contenido** | Título, entradilla, texto y foto principal. |
-| **Clasificación** | Autor (ya viene puesto si tu cuenta tiene firma), concejo, sección, «Es un artículo de opinión» y, solo para actividades, fecha y lugar de la **Agenda**. |
+| **Contenido** | Título, entradilla, texto (con bloques **Imagen** y **Galería**), foto principal, **Mostrar entera (cartel)** y, sin foto, **plantilla de Planta 14**. |
+| **Clasificación** | Autor (ya viene puesto si tu cuenta tiene firma), **concejo principal** y **otros concejos**, **sección principal** y **secciones secundarias** (máximo 2), **etiquetas** (máximo 5), «Es un artículo de opinión» y, solo para actividades, fecha y lugar de la **Agenda**. |
 | **Portada** | **Principal** (la noticia grande de la portada; si hay varias, la más reciente; si no hay ninguna, la última noticia que no sea opinión ni agenda), **Destacada** (bloque de destacadas) y **Mostrar en la página del concejo** (viene marcada; si la desmarcas, la noticia sigue en portada, sección y buscador, pero no en la página del concejo). |
 | **Publicación** | Fecha de publicación y publicación programada (abajo). |
-| **Buscadores** | Título, descripción e imagen para Google y redes. **Opcionales:** si están vacíos se usan el título, la entradilla y la foto principal. |
+| **Buscadores** | Título, descripción e imagen para Google y redes. **Opcionales:** si están vacíos se usan el título, la entradilla y la foto principal. La imagen para redes se genera sola con el diseño de Planta 14 (titular, concejo y marca) sobre esa foto. |
 | **Fuente** | Bloque plegado y opcional: **solo si la noticia procede de otro medio o de una nota de prensa** (medio, enlace y autor original). |
 
 A la derecha, la **Dirección (slug)** se crea sola al guardar, a partir del título (sin tildes, eñes ni espacios; si ya existe, añade -2, -3…). Se puede cambiar, pero no hace falta. **Creada por** lo pone el CMS y no se cambia. El identificador de origen, la procedencia y el lote solo los ve la administración.
@@ -288,7 +292,7 @@ A la derecha, la **Dirección (slug)** se crea sola al guardar, a partir del tí
 
 - **Bloques de noticias** («En portada», «La vida aquí», Caudal y «Relacionadas» en cada noticia): solo noticias. Las piezas de la sección **Agenda** salen únicamente en la agenda («Para salir» y `/agenda`), y la **opinión**, en su bloque.
 - **Sin repetidos:** una pieza aparece en un solo bloque de la portada; los bloques se rellenan con las siguientes noticias por fecha. «La vida aquí» empieza por las marcadas como **Destacada**.
-- **Relacionadas:** primero las del mismo concejo y después las de la misma sección.
+- **Relacionadas:** primero las que comparten una etiqueta, después las del mismo concejo y después las de la misma sección.
 - **Tu ayuntamiento, aquí:** enlaza los espacios municipales activos y la lista de los seis concejos; nunca un panel.
 
 ### El texto
