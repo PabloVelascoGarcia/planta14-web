@@ -14,7 +14,7 @@ export async function testMunicipalBrowser({ url, email, password, editorEmail }
     await page.goto(`${url}/lena/panel`);
     await page.getByLabel('Correo electrónico', { exact: true }).fill(email);
     await page.getByLabel('Contraseña', { exact: true }).fill(password);
-    await page.getByRole('button', { name: 'Entrar ↗', exact: true }).click();
+    await page.getByRole('button', { name: 'Entrar', exact: true }).click();
     const form = page.getByRole('form', { name: 'Publicación municipal' });
     await form.waitFor({ state: 'visible' });
     const title = 'Aviso original de prueba en navegador';

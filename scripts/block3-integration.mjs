@@ -42,11 +42,13 @@ try {
   await payload.db.migrate();
   const { REST_GET, REST_POST, REST_PATCH, REST_DELETE } = await import('@payloadcms/next/routes');
   const handlers = { GET: REST_GET, POST: REST_POST, PATCH: REST_PATCH, DELETE: REST_DELETE };
+  const { BRIDGE_HEADER, bridgeSecret } = await import('../lib/panel-bridge.ts');
   const rest = async (method, route, body, token) => {
     const [pathname, search = ''] = route.split('?');
     const slug = pathname.split('/').filter(Boolean);
     const response = await handlers[method](config)(new Request(`http://localhost:${webPort}/api/cms/${slug.join('/')}${search ? `?${search}` : ''}`, {
-      method, headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `JWT ${token}` } : {}) }, body: body ? JSON.stringify(body) : undefined,
+      // Como el puente del panel (lib/panel-bridge.ts): las cuentas municipales solo entran y usan la API de Payload por él.
+      method, headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `JWT ${token}` } : {}), [BRIDGE_HEADER]: bridgeSecret() }, body: body ? JSON.stringify(body) : undefined,
     }), { params: Promise.resolve({ slug }) });
     const text = await response.text();
     let json; try { json = JSON.parse(text); } catch { json = null; }

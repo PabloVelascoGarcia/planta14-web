@@ -7,15 +7,15 @@ export async function run(ctx) {
   await tab.goto(`${ctx.origin}/lena/panel?pestana=sugerencias`); // mismo origen que CMS_SERVER_URL (Payload solo acepta la sesión desde él)
   await tab.getByLabel('Correo electrónico', { exact: true }).fill(users.lena.email);
   await tab.getByLabel('Contraseña', { exact: true }).fill(password);
-  await tab.getByRole('button', { name: 'Entrar ↗', exact: true }).click();
+  await tab.getByRole('button', { name: 'Entrar', exact: true }).click();
   const form = tab.getByRole('form', { name: 'Buzón de sugerencias' });
   await form.waitFor();
-  await form.getByRole('button', { name: 'Enviar la sugerencia ↗' }).click();
+  await form.getByRole('button', { name: 'Enviar la sugerencia', exact: true }).click();
   await form.locator('[role="status"]', { hasText: 'Marca algún servicio' }).waitFor();
   await form.getByLabel('Informes de visitas de nuestro espacio').check();
   await form.getByLabel('Cobertura de actos y eventos del concejo').check();
   await form.locator('textarea').fill('Nos gustaría un apartado para las fiestas de prao de las parroquias altas.');
-  await form.getByRole('button', { name: 'Enviar la sugerencia ↗' }).click();
+  await form.getByRole('button', { name: 'Enviar la sugerencia', exact: true }).click();
   await form.locator('[role="status"]', { hasText: 'Hemos recibido tu sugerencia' }).waitFor({ timeout: 15000 }).catch(async error => { throw new Error(`${error.message}\nSTATUS: ${await form.locator('[role="status"]').innerText()}`); });
   await context.close();
   const [suggestion] = (await payload.find({ collection: 'suggestions', overrideAccess: true, depth: 0 })).docs;

@@ -7,7 +7,8 @@ export async function run(ctx) {
   const [lenaTown, mieresTown] = [await town('lena'), await town('mieres')];
   await payload.update({ collection: 'users', id: users.lena.id, overrideAccess: true, data: { password } });
   let lenaCookie = await signIn(users.lena.email);
-  const post = (cookie, body) => fetch(`${web}/api/cms/util-visibility/concejo`, { method: 'POST', headers: { ...(cookie ? { Cookie: cookie } : {}), 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  // La cuenta municipal guarda por el puente del panel (como el panel); la redacción y la administración, por la API.
+  const post = (cookie, body) => fetch(`${web}${cookie && /planta14_panel=/.test(cookie) ? '/api/panel/api' : '/api/cms'}/util-visibility/concejo`, { method: 'POST', headers: { ...(cookie ? { Cookie: cookie } : {}), 'Sec-Fetch-Site': 'same-origin', Origin: origin, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
   // Por defecto, todo sale (con los seis espacios activos; la activación se prueba en participacion-activacion.mjs).
   await ctx.activate(ctx.SIX);
@@ -24,7 +25,7 @@ export async function run(ctx) {
   assert.equal(await form.locator('input[type=checkbox]:checked').count(), 8, 'all services shown by default');
   await form.getByLabel('Patrimonio').uncheck();
   await form.getByLabel('Farmacias de guardia').uncheck();
-  await form.getByRole('button', { name: 'Guardar ↗' }).click();
+  await form.getByRole('button', { name: 'Guardar', exact: true }).click();
   await form.getByText('Guardado. Los servicios desmarcados ya no salen en tu concejo.').waitFor();
   const lena = await page(`${web}/lena/util`);
   assert.ok(block(lena, 'patrimonio') === null && block(lena, 'farmacias') === null && block(lena, 'rutas') !== null && block(lena, 'empleo') !== null, 'hidden on the concejo page');
@@ -41,7 +42,7 @@ export async function run(ctx) {
   await form.waitFor();
   assert.equal(await form.locator('input[type=checkbox]:checked').count(), 6, 'the panel remembers the choice');
   await form.getByLabel('Patrimonio').check();
-  await form.getByRole('button', { name: 'Guardar ↗' }).click();
+  await form.getByRole('button', { name: 'Guardar', exact: true }).click();
   await form.getByText('Guardado.', { exact: false }).waitFor();
   assert.ok(block(await page(`${web}/lena/util`), 'patrimonio') !== null, 'shown again');
   await panel.close();

@@ -114,6 +114,8 @@ try {
   await start();
   const signIn = async email => {
     const response = await fetch(`${web}/api/cms/users/login`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Sec-Fetch-Site': 'same-origin' }, body: JSON.stringify({ email, password }) });
+    // Las cuentas municipales no entran por la API de Payload (403): su sesión es la del panel.
+    if (response.status === 403) return ctx.panelSignIn(email);
     assert.equal(response.status, 200, `login ${email}`);
     return response.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
   };

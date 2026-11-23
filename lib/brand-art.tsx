@@ -37,7 +37,9 @@ function loadFonts() {
 
 /** Pinta un elemento a PNG o JPEG con las medidas indicadas. */
 export async function renderImage(element: ReactElement, width: number, height: number, format: "png" | "jpeg", quality = 82) {
-  const [{ ImageResponse }, sharp] = await Promise.all([import("next/og"), import("sharp").then(m => m.default)]);
+  // next/og (Satori + Resvg) se carga al usarse, desde node_modules, sin pasar por la compilación: así no añade memoria a
+  // `npm run build` (la imagen de la app conserva node_modules completo).
+  const [{ ImageResponse }, sharp] = await Promise.all([import(/* webpackIgnore: true */ "next/og.js") as Promise<typeof import("next/og")>, import("sharp").then(m => m.default)]);
   const response = new ImageResponse(element, { width, height, fonts: await loadFonts() });
   const png = Buffer.from(await response.arrayBuffer());
   return format === "png" ? sharp(png).png({ compressionLevel: 9, palette: true, quality: 90 }).toBuffer() : sharp(png).jpeg({ quality, mozjpeg: true }).toBuffer();

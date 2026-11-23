@@ -394,13 +394,13 @@ export async function run(ctx) {
 
     // Directorio de servicios: el ayuntamiento edita el de su concejo; nadie más que la administración toca los demás.
     const mieresService = (await payload.find({ collection: 'municipal-services', where: { name: { equals: 'Biblioteca municipal (EJEMPLO)' } }, overrideAccess: true })).docs[0];
-    const created = await fetch(`${web}/api/cms/municipal-services`, { method: 'POST', headers: as(lenaCookie), body: JSON.stringify({ name: 'Intento en Mieres', category: 'otros', town: mieresService.town }) });
+    const created = await fetch(`${web}/api/panel/api/municipal-services`, { method: 'POST', headers: { ...as(lenaCookie), Origin: origin }, body: JSON.stringify({ name: 'Intento en Mieres', category: 'otros', town: mieresService.town }) });
     assert.equal(created.status, 201);
     const forced = (await created.json()).doc;
     assert.equal((await payload.findByID({ collection: 'municipal-services', id: forced.id, depth: 1, overrideAccess: true })).town.slug, 'lena', 'the server forces its own concejo');
     await payload.delete({ collection: 'municipal-services', id: forced.id, overrideAccess: true });
-    assert.notEqual((await fetch(`${web}/api/cms/municipal-services/${mieresService.id}`, { method: 'PATCH', headers: as(lenaCookie), body: JSON.stringify({ name: 'Cambiado' }) })).status, 200, 'cannot edit another concejo');
-    assert.notEqual((await fetch(`${web}/api/cms/municipal-services/${mieresService.id}`, { method: 'DELETE', headers: as(lenaCookie) })).status, 200, 'cannot delete another concejo');
+    assert.notEqual((await fetch(`${web}/api/panel/api/municipal-services/${mieresService.id}`, { method: 'PATCH', headers: { ...as(lenaCookie), Origin: origin }, body: JSON.stringify({ name: 'Cambiado' }) })).status, 200, 'cannot edit another concejo');
+    assert.notEqual((await fetch(`${web}/api/panel/api/municipal-services/${mieresService.id}`, { method: 'DELETE', headers: { ...as(lenaCookie), Origin: origin } })).status, 200, 'cannot delete another concejo');
     assert.equal((await fetch(`${web}/api/cms/municipal-services`, { method: 'POST', headers: as(editorCookie), body: JSON.stringify({ name: 'Redacción', category: 'otros', town: mieresService.town }) })).status, 403, 'journalists do not edit it');
     const panel = await browser.newContext();
     await ctx.panelLogin(panel, origin, 'lena', users.lena.email);
@@ -413,12 +413,12 @@ export async function run(ctx) {
     await editor.getByLabel('Nombre').fill('Punto limpio de Villallana');
     await editor.getByLabel('Tipo').selectOption('medio-ambiente');
     await editor.getByLabel('Teléfono').fill('985 49 00 00');
-    await editor.getByRole('button', { name: 'Añadir al directorio ↗' }).click();
+    await editor.getByRole('button', { name: 'Añadir al directorio', exact: true }).click();
     await editor.getByText('Guardado. Ya sale en «Útil» de tu concejo.').waitFor();
     await editor.locator('[data-service-row]').nth(2).waitFor();
     await editor.locator('[data-service-row]').filter({ hasText: 'Centro de salud' }).getByRole('button', { name: 'Editar' }).click();
     await editor.getByLabel('Horario').fill('De 8:00 a 20:00');
-    await editor.getByRole('button', { name: 'Guardar los cambios ↗' }).click();
+    await editor.getByRole('button', { name: 'Guardar los cambios', exact: true }).click();
     await editor.getByText('Guardado. Ya sale en «Útil» de tu concejo.').waitFor();
     await panel.close();
     const services = block(await page(`${web}/lena/util`), 'servicios');

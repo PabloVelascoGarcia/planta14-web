@@ -23,7 +23,7 @@ export async function run(ctx) {
   await tab.goto(`${web}/lena/panel`);
   await tab.getByRole('button', { name: '¿Has olvidado tu contraseña?' }).click();
   await tab.locator('[data-forgot-password] input[type="email"]').fill(users.lena.email);
-  await tab.getByRole('button', { name: 'Enviar el enlace ↗' }).click();
+  await tab.getByRole('button', { name: 'Enviar el enlace', exact: true }).click();
   await tab.locator('[data-forgot-password] [role="status"]', { hasText: 'recibirás un enlace' }).waitFor();
   const mail = await lastMailTo(users.lena.email);
   assert.ok(mail && mail.subject === 'Planta 14: cambia tu contraseña' && /panel de Ayuntamiento de Lena/.test(mail.html) && !/<img|<script/.test(mail.html), 'own email, without external resources');
@@ -39,19 +39,20 @@ export async function run(ctx) {
   await tab.fill('input[autocomplete="new-password"] >> nth=0', 'corta');
   await tab.fill('input[autocomplete="new-password"] >> nth=1', 'corta');
   await tab.evaluate(() => document.querySelectorAll('input[minlength]').forEach(i => i.removeAttribute('minlength')));
-  await tab.getByRole('button', { name: 'Guardar y entrar ↗' }).click();
+  await tab.getByRole('button', { name: 'Guardar y entrar', exact: true }).click();
   await tab.locator('[data-reset-state="formulario"] [role="status"]', { hasText: 'al menos 12 caracteres' }).waitFor();
   const newPassword = 'una frase larga para Lena 2026';
   await tab.fill('input[autocomplete="new-password"] >> nth=0', newPassword);
   await tab.fill('input[autocomplete="new-password"] >> nth=1', newPassword);
-  await tab.getByRole('button', { name: 'Guardar y entrar ↗' }).click();
+  await tab.getByRole('button', { name: 'Guardar y entrar', exact: true }).click();
   await tab.waitForURL(url => url.pathname === '/lena/panel');
   await tab.getByRole('form', { name: 'Publicación municipal' }).waitFor({ timeout: 20000 });
   await context.close();
   // El enlace no sirve dos veces; la contraseña nueva sí entra.
   const again = await fetch(`${web}/api/cms/users/reset-password`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Sec-Fetch-Site': 'same-origin' }, body: JSON.stringify({ token: decodeURIComponent(link.split('#token=')[1]), password: 'otra frase larga más 2026' }) });
   assert.notEqual(again.status, 200, 'the link only works once');
-  const login = await fetch(`${web}/api/cms/users/login`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Sec-Fetch-Site': 'same-origin' }, body: JSON.stringify({ email: users.lena.email, password: newPassword }) });
+  // Las cuentas municipales entran solo por su panel (la API directa responde 403).
+  const login = await fetch(`${web}/api/panel/entrar`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ email: users.lena.email, password: newPassword }) });
   assert.equal(login.status, 200, 'signs in with the new password');
   passed('municipal password recovery in a real browser: «¿Has olvidado tu contraseña?» in the Lena panel, own email (no external resources) linking to /lena/panel/restablecer#token=…, token removed from the address bar, short password rejected by the server, new password saved and straight into the panel; the link works once; same answer for unknown addresses');
 

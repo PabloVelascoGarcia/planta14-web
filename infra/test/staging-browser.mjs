@@ -123,7 +123,7 @@ try {
   await lena.goto(`${origin}/lena/panel`);
   await lena.getByLabel('Correo electrónico', { exact: true }).fill(accounts.lena);
   await lena.getByLabel('Contraseña', { exact: true }).fill(password);
-  await lena.getByRole('button', { name: 'Entrar ↗', exact: true }).click();
+  await lena.getByRole('button', { name: 'Entrar', exact: true }).click();
   const form = lena.getByRole('form', { name: 'Publicación municipal' });
   await form.waitFor({ state: 'visible' });
   const title = `Corte de agua programado en Pola de Lena ${randomUUID().slice(0, 6)}`;

@@ -13,6 +13,9 @@ const publicUrl = context && context !== "production"
 const nextConfig = { htmlLimitedBots: /.*/,
   // globalNotFound: 404 propia (app/global-not-found.tsx) también para direcciones sin ruta.
   experimental: { globalNotFound: true, ...(process.env.LOW_MEMORY_BUILD === 'true' ? { cpus: 1, webpackMemoryOptimizations: true } : {}) },
-  ...(publicUrl ? { env: { SITE_URL: publicUrl } } : {}) };
+  ...(publicUrl ? { env: { SITE_URL: publicUrl } } : {}),
+  // Compilación con poca memoria (imagen Docker, montón de 768 MiB): sin la caché persistente de webpack, que guarda en
+  // memoria todo lo compilado para escribirlo al final y no sirve en una compilación limpia.
+  ...(process.env.LOW_MEMORY_BUILD === 'true' ? { webpack: config => { config.cache = false; return config; } } : {}) };
 
 export default withPayload(nextConfig);

@@ -19,7 +19,7 @@ export async function captureManual({ browser, payload, url, lenaSpace }) {
   await page.getByLabel('Correo electrónico', { exact: true }).fill(email);
   await shot('01-entrar');
   await page.getByLabel('Contraseña', { exact: true }).fill(password);
-  await page.getByRole('button', { name: 'Entrar ↗', exact: true }).click();
+  await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   const form = page.getByRole('form', { name: 'Publicación municipal' });
   await form.waitFor();
   await form.locator('select').first().selectOption('notice');
