@@ -6,7 +6,7 @@ Rama **`desarrollo/planta14-v2-ayuda`**, creada desde `desarrollo/planta14-v2-ne
 `7ef7adb` más su documento de instalación). No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor.
 Sin PR.
 
-**Commit a instalar: `HASH-CORTO`** (`HASH-NUEVO`). Se instala sobre **`7ef7adb`** (Next.js 16.4.5). El commit
+**Commit a instalar: `593b0f1`** (`593b0f1170a9b90a3de4be8fc359fae6844fda75`). Se instala sobre **`7ef7adb`** (Next.js 16.4.5). El commit
 siguiente solo completa este documento.
 
 - **Una migración nueva**, `20261123_194605_firma_fija`: añade la columna «Firma fija» a las cuentas (`users`). **No
@@ -45,7 +45,15 @@ actualiza en el mismo encargo su manual y sus capturas.
 
 ## Memoria de la compilación
 
-MEMORIA
+Mismo método que en las entregas anteriores (etapa «build» de `infra/app.Dockerfile` en la misma imagen `node:22`,
+`CMS_ENABLED=false`, `LOW_MEMORY_BUILD=true`, 768 MiB de montón; pico del contenedor):
+
+| Versión | Pico | Resultado |
+|---|---|---|
+| `7ef7adb` (Next.js 16.4.5, lo instalado) | 1.820 MiB | compila |
+| **`593b0f1` (esta entrega)** | **1.811 MiB** | compila (−0,5 %: sin cambio apreciable) |
+
+La generación de los manuales antes de compilar tarda menos de un segundo y no añade memoria.
 
 ## Pasos en pruebas.planta14.com
 
@@ -72,17 +80,17 @@ git fetch origin desarrollo/planta14-v2-ayuda
 ```
 
 ```bash
-git checkout --detach HASH-NUEVO
+git checkout --detach 593b0f1170a9b90a3de4be8fc359fae6844fda75
 ```
 
 ```bash
 git log -1 --format='%h %s'
 ```
 
-Debe mostrar `HASH-CORTO` y el asunto del commit.
+Debe mostrar `593b0f1` y el asunto del commit.
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production HASH-NUEVO
+bash infra/deploy/deploy.sh --env-file infra/.env.production 593b0f1170a9b90a3de4be8fc359fae6844fda75
 ```
 
 ```bash
@@ -97,7 +105,7 @@ Debe terminar en «Desplegada», con código 0, y decir «Migraciones aplicadas:
 bash infra/deploy/status.sh --env-file infra/.env.production
 ```
 
-Debe decir `/api/health: ok` y la versión `HASH-CORTO`.
+Debe decir `/api/health: ok` y la versión `593b0f1`.
 
 **4. Firma «El Director»** (una vez; se puede repetir). Pon el correo de tu cuenta de administración:
 
@@ -144,7 +152,20 @@ En el ordenador y en el móvil:
 
 ## Resultados de la batería recortada
 
-RESULTADOS-BATERIA
+Una sola vez sobre `593b0f1`, **todo superado**; no hizo falta repetir nada.
+
+| Suite | Resultado |
+|---|---|
+| **`production-deploy-test.sh`** | **SUPERADO** (despliegue con la migración nueva, mantenimiento, vuelta atrás y restauración asistida; las dos líneas «FALLO: /api/health no responde» son los escenarios de vuelta atrás que la prueba provoca a propósito) |
+| `npm test` | 11 PASS |
+| Tipos | sin errores |
+| Lint | 0 errores (29 avisos) |
+| Compilación | correcta (con «Manuales generados: redaccion (82 bloques), ayuntamiento (76 bloques)») |
+| Instalación | 16 PASS |
+| Participación (CMS, panel y seguridad: todos los bloques) | **65 PASS** (los 60 anteriores y 5 nuevos de `participacion-ayuda`: Ayuda y PDF con sus accesos, firma «El Director», opinión automática, mensaje municipal y campos técnicos y logotipo) |
+| `shellcheck` de `infra/deploy` (incluido `firma-direccion.sh`) | sin avisos |
+| `staging-e2e` (navegador contra la imagen) | 9 PASS, SUPERADO |
+| Limpieza | 0 volúmenes nuevos |
 
 ## Dudas resueltas por prudencia
 
