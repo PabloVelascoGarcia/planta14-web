@@ -5,7 +5,7 @@ Para Claude Code en el PC de Pablo (Code local), con el agente SSH cargado.
 Rama **`desarrollo/planta14-v2-next-seguridad`**, creada desde `desarrollo/planta14-v2-redaccion` (`022d525`, que es
 `a79e302` más su documento de instalación). No se han tocado `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
 
-**Commit a instalar: `HASH-CORTO`** (`HASH-NUEVO`). Se instala sobre **`a79e302`** (la entrega de la redacción).
+**Commit a instalar: `7ef7adb`** (`7ef7adb8f71b7430a6b57c5f65fc06c658ec1a88`). Se instala sobre **`a79e302`** (la entrega de la redacción).
 **Sin migraciones. Caddy no cambia.** El commit siguiente solo completa este documento.
 
 ## Qué vulnerabilidad es
@@ -38,7 +38,15 @@ No afectan a las acciones del servidor, al CMS, a las cuentas ni a las imágenes
 
 ## Memoria de la compilación
 
-MEMORIA
+Mismo método que en la entrega de la redacción: etapa «build» de `infra/app.Dockerfile` en la misma imagen `node:22`,
+`CMS_ENABLED=false`, `LOW_MEMORY_BUILD=true`, 768 MiB de montón; pico del contenedor (incluye la caché de disco).
+
+| Versión | Pico | Resultado |
+|---|---|---|
+| `a79e302` (Next.js 16.4.3, entrega de la redacción) | 1.804 MiB | compila |
+| **`7ef7adb` (Next.js 16.4.5)** | **1.820 MiB** | compila (+0,9 %, dentro de la variación normal entre medidas) |
+
+La actualización no cambia la memoria de la compilación de forma apreciable.
 
 ## Pasos en pruebas.planta14.com (jueves por la noche)
 
@@ -65,17 +73,17 @@ git fetch origin desarrollo/planta14-v2-next-seguridad
 ```
 
 ```bash
-git checkout --detach HASH-NUEVO
+git checkout --detach 7ef7adb8f71b7430a6b57c5f65fc06c658ec1a88
 ```
 
 ```bash
 git log -1 --format='%h %s'
 ```
 
-Debe mostrar `HASH-CORTO` y el asunto del commit.
+Debe mostrar `7ef7adb` y el asunto del commit.
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production HASH-NUEVO
+bash infra/deploy/deploy.sh --env-file infra/.env.production 7ef7adb8f71b7430a6b57c5f65fc06c658ec1a88
 ```
 
 ```bash
@@ -99,7 +107,7 @@ Anota el máximo de la línea «Swap» y compáralo con el del martes.
 bash infra/deploy/status.sh --env-file infra/.env.production
 ```
 
-Debe decir `/api/health: ok` y la versión `HASH-CORTO`.
+Debe decir `/api/health: ok` y la versión `7ef7adb`.
 
 **5. Si algo falla:** si `deploy.sh` terminó con código 1 o 2, sigue lo que dice. Si fue bien pero algo no funciona,
 vuelve a `a79e302` (sin migraciones que deshacer):
@@ -135,7 +143,30 @@ En el ordenador y en el móvil:
 
 ## Resultados de la batería completa
 
-RESULTADOS-BATERIA
+Batería completa una vez sobre `7ef7adb` (el código; el commit siguiente solo cambia este documento). **Todo superado,
+también `production-deploy-test.sh`, que en la entrega anterior no se pudo pasar aquí.** No hizo falta repetir ninguna
+suite. (Una primera vuelta se interrumpió porque el contenedor de pruebas se reinició y Docker quedó parado; se
+arrancó de nuevo y la batería se pasó entera.)
+
+| Suite | Resultado |
+|---|---|
+| **`production-deploy-test.sh`** | **SUPERADO** (despliegue, migración, mantenimiento, vuelta atrás y restauración asistida; las dos líneas «FALLO: /api/health no responde» son los escenarios de vuelta atrás que la prueba provoca a propósito). 0 volúmenes nuevos |
+| `npm test` | 11 PASS |
+| Tipos (`typecheck`) | sin errores |
+| Lint | 0 errores (24 avisos, los mismos que en la entrega anterior) |
+| Build de producción | correcto **a la primera**, sin el aviso de seguridad |
+| Bloque 2 / bloque 3 | 8 / 17 PASS |
+| Lanzamiento / instalación / ensayo | 5 / 16 / 8 PASS |
+| Formulario / portada | 3 / 9 PASS |
+| Participación | 60 PASS |
+| `staging-e2e` (navegador contra la imagen) | 9 PASS, SUPERADO |
+| `staging-config` / monitor / común / memoria / guarda de pruebas | 4 / 4 / 3 / 1 / 1 PASS |
+| Restauración de copias (×3, también con la imagen y sin privilegios), copia externa inmutable, configuración de pruebas, preproducción, roles de Postgres | SUPERADAS |
+| `shellcheck` / Caddy (ACME e interno) | sin avisos / válida |
+| Limpieza | 0 volúmenes nuevos, 0 restos en `out/` |
+
+Además, comprobado con `next start`: `/_next/image?url=/images/placeholder.svg&w=64&q=75` responde **400** («image
+type is not allowed»).
 
 ## Dudas resueltas por prudencia
 
