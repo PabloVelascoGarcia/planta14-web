@@ -1,3 +1,4 @@
+import { AI_LABEL, AiBadge } from "@/components/article-image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -40,9 +41,13 @@ export default async function FiestaPage({ params }: Props) {
           <ShareButtons url={`${siteUrl}/fiestas/${fiesta.slug}`} title={`${fiesta.name} · ${fiesta.village}`} />
           <div className="mt-8 flow-root">
             {/* Cartel pequeño y enmarcado, dentro de la ficha: acompaña al programa, no lo tapa. */}
-            {fiesta.image ? <figure className="fiesta-poster" data-fiesta-poster>
-              <img src={fiesta.image.url} srcSet={fiesta.image.srcSet} sizes={fiesta.image.srcSet ? "(min-width: 640px) 200px, 160px" : undefined} alt={fiesta.image.alt} loading="lazy" decoding="async" width={200} height={283} />
-              <figcaption>Cartel: {fiesta.image.credit}</figcaption>
+            {fiesta.image ? <figure className={`fiesta-poster${fiesta.image.poster === false ? " is-photo" : ""}`} data-fiesta-poster>
+              <span style={{ position: "relative", display: "block" }}>
+                <img src={fiesta.image.url} srcSet={fiesta.image.srcSet} sizes={fiesta.image.srcSet ? "(min-width: 640px) 200px, 160px" : undefined} alt={fiesta.image.alt} loading="lazy" decoding="async" width={200} height={283}
+                  style={fiesta.image.poster === false && fiesta.image.focus ? { objectPosition: fiesta.image.focus } : undefined} {...(fiesta.image.poster !== false ? { "data-image-whole": "" } : {})} />
+                {fiesta.image.ai ? <AiBadge /> : null}
+              </span>
+              <figcaption>{fiesta.image.ai ? <><strong>{AI_LABEL}.</strong> Autoría: {fiesta.image.credit}</> : <>{fiesta.image.poster === false ? "Foto" : "Cartel"}: {fiesta.image.credit}</>}</figcaption>
             </figure> : null}
             <h2 className="font-serif text-3xl font-black">Programa</h2>
             <div className="mt-4 space-y-4 font-serif text-lg leading-8 text-coal-900">

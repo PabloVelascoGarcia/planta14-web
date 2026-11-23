@@ -231,7 +231,9 @@ export async function payloadFiestas(): Promise<import('./fiestas').Fiesta[]> {
     const chronicle = typeof doc.chronicle === 'object' && doc.chronicle && doc.chronicle._status === 'published' ? doc.chronicle : null;
     return { slug: doc.slug!, name: doc.name, village: doc.village, town: town.name, townSlug: town.slug, startDay: doc.startDay!, endDay: doc.endDay || doc.startDay!, ...(doc.description ? { description: doc.description } : {}),
       recurring: Boolean(doc.recurring), ...(toLexical(doc.program) ? { program: toLexical(doc.program)! } : {}),
-      ...(image ? { image: { url: mediaURL(image), ...(imageSrcSet(image) ? { srcSet: imageSrcSet(image) } : {}), alt: image.alt, credit: image.credit } } : {}),
+      ...(image ? { image: { url: mediaURL(image), ...(imageSrcSet(image) ? { srcSet: imageSrcSet(image) } : {}), alt: image.alt, credit: image.credit,
+        // «Mostrar entera (cartel)»: marcada por defecto en las fiestas.
+        poster: doc.imagePoster !== false, ...(imageFocus(image) ? { focus: imageFocus(image) } : {}), ...(isAI(image) ? { ai: true } : {}) } } : {}),
       ...(chronicle ? { chronicle: { slug: chronicle.slug!, title: chronicle.title } } : {}) };
   });
 }

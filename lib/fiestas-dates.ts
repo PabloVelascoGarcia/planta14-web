@@ -5,7 +5,7 @@ import type { LexicalState } from "./rich-text";
 export type Fiesta = {
   slug: string; name: string; village: string; town: string; townSlug: string;
   startDay: string; endDay: string; program?: LexicalState; recurring: boolean; description?: string;
-  image?: { url: string; srcSet?: string; alt: string; credit: string };
+  image?: { url: string; srcSet?: string; alt: string; credit: string; poster?: boolean; focus?: string; ai?: boolean };
   chronicle?: { slug: string; title: string };
 };
 
