@@ -41,7 +41,9 @@ export async function run(ctx) {
   assert.match(robots(await page(`${web}/`)), /max-image-preview:large/, 'also on the home page');
   assert.ok(Number(meta(html, 'og:image:width')) >= 1200, `og:image of at least 1200 px (${meta(html, 'og:image:width')})`);
   const ld = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
-  assert.ok(ld.image[0]['@type'] === 'ImageObject' && ld.image[0].width >= 1200 && ld.image[0].url === meta(html, 'og:image').replaceAll('&amp;', '&'), 'JSON-LD image of at least 1200 px, same as Open Graph');
+  // Discover usa la foto grande (JSON-LD); Open Graph, la imagen para redes generada con el diseño de Planta 14 (24/11).
+  assert.ok(ld.image[0]['@type'] === 'ImageObject' && ld.image[0].width >= 1200 && !ld.image[0].url.includes('/redes.jpg'), 'JSON-LD: the large photo, at least 1200 px');
+  assert.match(meta(html, 'og:image').replaceAll('&amp;', '&'), /\/noticia\/[^/]+\/redes\.jpg\?v=/, 'Open Graph: the generated card');
   await stop(); await start();
   passed('Google Discover: robots «max-image-preview:large» only when the site is indexable (noindex otherwise); articles expose a ≥ 1200 px image in Open Graph (with its size) and in the NewsArticle JSON-LD (ImageObject with width and height)');
 
