@@ -1,97 +1,218 @@
-# Cómo publicar en tu espacio de Planta 14
+# Manual del ayuntamiento: tu espacio en Planta 14
 
-Guía rápida para el personal del ayuntamiento. Si tienes dudas, escribe a **info@planta14.com** o llama al **985 69 35 04**.
+Esta guía explica, paso a paso, cómo usar el panel de tu ayuntamiento en Planta 14. No hace falta saber nada de webs:
+basta con un ordenador o un móvil con internet.
 
-## 1. Entrar
+Si tienes cualquier duda, escribe a **info@planta14.com** y te ayudamos.
 
-1. Abre la dirección de tu espacio seguida de `/panel`. Por ejemplo, para Lena: `planta14.com/lena/panel`.
-2. Escribe el correo y la contraseña de tu cuenta y pulsa **Entrar**.
+## 1. Qué es tu espacio en Planta 14
 
-La cuenta te la da Planta 14 y es solo para ti: no la compartas. Si crees que alguien conoce tu contraseña, avísanos.
+Planta 14 es un periódico digital de las Cuencas. Cada ayuntamiento con contrato tiene en él su **espacio municipal**:
+una página propia (por ejemplo, `planta14.com/lena`) donde los vecinos ven vuestros avisos, noticias, agenda, ayudas y
+anuncios, junto a información útil del concejo.
 
-**La sesión dura 14 días** y se alarga sola cada vez que usas el panel. Vale para todas las pestañas del navegador: puedes abrir el panel en varias (o desde un enlace en un correo) sin volver a entrar. Solo termina si pulsas **Cerrar sesión** o si pasan 14 días sin usarlo. En un ordenador compartido, pulsa siempre **Cerrar sesión** al terminar.
+Lo publicáis vosotros desde el **panel**. Todo lo que publicáis:
 
-**¿Has olvidado tu contraseña?**
-1. En la pantalla de entrada, pulsa **«¿Has olvidado tu contraseña?»** y escribe tu correo.
-2. Recibirás un correo de Planta 14 con un enlace. Sirve una vez y caduca en una hora; si no lo ves, mira en el correo no deseado.
-3. El enlace abre tu panel. Escribe la contraseña nueva dos veces (al menos 12 caracteres) y entrarás directamente.
+- sale al momento en vuestro espacio;
+- va **siempre marcado como contenido del ayuntamiento**, para que nadie lo confunda con las noticias de la redacción;
+- queda registrado con la cuenta que lo publicó y la hora.
+
+## 2. Entrar en el panel
+
+1. Abre la dirección de tu espacio seguida de `/panel`. Por ejemplo, para Lena: **planta14.com/lena/panel**.
+2. Escribe el **correo** y la **contraseña** de tu cuenta.
+3. Pulsa **Entrar**.
 
 ![Pantalla de entrada al panel](img/manual-ayuntamientos/01-entrar.png)
 
-## 2. Las pestañas del panel
+La cuenta te la da Planta 14 y es solo para ti: no la compartas. Si crees que alguien conoce tu contraseña, avísanos.
 
-Arriba del panel hay seis pestañas. Cada una tiene su propio enlace, así que puedes guardarla en favoritos:
+Al entrar, la sesión dura **14 días** y se alarga sola cada vez que usas el panel. Puedes abrirlo en varias pestañas o
+desde un enlace de un correo sin volver a escribir la contraseña.
 
-| Pestaña | Para qué sirve | Enlace (Lena) |
-|---|---|---|
-| **Publicar** | Escribir un aviso, noticia, cita de agenda, ayuda o anuncio. Se abre siempre al entrar. | `planta14.com/lena/panel` |
-| **Mis publicaciones** | Ver, editar, publicar o despublicar lo que habéis publicado. | `…/panel?pestana=publicaciones` |
-| **Útil** | Elegir qué servicios de «Útil» salen en tu concejo. | `…/panel?pestana=util` |
-| **Directorio** | Teléfonos, direcciones y horarios de los servicios municipales. | `…/panel?pestana=directorio` |
-| **Sugerencias** | Contarnos qué servicios de Planta 14 os interesarían. | `…/panel?pestana=sugerencias` |
-| **Visitas** | Las visitas de tu concejo este mes. | `…/panel?pestana=visitas` |
+Las cuentas de los ayuntamientos solo funcionan en el panel: si intentas entrar en la zona de la redacción de Planta 14,
+la web te indica la dirección de tu panel.
+
+### Si has olvidado la contraseña
+
+1. En la pantalla de entrada, pulsa **¿Has olvidado tu contraseña?**
+2. Escribe tu correo y pulsa **Enviar el enlace**.
+3. Recibirás un correo de Planta 14 con un enlace. Sirve **una sola vez** y caduca en **una hora**. Si no lo ves, mira
+   en el correo no deseado.
+4. El enlace abre tu panel. Escribe la contraseña nueva dos veces (al menos **12 caracteres**) y pulsa **Guardar y
+   entrar**.
+
+![Recuperar la contraseña](img/manual-ayuntamientos/02-recuperar.png)
+
+## 3. Las pestañas del panel
+
+Arriba del panel hay siete pestañas:
+
+| Pestaña | Para qué sirve |
+|---|---|
+| **Publicar** | Escribir un aviso, una noticia, un evento de la agenda, una ayuda o un anuncio. Es la que se abre al entrar. |
+| **Mis publicaciones** | Ver lo publicado, editarlo, publicarlo o despublicarlo. |
+| **Útil** | Elegir qué información útil sale en la página de tu concejo. |
+| **Directorio** | Teléfonos, direcciones y horarios de los servicios del ayuntamiento. |
+| **Sugerencias** | Contarnos qué servicios de Planta 14 os interesarían. |
+| **Visitas** | Cuánta gente ve vuestro espacio este mes, con descarga en Excel o PDF. |
+| **Ayuda** | Este manual, con buscador y descarga en PDF. |
+
+![Las pestañas del panel](img/manual-ayuntamientos/03-pestanas.png)
 
 En el móvil, las pestañas van en una sola fila: desliza con el dedo hacia la izquierda para ver las demás.
 
-## 3. Publicar (pestaña «Publicar»)
+## 4. Publicar
 
-1. En **Tipo**, elige qué publicas. Por defecto sale *Noticias*; cámbialo a *Avisos*, *Agenda*, *Ayudas y subvenciones* o *Tablón de anuncios* si toca.
-2. Escribe el **título**, un **resumen** corto y el **texto** completo. Debajo del título y del resumen ves cuántos caracteres llevas (140 y 300 como máximo).
-3. Solo en **avisos** y **ayudas**: en **Mostrar el aviso hasta** (o **Mostrar la ayuda hasta**) indica el último día que debe verse. Después desaparece sola. Si lo dejas vacío, se ve hasta que la despubliques.
-4. Pulsa **Publicar ahora**: aparece al momento en tu espacio.
+En la pestaña **Publicar**:
 
-Si todavía no está listo, pulsa **Guardar como borrador** (el botón de al lado): solo lo ve tu ayuntamiento.
+1. En **Tipo**, elige qué vas a publicar (ver la tabla).
+2. Escribe el **Título** (hasta 140 caracteres) y un **Resumen** corto (hasta 300). Debajo ves cuántos llevas.
+3. En **¿Qué deben saber los vecinos?**, escribe el texto completo.
+4. Rellena los datos propios de ese tipo (fechas, lugar…).
+5. Si quieres, añade una imagen (apartado 5).
+6. Pulsa **Publicar ahora**: sale al momento en tu espacio.
 
-## 4. Añadir una imagen
+| Tipo | Para qué | Datos propios | ¿Hasta cuándo se ve? |
+|---|---|---|---|
+| **Noticias** | Lo que ocurre en el concejo. | — | Hasta que la despublicas. |
+| **Avisos** | Cortes de agua, obras, cambios de horario… | **Mostrar el aviso hasta** (opcional). | Hasta esa fecha; sin fecha, hasta que lo despublicas. |
+| **Agenda** | Actos y eventos. | **Fecha**, **Hora** y **Lugar** (obligatorios). | Sale en la agenda hasta que pasa el evento. |
+| **Ayudas y subvenciones** | Convocatorias para vecinos o empresas. | **Plazo de solicitud** y **Mostrar la ayuda hasta** (opcionales). | Hasta la fecha de «Mostrar la ayuda hasta»; sin fecha, hasta que la despublicas. |
+| **Tablón de anuncios** | Anuncios oficiales y comunicados. | — | Hasta que lo despublicas. |
 
-1. En **Imagen**, elige un archivo JPEG, PNG o WebP de hasta 10 MB.
+![Publicar un aviso](img/manual-ayuntamientos/04-publicar-aviso.png)
+
+![Publicar un evento de la agenda](img/manual-ayuntamientos/05-publicar-agenda.png)
+
+![Publicar una ayuda](img/manual-ayuntamientos/06-publicar-ayuda.png)
+
+### Guardar como borrador
+
+Si todavía no está listo, pulsa **Guardar como borrador** en lugar de «Publicar ahora». Solo lo ve tu ayuntamiento;
+podrás terminarlo y publicarlo después desde **Mis publicaciones**.
+
+## 5. Añadir una imagen
+
+1. En **Imagen**, elige un archivo **JPEG, PNG o WebP** de hasta **10 MB**.
 2. Escribe una **descripción** de lo que se ve (ayuda a las personas que no ven bien).
-3. Escribe el **autor o crédito** de la foto.
-4. Marca la casilla de **declaración de derechos**. Con ella el ayuntamiento confirma que puede publicar esa imagen (es suya o tiene permiso), que las personas que salen han dado su permiso y que el crédito es correcto. Sin la casilla, la imagen no se sube.
+3. Escribe el **autor o crédito** de la foto (por ejemplo, «Ayuntamiento de Lena»).
+4. Marca la casilla de **declaración de derechos**: el ayuntamiento confirma que puede publicar esa imagen (es suya o
+   tiene permiso), que las personas que salen están de acuerdo y que el crédito es correcto. Sin la casilla, la imagen
+   no se sube.
 
-![Formulario con imagen y declaración](img/manual-ayuntamientos/02-formulario.png)
+![Imagen con su declaración de derechos](img/manual-ayuntamientos/07-imagen.png)
 
-En caso de duda sobre una foto, no la subas: pregunta antes.
+En caso de duda sobre una foto, no la subas: pregúntanos antes.
 
-## 5. Revisar lo publicado (pestaña «Mis publicaciones»)
+## 6. Editar, publicar y despublicar
 
-Cada publicación ocupa una línea con su **tipo**, su **título**, su **estado** y la **fecha** del último cambio. Salen 10 por página; abajo tienes **Anteriores** y **Siguientes**. Arriba puedes filtrar por **tipo** (avisos, agenda…) y por **estado**:
+En la pestaña **Mis publicaciones** ves todo lo que habéis publicado, de lo más reciente a lo más antiguo, 10 por
+página. Arriba puedes filtrar por **tipo** y por **estado**:
 
 - **Publicado:** se ve en la web.
 - **Borrador:** solo lo ve tu ayuntamiento.
-- **Publicado · cambios sin publicar:** has guardado cambios que aún no se ven (en el filtro cuenta como «Publicado»).
-- **Retirado por Planta 14:** ver el apartado 6.
+- **Publicado · cambios sin publicar:** has guardado cambios que todavía no se ven.
+- **Retirado por Planta 14:** ver el apartado 11.
 
-A la derecha de cada línea tienes **Editar** (la abre en la pestaña «Publicar»), **Publicar** o **Despublicar** (quitarla de la web sin borrarla).
+A la derecha de cada publicación tienes:
 
-![Lista de publicaciones](img/manual-ayuntamientos/03-publicado.png)
+- **Editar:** la abre en la pestaña «Publicar». Cambia lo que necesites y pulsa **Publicar ahora** (o «Guardar como
+  borrador»).
+- **Publicar:** publica un borrador.
+- **Despublicar:** la quita de la web sin borrarla. Puedes volver a publicarla cuando quieras.
 
-Así lo ven los vecinos en la web, marcado como contenido del ayuntamiento:
+![Mis publicaciones](img/manual-ayuntamientos/08-mis-publicaciones.png)
 
-![El aviso en la web](img/manual-ayuntamientos/04-en-la-web.png)
+Así lo ven los vecinos, marcado como contenido del ayuntamiento:
 
-## 6. Si Planta 14 retira una publicación
+![La publicación en la web](img/manual-ayuntamientos/09-en-la-web.png)
 
-Planta 14 puede retirar una publicación si incumple las condiciones de uso o la ley, o si alguien reclama con razón (por ejemplo, por un dato personal o una foto sin permiso). Entonces:
+## 7. Ocultar información de «Útil»
 
-- deja de verse en la web al momento. La copia pública de la imagen se retira cuando ninguna otra publicación la usa; una caché o un enlace compartido puede tardar en actualizarse;
+La página de tu concejo tiene una sección **Útil**: el tiempo, puertos y estaciones de esquí, farmacias de guardia, el
+directorio de servicios, patrimonio, rutas, subvenciones y empleo público. Por defecto sale todo.
+
+En la pestaña **Útil**, desmarca lo que no quieras mostrar y pulsa **Guardar**. Se nota al momento en la web.
+
+No se pueden ocultar las noticias ni los contenidos de Planta 14, ni el **índice de riesgo de incendios** de 112
+Asturias, que sale siempre junto al tiempo por ser un dato de seguridad.
+
+![Pestaña Útil](img/manual-ayuntamientos/10-util.png)
+
+## 8. Mantener el directorio
+
+En la pestaña **Directorio** está la lista de servicios del ayuntamiento (oficinas, biblioteca, polideportivo…), con un
+buscador.
+
+- **Añadir:** pulsa **Añadir servicio**, rellena el nombre, el tipo, la dirección, el teléfono, el correo, la web y lo
+  demás que tengas, y pulsa **Añadir al directorio**.
+- **Corregir:** pulsa **Editar** en su línea; el formulario se abre ahí mismo. Al terminar, pulsa **Guardar los
+  cambios**.
+- **Quitar:** pulsa **Quitar** en su línea.
+
+Los cambios salen al momento en «Útil».
+
+![Directorio de servicios](img/manual-ayuntamientos/11-directorio.png)
+
+## 9. Enviar sugerencias
+
+En la pestaña **Sugerencias**, marca los servicios de Planta 14 que os interesarían, cuéntanos lo que quieras y pulsa
+**Enviar la sugerencia**. La lee la redacción de Planta 14, empezando por el periodista de vuestro concejo.
+
+![Sugerencias](img/manual-ayuntamientos/12-sugerencias.png)
+
+## 10. Consultar y descargar las visitas
+
+En la pestaña **Visitas** ves cuánta gente visita vuestro espacio este mes:
+
+- el **total** del mes y una barra por día (pasa el ratón por encima para ver la cifra);
+- las **páginas más vistas**;
+- de **dónde llegan** (buscadores, redes sociales, WhatsApp…);
+- las **secciones** (Página del concejo, Útil, Sociedad, Cultura…).
+
+Solo son las de tu concejo. Una noticia de Planta 14 sobre varios concejos cuenta en las visitas de cada uno.
+
+Pulsa **Descargar CSV** para abrirlas en Excel o **Descargar PDF** para guardarlas o imprimirlas.
+
+No usamos cookies ni guardamos datos personales de quien visita la web.
+
+![Visitas del mes](img/manual-ayuntamientos/13-visitas.png)
+
+## 11. Normas: qué no se puede publicar y retiradas
+
+En vuestro espacio **no se puede publicar**:
+
+- contenido ilegal;
+- publicidad ajena al ayuntamiento (por ejemplo, de empresas);
+- propaganda electoral en periodo de campaña;
+- datos personales que no hagan falta (teléfonos particulares, DNI, direcciones de vecinos);
+- imágenes sin derechos o fotos de personas sin su permiso.
+
+El ayuntamiento es responsable de que lo que publica sea cierto y legal.
+
+Todo sale **marcado como contenido del ayuntamiento**. **Planta 14 puede retirar** una publicación si incumple estas
+normas, las condiciones de uso o la ley, o si alguien reclama con razón. Entonces:
+
+- deja de verse en la web al momento;
 - en tu panel aparece como **Retirado por Planta 14**, con el **motivo**;
-- no intentes publicarla otra vez ni crear una copia para eludir la retirada. Escríbenos para resolver el motivo; solo Planta 14 puede restablecer esa publicación.
+- no la publiques otra vez ni hagas una copia para evitar la retirada: escríbenos y lo resolvemos juntos.
 
-![Publicación retirada con su motivo](img/manual-ayuntamientos/05-retirado.png)
+![Publicación retirada con su motivo](img/manual-ayuntamientos/14-retirado.png)
 
-## 7. Las otras pestañas
+Las **Condiciones de uso del espacio municipal** completas están enlazadas al pie del panel.
 
-- **Útil.** La página de tu concejo tiene una sección «Útil»: el tiempo, puertos y estaciones de esquí, farmacias de guardia, directorio de servicios municipales, patrimonio, rutas, subvenciones y empleo público. Por defecto salen todos. Desmarca los que no quieras mostrar y pulsa **Guardar**. Las noticias y los contenidos de Planta 14 no se pueden ocultar, ni tampoco el **índice de riesgo de incendios** de 112 Asturias, que sale siempre junto al tiempo por ser un dato de seguridad.
-- **Directorio.** La lista de los servicios del ayuntamiento, uno por línea, con un buscador. Para añadir uno, pulsa **Añadir servicio**, rellena el formulario y pulsa **Añadir al directorio**. Para corregir uno, pulsa **Editar** en su línea: el formulario se abre ahí mismo; al terminar, pulsa **Guardar los cambios**. También puedes **Quitar** un servicio. Los cambios salen al momento en «Útil».
-- **Sugerencias.** Marca los servicios de Planta 14 que os interesarían, cuéntanos lo que quieras y pulsa **Enviar la sugerencia**. Lo lee la redacción de Planta 14, empezando por el periodista de vuestro concejo, que recibe un aviso.
-- **Visitas.** El total del mes y una fila de barras, una por día (pasa el ratón por encima para ver la cifra); debajo, las páginas más vistas, de dónde llegan (buscadores, redes, WhatsApp…) y las secciones (Página del concejo, Útil, Sociedad, Cultura…). Solo de tu concejo; una noticia de Planta 14 sobre varios concejos cuenta en las visitas de cada uno. Se pueden descargar en **CSV** (Excel) o en **PDF**. No usamos cookies ni guardamos datos personales de quien visita.
+## 12. Ayuda y cerrar sesión
 
-## 8. Buenas prácticas
+En la pestaña **Ayuda** tienes este manual, con un buscador y el botón **Descargar en PDF**.
 
-- Escribe para los vecinos: claro, corto y con fecha, hora y lugar.
-- No publiques datos personales que no hagan falta (teléfonos particulares, DNI, direcciones).
-- Al terminar, en un ordenador compartido, pulsa **Cerrar sesión**.
-- Todo lo que se publica, edita o retira queda registrado con la cuenta y la hora.
+![Pestaña Ayuda](img/manual-ayuntamientos/15-ayuda.png)
 
-Las **Condiciones de uso del espacio municipal** están enlazadas al pie del panel y de la pantalla de entrada.
+Al terminar, sobre todo en un ordenador compartido, pulsa **Cerrar sesión** (arriba del panel). Te saca del panel en
+todas las pestañas.
+
+![Cerrar sesión](img/manual-ayuntamientos/16-cerrar-sesion.png)
+
+## 13. Dudas
+
+Escribe a **info@planta14.com**. Cuéntanos tu concejo y lo que necesitas; si es sobre una publicación, di su título.

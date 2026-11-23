@@ -19,8 +19,11 @@ export async function captureRedaccion({ browser, web, cmsOrigin = web, password
   const open = async id => { await page.goto(`${cmsOrigin}/cms/collections/articles/${id}`, { waitUntil: 'load' }); await page.locator('input[name="title"]').waitFor({ timeout: 30000 }); await page.waitForTimeout(800); };
   const tab = async name => { await page.getByRole('button', { name, exact: true }).first().click(); await page.waitForTimeout(500); };
   const shotOf = async (file, locator) => { await locator.scrollIntoViewIfNeeded(); await locator.screenshot({ path: `${dir}/${file}` }); };
-  const field = name => page.locator(`.field-type, [id^="field-"]`).filter({ has: page.locator(`[id="field-${name}"], [name="${name}"]`) }).first();
 
+  await attempt('inicio', async () => {
+    await page.goto(`${cmsOrigin}/cms`, { waitUntil: 'load' }); await page.locator('[data-cms-dashboard]').waitFor({ timeout: 30000 }); await page.waitForTimeout(500);
+    await page.screenshot({ path: `${dir}/00-inicio.png` });
+  });
   await attempt('clasificación', async () => {
     await open(articles.multi.id); await tab('Clasificación');
     await page.screenshot({ path: `${dir}/01-clasificacion.png` });
@@ -80,8 +83,13 @@ export async function captureRedaccion({ browser, web, cmsOrigin = web, password
     const tab = await contexts[kind].newPage();
     await tab.goto(`${web}${path}`, { waitUntil: 'load' });
     await tab.waitForTimeout(600);
-    if (selector) { const el = tab.locator(selector).first(); await el.scrollIntoViewIfNeeded(); await tab.evaluate(() => window.scrollBy(0, -120)); }
-    await tab.screenshot({ path: `${dir}/${name}.png` });
+    if (selector) {
+      // La zona del elemento con algo de contexto encima (coordenadas del documento).
+      const box = await tab.locator(selector).first().evaluate(e => { const r = e.getBoundingClientRect(); return { y: r.top + window.scrollY, h: r.height }; });
+      const width = await tab.evaluate(() => document.documentElement.clientWidth);
+      const top = Math.max(0, box.y - 260);
+      await tab.screenshot({ path: `${dir}/${name}.png`, fullPage: true, clip: { x: 0, y: top, width, height: Math.min(900, box.y + box.h + 40 - top) } });
+    } else await tab.screenshot({ path: `${dir}/${name}.png` });
     await tab.close();
   });
   await attempt('galería ampliada', async () => {

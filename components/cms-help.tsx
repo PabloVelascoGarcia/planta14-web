@@ -1,4 +1,5 @@
 import type { AdminViewServerProps } from "payload";
+import Link from "next/link";
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { HelpBrowser } from "./help-browser";
 
@@ -21,8 +22,8 @@ export async function HelpView(props: AdminViewServerProps) {
 
 /** Enlace «Ayuda» en el menú lateral del CMS. */
 export function CmsHelpLink() {
-  return <a href="/cms/ayuda" className="nav__link" data-nav-help style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", fontWeight: 600 }}>
+  return <Link href="/cms/ayuda" className="nav__link" data-nav-help style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", fontWeight: 600 }}>
     <span aria-hidden="true" style={{ display: "inline-flex", width: 20, height: 20, borderRadius: "50%", border: "1.5px solid currentColor", alignItems: "center", justifyContent: "center", fontSize: 12 }}>?</span>
     <span className="nav__link-label">Ayuda</span>
-  </a>;
+  </Link>;
 }

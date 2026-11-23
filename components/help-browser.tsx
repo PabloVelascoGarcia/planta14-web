@@ -6,10 +6,12 @@ import { useMemo, useState } from "react";
 export type HelpSectionView = { id: string; title: string; html: string; text: string; admin: boolean };
 const norm = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-export function HelpBrowser({ title, sections, pdfHref, updated }: { title: string; sections: HelpSectionView[]; pdfHref: string; updated: string }) {
+export function HelpBrowser({ title, sections, pdfHref, updated, placeholder = "Por ejemplo: galería, etiqueta, contraseña…" }: { title: string; sections: HelpSectionView[]; pdfHref: string; updated: string; placeholder?: string }) {
   const [query, setQuery] = useState("");
-  const words = norm(query).split(/\s+/).filter(Boolean);
-  const visible = useMemo(() => sections.filter(s => words.every(w => norm(s.text).includes(w))), [sections, words.join(" ")]); // eslint-disable-line react-hooks/exhaustive-deps
+  const visible = useMemo(() => {
+    const words = norm(query).split(/\s+/).filter(Boolean);
+    return sections.filter(s => words.every(w => norm(s.text).includes(w)));
+  }, [sections, query]);
   return <div className="help" data-help>
     <style>{CSS}</style>
     <div className="help-head">
@@ -17,7 +19,7 @@ export function HelpBrowser({ title, sections, pdfHref, updated }: { title: stri
       <a className="help-pdf" href={pdfHref} download data-help-pdf>Descargar en PDF</a>
     </div>
     <label className="help-search">Buscar en la ayuda
-      <input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Por ejemplo: galería, etiqueta, contraseña…" data-help-search /></label>
+      <input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder={placeholder} data-help-search /></label>
     {query ? <p className="help-count" role="status" data-help-count>{visible.length ? `${visible.length} ${visible.length === 1 ? "apartado" : "apartados"} con «${query}»` : `Nada con «${query}». Prueba con otra palabra.`}</p> : null}
     <div className="help-layout">
       <nav className="help-toc" aria-label="Índice de la ayuda" data-help-toc>

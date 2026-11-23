@@ -208,9 +208,6 @@ export function MunicipalCmsPanel({ space, state, help = null, maintenance = nul
         <div className="municipal-panel-heading"><div><p className="municipal-kicker">De tu mesa al concejo</p><h2>Publica en tu<br />espacio municipal.</h2></div><p>Lo que publiques aparece al momento<br />en el espacio del {space.name}.</p></div>
         {state.cmsEmail ? <p className="municipal-form-help" data-panel-cms-note>Has entrado en el CMS como {state.cmsEmail}. Gestiona los contenidos desde /cms. Para el panel, entra con la cuenta del ayuntamiento: las dos sesiones no se mezclan.</p> : null}
         <div className="municipal-panel-grid"><Login onDone={() => router.refresh()} /></div>
-        {tab === "ayuda" ? <div className="municipal-help" id="ayuda-inicio" data-panel-section="ayuda">{help
-          ? <HelpBrowser title={help.title} sections={help.sections} pdfHref="/api/ayuda/pdf?manual=ayuntamiento" updated={help.updated} />
-          : <p className="municipal-field-help">La ayuda no está disponible ahora mismo. Escribe a info@planta14.com.</p>}</div> : null}
         <p className="municipal-panel-terms"><Link href="/condiciones-cuentas-municipales" target="_blank" data-panel-terms>Condiciones de uso del espacio municipal</Link></p>
       </> : null}
       {state.kind === "forbidden" ? <div className="municipal-demo-banner"><span className="municipal-example">Sin acceso</span><p>{state.reason} ({state.email})</p><button type="button" className="municipal-reset" onClick={logout}>Cerrar sesión</button></div> : null}
@@ -257,6 +254,9 @@ export function MunicipalCmsPanel({ space, state, help = null, maintenance = nul
           <div className="municipal-step"><span>↗</span><h3>Visitas de {space.name.replace("Ayuntamiento de ", "")} este mes</h3></div>
           <StatsReportView report={state.stats} exportBase={`/api/estadisticas?mes=${state.statsMonth}`} compact />
         </section> : <p className="municipal-field-help" data-panel-section="visitas">Todavía no hay visitas este mes.</p>) : null}
+        {tab === "ayuda" ? <div className="municipal-help" id="ayuda-inicio" data-panel-section="ayuda">{help
+          ? <HelpBrowser title={help.title} sections={help.sections} pdfHref="/api/ayuda/pdf?manual=ayuntamiento" updated={help.updated} placeholder="Por ejemplo: contraseña, borrador, agenda, visitas…" />
+          : <p className="municipal-field-help">La ayuda no está disponible ahora mismo. Escribe a info@planta14.com.</p>}</div> : null}
         <p className="municipal-panel-terms"><Link href="/condiciones-cuentas-municipales" target="_blank" data-panel-terms>Condiciones de uso del espacio municipal</Link></p>
       </> : null}
     </div>
