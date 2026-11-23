@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`474dddf8dc4b5136fab16c16e5306e65832c1b7d`** (`474dddf`, rama `desarrollo/planta14-v2-panel`). Desplegada el **7 de noviembre de 2026 a las 16:18** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `a2d7404`, y `deploy.sh` la conserva para poder volver a ella.
+**`a79e3023d1adc628d63b92a7e08ec5b0cbe13052`** (`a79e302`, rama `desarrollo/planta14-v2-redaccion`). Desplegada el **23 de noviembre de 2026 a las 19:41** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `474dddf`, y `deploy.sh` la conserva para poder volver a ella (sin deshacer la migración, que solo añade).
 
 > **Fechas de contrato.** En pruebas, Mieres y Lena empiezan el 3 de noviembre de 2026, y Aller y Riosa no tienen fecha. **En producción, todos los espacios municipales empiezan el 1 de enero de 2027, Mieres incluido.**
 
@@ -35,6 +35,37 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a a79e302: entrega de la redacción, imágenes y cierre de la API a las cuentas municipales (23 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-REDACCION.md` (`022d525`). CI en verde. Caddy no cambia (sin `aplicar-caddy.sh`). Todo se hizo en **una sola conexión SSH**, de 19:33 a 19:42 de Madrid. No se han tocado el DNS, los buckets, las claves, el `.env` ni el ensayo. No se lanzó `npm run cms:resumen` ni se envió ningún correo a los redactores (en `external_cache`, `newsroom:resumen-diario` sigue con la reserva de las 07:14 UTC, la del envío automático, antes y después). **`infra/test/production-deploy-test.sh` no se pasó** (el aviso de seguridad de Next.js 16.4.3 la detiene en el entorno de Code nube); se aceptó así para pruebas. En el servidor la compilación no se detuvo.
+
+**Espacios municipales:** sin cambios, comprobado antes y después. Activos: Mieres, Lena, Aller y Riosa. Inactivos: Morcín y Ribera de Arriba.
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo | `474dddf`, `/api/health: ok`, mantenimiento desactivado, árbol de trabajo limpio |
+| 2. Fijar el commit | `git log -1`: `a79e302 Prueba de seguridad del panel: token de Payload con la API local [skip netlify]` |
+| 2. `deploy.sh … a79e302…` | **Código 0, «Desplegada».** Construcción de 8 minutos (19:33:40 a 19:41:38). Copia previa `…20261123T184138Z.dump.age` (504K). «Migraciones aplicadas: 20261123_132459_redaccion_imagenes». El mantenimiento duró 18 segundos (19:41:38 a 19:41:56). Se borró la imagen antigua `d7d348f`. La compilación dio «Compiled with warnings in 112s», sin errores |
+| 4. Estado después | `a79e302`, `/api/health: ok`, app `healthy`, mantenimiento desactivado |
+| Migración en la base | `20261123_132459_redaccion_imagenes` registrada. Existen `tags`, `articles_rels` y `_articles_v_rels` (vacías) y las columnas `media.image_kind` (por defecto `foto`), `articles.image_poster`, `articles.template` (`none`), `articles.has_gallery` (`false`), `festivals.image_poster` (`true`) y `stats_daily.extra_towns` (vacío) |
+| Páginas (pedidas a la app, `127.0.0.1:3000`) | Responden 200: `/`, una noticia (`/noticia/que-rincon-de-lena-brillara-mas-esta-navidad-abierto-el-concurso-de-decoracion`), `/tema/sociedad`, `/multimedia`, `/mieres`, `/aller/util`, `/morcin`, `/util`, `/fiestas` y `/api/health`. `/api/health` por Caddy con el dominio real: 200. La portada **no** enlaza `/multimedia` (aún no hay 6 galerías) |
+| Imagen para redes | `og:image` y `twitter:image` = `/noticia/…/redes.jpg?v=18nruuu`. Responde 200, `image/jpeg`, JPEG válido de **1200×630**, 95.244 bytes, `cache-control: public, max-age=31536000, immutable`. Pesa más que los 19–35 KB de las pruebas del documento (esta noticia lleva foto real) |
+| Cuenta municipal en `/api/cms` y `/cms` | **No comprobado desde el servidor:** el documento solo lo da como comprobación en el navegador con la contraseña de la cuenta de prueba (punto 8), que no está en el servidor |
+
+**Memoria de la compilación**, `free -m` cada segundo, 488 muestras. Registro: `/srv/planta14/state/memoria-compilacion-a79e302.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.450 MiB al empezar; **máximo 2.386 MiB**; 1.013 MiB al terminar |
+| Swap (4.095 MiB en total) | 0 MiB al empezar; **máximo 714 MiB** (19:36:22), por debajo de los 1.103 MiB de `474dddf`, como preveía el documento; 0 MiB al terminar |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:**
+- las comprobaciones en el navegador de `docs/INSTALAR-V2-REDACCION.md` (puntos 1 a 9: clasificación, varios concejos y secciones, imágenes y galería, etiquetas, plantilla, imagen para redes en WhatsApp, cuenta municipal sin `/cms`, y borrar las noticias de prueba);
+- pasar `infra/test/production-deploy-test.sh` en Code local cuando se pueda.
+
+**Vuelta atrás**, si hiciera falta: paso 5 del documento (`474dddf` con `deploy.sh`, sin deshacer la migración ni `aplicar-caddy.sh`).
 
 ### Actualización a 474dddf: sesión propia del panel, formulario e índice de incendios (7 de noviembre de 2026)
 
