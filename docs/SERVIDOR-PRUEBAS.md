@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`a79e3023d1adc628d63b92a7e08ec5b0cbe13052`** (`a79e302`, rama `desarrollo/planta14-v2-redaccion`). Desplegada el **23 de noviembre de 2026 a las 19:41** (hora de Madrid), **con el contenido de ensayo todavía cargado**. La versión anterior es `474dddf`, y `deploy.sh` la conserva para poder volver a ella (sin deshacer la migración, que solo añade).
+**`7ef7adb8f71b7430a6b57c5f65fc06c658ec1a88`** (`7ef7adb`, rama `desarrollo/planta14-v2-next-seguridad`, Next.js 16.4.5). Desplegada el **23 de noviembre de 2026 a las 20:32** (hora de Madrid), **con el contenido de ensayo todavía cargado** y contenido real de la redacción. La versión anterior es `a79e302`, y `deploy.sh` la conserva para poder volver a ella (sin migraciones que deshacer).
 
 > **Fechas de contrato.** En pruebas, Mieres y Lena empiezan el 3 de noviembre de 2026, y Aller y Riosa no tienen fecha. **En producción, todos los espacios municipales empiezan el 1 de enero de 2027, Mieres incluido.**
 
@@ -35,6 +35,35 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a 7ef7adb: Next.js 16.4.3 → 16.4.5, actualización de seguridad (23 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-NEXT-SEGURIDAD.md` (`d8a7fda`). CI en verde y batería completa superada, incluida `production-deploy-test.sh`. Sin migraciones y sin cambios en Caddy (sin `aplicar-caddy.sh`). Todo se hizo en **una sola conexión SSH**, de 20:21 a 20:33 de Madrid. No se han tocado el DNS, los buckets, las claves, el `.env` ni el ensayo. No se lanzó `npm run cms:resumen` ni se envió ningún correo a los redactores (`newsroom:resumen-diario` sigue con la reserva de las 07:14 UTC antes y después). **Noticias sin tocar:** 39 publicadas antes y después, con la misma última modificación (07:22:57 UTC).
+
+**Espacios municipales:** sin cambios, comprobado antes y después. Activos: Mieres, Lena, Aller y Riosa. Inactivos: Morcín y Ribera de Arriba.
+
+| Paso | Resultado |
+|---|---|
+| 1. Estado previo | `a79e302`, `/api/health: ok`, mantenimiento desactivado, árbol de trabajo limpio |
+| 2. Fijar el commit | `git log -1`: `7ef7adb Next.js 16.4.3 → 16.4.5: actualización de seguridad [skip netlify]` |
+| 2. `deploy.sh … 7ef7adb…` | **Código 0, «Desplegada».** Construcción de 11 minutos (20:21:41 a 20:32:27; incluye el `npm ci`). «Compiled with warnings in 113s», sin el aviso de seguridad de Next.js. Copia previa `…20261123T193227Z.dump.age` (524K). **«Sin migraciones nuevas».** El mantenimiento duró 18 segundos (20:32:27 a 20:32:45). Se borró la imagen antigua `a2d7404` |
+| 4. Estado después | `7ef7adb`, `/api/health: ok`, app `healthy`, mantenimiento desactivado. Última migración: la misma (`20261123_132459_redaccion_imagenes`) |
+| Comprobación 1: versión de Next.js | Comando del documento (`docker compose -p planta14 … exec -T app node -e …`): **`16.4.5`** |
+| Comprobación 2: páginas (pedidas a la app, `127.0.0.1:3000`) | 200 en `/`, una noticia (`/noticia/que-rincon-de-lena-brillara-mas-esta-navidad-abierto-el-concurso-de-decoracion`), `/tema/sociedad`, `/mieres`, `/aller/util`, `/util`, `/fiestas` y `/api/health`. Imagen para redes de esa noticia: 200, `image/jpeg`, 1200×630, 95.244 bytes. **`/etiqueta/…` no se comprobó: todavía no hay ninguna etiqueta creada** |
+| Comprobación 5: `/_next/image` con SVG | En la app: **400** («"url" parameter is valid but image type is not allowed»); el archivo `/images/placeholder.svg` existe (200). Por Caddy sin la contraseña de preproducción: 401 (la contraseña se pide antes) |
+| Comprobaciones 3 y 4 (CMS y panel con cuenta) | Quedan para Pablo en el navegador |
+
+**Memoria de la compilación**, `free -m` cada segundo, 651 muestras. Registro: `/srv/planta14/state/memoria-compilacion-7ef7adb.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.095 MiB al empezar; **máximo 2.168 MiB**; 1.024 MiB al terminar |
+| Swap (4.095 MiB en total) | 0 MiB al empezar; **máximo 880 MiB** (20:27:11); 15 MiB al terminar. Más que los 714 MiB de `a79e302` y menos que los 1.103 MiB de `474dddf` |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Pendiente:** en el navegador, las comprobaciones 2 (`/etiqueta/…` cuando haya etiquetas), 3 (CMS: borrador y vista previa) y 4 (panel municipal y «Cerrar sesión») del documento, y la 5 con la contraseña de preproducción (debe dar 400).
+
+**Vuelta atrás**, si hiciera falta: paso 5 del documento (`a79e302` con `deploy.sh`, sin migraciones ni `aplicar-caddy.sh`).
 
 ### Actualización a a79e302: entrega de la redacción, imágenes y cierre de la API a las cuentas municipales (23 de noviembre de 2026)
 
