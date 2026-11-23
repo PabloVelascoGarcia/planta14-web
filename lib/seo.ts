@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { Article } from "./mock-data";
 import type { MunicipalContent, MunicipalSpace } from "./demo/municipal";
 import { absoluteUrl, publisherName, siteName } from "./site-config";
+import { contentSource } from "./content-source";
+import { socialImagePath } from "./social-path";
 
 const defaultImage = { url: "/opengraph-image.png", width: 1200, height: 630, alt: "Planta 14 · Una voz para las Cuencas" };
 const isoDate = (value?: string) => { const date = value ? new Date(value) : null; return date && !Number.isNaN(date.getTime()) ? date.toISOString() : undefined; };
@@ -18,7 +20,8 @@ export function articleMetadata(article: Article): Metadata {
   const title = article.seoTitle ?? article.title;
   const description = article.seoDescription ?? article.excerpt;
   const canonical = `/noticia/${article.slug}`;
-  const image = articleShareImage(article);
+  // Imagen para redes generada con el diseño de Planta 14 (foto según su punto de interés, titular, concejo y marca).
+  const image = contentSource() === "payload" ? { url: socialImagePath(article), width: 1200, height: 630, alt: article.title } : articleShareImage(article);
   return {
     title, description, alternates: { canonical },
     openGraph: { type: "article", url: canonical, title, description, siteName, locale: "es_ES", images: [image],
