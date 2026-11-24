@@ -2,7 +2,7 @@
 
 ## Versión instalada ahora
 
-**`593b0f1170a9b90a3de4be8fc359fae6844fda75`** (`593b0f1`, rama `desarrollo/planta14-v2-ayuda`, Next.js 16.4.5). Desplegada el **23 de noviembre de 2026 a las 23:52** (hora de Madrid), **con el contenido de ensayo todavía cargado** y contenido real de la redacción. La versión anterior es `7ef7adb`, y `deploy.sh` la conserva para poder volver a ella (sin deshacer la migración `firma_fija`, que solo añade una columna).
+**`a4e8c86732548e77598532bc230d1b22527dbe64`** (`a4e8c86`, rama `desarrollo/planta14-v2-ayuda`, Next.js 16.4.5). Desplegada el **24 de noviembre de 2026 a las 10:15** (hora de Madrid), **con el contenido de ensayo todavía cargado** y contenido real de la redacción. La versión anterior es `593b0f1`, y `deploy.sh` la conserva para poder volver a ella (no hay nada que deshacer en la base).
 
 > **Fechas de contrato.** En pruebas, Mieres y Lena empiezan el 3 de noviembre de 2026, y Aller y Riosa no tienen fecha. **En producción, todos los espacios municipales empiezan el 1 de enero de 2027, Mieres incluido.**
 
@@ -35,6 +35,37 @@ Es una cuenta de prueba: bórrala antes de la salida.
 **Autores (firmas):**
 - **Redacción Planta 14** (`redaccion-planta-14`): lo creó la carga del ensayo, pero ya estaba marcado como lote **definitivo**, así que la retirada del ensayo no lo borra.
 - **Juanfran Santos** (`juanfran-santos`, rol «Redacción»): creado el 4 de noviembre, sin lote y sin vincular a ninguna cuenta. Juanfran puede elegirlo a mano en el campo de autor de una noticia.
+
+### Actualización a a4e8c86: correcciones sobre 593b0f1, CMS y panel a la vez y Ayuda (24 de noviembre de 2026)
+
+Guía seguida: `docs/INSTALAR-V2-AYUDA.md` (`aa7206a`), apartado «Correcciones sobre 593b0f1». CI en verde. Sin migraciones, sin cambios en Caddy y sin pasos después de desplegar. Todo se hizo en **una sola conexión SSH**, de 10:07 a 10:16 de Madrid. No se han tocado el DNS, los buckets, las claves, el `.env` ni el ensayo. No se lanzó `npm run cms:resumen` ni se envió ningún correo a los redactores: `newsroom:resumen-diario` tiene la reserva de hoy a las 07:02 UTC, la del envío automático, igual antes y después.
+
+**Espacios municipales:** sin cambios, comprobado antes y después. Activos: Mieres, Lena, Aller y Riosa. Inactivos: Morcín y Ribera de Arriba.
+
+**Noticias sin tocar:** 39 en total y 39 publicadas, antes y después. Coinciden la última modificación (23 de noviembre, 07:22:57 UTC) y la huella MD5 de identificador, fecha de modificación, estado y firma de todas ellas.
+
+**Firma fija:** «El Director» sigue en `info@planta14.com` (`admin`) y `pvelasco@assa.as` (`editor`), y solo en ellas, antes y después. El autor 5 «El Director» (`el-director`, definitivo) sigue igual.
+
+| Paso | Resultado |
+|---|---|
+| Estado previo | `593b0f1`, `/api/health: ok`, mantenimiento desactivado, árbol de trabajo limpio |
+| Fijar el commit | `git log -1`: `a4e8c86 Prueba del logotipo del CMS: espera a que se pinte la pantalla de acceso [skip netlify]` |
+| `deploy.sh … a4e8c86…` | **Código 0, «Desplegada».** Construcción de 7,5 minutos (10:07:59 a 10:15:39), con «Manuales generados: redaccion (82 bloques), ayuntamiento (76 bloques)» y «Compiled with warnings in 111s». Copia previa `…20261124T091540Z.dump.age` (524K). **«Sin migraciones nuevas».** El mantenimiento duró 17 segundos (10:15:40 a 10:15:57). Se borró la imagen antigua `a79e302` |
+| Estado después | `a4e8c86`, `/api/health: ok`, app `healthy`. Última migración, la misma: `20261123_194605_firma_fija` |
+| Páginas (pedidas a la app, `127.0.0.1:3000`) | 200 en `/`, una noticia (`/noticia/que-rincon-de-lena-brillara-mas-esta-navidad-abierto-el-concurso-de-decoracion`), `/tema/sociedad`, `/mieres`, `/aller/util`, `/util`, `/fiestas` y `/api/health`. `/api/health` por Caddy: 200 |
+| `/cms/ayuda` sin sesión | Lleva a la pantalla de acceso: la página trae `NEXT_REDIRECT;replace;/cms/login?redirect=%2Fcms%2Fayuda;307` (redirección de Next.js dentro de la página, que por eso responde 200) y vuelve a la Ayuda al entrar. No lleva texto del manual, «Descargar en PDF» ni «Solo para la redacción.» |
+| PDF y capturas sin sesión | `/api/ayuda/pdf?manual=redaccion`, `?manual=ayuntamiento` y `/api/ayuda/imagen/ayuntamiento/15-ayuda.png`: **401** |
+| Comprobaciones con sesión (1 a 3 del apartado) | Quedan para Pablo en el navegador: CMS y panel abiertos a la vez, Ayuda de la administración desde el menú y desde un enlace, y la vuelta a la Ayuda tras entrar |
+
+**Memoria de la compilación**, `free -m` cada segundo, 471 muestras. Registro: `/srv/planta14/state/memoria-compilacion-a4e8c86.log`.
+
+| Medida | Valor |
+|---|---|
+| RAM usada del servidor (3.834 MiB en total) | 1.105 MiB al empezar; **máximo 2.359 MiB**; 984 MiB al terminar |
+| Swap (4.095 MiB en total) | 44 MiB al empezar; **máximo 652 MiB** (10:10:30); 58 MiB al terminar. Menos que los 923 MiB de `593b0f1` |
+| Resultado | Sin «heap out of memory» ni procesos matados |
+
+**Vuelta atrás**, si hiciera falta: `593b0f1` con `deploy.sh`, como dice el apartado (sin nada que deshacer en la base).
 
 ### Actualización a 593b0f1: Ayuda en el CMS y el panel, firma «El Director» y detalles del CMS (23 de noviembre de 2026)
 
