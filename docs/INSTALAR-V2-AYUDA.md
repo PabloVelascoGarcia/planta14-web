@@ -185,3 +185,90 @@ Una sola vez sobre `593b0f1`, **todo superado**; no hizo falta repetir nada.
    texto equivalente.
 7. **Lint:** 29 avisos (antes 24), todos de `<img>` en componentes de la Ayuda y de las capturas, a propósito como en el
    resto de la web; 0 errores.
+
+## Correcciones sobre 593b0f1 (24 de noviembre)
+
+**Commit a instalar: `a4e8c86`** (`a4e8c86732548e77598532bc230d1b22527dbe64`), en la misma rama, sobre **`593b0f1`**.
+Es `9ac185d` (las correcciones) más un ajuste de una prueba; la aplicación es la misma.
+**Sin migraciones nuevas**, Caddy no cambia, no toca noticias ni cuentas y no hay pasos después del despliegue (la
+firma «El Director» del paso 4 ya está hecha y se conserva).
+
+| Punto | Cambio |
+|---|---|
+| 1. Panel y CMS a la vez | El bloqueo de `/api/cms` para cuentas municipales se decide **solo por la sesión del CMS** (cookie de Payload o cabecera de autorización). La cookie del panel ya no cuenta: con el panel municipal abierto en el mismo navegador, la administración y la redacción entran y trabajan en el CMS. Una cuenta municipal sigue sin poder usar la API ni el CMS (con su token del CMS o del panel, 403; con solo la cookie del panel, la API la trata como anónima: no ve ni cambia nada). La sesión del CMS no afecta al panel (su puente nunca usa la cookie del CMS). |
+| 2. Ayuda para la administración | Causa: al abrir `/cms/ayuda` desde un enlace de otra web (un correo, un chat), Payload no usa la cookie de sesión en esa primera visita (protección contra peticiones de otros sitios) y la vista creía que no había sesión, aunque `/api/cms/users/me` diera 200 desde la propia página. Ahora, en ese caso, la página comprueba la sesión desde el navegador y se recarga ya con ella: la administración ve el manual completo con su apartado. |
+| 3. Sin sesión | `/cms/ayuda` lleva a la pantalla de acceso del CMS y, al entrar, vuelve a la Ayuda (en lugar de «Solo para la redacción.»). |
+| 4. Accesos | Comprobado con pruebas: una cuenta municipal con solo su sesión del panel no ve `/cms/ayuda` (va a la pantalla de acceso) ni descarga el PDF ni las capturas de la redacción (401); la redacción no ve el apartado de administración ni en la página ni en el PDF; la administración sí. |
+| 5. Manual | Manual de la redacción: la Ayuda sin sesión pide entrar y vuelve; en el apartado de administración, que el CMS y el panel pueden estar abiertos a la vez. El del ayuntamiento no cambia. Las capturas no cambian. |
+
+### Pasos
+
+```bash
+ssh planta14@87.106.30.18
+```
+
+```bash
+cd /srv/planta14/app
+```
+
+```bash
+bash infra/deploy/status.sh --env-file infra/.env.production
+```
+
+Debe decir `/api/health: ok` y la versión `593b0f1`.
+
+```bash
+git fetch origin desarrollo/planta14-v2-ayuda
+```
+
+```bash
+git checkout --detach a4e8c86732548e77598532bc230d1b22527dbe64
+```
+
+```bash
+bash infra/deploy/deploy.sh --env-file infra/.env.production a4e8c86732548e77598532bc230d1b22527dbe64
+```
+
+```bash
+echo "código: $?"
+```
+
+Debe terminar en «Desplegada», con código 0, sin migraciones nuevas. Después, `status.sh` otra vez: versión `a4e8c86`.
+
+**Vuelta atrás a `593b0f1`** (no hay nada que deshacer en la base de datos):
+
+```bash
+git checkout --detach 593b0f1170a9b90a3de4be8fc359fae6844fda75
+```
+
+```bash
+bash infra/deploy/deploy.sh --env-file infra/.env.production 593b0f1170a9b90a3de4be8fc359fae6844fda75
+```
+
+### Comprobaciones después del despliegue
+
+1. **Panel y CMS a la vez:** en el mismo navegador, entra en el panel de un concejo (`/lena/panel`) y, sin cerrarlo, en
+   `/cms` con tu cuenta de administración. Abre una noticia y guarda; vuelve al panel y guarda un borrador; vuelve al
+   CMS: sigue funcionando. Borra el borrador de prueba.
+2. **Ayuda de la administración:** con tu cuenta, `/cms/ayuda` desde el menú y también pegando la dirección o
+   pulsando un enlace desde el correo: el manual completo, con «Para la administración».
+3. **Sin sesión:** en una ventana privada, `/cms/ayuda` lleva a la pantalla de acceso y, al entrar, a la Ayuda.
+
+### Pruebas
+
+Solo las que cubren lo tocado, sobre `9ac185d` (la aplicación de `a4e8c86`):
+
+| Suite | Resultado |
+|---|---|
+| `npm test` | 11 PASS |
+| Tipos | sin errores |
+| Lint | 0 errores (29 avisos, los mismos de antes) |
+| Compilación | correcta (manuales generados) |
+| Instalación | 16 PASS |
+| Participación (CMS, panel y seguridad: todos los bloques) | **68 PASS** (las 65 anteriores y 3 nuevas: CMS y panel a la vez en el navegador, alternando; Ayuda de la administración desde el inicio y desde un enlace de otra web; sin sesión y con solo la del panel, a la pantalla de acceso y sin PDF ni capturas de la redacción). La prueba de seguridad de la API se ajusta: con solo la cookie del panel, la API responde igual que a una petición anónima. |
+| `staging-e2e` | SUPERADO |
+| Limpieza | 0 volúmenes nuevos |
+
+En la primera pasada, la participación falló en su última comprobación (el logotipo en la pantalla de acceso) porque
+la prueba lo contaba antes de que se pintara; el acceso funcionaba. La prueba ahora espera (`a4e8c86`) y la
+participación completa se repitió entera: 68 PASS.
