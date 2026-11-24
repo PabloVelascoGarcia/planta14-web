@@ -56,13 +56,24 @@ export async function run(ctx) {
   const { token: payloadToken } = await payload.login({ collection: 'users', data: { email, password } });
   const panelCookie = await ctx.panelSignIn(email);
   const panelToken = decodeURIComponent(panelCookie.slice(panelCookie.indexOf('=') + 1));
-  const credentials = [{ Cookie: `payload-token=${payloadToken}` }, { Authorization: `JWT ${payloadToken}` }, { Cookie: panelCookie }, { Authorization: `JWT ${panelToken}` }];
+  const credentials = [{ Cookie: `payload-token=${payloadToken}` }, { Authorization: `JWT ${payloadToken}` }, { Authorization: `JWT ${panelToken}` }];
   const calls = [['GET', 'users/me'], ['GET', `municipal-content/${mieresItem.id}`], ['GET', 'municipal-content'], ['GET', 'media'], ['GET', 'municipal-services'], ['GET', 'globals/breaking-news'],
     ['POST', 'municipal-content'], ['PATCH', `municipal-services/${lenaService.id}`], ['POST', 'users/refresh-token'], ['GET', 'payload-locked-documents'], ['GET', 'payload-preferences']];
   for (const headers of credentials) for (const [method, path] of calls) {
     const r = await http(`/api/cms/${path}`, { method, headers: { ...headers, Origin: origin }, body: method === 'GET' ? undefined : { title: 'x', name: 'x' } });
-    assert.equal(r.status, 403, `${method} /api/cms/${path} with ${Object.keys(headers)[0]}: ${r.status}`);
+    assert.equal(r.status, 403, `${method} /api/cms/${path} with ${Object.keys(headers)[0]}: ${r.status} ${r.text.slice(0, 300)}`);
   }
+  // Solo con la cookie del panel, la API directa no la usa: la petición es anónima (igual que sin cookie), no ve nada de
+  // la cuenta y no cambia nada. Así el panel abierto en el mismo navegador no bloquea a la redacción en el CMS.
+  for (const [method, path] of calls) {
+    const body = method === 'GET' ? undefined : { title: 'x', name: 'x' };
+    const withPanel = await http(`/api/cms/${path}`, { method, headers: { Cookie: panelCookie, Origin: origin }, body });
+    const anonymous = await http(`/api/cms/${path}`, { method, headers: { Origin: origin }, body });
+    assert.equal(withPanel.status, anonymous.status, `${method} /api/cms/${path} with only the panel cookie = anonymous (${withPanel.status})`);
+    if (method === 'GET') assert.equal(withPanel.text.replace(/"exp":\d+/g, ''), anonymous.text.replace(/"exp":\d+/g, ''), `${path}: same answer as anonymous`);
+    else assert.ok(withPanel.status >= 400, `${method} ${path}: refused`);
+  }
+  assert.equal(JSON.parse((await http('/api/cms/users/me', { headers: { Cookie: panelCookie } })).text).user, null, 'the panel cookie is not a CMS session');
   assert.equal((await payload.findByID({ collection: 'municipal-services', id: lenaService.id, overrideAccess: true })).name, 'Servicio de Lena (API)', 'nothing changed through the direct API');
   // El CMS (/cms): sin panel de administración para una cuenta municipal.
   for (const headers of [{ Cookie: `payload-token=${payloadToken}` }, { Cookie: panelCookie }]) {
@@ -79,7 +90,7 @@ export async function run(ctx) {
   const viaBridge = await fetch(`${web}/api/panel/api/municipal-content?draft=true`, { method: 'POST', headers: { Cookie: panelCookie, Origin: origin, 'Content-Type': 'application/json' },
     body: JSON.stringify({ space: lena.id, type: 'notice', title: 'Desde el panel (API)', excerpt: 'R.', body: 'T.', origin: 'municipality', publishedAt: '2026-11-20', _status: 'draft' }) });
   assert.equal(viaBridge.status, 201, 'the panel bridge still works');
-  passed('cuentas municipales (API directa y CMS): «Entrar» por /api/cms/users/login responde 403 y no da cookie de Payload; con un token de Payload o el del panel, en cookie o en cabecera, toda la API directa responde 403 (leer, crear, cambiar, renovar el token, documentos bloqueados, preferencias, globales) y no cambia nada; /cms no muestra el panel de administración; la redacción sigue entrando y usando la API, y el panel municipal sigue guardando por su puente');
+  passed('cuentas municipales (API directa y CMS): «Entrar» por /api/cms/users/login responde 403 y no da cookie de Payload; con un token de Payload en cookie o en cabecera, o el del panel en cabecera, toda la API directa responde 403; solo con la cookie del panel, la API la trata como anónima (no ve ni cambia nada) (leer, crear, cambiar, renovar el token, documentos bloqueados, preferencias, globales) y no cambia nada; /cms no muestra el panel de administración; la redacción sigue entrando y usando la API, y el panel municipal sigue guardando por su puente');
 
   // 3. Restablecer la contraseña por el puente: funciona, pero el panel nunca recibe la cookie ni el token de Payload.
   const resetToken = await payload.forgotPassword({ collection: 'users', data: { email }, disableEmail: true });

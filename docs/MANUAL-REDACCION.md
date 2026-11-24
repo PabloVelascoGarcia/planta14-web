@@ -225,13 +225,16 @@ puede tardar en cambiar.
 - **He creado una etiqueta mal escrita:** ábrela en **Etiquetas** y corrige el nombre.
 - **No puedo elegir otra firma:** tu cuenta tiene firma fija; habla con la administración.
 - **¿Dónde está este manual?** En **Ayuda** (menú de la izquierda y tarjeta del inicio), con buscador y el botón
-  **Descargar en PDF**.
+  **Descargar en PDF**. Si abres la Ayuda sin haber entrado en el CMS, primero te pide entrar y después te lleva a
+  ella.
 
 <!-- solo-administracion -->
 ## 11. Para la administración
 
 Este apartado solo lo ve la administración.
 
+- **CMS y panel municipal a la vez:** puedes tener abierto el panel de un concejo y el CMS en el mismo navegador;
+  cada uno usa su propia sesión y no se molestan.
 - **Firma fija:** en **Usuarios**, abre la cuenta, elige su **Firma (autor vinculado)** y marca **Firma fija**. Esa
   cuenta solo podrá firmar con ella. Las cuentas de la dirección (la de administración de Pablo y «Pablo Velasco
   (redactor)») firman como **El Director**.

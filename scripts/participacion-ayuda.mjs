@@ -71,6 +71,129 @@ export async function run(ctx) {
   await tab.close();
   passed('Ayuda: el manual de la redacción en /cms/ayuda (generado en la compilación desde el del repositorio, con índice, buscador, capturas y «Descargar en PDF»), solo con sesión de redacción o administración; el apartado de administración, solo para la administración (también en el PDF); tarjeta en el inicio y enlace en el menú; PDF A4 con portada e índice; las capturas, solo con sesión; en el panel, la pestaña «Ayuda» con el manual del ayuntamiento, su buscador y su PDF, solo con sesión municipal; sin términos técnicos');
 
+  // --- Correcciones sobre 593b0f1.
+  // 3 y 4. Sin sesión del CMS (también con solo la del panel municipal): /cms/ayuda lleva a la pantalla de acceso, que
+  // vuelve a la Ayuda al entrar; la cuenta municipal tampoco descarga el PDF de la redacción.
+  const loginURL = '/cms/login?redirect=%2Fcms%2Fayuda';
+  for (const [who, cookie] of [['anonymous', undefined], ['municipal panel session', lenaPanel]]) {
+    // Como el resto del CMS, la redirección llega en la respuesta y la hace el navegador (la prueba de abajo lo recorre).
+    const r = await get('/cms/ayuda', cookie), html = await r.text();
+    assert.ok((r.status >= 300 && r.status < 400 && r.headers.get('location')?.endsWith(loginURL)) || html.includes(`NEXT_REDIRECT;replace;${loginURL};`), `${who}: /cms/ayuda goes to the CMS login (${r.status})`);
+    assert.ok(!html.includes('data-help-toc') && !html.includes('Solo para la redacción'), `${who}: no help content`);
+    assert.equal((await pdf('redaccion', cookie)).status, 401, `${who}: no newsroom PDF`);
+    assert.equal(await image('redaccion', '01-clasificacion.png', cookie), 401, `${who}: no newsroom screenshots`);
+  }
+  // El PDF y la página de la redacción, sin el apartado de administración; los de la administración, con él.
+  for (const [who, cookie, withAdmin] of [['editor', editor, false], ['admin', admin, true]]) {
+    const html = await helpPage(cookie), body = text((await pdf('redaccion', cookie)).body);
+    assert.equal(html.includes('Para la administración'), withAdmin, `${who}: administration section in the page`);
+    assert.equal(body.includes('Para la administraci'), withAdmin, `${who}: administration section in the PDF`);
+  }
+  {
+    const c = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'es-ES' });
+    const p2 = await c.newPage();
+    await p2.goto(`${origin}/cms/ayuda`, { waitUntil: 'load' });
+    await p2.waitForURL(u => u.pathname === '/cms/login');
+    await p2.locator('input[name="email"]').fill(users.editor.email);
+    await p2.locator('input[name="password"]').fill(password);
+    await p2.locator('button[type="submit"]').click();
+    await p2.waitForURL(u => u.pathname === '/cms/ayuda', { timeout: 30000 });
+    await p2.locator('[data-help-toc]').waitFor();
+    assert.equal(await p2.locator('[data-help-admin]').count(), 0, 'editor (browser): no administration section');
+    await c.close();
+    // Con solo la sesión del panel municipal, en el navegador: a la pantalla de acceso del CMS, sin la Ayuda.
+    const m = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'es-ES' });
+    await ctx.panelLogin(m, origin, 'lena', users.lena.email);
+    const p3 = await m.newPage();
+    await p3.goto(`${origin}/cms/ayuda`, { waitUntil: 'load' });
+    await p3.waitForURL(u => u.pathname === '/cms/login');
+    assert.equal(await p3.locator('[data-help-toc]').count(), 0, 'municipal (browser): no newsroom help');
+    const pdfStatus = await p3.evaluate(() => fetch('/api/ayuda/pdf?manual=redaccion').then(r => r.status));
+    assert.equal(pdfStatus, 401, 'municipal (browser): no newsroom PDF');
+    await m.close();
+  }
+  passed('Ayuda sin sesión: /cms/ayuda lleva a la pantalla de acceso del CMS y, al entrar, vuelve a la Ayuda; con solo la sesión del panel municipal, igual (ni la Ayuda, ni el PDF, ni las capturas de la redacción); la redacción no ve el apartado de administración ni en la página ni en el PDF, la administración sí');
+
+  // 2. La administración en el navegador: la Ayuda desde el menú, completa con su apartado; y desde un enlace de otra
+  // web (Payload no usa la cookie en esa primera visita), la página comprueba la sesión y se carga con ella.
+  {
+    const c = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'es-ES' });
+    const p2 = await c.newPage();
+    await p2.goto(`${origin}/cms/login`, { waitUntil: 'load' });
+    await p2.locator('input[name="email"]').fill(users.admin.email);
+    await p2.locator('input[name="password"]').fill(password);
+    await p2.locator('button[type="submit"]').click();
+    await p2.waitForURL(u => !u.pathname.includes('/login'), { timeout: 30000 });
+    // Desde la tarjeta del inicio (el menú lateral puede estar plegado a este ancho; lleva al mismo sitio).
+    assert.equal(await p2.locator('[data-nav-help]').first().getAttribute('href'), '/cms/ayuda');
+    await p2.locator('[data-dashboard-link="ayuda"]').first().click();
+    await p2.waitForURL(u => u.pathname === '/cms/ayuda');
+    await p2.locator('[data-help-toc]').waitFor();
+    assert.ok(await p2.locator('[data-help-admin]').count() > 0 && await p2.getByText('Para la administración').count() > 0, 'admin (browser, from the CMS home): the whole manual with its own section');
+    assert.equal(await p2.getByText('Solo para la redacción').count(), 0);
+    // Desde otra web (127.0.0.1 → localhost son sitios distintos para el navegador).
+    await p2.goto(`${web}/`, { waitUntil: 'load' });
+    await p2.evaluate(href => { const a = document.createElement('a'); a.href = href; a.id = 'externo'; a.textContent = 'Ayuda'; document.body.prepend(a); }, `${origin}/cms/ayuda`);
+    await p2.locator('#externo').click();
+    await p2.waitForURL(u => u.pathname === '/cms/ayuda' && u.host === new URL(origin).host);
+    await p2.locator('[data-help-toc]').waitFor({ timeout: 30000 });
+    assert.ok(await p2.locator('[data-help-admin]').count() > 0, 'admin (link from another site): the whole manual');
+    const crossSite = await (await get('/cms/ayuda', admin, { 'Sec-Fetch-Site': 'cross-site' })).text();
+    assert.ok(/data-cms-help-check|HelpSessionCheck/.test(crossSite) && !crossSite.includes('data-help-toc') && !crossSite.includes('Para la administración'), 'cross-site first visit: only the session check, no content');
+    await c.close();
+  }
+  passed('Ayuda para la administración: desde el inicio del CMS, el manual completo con su apartado propio; abierta desde un enlace de otra web (correo, chat), comprueba la sesión y se carga con ella, sin «Solo para la redacción»');
+
+  // 1. Panel municipal y CMS abiertos a la vez en el mismo navegador, trabajando en uno y otro alternando.
+  {
+    const c = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'es-ES' });
+    await c.addCookies([{ name: 'planta14_consent', value: '1%3Arejected', url: origin }]);
+    await ctx.panelLogin(c, origin, 'lena', users.lena.email);
+    const cms = await c.newPage(), panel = await c.newPage();
+    // CMS: entrar con la administración teniendo ya la sesión del panel.
+    await cms.goto(`${origin}/cms/login`, { waitUntil: 'load' });
+    await cms.locator('input[name="email"]').fill(users.admin.email);
+    await cms.locator('input[name="password"]').fill(password);
+    await cms.locator('button[type="submit"]').click();
+    await cms.waitForURL(u => !u.pathname.includes('/login'), { timeout: 30000 });
+    await cms.locator('[data-cms-dashboard]').waitFor({ timeout: 30000 });
+    const cmsCall = (method, path, body) => cms.evaluate(async ([m, u, b]) => { const r = await fetch(u, { method: m, headers: b ? { 'Content-Type': 'application/json' } : {}, body: b ? JSON.stringify(b) : undefined }); return { status: r.status, json: await r.json().catch(() => null) }; }, [method, path, body]);
+    const me = await cmsCall('GET', '/api/cms/users/me');
+    assert.ok(me.status === 200 && me.json?.user?.email === users.admin.email, `CMS with both sessions: /api/cms/users/me is the administration (${me.status})`);
+    // Panel: publicar un borrador desde su formulario.
+    const title = `Prueba de convivencia ${Date.now()}`;
+    await panel.goto(`${origin}/lena/panel`, { waitUntil: 'load' });
+    const form = panel.getByRole('form', { name: 'Publicación municipal' });
+    await form.getByLabel('Tipo').selectOption({ label: 'Avisos' });
+    await form.getByLabel('Título').fill(title);
+    await form.getByLabel('Resumen').fill('Resumen de prueba.');
+    await form.getByLabel('¿Qué deben saber los vecinos?').fill('Texto de prueba.');
+    await form.locator('[data-save-draft]').click();
+    let draft;
+    for (let i = 0; i < 60 && !draft; i++) { await panel.waitForTimeout(500); draft = await one('municipal-content', { title: { equals: title } }); }
+    assert.ok(draft, 'panel with both sessions: the draft is saved');
+    // CMS otra vez: crear una etiqueta por la API (como hace el propio CMS) y abrir una lista y la Ayuda.
+    const tag = await cmsCall('POST', '/api/cms/tags', { name: `Convivencia ${Date.now()}` });
+    assert.equal(tag.status, 201, `CMS with both sessions: saving works (${tag.status} ${JSON.stringify(tag.json)})`);
+    await cms.goto(`${origin}/cms/collections/tags`, { waitUntil: 'load' });
+    await cms.getByText(tag.json.doc.name).first().waitFor({ timeout: 30000 });
+    await cms.goto(`${origin}/cms/ayuda`, { waitUntil: 'load' });
+    await cms.locator('[data-help-admin]').first().waitFor();
+    // Panel otra vez: sus publicaciones (con el borrador) y su Ayuda.
+    await panel.goto(`${origin}/lena/panel?pestana=publicaciones`, { waitUntil: 'load' });
+    await panel.locator('[data-panel-section="publicaciones"]').getByText(title).first().waitFor({ timeout: 30000 });
+    await panel.goto(`${origin}/lena/panel?pestana=ayuda`, { waitUntil: 'load' });
+    await panel.locator('[data-panel-section="ayuda"] [data-help-toc]').waitFor();
+    // CMS una vez más: sigue con su sesión.
+    assert.equal((await cmsCall('GET', '/api/cms/users/me')).json?.user?.email, users.admin.email, 'the CMS session is intact after using the panel');
+    await cms.goto(`${origin}/cms/collections/articles`, { waitUntil: 'load' });
+    assert.ok(!cms.url().includes('/login'), 'CMS lists still open');
+    await payload.delete({ collection: 'municipal-content', id: draft.id, overrideAccess: true });
+    await payload.delete({ collection: 'tags', id: tag.json.doc.id, overrideAccess: true });
+    await c.close();
+  }
+  passed('CMS y panel a la vez en el mismo navegador: con la sesión del panel municipal abierta, la administración entra en el CMS, guarda, abre listas y la Ayuda; el panel sigue guardando y mostrando sus publicaciones y su Ayuda; alternando, ninguna sesión afecta a la otra');
+
   // --- 8. Firma «El Director».
   const pablo = await payload.create({ collection: 'users', overrideAccess: true, user: users.admin, data: { name: 'Pablo Velasco (redactor)', email: 'pvelasco@assa.as', password, role: 'editor' } });
   const runScript = args => spawnSync(process.execPath, ['scripts/firma-direccion-run.mjs', ...args], { env: process.env, encoding: 'utf8' });

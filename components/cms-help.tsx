@@ -1,7 +1,12 @@
 import type { AdminViewServerProps } from "payload";
 import Link from "next/link";
 import { DefaultTemplate } from "@payloadcms/next/templates";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { HelpBrowser } from "./help-browser";
+import { HelpSessionCheck } from "./cms-help-session";
+
+const LOGIN = `/cms/login?redirect=${encodeURIComponent("/cms/ayuda")}`;
 
 // /cms/ayuda: el manual de la redacción dentro del CMS (solo redacción y administración). El apartado de
 // administración, solo para la administración.
@@ -9,6 +14,13 @@ export async function HelpView(props: AdminViewServerProps) {
   const { initPageResult, searchParams, params, i18n, payload, user, locale, permissions } = props;
   const me = initPageResult.req.user as { collection?: string; role?: string | null } | null;
   const editorial = me?.collection === "users" && ["admin", "editor"].includes(String(me.role));
+  // Sin sesión del CMS: a la pantalla de acceso, que vuelve aquí al entrar. Si se llega desde un enlace de otra web
+  // (correo, chat…), Payload no usa la cookie en esa primera visita; la página lo comprueba desde el navegador y, si la
+  // sesión es válida, vuelve a cargarse ya con ella.
+  if (!me) {
+    if ((await headers()).get("sec-fetch-site") !== "cross-site") redirect(LOGIN);
+    return <HelpSessionCheck login={LOGIN} />;
+  }
   const body = editorial ? await (async () => {
     const { getManual, helpSections } = await import("@/lib/manuals");
     const manual = await getManual("redaccion", { admin: me!.role === "admin" });
