@@ -244,7 +244,7 @@ export async function run(ctx) {
     const c = await browser.newContext({ viewport: { width: 1366, height: 900 } });
     const t = await c.newPage();
     await t.goto(`${origin}/cms/login`, { waitUntil: 'load' });
-    const logo = await t.locator('[data-cms-logo]').count();
+    const logo = await t.locator('[data-cms-logo]').first().waitFor({ timeout: 15000 }).then(() => t.locator('[data-cms-logo]').count(), () => 0);
     await t.locator('input[name="email"]').fill(email); await t.locator('input[name="password"]').fill(password); await t.locator('button[type="submit"]').click();
     await t.waitForURL(url => !url.pathname.includes('/login'), { timeout: 30000 });
     const icon = await t.locator('[data-cms-icon]').count();
