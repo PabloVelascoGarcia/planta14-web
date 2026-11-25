@@ -292,8 +292,11 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
   .front-opening { padding-top: 16px; }
 }
 
-/* Ilustraciones generadas con IA: rótulo fijo encima de la imagen (components/article-image.tsx). */
-.ai-image { position: relative; display: block; width: 100%; height: 100%; }
+/* Ilustraciones generadas con IA: rótulo fijo encima de la imagen, en su esquina inferior izquierda
+   (components/article-image.tsx). El envoltorio mide lo que la imagen (alto automático); solo dentro de un hueco de alto
+   fijo (tarjeta horizontal) lo llena: .is-fill. Con height: 100% en una rejilla se estiraba a toda la columna. */
+.ai-image { position: relative; display: block; width: 100%; height: auto; }
+.ai-image.is-fill { height: 100%; }
 .ai-badge { position: absolute; left: 8px; bottom: 8px; z-index: 1; max-width: calc(100% - 16px); padding: 3px 8px; border-radius: 3px;
   background: rgba(20, 18, 16, .86); color: #fff; font: 700 12px/1.35 system-ui, sans-serif; letter-spacing: .01em; pointer-events: none; }
 

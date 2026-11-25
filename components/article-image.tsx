@@ -13,21 +13,22 @@ export const imageSizes = {
 export const AI_LABEL = "Ilustración generada con IA";
 
 type ImageFields = Pick<Article, "image" | "imageSrcSet" | "imageAlt" | "imagePoster" | "imageFocus" | "imageAI">;
-type ArticleImageProps = { article: ImageFields; sizes: keyof typeof imageSizes; className?: string; priority?: boolean; width?: number; height?: number; whole?: boolean };
+type ArticleImageProps = { article: ImageFields; sizes: keyof typeof imageSizes; className?: string; priority?: boolean; width?: number; height?: number; whole?: boolean; fill?: boolean };
 
 /**
  * Foto de una noticia con srcset/sizes cuando hay tamaños generados (Payload); en la demo, la imagen tal cual.
  * - Recortes (tarjetas, portada): respetan el punto de interés de la imagen (`object-position`).
  * - Carteles («Mostrar entera») o `whole`: la imagen completa dentro de su hueco, sobre fondo neutro, sin recortar.
- * - «Ilustración generada con IA»: lleva siempre el rótulo encima de la imagen (no se puede quitar).
+ * - «Ilustración generada con IA»: lleva siempre el rótulo encima de la imagen (no se puede quitar). Su envoltorio mide
+ *   lo que la imagen; `fill` solo dentro de un hueco de alto fijo (tarjeta horizontal), para cubrirlo entero.
  */
-export function ArticleImage({ article, sizes, className, priority = false, width = 800, height = 500, whole = false }: ArticleImageProps) {
+export function ArticleImage({ article, sizes, className, priority = false, width = 800, height = 500, whole = false, fill = false }: ArticleImageProps) {
   const contain = whole || article.imagePoster;
   const style: CSSProperties = contain ? { objectFit: "contain", background: "#e9e4dc" } : article.imageFocus ? { objectPosition: article.imageFocus } : {};
   const img = <img src={article.image} srcSet={article.imageSrcSet} sizes={article.imageSrcSet ? imageSizes[sizes] : undefined} alt={article.imageAlt ?? ""}
     loading={priority ? undefined : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" width={width} height={height} className={className} style={style}
     {...(contain ? { "data-image-whole": "" } : {})} />;
-  return article.imageAI ? <span className="ai-image" data-ai-image>{img}<AiBadge /></span> : img;
+  return article.imageAI ? <span className={`ai-image${fill ? " is-fill" : ""}`} data-ai-image>{img}<AiBadge /></span> : img;
 }
 
 /** Rótulo fijo de las ilustraciones generadas con IA (encima de la imagen). */

@@ -26,7 +26,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
       <article className="grid gap-4 border-t border-coal-900/15 py-5 sm:grid-cols-[180px_1fr]">
         {/* Hueco de alto fijo, sin estirarse a la fila; la imagen lo cubre entero (sin banda gris debajo). */}
         <Link href={`/noticia/${article.slug}`} aria-label={`Leer: ${article.title}`} className="block h-36 self-start overflow-hidden bg-coal-100 sm:h-[120px]" data-card-thumb>
-          <ArticleImage article={article} sizes="horizontal" className="h-full w-full object-cover transition duration-300 hover:scale-105" />
+          <ArticleImage article={article} sizes="horizontal" fill className="h-full w-full object-cover transition duration-300 hover:scale-105" />
         </Link>
         <div>
           <Meta article={article} />

@@ -105,6 +105,51 @@ export async function run(ctx) {
   const aiMain = await article({ title: 'Ilustración del futuro pozo', image: ai.id });
   const aiPage = await html(`/noticia/${aiMain.slug}`);
   assert.ok(aiPage.includes('data-ai-label') && aiPage.includes('data-ai-caption') && !aiPage.includes('Fotografía: Autora'), 'AI label over the image and in its caption, never «Fotografía»');
+  // La ilustración principal mide lo que la imagen (no la columna entera): el cuerpo empieza justo debajo y el pie de la
+  // página queda después del cuerpo, en ordenador y en móvil. El rótulo, en la esquina inferior izquierda de la imagen.
+  // Y en el resto de sitios donde sale una imagen de IA (bloque Imagen, tarjetas, /multimedia, concejo, sección), el
+  // rótulo siempre dentro de su imagen.
+  {
+    const pw = ctx.browser ?? await (await import('playwright')).chromium.launch();
+    const badgeInside = async (tab, where) => {
+      const boxes = await tab.locator('[data-ai-label]').evaluateAll(nodes => nodes.filter(n => n.offsetParent !== null).map(n => {
+        const holder = n.parentElement, img = holder.querySelector('img'), b = n.getBoundingClientRect(), r = img.getBoundingClientRect(), h = holder.getBoundingClientRect();
+        return { badge: [b.left, b.top, b.right, b.bottom].map(Math.round), img: [r.left, r.top, r.right, r.bottom].map(Math.round), holder: Math.round(h.height), imgHeight: Math.round(r.height) };
+      }));
+      for (const x of boxes) {
+        const [bl, bt, br, bb] = x.badge, [il, it, ir, ib] = x.img;
+        assert.ok(bl >= il - 1 && br <= ir + 1 && bt >= it - 1 && bb <= ib + 1 && bl - il <= 24 && ib - bb <= 24, `${where}: AI label on the bottom-left corner of its image ${JSON.stringify(x)}`);
+        assert.ok(x.holder <= x.imgHeight + 40, `${where}: the AI wrapper is as tall as its image ${JSON.stringify(x)}`);
+      }
+      return boxes.length;
+    };
+    for (const [width, height, kind] of [[1366, 900, 'desktop'], [390, 844, 'mobile']]) {
+      const v = await pw.newContext({ viewport: { width, height } });
+      await v.addCookies([{ name: 'planta14_consent', value: '1%3Arejected', url: web }]);
+      const tab = await v.newPage();
+      await tab.goto(`${web}/noticia/${aiMain.slug}`, { waitUntil: 'load' });
+      const geo = await tab.evaluate(() => {
+        const r = s => document.querySelector(s)?.getBoundingClientRect();
+        const wrap = r('article [data-ai-image]') ?? r('[data-ai-image]'), img = document.querySelector('[data-ai-image] img').getBoundingClientRect();
+        const body = r('[data-article-body]'), footer = r('[data-site-footer]'), credit = r('[data-article-credit]');
+        const y = rect => rect ? { top: Math.round(rect.top + scrollY), bottom: Math.round(rect.bottom + scrollY), height: Math.round(rect.height) } : null;
+        return { wrap: y(wrap), img: y(img), credit: y(credit), body: y(body), footer: y(footer) };
+      });
+      assert.ok(Math.abs(geo.wrap.height - geo.img.height) <= 2, `${kind}: the AI wrapper is as tall as the image ${JSON.stringify(geo)}`);
+      assert.ok(geo.credit.top >= geo.img.bottom && geo.credit.top - geo.img.bottom <= 24, `${kind}: credit right under the image ${JSON.stringify(geo)}`);
+      assert.ok(geo.body.top > geo.img.bottom && geo.body.top - geo.img.bottom <= 120, `${kind}: body starts right under the image ${JSON.stringify(geo)}`);
+      assert.ok(geo.footer.top >= geo.body.bottom, `${kind}: footer after the body ${JSON.stringify(geo)}`);
+      assert.ok(await badgeInside(tab, `${kind} article`) >= 1, `${kind}: AI label on the main image`);
+      if (process.env.COMPROBACION_VISUAL) await tab.screenshot({ path: `${process.env.COMPROBACION_VISUAL}/noticia-ia-${kind}.png`, fullPage: true });
+      for (const path of [`/noticia/${withGallery.slug}`, '/multimedia', '/', '/concejo/aller', '/mieres', '/tema/sociedad', '/tema/cultura']) {
+        await tab.goto(`${web}${path}`, { waitUntil: 'load' });
+        const found = await badgeInside(tab, `${kind} ${path}`);
+        if (['/tema/sociedad', '/mieres', `/noticia/${withGallery.slug}`].includes(path)) assert.ok(found >= 1, `${kind} ${path}: an AI image checked`);
+        if (process.env.COMPROBACION_VISUAL) await tab.screenshot({ path: `${process.env.COMPROBACION_VISUAL}/ia-${kind}${path.replace(/[^a-z0-9]+/gi, '-')}.png`, fullPage: true });
+      }
+      await v.close();
+    }
+  }
   passed('redacción (imágenes en el texto): bloques «Imagen» (pie y crédito, el de la imagen si se deja vacío) y «Galería» (cuadrícula con pies y créditos) con srcset; sus imágenes pasan la misma comprobación de derechos y tienen copia pública; «Ilustración generada con IA» lleva siempre su rótulo sobre la imagen y en el pie, nunca «Fotografía», y no se puede cambiar a fotografía');
 
   // Lightbox: teclado y deslizando.

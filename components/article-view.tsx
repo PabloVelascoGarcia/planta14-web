@@ -39,7 +39,7 @@ export function ArticleView({ article, related, shareUrl }: { article: Article; 
           : <ArticleImage article={article} sizes="article" priority width={1600} height={1000} className="mt-6 aspect-[16/10] w-full object-cover" />}
         <p className="mt-2 text-xs text-steel" data-article-credit>{article.imageAI ? <><strong data-ai-caption>{AI_LABEL}.</strong> {article.imageCredit ? `Autoría: ${article.imageCredit}` : null}</>
           : article.imageTemplate ? "Imagen: Planta 14" : article.imageCredit ? `Fotografía: ${article.imageCredit}` : null}</p>
-        <div className="mx-auto mt-8 max-w-[640px] space-y-6 font-serif text-xl leading-9 text-coal-900">
+        <div className="mx-auto mt-8 max-w-[640px] space-y-6 font-serif text-xl leading-9 text-coal-900" data-article-body>
           {article.bodyRich ? <RichText value={article.bodyRich} /> : article.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
