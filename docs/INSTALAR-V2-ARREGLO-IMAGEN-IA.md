@@ -5,9 +5,10 @@ Para Claude Code en el PC de Pablo (Code local), con el agente SSH cargado.
 Rama **`desarrollo/planta14-v2-retoques-portada`**, sobre **`b8bd04a`** (lo instalado en pruebas). No se han tocado
 `main`, `mejora/presentacion-la-voz` ni el servidor. Sin PR.
 
-**Commit a desplegar: `b42b30f`** (`b42b30f86074c09ca2adc892ba720e8ef177d8c3`).
+**Commit a desplegar: `dbb383c`** (`dbb383cdb25c6ce63172f9d37469b63eb54204ce`).
 
-- **Sin migraciones.** Solo estilos, un atributo en la vista de la noticia y pruebas.
+- **Sin migraciones.** Solo estilos, un atributo en la vista de la noticia, una aclaración en el manual de la
+  redacción y pruebas.
 - No toca contenido. Caddy no cambia. No hay pasos después del despliegue.
 
 ## El fallo y el arreglo
@@ -33,6 +34,22 @@ Revisado donde se pinta una imagen de IA:
 | Ficha de fiesta | su propio marco | sin cambio; bien |
 | Imagen para redes 1200×630 | se genera en el servidor, sin estos estilos | sin cambio; su prueba sigue en verde |
 
+## Pie de foto de la foto principal (consulta de un redactor)
+
+Comparado `a4e8c86` con `b8bd04a`, con una cuenta de rol editor:
+
+1. **Dónde se escribe:** la foto principal **no tiene pie propio, ni lo ha tenido nunca** (tampoco en versiones
+   anteriores). Bajo ella sale la **autoría o crédito** de su ficha («Fotografía: …»), que se cambia en la ficha de la
+   imagen (en Imágenes o con el lápiz junto a la foto de la noticia). El **Pie de foto** existe solo en los bloques
+   **Imagen** y **Galería** del texto, y es obligatorio allí.
+2. **Lo ocultado en `b8bd04a`:** solo cuatro datos internos de la imagen (usos publicados, clave, almacenamiento y
+   dirección de la copia pública). El texto alternativo, la autoría o crédito, el enlace de origen, el titular y el tipo
+   de derechos **no se tocaron**: la redacción los ve y los edita igual que en `a4e8c86`. No había nada que restaurar.
+3. **No se ha añadido** un pie propio para la foto principal. Si se quiere, es un cambio aparte (un campo en la
+   noticia, con su migración solo de esquema).
+
+Para el redactor, el manual tiene ahora en «Dudas frecuentes»: «¿Dónde pongo el pie de foto de la foto principal?».
+
 ## Pasos en pruebas.planta14.com
 
 ```bash
@@ -54,11 +71,11 @@ git fetch origin desarrollo/planta14-v2-retoques-portada
 ```
 
 ```bash
-git checkout --detach b42b30f86074c09ca2adc892ba720e8ef177d8c3
+git checkout --detach dbb383cdb25c6ce63172f9d37469b63eb54204ce
 ```
 
 ```bash
-bash infra/deploy/deploy.sh --env-file infra/.env.production b42b30f86074c09ca2adc892ba720e8ef177d8c3
+bash infra/deploy/deploy.sh --env-file infra/.env.production dbb383cdb25c6ce63172f9d37469b63eb54204ce
 ```
 
 ```bash
@@ -66,7 +83,7 @@ echo "código: $?"
 ```
 
 Debe terminar en «Desplegada», con código 0 y sin migraciones nuevas. Después, `status.sh` otra vez: versión
-`b42b30f`.
+`dbb383c`.
 
 **Vuelta atrás a `b8bd04a`** (no hay nada que deshacer en la base de datos):
 
@@ -91,7 +108,7 @@ En el ordenador y en el móvil:
 
 ## Pruebas
 
-Batería reducida (cambio acotado de estilos), una sola vez sobre `19cab8c` (la aplicación de `b42b30f`, que solo añade la
+Batería reducida (cambio acotado de estilos), una sola vez sobre `19cab8c` (la aplicación de `dbb383c`, que solo añade la
 captura nueva del manual), todo superado:
 
 | Suite | Resultado |
@@ -101,7 +118,7 @@ captura nueva del manual), todo superado:
 | Lint | 0 errores (29 avisos, los mismos de antes) |
 | Compilación | correcta |
 | Instalación | 16 PASS |
-| Participación (CMS, panel y seguridad: todos los bloques) | 71 PASS, con la prueba nueva en «redacción (imágenes en el texto)» |
+| Participación (CMS, panel y seguridad: todos los bloques) | 71 PASS, con la prueba nueva en «redacción (imágenes en el texto)»; repetida sobre `dbb383c`: **72 PASS** (con la de las fotos para la redacción) |
 | `staging-e2e` | SUPERADO |
 | Limpieza | 0 volúmenes nuevos |
 
@@ -114,6 +131,15 @@ captura nueva del manual), todo superado:
 - el rótulo está en la esquina inferior izquierda de la imagen.
 
 Además recorre la noticia con bloque Imagen, /multimedia, la portada, un concejo, un espacio municipal y dos secciones, y comprueba que, en cada imagen de IA, el rótulo queda dentro de su imagen.
+
+**Prueba de las fotos para la redacción** (bloque `participacion-retoques`), con una cuenta de la redacción en el navegador:
+
+- en la ficha de la imagen, el texto alternativo, la autoría o crédito, el enlace de origen y el titular se ven y se pueden editar;
+- al guardar, cambian, y el crédito nuevo sale bajo la foto principal de la noticia;
+- en la noticia está «Foto principal»;
+- los bloques Imagen y Galería tienen su «Pie de foto».
+
+Sobre `dbb383c` se repitieron la compilación, los tipos y el lint, y la participación completa.
 
 Antes de dar el arreglo por bueno, se pasó la prueba con el CSS antiguo y **falló**, como debía: el envoltorio medía
 918 px con una imagen de 475 px y el pie de página quedaba por encima del cuerpo.
