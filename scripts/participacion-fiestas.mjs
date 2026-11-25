@@ -60,7 +60,8 @@ export async function run(ctx) {
   const section = (await all('sections', { slug: { equals: 'sociedad' } }))[0];
   await payload.create({ collection: 'articles', overrideAccess: true, data: { title: 'Noticia de prueba para la portada', excerpt: 'Entradilla.', body: ['Texto.'], author: author.id, town: mieres.id, section: section.id, _status: 'published' } });
   const home = await page(`${web}/`);
-  const block = home.slice(home.indexOf('data-block="fiestas"'), home.indexOf('data-block="opinion"'));
+  // Hasta el final de su sección (sin opinión, ese bloque ya no se pinta: no sirve de tope).
+  const start = home.indexOf('data-block="fiestas"'), block = start < 0 ? '' : home.slice(start, home.indexOf('</section>', start));
   assert.ok(block.includes('Fiestas esta semana') && block.includes(`href="/fiestas/${sanJuan.slug}"`) && !block.includes(carmen.slug) && !block.includes('<img'), `home: text-only «Fiestas esta semana» block: ${block.slice(0, 600) || home.slice(0, 300)}`);
   assert.ok(lenaPage.includes('Fiestas esta semana') && !(await page(`${web}/mieres`)).includes('data-municipal-fiestas'), 'concejo page: only this week; hidden when there are none');
   // «Fiestas esta semana»: desde N días antes (7 por defecto) hasta el último día; nunca borradores ni «Fecha pendiente».
@@ -71,7 +72,7 @@ export async function run(ctx) {
     'from 7 days before until its last day');
   assert.deepEqual(thisWeek([f('a', shift(day, 3), shift(day, 3))], day, 2), [], 'configurable number of days');
   const lejana = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta lejana', village: 'Ujo', town: mieres.id, dateStatus: 'confirmada', startDate: `${shift(today, 20)}T12:00:00.000Z`, endDate: `${shift(today, 21)}T12:00:00.000Z`, recurring: true, _status: 'published' } });
-  const homeBlock = html => html.slice(html.indexOf('data-block="fiestas"'), html.indexOf('data-block="opinion"'));
+  const homeBlock = html => { const i = html.indexOf('data-block="fiestas"'); return i < 0 ? '' : html.slice(i, html.indexOf('</section>', i)); };
   assert.ok(!homeBlock(await page(`${web}/`)).includes(lejana.slug), 'in 20 days: not yet with 7 days');
   const settings = body => async cookie => fetch(`${web}/api/cms/globals/fiestas-settings`, { method: 'POST', headers: { Cookie: cookie, 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   assert.equal((await (settings({ daysBefore: 40 }))(await signIn(users.lena.email))).status, 403, 'town halls cannot change it');
@@ -80,7 +81,7 @@ export async function run(ctx) {
   const pendiente = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta sin fecha', village: 'Ujo', town: mieres.id, dateStatus: 'pendiente', recurring: true } });
   const borrador = await payload.create({ collection: 'festivals', overrideAccess: true, data: { name: 'Fiesta en borrador', village: 'Ujo', town: mieres.id, dateStatus: 'confirmada', startDate: `${today}T12:00:00.000Z`, endDate: `${today}T12:00:00.000Z`, _status: 'draft' } });
   const wider = await page(`${web}/`);
-  const widerBlock = wider.slice(wider.indexOf('data-block="fiestas"'), wider.indexOf('data-block="opinion"'));
+  const widerBlock = homeBlock(wider);
   assert.ok(widerBlock.includes(lejana.slug) && !widerBlock.includes(carmen.slug) && !widerBlock.includes('Fiesta sin fecha') && !widerBlock.includes('Fiesta en borrador'), 'with 30 days the one in 20 days enters (El Carmen, in 35, does not); never drafts nor «Fecha pendiente»');
   assert.equal((await (settings({ daysBefore: 7 }))(await signIn(users.editor.email))).status, 200);
   for (const doc of [pendiente, borrador, lejana]) await payload.delete({ collection: 'festivals', id: doc.id, overrideAccess: true });

@@ -11,7 +11,7 @@ export async function run(ctx) {
   await c.addCookies([{ name: 'planta14_consent', value: '1%3Arejected', url: web }]);
   const p = await c.newPage();
   await p.goto(`${web}/`, { waitUntil: 'load' });
-  const blocks = await p.locator('[data-block]').evaluateAll(nodes => nodes.map(n => ({ block: n.getAttribute('data-block'), items: n.querySelectorAll('article, li, a.municipal-cta, .numbered-story').length })));
+  const blocks = await p.locator('[data-block]').evaluateAll(nodes => nodes.map(n => ({ block: n.getAttribute('data-block'), items: (n.tagName === 'ARTICLE' ? 1 : 0) + n.querySelectorAll('article, li, a.municipal-cta, .numbered-story').length })));
   // Sin ninguna noticia, la portada muestra su texto breve en lugar de bloques.
   if (!blocks.length) assert.ok(await p.getByText('Pronto encontrarás aquí nuestras primeras historias').count() === 1, 'empty home: a short text');
   for (const b of blocks) assert.ok(b.items > 0, `home block «${b.block}» is painted only with content (${JSON.stringify(blocks)})`);

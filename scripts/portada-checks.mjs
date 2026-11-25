@@ -30,7 +30,7 @@ export async function run({ web, payload, browser, assert, passed, pesoMovil, ki
     assert.ok(!/href="[^"]*\/panel(\/|")/.test(page), `no link to a /panel from ${url}`);
   }
   assert.ok(!home.includes('Prueba cómo se publica un aviso'), 'no «Prueba cómo se publica un aviso»');
-  const municipalBlock = home.slice(home.indexOf('data-block="ayuntamientos"'), home.indexOf('data-block="opinion"'));
+  const municipalStart = home.indexOf('data-block="ayuntamientos"'), municipalBlock = municipalStart < 0 ? '' : home.slice(municipalStart, home.indexOf('</section>', municipalStart));
   assert.ok(municipalBlock.includes('href="/mieres"') && municipalBlock.includes('Descubre el espacio de Mieres'), 'active space Mieres');
   assert.ok(municipalBlock.includes('href="/lena"') && municipalBlock.includes('Descubre el espacio de Lena'), 'active space Lena');
   assert.ok(!municipalBlock.includes('href="/aller"') && !municipalBlock.includes('Descubre el espacio de Aller'), 'Aller (inactive) is not offered');
