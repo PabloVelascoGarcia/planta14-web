@@ -61,3 +61,6 @@ export const municipalContentUpdate: Access = (args) => {
   const space = municipalSpaceOf(args.req);
   return space === null ? false : { space: { equals: space } };
 };
+
+/** Condición de formulario: el campo solo se ve con una cuenta de administración (campos técnicos, ocultos a la redacción). */
+export const shownToAdmin = (user: unknown) => (user as { role?: string } | null | undefined)?.role === 'admin';

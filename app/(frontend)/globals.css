@@ -324,3 +324,7 @@ body:has(.editorial-edition) :focus-visible { outline-color:#111; }
 @media (max-width: 639px) { .lightbox-prev, .lightbox-next { display: none; } }
 /* Fiesta con «Mostrar entera» desmarcada: foto encuadrada según su punto de interés. */
 .fiesta-poster.is-photo img { aspect-ratio: 4 / 3; max-height: none; object-fit: cover; }
+
+/* Portada con una sola noticia: la principal sola, centrada y sin columna lateral vacía. */
+.front-opening.front-opening--solo { grid-template-columns: minmax(0, 1fr); }
+.front-opening--solo .lead-story { max-width: 960px; width: 100%; margin-inline: auto; }

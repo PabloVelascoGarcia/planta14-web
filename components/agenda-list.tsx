@@ -8,7 +8,7 @@ import { contentSource } from '@/lib/content-source';
 import { getMunicipalContents, getMunicipalSpace as getSpace } from '@/lib/municipal-content';
 import { fiestaDates, getFiestas } from '@/lib/fiestas';
 
-type AgendaItem = { title: string; date: string; time?: string; place: string; concejo: string; description: string; href?: string };
+export type AgendaItem = { title: string; date: string; time?: string; place: string; concejo: string; description: string; href?: string };
 
 /** Agenda con contenido real: eventos municipales, agenda general (noticias de Agenda con fecha) y fiestas, solo los próximos. */
 async function payloadAgenda(limit: number): Promise<AgendaItem[]> {
@@ -34,17 +34,27 @@ async function payloadAgenda(limit: number): Promise<AgendaItem[]> {
     .map(item => ({ title: item.title, date: item.date, time: item.time, place: item.place, concejo: item.concejo, description: item.description, href: 'href' in item ? String(item.href) : undefined }));
 }
 
-export async function AgendaList({ limit = 4 }: { limit?: number } = {}) {
-  const payloadEvents: AgendaItem[] | null = contentSource() === 'payload' ? await payloadAgenda(limit) : null;
+/** Próximas citas de la agenda (las mismas que pinta AgendaList), para saber antes si el bloque tiene algo. */
+export async function getAgendaItems(limit = 4): Promise<AgendaItem[]> {
+  if (contentSource() === 'payload') return payloadAgenda(limit);
+  return voiceDemoEnabled
+    ? municipalContents.filter(c => c.type === "event" && getMunicipalSpace(c.space)).slice(0, 4).map(c => ({ title: c.title, date: c.eventAt!.slice(0, 10), place: c.place!, concejo: getMunicipalSpace(c.space)!.name.replace("Ayuntamiento de ", ""), description: "Agenda de muestra · Publica el ayuntamiento" }))
+    : agenda;
+}
+
+/** Sin citas próximas: `empty` (texto) o nada. */
+export async function AgendaList({ limit = 4, items, empty }: { limit?: number; items?: AgendaItem[]; empty?: string } = {}) {
+  const events = items ?? await getAgendaItems(limit);
+  if (!events.length) return empty ? <p className="border-y border-coal-900/15 py-6 text-lg text-steel" data-empty-agenda>{empty}</p> : null;
   return (
     <div className="divide-y divide-coal-900/15 border-y border-coal-900/15">
-      {(payloadEvents ? payloadEvents : voiceDemoEnabled ? municipalContents.filter(c => c.type === "event" && getMunicipalSpace(c.space)).slice(0, 4).map(c => ({ title: c.title, date: c.eventAt!.slice(0, 10), place: c.place!, concejo: getMunicipalSpace(c.space)!.name.replace("Ayuntamiento de ", ""), description: "Agenda de muestra · Publica el ayuntamiento" })) : agenda).map((event) => (
+      {events.map((event) => (
         <article key={`${event.title}-${event.date}`} className="grid gap-2 py-4 sm:grid-cols-[150px_1fr]">
           <time className="text-xs font-black uppercase tracking-[0.16em] text-copper" dateTime={event.date}>
-            {formatDate(event.date)}{(event as AgendaItem).time ? ` · ${(event as AgendaItem).time} h` : ""}
+            {formatDate(event.date)}{event.time ? ` · ${event.time} h` : ""}
           </time>
           <div>
-            <h3 className="font-serif text-xl font-black">{(event as AgendaItem).href ? <Link href={(event as AgendaItem).href!} className="hover:text-copper">{event.title}</Link> : event.title}</h3>
+            <h3 className="font-serif text-xl font-black">{event.href ? <Link href={event.href} className="hover:text-copper">{event.title}</Link> : event.title}</h3>
             <p className="mt-1 text-sm font-bold text-coal-800">{[event.place, event.concejo].filter(Boolean).join(", ")}</p>
             <p className="mt-1 text-sm leading-6 text-coal-800">{event.description}</p>
           </div>

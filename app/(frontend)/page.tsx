@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { sectionHref } from "@/lib/taxonomy";
 import { AdSlot } from "@/components/ad-slot";
-import { AgendaList } from "@/components/agenda-list";
+import { AgendaList, getAgendaItems } from "@/components/agenda-list";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleImage } from "@/components/article-image";
 import { Newsletter } from "@/components/newsletter";
@@ -32,10 +32,13 @@ export default async function Home() {
   // no sale. Solo publicadas y con fecha confirmada (getFiestas ya deja fuera los borradores y «Fecha pendiente»).
   const [allFiestas, daysBefore] = await Promise.all([getFiestas(), fiestasDaysBefore()]);
   const weekFiestas = thisWeek(allFiestas, madridToday(), daysBefore).slice(0, 6);
+  // Un bloque sin contenido no se pinta (ni su título ni «Ver todo»); el que queda solo en su fila ocupa todo el ancho.
+  const agendaItems = await getAgendaItems(4);
+  const closing = opinion.length ? opinion : more;
 
   return (
     <div className="pb-10">
-      <section className="container-p14 front-opening">
+      <section className={`container-p14 front-opening${latest.length ? "" : " front-opening--solo"}`}>
         <article className="lead-story" data-block="principal">
           <div className="flex items-center gap-3 editorial-kicker"><Link href={`/concejo/${slugify(mainArticle.concejo)}`}>{mainArticle.concejo}</Link><span aria-hidden="true">/</span><Link href={sectionHref(mainArticle.topic)} data-main-section>{mainArticle.topic}</Link></div>
           <h1><Link href={`/noticia/${mainArticle.slug}`}>{mainArticle.title}</Link></h1>
@@ -46,14 +49,14 @@ export default async function Home() {
           {mainArticle.imageCredit ? <p className="mt-2 text-[10px] text-steel">Fotografía: {mainArticle.imageCredit}</p> : null}
           <div className="lead-byline"><span>{mainArticle.author}</span><Link href={`/noticia/${mainArticle.slug}`}>Leer la historia <span aria-hidden="true">↗</span></Link></div>
         </article>
-        <aside className="opening-sidebar" data-block="en-portada">
+        {latest.length ? <aside className="opening-sidebar" data-block="en-portada">
           <SectionHeading title="En portada" />
           {latest.map((article, index) => <div key={article.slug} className="numbered-story"><span className="story-number">0{index + 1}</span><ArticleCard article={article} variant="compact" /></div>)}
-          <Link className="editorial-link" href="/agenda">La agenda de las cuencas <span aria-hidden="true">↗</span></Link>
-        </aside>
+          {agendaItems.length ? <Link className="editorial-link" href="/agenda">La agenda de las cuencas <span aria-hidden="true">↗</span></Link> : null}
+        </aside> : null}
       </section>
 
-      <section className="container-p14 mt-10 grid gap-8 lg:grid-cols-[1fr_300px]">
+      {featured.length ? <section className="container-p14 mt-10 grid gap-8 lg:grid-cols-[1fr_300px]">
         <div data-block="la-vida-aqui">
           <SectionHeading title="La vida aquí" />
           <div className="grid gap-6 md:grid-cols-3">
@@ -63,22 +66,22 @@ export default async function Home() {
           </div>
         </div>
         <AdSlot tall />
-      </section>
+      </section> : null}
 
       {/* «Tu ayuntamiento, aquí» solo con algún espacio municipal activo; sin ninguno, Caudal ocupa todo el ancho. */}
-      <section className={`container-p14 mt-12 grid gap-10 ${activeSpaces.length ? "lg:grid-cols-2" : ""}`}>
-        <div data-block="caudal">
+      {caudal.length || activeSpaces.length ? <section className={`container-p14 mt-12 grid gap-10 ${activeSpaces.length && caudal.length ? "lg:grid-cols-2" : ""}`}>
+        {caudal.length ? <div data-block="caudal">
           <SectionHeading title="Caudal" href="/comarca/caudal" />
           {caudal.map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
-        </div>
+        </div> : null}
         {activeSpaces.length ? <div data-block="ayuntamientos">
           <SectionHeading title="Tu ayuntamiento, aquí" />
           <p className="mt-4 text-lg leading-7 text-steel">Avisos, agenda y oportunidades. Un espacio propio para cada concejo, conectado con la vida del Caudal.</p>
           <div className="mt-6 flex flex-wrap gap-3">{activeSpaces.map(space => <Link key={space.id} href={`/${space.id}`} className="municipal-cta">Descubre el espacio de {townNames.get(space.id)} <span>↗</span></Link>)}</div>
         </div> : null}
-      </section>
+      </section> : null}
 
       {weekFiestas.length ? <section className="container-p14 mt-12" data-block="fiestas" aria-labelledby="fiestas-portada">
         <div className="border-t-4 border-coal-950 pt-4">
@@ -90,18 +93,18 @@ export default async function Home() {
         </div>
       </section> : null}
 
-      <section className="container-p14 mt-12 grid gap-8 lg:grid-cols-[1fr_0.85fr]">
-        <div data-block="opinion">
+      {closing.length || agendaItems.length ? <section className={`container-p14 mt-12 grid gap-8 ${closing.length && agendaItems.length ? "lg:grid-cols-[1fr_0.85fr]" : ""}`}>
+        {closing.length ? <div data-block="opinion">
           <SectionHeading title={opinion.length ? "Opinión" : "Más historias"} />
-          {(opinion.length ? opinion : more).map((article) => (
+          {closing.map((article) => (
             <ArticleCard key={article.slug} article={article} variant="horizontal" />
           ))}
-        </div>
-        <div data-block="agenda">
+        </div> : null}
+        {agendaItems.length ? <div data-block="agenda">
           <SectionHeading title="Para salir" href="/agenda" />
-          <AgendaList />
-        </div>
-      </section>
+          <AgendaList items={agendaItems} />
+        </div> : null}
+      </section> : null}
 
       {/* El semanal es una maqueta de la demo (/niebla): no aparece con contenido real. */}
       {contentSource() === "demo" ? <section className="container-p14 mt-12 border-y border-coal-900/20 py-8" aria-label="El semanal de Planta 14">

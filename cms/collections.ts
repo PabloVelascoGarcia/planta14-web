@@ -1,5 +1,5 @@
 import { APIError, type CollectionConfig } from 'payload';
-import { adminOnly, editorialUser, municipalSpaceOf, ownUserOrAdmin, relationID } from './access';
+import { adminOnly, editorialUser, municipalSpaceOf, ownUserOrAdmin, relationID, shownToAdmin } from './access';
 import { auditAfterChange, auditAfterDelete } from './activity';
 import { readMedia } from './media-rights';
 import { countPublishedUses, publicURL, syncPublicMedia } from './public-media';
@@ -209,11 +209,11 @@ export const Media: CollectionConfig = {
       admin: { readOnly: false, condition: (data) => !data?.id, description: 'Obligatorio para poder publicar la foto. Queda registrado quién y cuándo lo declara.' } },
     { name: 'uploadedBySpace', label: 'Subida por el espacio municipal', type: 'relationship', relationTo: 'municipal-spaces', index: true, admin: { readOnly: true, condition: data => Boolean(data?.uploadedBySpace) } },
     // Maintained by hooks of articles and municipal content: number of published documents using the image.
-    { name: 'publishedUses', type: 'number', defaultValue: 0, index: true, admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false } },
+    { name: 'publishedUses', type: 'number', defaultValue: 0, index: true, admin: { readOnly: true, condition: (data, _s, { user }) => Boolean(data?.id) && shownToAdmin(user) }, access: { create: () => false, update: () => false } },
     // Random object prefix of the current public copy (null when the image is not public).
-    { name: 'publicKey', type: 'text', admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false } },
+    { name: 'publicKey', type: 'text', admin: { readOnly: true, condition: (data, _s, { user }) => Boolean(data?.id) && shownToAdmin(user) }, access: { create: () => false, update: () => false } },
     // Bucket that holds the current public copy (to clean the old one after changing PUBLIC_MEDIA_BUCKET).
-    { name: 'publicBucket', type: 'text', admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false } },
+    { name: 'publicBucket', type: 'text', admin: { readOnly: true, condition: (data, _s, { user }) => Boolean(data?.id) && shownToAdmin(user) }, access: { create: () => false, update: () => false } },
     // Rights declaration made by a municipal account when uploading (who, when, what was declared).
     { name: 'rightsDeclaration', label: 'Declaración de derechos', type: 'group', admin: { readOnly: true, condition: data => Boolean(data?.id) }, fields: [
       { name: 'declared', type: 'checkbox', defaultValue: false },
@@ -222,7 +222,7 @@ export const Media: CollectionConfig = {
       { name: 'declaredAt', type: 'date' },
     ] },
     loteField,
-    { name: 'publicURL', type: 'text', virtual: true, admin: { readOnly: true, condition: data => Boolean(data?.id) }, access: { create: () => false, update: () => false },
+    { name: 'publicURL', type: 'text', virtual: true, admin: { readOnly: true, condition: (data, _s, { user }) => Boolean(data?.id) && shownToAdmin(user) }, access: { create: () => false, update: () => false },
       hooks: { afterRead: [({ siblingData }) => publicURL(siblingData)] } },
   ],
 };

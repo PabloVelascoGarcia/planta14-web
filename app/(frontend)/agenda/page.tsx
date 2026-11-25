@@ -21,7 +21,7 @@ export default function AgendaPage() {
           </p>
         </header>
         <div className="mt-8">
-          <AgendaList limit={40} />
+          <AgendaList limit={40} empty="No hay citas próximas en la agenda. Las publicaremos aquí en cuanto se anuncien." />
         </div>
       </section>
       <AdSlot tall />

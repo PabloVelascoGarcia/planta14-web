@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { APIError, type Access, type CollectionBeforeChangeHook, type CollectionConfig, type Endpoint, type FieldHook, type Payload } from 'payload';
 import { BoldFeature, FixedToolbarFeature, HeadingFeature, InlineToolbarFeature, ItalicFeature, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
-import { editorialUser, editorialVersions, notMunicipal, publishedFilter, relationID } from './access';
+import { editorialUser, editorialVersions, notMunicipal, publishedFilter, relationID, shownToAdmin } from './access';
 import { auditAfterChange, auditAfterDelete, rememberMainState } from './activity';
 import { isPublishing, syncLinkedMedia, syncLinkedMediaAfterDelete, validatePublishedImages } from './media-rights';
 import { toLexical } from '../lib/rich-text';
@@ -154,7 +154,7 @@ export const Festivals: CollectionConfig = {
       fields: [{ name: 'url', label: 'Dirección', type: 'text', required: true, maxLength: 500 }, { name: 'title', label: 'Título', type: 'text', maxLength: 300 }] },
     { name: 'catalogNotes', label: 'Notas del catálogo (no se publican)', type: 'textarea', maxLength: 4000, access: editorialOnly,
       admin: { condition: data => Boolean(data?.catalogNotes), description: 'Actos habituales, carteles, dudas y verificación según el catálogo de fiestas.' } },
-    { name: 'externalID', label: 'Identificador del catálogo', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true } },
+    { name: 'externalID', label: 'Identificador del catálogo', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true, condition: (_d, _s, { user }) => shownToAdmin(user) } },
     { name: 'slug', label: 'Dirección (slug)', type: 'text', unique: true, index: true, admin: { position: 'sidebar', description: 'Se crea sola: nombre, pueblo y año.' } },
     { name: 'startDay', type: 'text', index: true, admin: { hidden: true } },
     { name: 'endDay', type: 'text', index: true, admin: { hidden: true } },

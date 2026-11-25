@@ -1,7 +1,7 @@
 import { APIError, type Access, type CollectionBeforeChangeHook, type CollectionConfig, type Endpoint, type Field, type PayloadRequest } from 'payload';
 import { revalidateAfterChange, revalidateAfterDelete } from './revalidate';
 import { UTIL_SERVICES } from '../lib/util-services';
-import { adminOnly, editorialUser, municipalSpaceOf, notMunicipal, relationID } from './access';
+import { adminOnly, editorialUser, municipalSpaceOf, notMunicipal, relationID, shownToAdmin } from './access';
 import { auditAfterChange, auditAfterDelete } from './activity';
 import { syncLinkedMedia, syncLinkedMediaAfterDelete } from './media-rights';
 import { slugText } from './content-collections';
@@ -31,7 +31,7 @@ const source: Field[] = [
     ...help('Se publican al pie de la ficha.') },
   { name: 'doubts', label: 'Dudas pendientes (no se publica)', type: 'textarea', access: editorialOnly, ...help('Lo que falta por contrastar. Solo lo ve la redacción.') },
   { name: 'reviewed', label: 'Dudas revisadas', type: 'checkbox', defaultValue: false, access: editorialOnly, ...help('Márcalo cuando la redacción haya comprobado las dudas: quita el aviso «Dudoso».') },
-  { name: 'externalID', label: 'Identificador de importación', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true } },
+  { name: 'externalID', label: 'Identificador de importación', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true, condition: (_d, _s, { user }) => shownToAdmin(user) } },
 ];
 // Aviso de revisión en el CMS (columna de la lista y aviso arriba de la ficha): coordenadas pendientes y dudoso.
 export const reviewOptions = [
@@ -183,7 +183,7 @@ export const MunicipalServices: CollectionConfig = {
     { name: 'checkedAt', label: 'Fecha de comprobación', type: 'text', maxLength: 10, validate: (value: unknown) => !value || /^\d{4}-\d{2}-\d{2}$/.test(String(value)) || 'Escribe la fecha como AAAA-MM-DD',
       admin: { description: 'Día en que se comprobó el dato en la fuente (AAAA-MM-DD). Sale junto a la fuente: «comprobado el 04/11/2026». Sin fuente o sin fecha: «Fuente pendiente de comprobar».' } },
     { name: 'doubts', label: 'Dudas pendientes (no se publica)', type: 'textarea', access: editorialOnly },
-    { name: 'externalID', label: 'Identificador de importación', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true } },
+    { name: 'externalID', label: 'Identificador de importación', type: 'text', unique: true, index: true, access: editorialOnly, admin: { position: 'sidebar', readOnly: true, condition: (_d, _s, { user }) => shownToAdmin(user) } },
     { name: 'order', label: 'Orden', type: 'number', defaultValue: 100, admin: { position: 'sidebar', description: 'Los números más bajos salen antes dentro de su tipo.' } },
   ],
 };

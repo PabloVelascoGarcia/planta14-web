@@ -128,6 +128,9 @@ Así lo ven los vecinos, marcado como contenido del ayuntamiento:
 
 ![La publicación en la web](img/manual-ayuntamientos/09-en-la-web.png)
 
+Las partes de vuestra página que todavía no tienen nada (por ejemplo, la agenda o los avisos) no se muestran: aparecen
+solas en cuanto publicáis la primera. Mientras no hayáis publicado nada, la página lo explica con un texto breve.
+
 ## 7. Ocultar información de «Útil»
 
 La página de tu concejo tiene una sección **Útil**: el tiempo, puertos y estaciones de esquí, farmacias de guardia, el

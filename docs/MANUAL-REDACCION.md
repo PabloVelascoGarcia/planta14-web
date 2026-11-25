@@ -130,7 +130,8 @@ descripción, autoría y la casilla de derechos. Sin derechos, la noticia no se 
 
 ## 7. La foto principal
 
-En **Foto principal**, **Elegir de los existentes** abre la biblioteca de Imágenes. Para una foto nueva, pulsa
+En **Foto principal**, **Elegir de los existentes** abre la biblioteca de Imágenes. Si no tienes foto propia, la
+biblioteca tiene fotos de paisaje de los concejos, cada una con su crédito, listas para usar. Para una foto nueva, pulsa
 **Crear** (o arrástrala) y rellena:
 
 - **Texto alternativo:** qué se ve en la foto;
@@ -181,10 +182,18 @@ eliges ninguna, se usa la de la sección principal.
 Son diseños propios: ni fotos ni ilustraciones de inteligencia artificial. En cuanto pongas una foto principal, la
 plantilla deja de usarse.
 
-### Ilustraciones generadas con IA
+### Imágenes hechas con IA
 
-Su uso lo decide **la dirección**. En la imagen, **Tipo de imagen → Ilustración generada con IA**. Entonces la web
-muestra **siempre** el rótulo «Ilustración generada con IA» encima de la imagen y en su pie (también en las tarjetas,
+Se pueden usar, pero **poco**. La norma:
+
+- **Solo como ilustración**, nunca algo que parezca una fotografía.
+- Para **opinión, temas explicativos y piezas sin fecha** cuando no hay foto. **Nunca** para la noticia de un hecho
+  concreto.
+- **Nunca personas reales reconocibles**, ni lugares o hechos reales presentados como si fueran una fotografía.
+- **Siempre** con el tipo **Ilustración generada con IA**, para que salga el rótulo, como exige la normativa europea.
+- No hace falta pedir permiso antes: **decide cada redactor**.
+
+Al subirla, en la imagen elige **Tipo de imagen → Ilustración generada con IA**. Entonces la web muestra **siempre** el rótulo «Ilustración generada con IA» encima de la imagen y en su pie (también en las tarjetas,
 las galerías y la imagen para redes). No se puede quitar ni ocultar, nunca se presenta como «Fotografía» y, una vez
 guardada así, no se puede cambiar a fotografía: si fue un error, hay que subir el archivo de nuevo.
 
@@ -239,9 +248,11 @@ Este apartado solo lo ve la administración.
   cuenta solo podrá firmar con ella. Las cuentas de la dirección (la de administración de Pablo y «Pablo Velasco
   (redactor)») firman como **El Director**.
 - **Etiquetas:** solo la administración puede **borrar** una etiqueta (la redacción puede crearlas y corregirlas).
-- **Ilustraciones generadas con IA:** la decisión de usarlas es de la dirección; la redacción solo ve la opción.
-- **Campos internos de la noticia** (identificador de origen, procedencia y lote de la carga de ensayo): solo los ve
-  la administración.
+- **Imágenes hechas con IA:** las decide cada redactor, con la norma del apartado de fotos (poco, solo como
+  ilustración y siempre con su tipo).
+- **Campos internos:** el identificador de origen, la procedencia y el lote de la noticia, y los datos internos de
+  imágenes, fiestas, patrimonio, rutas y servicios (identificadores de importación y datos de la copia pública de cada
+  imagen) solo los ve la administración.
 - **Cuentas municipales:** solo entran por el panel de su concejo. Si una intenta entrar en el CMS, se le indica la
   dirección de su panel. La administración las crea en **Usuarios**, con rol Ayuntamiento y su espacio municipal.
 - **Estadísticas, espacios municipales, usuarios y motivos de rechazo:** tienen sus tarjetas en el inicio.
