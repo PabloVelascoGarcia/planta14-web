@@ -99,4 +99,47 @@ export async function run(ctx) {
   assert.ok(!asEditor.publicKey && !asEditor.publicBucket, `newsroom: no technical media fields ${JSON.stringify(asEditor)}`);
   assert.ok(asAdmin.publicKey && asAdmin.publicBucket, `administration: technical media fields ${JSON.stringify(asAdmin)}`);
   passed('campos técnicos ocultos a la redacción (los ve la administración): identificador de importación de fiestas, patrimonio, rutas y servicios; usos publicados, clave, almacenamiento y dirección de la copia pública y lote de las imágenes');
+
+  // Pie y crédito de las fotos, para la redacción. La foto principal no tiene pie propio (nunca lo ha tenido): bajo ella
+  // sale el crédito de su ficha («Fotografía: …»). El «Pie de foto» es de los bloques Imagen y Galería del texto. Una
+  // cuenta de la redacción ve y puede cambiar en la ficha de la imagen el texto alternativo, la autoría o crédito, el
+  // enlace de origen y el titular de los derechos; y en la noticia, la foto principal con su lápiz para abrir esa ficha.
+  {
+    const article = (await payload.find({ collection: 'articles', where: { image: { exists: true } }, depth: 0, limit: 1, overrideAccess: true })).docs[0];
+    const target = article ? (await payload.findByID({ collection: 'media', id: article.image, depth: 0, overrideAccess: true })) : media;
+    const original = { alt: target.alt, credit: target.credit };
+    const v = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    const tab = await v.newPage();
+    await tab.goto(`${origin}/cms/login`, { waitUntil: 'load' });
+    await tab.locator('input[name="email"]').fill(users.editor.email); await tab.locator('input[name="password"]').fill(password); await tab.locator('button[type="submit"]').click();
+    await tab.waitForURL(url => !url.pathname.includes('/login'), { timeout: 30000 });
+    await tab.goto(`${origin}/cms/collections/media/${target.id}`, { waitUntil: 'load' }); await tab.locator('input[name="alt"]').waitFor({ timeout: 30000 });
+    for (const name of ['alt', 'credit', 'sourceURL', 'rightsHolder']) {
+      const input = tab.locator(`input[name="${name}"]`);
+      assert.ok(await input.isVisible() && await input.isEditable(), `newsroom: «${name}» visible and editable in the image`);
+    }
+    await tab.locator('input[name="alt"]').fill('Texto alternativo cambiado por la redacción');
+    await tab.locator('input[name="credit"]').fill('Crédito cambiado por la redacción');
+    await tab.keyboard.press(process.platform === 'darwin' ? 'Meta+s' : 'Control+s');
+    let saved;
+    for (let i = 0; i < 40; i++) { await tab.waitForTimeout(500); saved = await payload.findByID({ collection: 'media', id: target.id, depth: 0, overrideAccess: true }); if (saved.credit === 'Crédito cambiado por la redacción') break; }
+    assert.ok(saved.credit === 'Crédito cambiado por la redacción' && saved.alt === 'Texto alternativo cambiado por la redacción', `newsroom: saves alt and credit (${saved.alt} / ${saved.credit})`);
+    if (article) {
+      if (article._status === 'published') {
+        const page = await (await fetch(`${web}/noticia/${article.slug}`)).text();
+        assert.ok(page.replaceAll('<!-- -->', '').includes('Crédito cambiado por la redacción'), 'the new credit under the main photo');
+      }
+      await tab.goto(`${origin}/cms/collections/articles/${article.id}`, { waitUntil: 'load' }); await tab.locator('input[name="title"]').waitFor({ timeout: 30000 });
+      assert.ok(await tab.locator('#field-image').count() === 1 && await tab.getByText('Foto principal', { exact: true }).first().isVisible(), 'newsroom: «Foto principal» in the article');
+    }
+    await v.close();
+    await payload.update({ collection: 'media', id: target.id, overrideAccess: true, data: original });
+    // El «Pie de foto» de los bloques Imagen y Galería del texto, obligatorio y editable (no tiene condición ni acceso).
+    const { ImageBlock, GalleryBlock } = await import('../cms/article-images.ts');
+    for (const block of [ImageBlock, GalleryBlock]) {
+      const caption = JSON.stringify(block, (k, val) => typeof val === 'function' ? undefined : val);
+      assert.ok(caption.includes('"label":"Pie de foto"'), `block ${block.slug}: «Pie de foto»`);
+    }
+  }
+  passed('fotos para la redacción: en la ficha de la imagen, el texto alternativo, la autoría o crédito, el enlace de origen y el titular se ven y se pueden cambiar (el crédito nuevo sale bajo la foto principal); en la noticia, «Foto principal»; el «Pie de foto», en los bloques Imagen y Galería del texto. La foto principal no tiene pie propio');
 }

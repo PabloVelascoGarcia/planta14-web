@@ -232,6 +232,9 @@ puede tardar en cambiar.
 - **No me deja publicar:** casi siempre es una foto (principal o del texto) sin la casilla de derechos. Ábrela y
   márcala.
 - **He creado una etiqueta mal escrita:** ábrela en **Etiquetas** y corrige el nombre.
+- **¿Dónde pongo el pie de foto de la foto principal?** La foto principal no lleva pie propio: debajo sale su
+  **autoría o crédito**, que se cambia en la ficha de la imagen (el lápiz junto a la foto). El **Pie de foto** es de las
+  fotos que añades dentro del texto con los bloques **Imagen** y **Galería**.
 - **No puedo elegir otra firma:** tu cuenta tiene firma fija; habla con la administración.
 - **¿Dónde está este manual?** En **Ayuda** (menú de la izquierda y tarjeta del inicio), con buscador y el botón
   **Descargar en PDF**. Si abres la Ayuda sin haber entrado en el CMS, primero te pide entrar y después te lleva a
