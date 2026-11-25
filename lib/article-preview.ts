@@ -19,7 +19,7 @@ export function previewArticle(doc: Record<string, unknown>): Article {
   const focus = image && (Number(image.focalX ?? 50) !== 50 || Number(image.focalY ?? 50) !== 50) ? `${Math.round(Number(image.focalX))}% ${Math.round(Number(image.focalY))}%` : undefined;
   return {
     id: String(doc.id ?? ""), slug: str(doc.slug), title: str(doc.title) || "Sin título", excerpt: str(doc.excerpt), body,
-    image: imageURL, imageAlt: str(image?.alt), imageCredit: str(image?.credit),
+    image: imageURL, imageAlt: str(image?.alt), imageCredit: str(image?.credit), ...(imageURL && str(doc.imageCaption).trim() ? { imageCaption: str(doc.imageCaption).trim() } : {}),
     date: str(doc.date) || str(doc.publishedAt).slice(0, 10), author: str(author?.name) || "Autor sin elegir", authorSlug: str(author?.slug),
     comarca: (str(town?.comarca) || "Caudal") as Comarca, concejo: str(town?.name) || "Concejo sin elegir", topic: str(section?.name) || "Sección sin elegir",
     status: "draft", publishedAt: str(doc.publishedAt) || str(doc.date), ...(bodyRich ? { bodyRich } : {}),

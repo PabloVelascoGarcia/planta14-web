@@ -140,6 +140,10 @@ biblioteca tiene fotos de paisaje de los concejos, cada una con su crédito, lis
 - la casilla **«Declaro que Planta 14 tiene derecho a publicar esta imagen…»**. Sin ella, la noticia no se puede
   publicar con esa foto.
 
+Debajo de la foto, en la noticia, está **Pie de foto** (opcional): el contexto de la imagen en esta noticia, por ejemplo
+«La pista de Masgaín, uno de los ocho proyectos financiados». Sale bajo la foto, delante de la autoría («Fotografía:
+…»). No es el **texto alternativo**: ese describe lo que se ve para quien no puede verlo, y no sale en la página.
+
 ### Encuadre: el punto de interés
 
 Las tarjetas y la portada recortan las fotos a lo ancho. Para que no se corten caras o lo importante:
@@ -232,9 +236,8 @@ puede tardar en cambiar.
 - **No me deja publicar:** casi siempre es una foto (principal o del texto) sin la casilla de derechos. Ábrela y
   márcala.
 - **He creado una etiqueta mal escrita:** ábrela en **Etiquetas** y corrige el nombre.
-- **¿Dónde pongo el pie de foto de la foto principal?** La foto principal no lleva pie propio: debajo sale su
-  **autoría o crédito**, que se cambia en la ficha de la imagen (el lápiz junto a la foto). El **Pie de foto** es de las
-  fotos que añades dentro del texto con los bloques **Imagen** y **Galería**.
+- **¿Dónde pongo el pie de foto de la foto principal?** En la noticia, en **Pie de foto**, justo debajo de **Foto
+  principal**. La autoría se cambia en la ficha de la imagen (el lápiz junto a la foto).
 - **No puedo elegir otra firma:** tu cuenta tiene firma fija; habla con la administración.
 - **¿Dónde está este manual?** En **Ayuda** (menú de la izquierda y tarjeta del inicio), con buscador y el botón
   **Descargar en PDF**. Si abres la Ayuda sin haber entrado en el CMS, primero te pide entrar y después te lleva a

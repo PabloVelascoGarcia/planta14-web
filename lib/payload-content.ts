@@ -118,7 +118,7 @@ export function articleContract(doc: PayloadArticle): Article {
   return {
     id: doc.legacyID || String(doc.id), slug: doc.slug || String(doc.id), title: doc.title, excerpt: doc.excerpt,
     body: lexicalToParagraphs(doc.body), ...(toLexical(body) && !isPlainParagraphs(body) ? { bodyRich: toLexical(body)! } : {}),
-    ...(hasPhoto ? { image: mediaURL(doc.image), ...(imageSrcSet(doc.image) ? { imageSrcSet: imageSrcSet(doc.image) } : {}), imageAlt: image?.alt || '', imageCredit: image?.credit || '',
+    ...(hasPhoto ? { image: mediaURL(doc.image), ...(imageSrcSet(doc.image) ? { imageSrcSet: imageSrcSet(doc.image) } : {}), imageAlt: image?.alt || '', imageCredit: image?.credit || '', ...(doc.imageCaption?.trim() ? { imageCaption: doc.imageCaption.trim() } : {}),
       ...(imageFocus(image) ? { imageFocus: imageFocus(image) } : {}), ...(isAI(image) ? { imageAI: true } : {}),
       ...(image?.width && image.height ? { imageWidth: image.width, imageHeight: image.height } : {}) } : templateImage(doc, slugText(section.name))),
     ...(doc.imagePoster ? { imagePoster: true } : {}),

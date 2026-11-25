@@ -242,6 +242,8 @@ export const Articles: CollectionConfig = {
           ...help('Escribe o pega el texto. Puedes usar negrita, cursiva, enlaces, ladillos (títulos intermedios), citas y listas. Para meter una foto o una galería en el texto, pulsa «+» al principio de una línea vacía (o escribe «/») y elige «Imagen» o «Galería».') },
         { name: 'image', label: 'Foto principal', type: 'upload', relationTo: 'media',
           ...help('Elige una foto de Imágenes o súbela aquí con «Crear» (o arrastrándola): pide descripción, autoría, derechos y la declaración de derechos. Para encuadrarla en las tarjetas, abre la imagen y marca su punto de interés.') },
+        { name: 'imageCaption', label: 'Pie de foto', type: 'textarea', maxLength: 300,
+          admin: { condition: data => Boolean(data?.image), description: 'Opcional. Qué se ve y por qué importa en esta noticia (contexto). Sale bajo la foto, antes de la autoría. No es el texto alternativo de la imagen.' } },
         { name: 'imagePoster', label: 'Mostrar entera (cartel)', type: 'checkbox',
           ...help('Para carteles: la foto principal se ve completa en la noticia (con fondo neutro alrededor) y entera dentro de su hueco en las tarjetas, sin cortar el texto.') },
         { name: 'template', label: 'Sin foto: plantilla de Planta 14', type: 'radio', options: [{ value: 'none', label: 'Ninguna' }, ...templateOptions], defaultValue: 'none',

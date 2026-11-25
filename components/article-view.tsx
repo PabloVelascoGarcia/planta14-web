@@ -37,7 +37,8 @@ export function ArticleView({ article, related, shareUrl }: { article: Article; 
         {whole
           ? <div className="mt-6 flex justify-center bg-[#e9e4dc] p-2" data-article-image-whole><ArticleImage article={article} sizes="article" priority whole width={article.imageWidth ?? 1000} height={article.imageHeight ?? 1400} className="h-auto max-h-[min(80vh,900px)] w-auto max-w-full" /></div>
           : <ArticleImage article={article} sizes="article" priority width={1600} height={1000} className="mt-6 aspect-[16/10] w-full object-cover" />}
-        <p className="mt-2 text-xs text-steel" data-article-credit>{article.imageAI ? <><strong data-ai-caption>{AI_LABEL}.</strong> {article.imageCredit ? `Autoría: ${article.imageCredit}` : null}</>
+        {/* Pie de la foto principal (contexto) y, detrás, la autoría: «Pista de Masgaín. Fotografía: …». */}
+        <p className="mt-2 text-xs text-steel" data-article-credit>{article.imageCaption ? <span className="mr-1 text-[15px] leading-6 text-coal-800" data-article-caption>{article.imageCaption}</span> : null}{article.imageAI ? <><strong data-ai-caption>{AI_LABEL}.</strong> {article.imageCredit ? `Autoría: ${article.imageCredit}` : null}</>
           : article.imageTemplate ? "Imagen: Planta 14" : article.imageCredit ? `Fotografía: ${article.imageCredit}` : null}</p>
         <div className="mx-auto mt-8 max-w-[640px] space-y-6 font-serif text-xl leading-9 text-coal-900" data-article-body>
           {article.bodyRich ? <RichText value={article.bodyRich} /> : article.body.map((paragraph) => (

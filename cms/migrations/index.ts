@@ -26,6 +26,7 @@ import * as migration_20261106_095011_final from './20261106_095011_final';
 import * as migration_20261106_214802_redaccion from './20261106_214802_redaccion';
 import * as migration_20261123_132459_redaccion_imagenes from './20261123_132459_redaccion_imagenes';
 import * as migration_20261123_194605_firma_fija from './20261123_194605_firma_fija';
+import * as migration_20261125_182900_pie_foto_principal from './20261125_182900_pie_foto_principal';
 
 export const migrations = [
   {
@@ -167,5 +168,10 @@ export const migrations = [
     up: migration_20261123_194605_firma_fija.up,
     down: migration_20261123_194605_firma_fija.down,
     name: '20261123_194605_firma_fija',
+  },
+  {
+    up: migration_20261125_182900_pie_foto_principal.up,
+    down: migration_20261125_182900_pie_foto_principal.down,
+    name: '20261125_182900_pie_foto_principal'
   },
 ];

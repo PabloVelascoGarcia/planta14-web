@@ -100,8 +100,8 @@ export async function run(ctx) {
   assert.ok(asAdmin.publicKey && asAdmin.publicBucket, `administration: technical media fields ${JSON.stringify(asAdmin)}`);
   passed('campos técnicos ocultos a la redacción (los ve la administración): identificador de importación de fiestas, patrimonio, rutas y servicios; usos publicados, clave, almacenamiento y dirección de la copia pública y lote de las imágenes');
 
-  // Pie y crédito de las fotos, para la redacción. La foto principal no tiene pie propio (nunca lo ha tenido): bajo ella
-  // sale el crédito de su ficha («Fotografía: …»). El «Pie de foto» es de los bloques Imagen y Galería del texto. Una
+  // Pie y crédito de las fotos, para la redacción. La foto principal tiene su «Pie de foto» en la noticia (desde el
+  // 25/11); bajo él, el crédito de su ficha («Fotografía: …»). Los bloques Imagen y Galería tienen el suyo. Una
   // cuenta de la redacción ve y puede cambiar en la ficha de la imagen el texto alternativo, la autoría o crédito, el
   // enlace de origen y el titular de los derechos; y en la noticia, la foto principal con su lápiz para abrir esa ficha.
   {
@@ -131,6 +131,19 @@ export async function run(ctx) {
       }
       await tab.goto(`${origin}/cms/collections/articles/${article.id}`, { waitUntil: 'load' }); await tab.locator('input[name="title"]').waitFor({ timeout: 30000 });
       assert.ok(await tab.locator('#field-image').count() === 1 && await tab.getByText('Foto principal', { exact: true }).first().isVisible(), 'newsroom: «Foto principal» in the article');
+      // «Pie de foto» de la foto principal, en la noticia: la redacción lo ve, lo escribe y sale bajo la foto, antes de la autoría.
+      const caption = tab.locator('textarea[name="imageCaption"]');
+      assert.ok(await caption.isVisible() && await caption.isEditable(), 'newsroom: «Pie de foto» of the main photo, visible and editable');
+      await caption.fill('La pista de Masgaín, uno de los ocho proyectos financiados');
+      await tab.keyboard.press('Control+s');
+      let stored;
+      for (let i = 0; i < 40; i++) { await tab.waitForTimeout(500); stored = (await payload.find({ collection: 'articles', where: { id: { equals: article.id } }, draft: true, depth: 0, overrideAccess: true })).docs[0]; if (stored?.imageCaption) break; }
+      assert.equal(stored?.imageCaption, 'La pista de Masgaín, uno de los ocho proyectos financiados', 'newsroom: the caption is saved');
+      await payload.update({ collection: 'articles', id: article.id, overrideAccess: true, data: { imageCaption: 'La pista de Masgaín, uno de los ocho proyectos financiados', _status: 'published' } });
+      const shown = (await (await fetch(`${web}/noticia/${article.slug}`)).text()).replaceAll('<!-- -->', '');
+      const at = shown.indexOf('data-article-caption'), credit = shown.indexOf('data-article-credit');
+      assert.ok(at > credit && shown.includes('La pista de Masgaín, uno de los ocho proyectos financiados') && /Fotografía: |Autoría: /.test(shown.slice(at, at + 400)), 'the caption under the main photo, before the credit');
+      await payload.update({ collection: 'articles', id: article.id, overrideAccess: true, data: { imageCaption: null } });
     }
     await v.close();
     await payload.update({ collection: 'media', id: target.id, overrideAccess: true, data: original });
@@ -141,5 +154,5 @@ export async function run(ctx) {
       assert.ok(caption.includes('"label":"Pie de foto"'), `block ${block.slug}: «Pie de foto»`);
     }
   }
-  passed('fotos para la redacción: en la ficha de la imagen, el texto alternativo, la autoría o crédito, el enlace de origen y el titular se ven y se pueden cambiar (el crédito nuevo sale bajo la foto principal); en la noticia, «Foto principal»; el «Pie de foto», en los bloques Imagen y Galería del texto. La foto principal no tiene pie propio');
+  passed('fotos para la redacción: en la ficha de la imagen, el texto alternativo, la autoría o crédito, el enlace de origen y el titular se ven y se pueden cambiar (el crédito nuevo sale bajo la foto principal); en la noticia, «Foto principal» con su «Pie de foto» (lo escribe la redacción y sale bajo la foto, antes de la autoría); el «Pie de foto» de los bloques Imagen y Galería del texto');
 }

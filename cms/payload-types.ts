@@ -462,6 +462,10 @@ export interface Article {
    */
   image?: (number | null) | Media;
   /**
+   * Opcional. Qué se ve y por qué importa en esta noticia (contexto). Sale bajo la foto, antes de la autoría. No es el texto alternativo de la imagen.
+   */
+  imageCaption?: string | null;
+  /**
    * Para carteles: la foto principal se ve completa en la noticia (con fondo neutro alrededor) y entera dentro de su hueco en las tarjetas, sin cortar el texto.
    */
   imagePoster?: boolean | null;
@@ -1507,6 +1511,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   excerpt?: T;
   body?: T;
   image?: T;
+  imageCaption?: T;
   imagePoster?: T;
   template?: T;
   author?: T;

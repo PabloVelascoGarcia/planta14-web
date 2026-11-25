@@ -10,6 +10,8 @@ export type Article = {
   imageSrcSet?: string;
   imageAlt?: string;
   imageCredit?: string;
+  /** Pie de la foto principal (contexto), escrito en la noticia. Solo con foto. */
+  imageCaption?: string;
   sourceName?: string;
   sourceUrl?: string;
   sourceAuthor?: string;
